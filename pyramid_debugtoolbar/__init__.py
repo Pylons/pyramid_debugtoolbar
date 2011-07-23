@@ -120,6 +120,7 @@ default_settings = {
     'debugtoolbar.intercept_redirects': True,
     'debugtoolbar.panels': (
         'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
+        'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
         'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
         'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
         'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
