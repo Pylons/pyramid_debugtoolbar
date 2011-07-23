@@ -67,8 +67,7 @@
 }
 
 #flDebug #flDebugToolbar li a:hover {
-	color:#111;
-	background-color:#ffc;
+	background: #333;
 }
 
 #flDebug #flDebugToolbar li.active {
@@ -79,8 +78,12 @@
 	padding-left:10px;	
 }
 
+#flDebug #flDebugToolbar li.active a {
+	color: #da7028;	
+}
+
 #flDebug #flDebugToolbar li.active a:hover {
-	color:#b36a60;
+	/*color: #e8772c;*/
 	background-color:transparent;
 }
 
@@ -180,13 +183,13 @@
 
 #flDebug .flDebugPanelTitle {
 	position:absolute;
-	background-color:#ffc;
 	color:#666;
 	padding-left:20px;
 	top:0;
 	right:0;
 	left:0;
 	height:50px;
+	background: #F98131 url(../img/headerbg.png) repeat-x 0 0;
 }
 
 #flDebug .flDebugPanelTitle code {
@@ -351,7 +354,7 @@
 #flDebug a.toggleTemplate:hover {
 	padding:4px;
 	background-color:#444;
-	color:#ffe761;
+	color: #F98131;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 }
