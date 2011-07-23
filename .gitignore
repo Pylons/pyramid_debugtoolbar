@@ -1,0 +1,14 @@
+*.egg
+*.egg-info
+*.pyc
+*$py.class
+*.pt.py
+*.txt.py
+*~
+.coverage
+build/
+dist/
+.tox/
+nosetests.xml
+coverage.xml
+env26/
