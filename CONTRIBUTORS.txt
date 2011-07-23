@@ -98,3 +98,4 @@ Contributors
 ------------
 
 - Chris McDonough, 2011/07/22
+- Blaise Laflamme, 2011/07/22
