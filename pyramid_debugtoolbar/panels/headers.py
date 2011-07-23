@@ -31,6 +31,7 @@ class HeaderDebugPanel(DebugPanel):
         'SERVER_PORT',
         'SERVER_PROTOCOL',
         'SERVER_SOFTWARE',
+        'PATH_INFO',
     )
 
     def nav_title(self):
