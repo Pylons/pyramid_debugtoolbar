@@ -1,24 +1,43 @@
 {% if renderings %}
-	<table>
-		<thead>
-			<tr>
-				<th>Renderer Name</th>
-				<th>Args</th>
-				<th>System</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for rendering in renderings %}
-				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
-					<td>{{ rendering.name }}</td>
-					<td>{{ rendering.val }}</td>
-					<td>{{ rendering.system }}</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+{% for rendering in renderings %}
+<table>
+	<thead>
+		<tr>
+			<th colspan="2">Renderer Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="flDebugOdd">
+			<td colspan="2">{{ rendering.name }}</td>
+		</tr>
+	</tbody>
+	<thead>
+		<tr>
+			<th colspan="2">Args</th>
+		</tr>
+	</thead>
+	<tbody>	
+		<tr class="flDebugOdd">
+			<td colspan="2">{{ rendering.val }}</td>
+		</tr>
+	</tbody>
+	<thead>
+		<tr>
+			<th colspan="2">System</th>
+		</tr>
+	</thead>
+	<tbody>	
+		{% for key, value in rendering.system.iteritems() %}
+		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+			<td>{{ key }}</td>
+			<td>{{ value }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endfor %}
 {% else %}
-	<p>No renderings performed.</p>
+<p>No renderings performed.</p>
 {% endif %}
 
 
