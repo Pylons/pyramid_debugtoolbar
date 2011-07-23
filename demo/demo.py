@@ -30,7 +30,6 @@ if __name__ == '__main__':
     settings = {}
     settings['debugtoolbar.secret_key'] = 'abc'
     settings['mako.directories'] = os.path.join(here, 'templates')
-    settings['db'] = os.path.join(here, 'tasks.db')
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
