@@ -64,7 +64,7 @@ class DebugToolbarSubscriber(object):
                 redirect_code = response.status_code
                 if redirect_to:
                     content = render(
-                        'pyramid_debugtoolbar:templates/debugtoolbar_redirect.jinja2', {
+                        'pyramid_debugtoolbar:templates/redirect.jinja2', {
                         'redirect_to': redirect_to,
                         'redirect_code': redirect_code
                     })
