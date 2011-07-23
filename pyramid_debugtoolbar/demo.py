@@ -1,10 +1,15 @@
+import logging
+
 from pyramid.view import view_config
 from pyramid.config import Configurator
 from pyramid.response import Response
 from paste.httpserver import serve
 
+log = logging.getLogger(__name__)
+
 @view_config(route_name='test_page')
 def test_page(request):
+    log.info('Hello World')
     return Response('<body>Hello World</body>', content_type='text/html')
 
 if __name__ == '__main__':
