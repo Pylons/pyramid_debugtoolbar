@@ -111,5 +111,7 @@ class ProfilerDebugPanel(DebugPanel):
             'stats': self.stats,
             'function_calls': self.function_calls,
         })
-        return self.render('panels/debugtoolbar_profiler.jinja2', self.vars,
-                           request=self.request)
+        return self.render(
+            'pyramid_debugtoolbar:templates/panels/profiler.jinja2',
+            self.vars, request=self.request)
+

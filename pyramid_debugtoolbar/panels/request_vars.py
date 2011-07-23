@@ -32,6 +32,8 @@ class RequestVarsDebugPanel(DebugPanel):
                             self.request.session.keys()]
             })
 
-        return self.render('panels/debugtoolbar_request_vars.jinja2', self.vars,
-                           request=self.request)
+        return self.render(
+            'pyramid_debugtoolbar:templates/panels/request_vars.jinja2',
+            self.vars,
+            request=self.request)
 

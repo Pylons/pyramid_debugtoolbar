@@ -90,6 +90,7 @@ class TimerDebugPanel(DebugPanel):
             'rows': rows,
         })
 
-        return self.render('panels/debugtoolbar_timer.jinja2', self.vars,
-                           request=self.request)
+        return self.render(
+            'pyramid_debugtoolbar:templates/panels/timer.jinja2', self.vars,
+            request=self.request)
 

@@ -17,6 +17,7 @@ class DebugToolbar(object):
         static_path = request.static_url('pyramid_debugtoolbar:static/')
         vars = {'panels': self.panels,
                 'static_path':static_path}
-        return render('debugtoolbar_base.jinja2', vars, request=request)
+        return render('pyramid_debugtoolbar:templates/base.jinja2',
+                      vars, request=request)
 
 

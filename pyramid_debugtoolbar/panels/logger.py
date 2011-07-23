@@ -85,7 +85,9 @@ class LoggingPanel(DebugPanel):
 
         self.vars.update({'records': records})
 
-        return self.render('panels/debugtoolbar_logger.jinja2', self.vars,
-                           request=self.request)
+        return self.render(
+            'pyramid_debugtoolbar:templates/panels/logger.jinja2',
+            self.vars,
+            request=self.request)
 
 
