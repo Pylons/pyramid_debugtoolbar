@@ -24,6 +24,9 @@ def test_page(request):
 def test_redirect(request):
     return HTTPFound(location=request.route_url('test_page'))
 
+@view_config(route_name='test_predicates', renderer='index.mako')
+def test_predicates(request):
+    return {'title':'Test route predicates'}
 
 if __name__ == '__main__':
     # configuration settings
@@ -37,6 +40,7 @@ if __name__ == '__main__':
     # routes setup
     config.add_route('test_page', '/')
     config.add_route('test_redirect', '/redirect')
+    config.add_route('test_predicates', '/predicates', request_method='GET')
     config.scan('__main__')
     config.include('pyramid_debugtoolbar')
     serve(config.make_wsgi_app())

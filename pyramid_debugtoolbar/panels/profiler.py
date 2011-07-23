@@ -91,6 +91,8 @@ class ProfilerDebugPanel(DebugPanel):
         return response
 
     def title(self):
+        if self.down:
+            return "Profiler not functional on this system"
         if not self.is_active:
             return "Profiler not active"
         return 'View: %.2fms' % (float(self.stats.total_tt)*1000,)
@@ -99,6 +101,8 @@ class ProfilerDebugPanel(DebugPanel):
         return 'Profiler'
 
     def nav_subtitle(self):
+        if self.down:
+            return "down"
         if not self.is_active:
             return "in-active"
         return 'View: %.2fms' % (float(self.stats.total_tt)*1000,)
@@ -107,6 +111,8 @@ class ProfilerDebugPanel(DebugPanel):
         return ''
 
     def content(self):
+        if self.down:
+            return "The profiler cannot be used in your system"
         if not self.is_active:
             return "The profiler is not activated, activate it to use it"
         vars = {

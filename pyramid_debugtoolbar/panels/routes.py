@@ -53,8 +53,13 @@ class RoutesDebugPanel(DebugPanel):
                         view_callable = registry.adapters.lookup(
                             (IViewClassifier, request_iface, Interface),
                             IView, name='', default=None)
+                    predicates = []
+                    for predicate in route.predicates:
+                        text = getattr(predicate, '__text__', repr(predicate))
+                        predicates.append(text)
                     info.append({'route':route,
-                                 'view_callable':view_callable})
+                                 'view_callable':view_callable,
+                                 'predicates':', '.join(predicates)})
                 registry.debugtoolbar_routeinfo = info
                 
             vars = {
