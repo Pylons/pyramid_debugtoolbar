@@ -86,11 +86,11 @@ class TimerDebugPanel(DebugPanel):
 #            ('Disk operations', '%d in, %d out, %d swapout' % (blkin, blkout, swap)),
         )
 
-        self.vars.update({
+        vars = {
             'rows': rows,
-        })
+        }
 
         return self.render(
-            'pyramid_debugtoolbar:templates/panels/timer.jinja2', self.vars,
+            'pyramid_debugtoolbar:templates/panels/timer.jinja2', vars,
             request=self.request)
 

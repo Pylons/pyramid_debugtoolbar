@@ -27,9 +27,9 @@ class SettingsDebugPanel(DebugPanel):
                                key=itemgetter(0))
 
     def content(self):
-        self.vars.update({
+        vars = {
             'settings': self.settings
-        })
+        }
         return self.render(
             'pyramid_debugtoolbar:templates/panels/settings.jinja2',
-            self.vars, self.request)
+            vars, self.request)

@@ -26,10 +26,10 @@ class DebugToolbar(object):
         panel_classes = self.request.registry.settings['debugtoolbar.classes']
         activated = self.request.cookies.get('fldt_active', '').split(';')
         for panel_class in panel_classes:
-            panel_instance = panel_class(vars={})
-            if panel_instance.dom_id() in activated:
-                panel_instance.is_active = True
-            self.panels.append(panel_instance)
+            panel_inst = panel_class(request)
+            if panel_inst.dom_id() in activated and not panel_inst.down:
+                panel_inst.is_active = True
+            self.panels.append(panel_inst)
 
     def render_toolbar(self, response):
         request = self.request

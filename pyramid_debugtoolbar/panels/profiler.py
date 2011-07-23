@@ -25,10 +25,13 @@ class ProfilerDebugPanel(DebugPanel):
         if not self.is_active:
             return
 
+        if not hasattr(request, 'add_view_wrapper'):
+            self.is_active = False
+            return
+
         self.profiler = profile.Profile()
         self.stats = None
-        if self.is_active and hasattr(request, 'add_view_wrapper'):
-            request.add_view_wrapper(self._wrap_view)
+        request.add_view_wrapper(self._wrap_view)
 
     def _wrap_view(self, view_func, req, exc):
         if not exc:
@@ -106,12 +109,11 @@ class ProfilerDebugPanel(DebugPanel):
     def content(self):
         if not self.is_active:
             return "The profiler is not activated, activate it to use it"
-
-        self.vars.update({
+        vars = {
             'stats': self.stats,
             'function_calls': self.function_calls,
-        })
+            }
         return self.render(
             'pyramid_debugtoolbar:templates/panels/profiler.jinja2',
-            self.vars, request=self.request)
+            vars, request=self.request)
 

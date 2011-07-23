@@ -12,12 +12,12 @@ class DebugPanel(object):
     # If the client is able to activate/de-activate the panel
     user_enable = False
 
-    # Panel methods
-    def __init__(self, vars=None):
-        if vars is None:
-            vars = {}
-        self.vars = vars
+    # If the panel is disabled because the environment can't support it.
+    down = False
 
+    # Panel methods
+    def __init__(self, request):
+        self.request = request
         # If the client enabled the panel
         self.is_active = False
 
