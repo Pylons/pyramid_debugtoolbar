@@ -4,6 +4,7 @@ from pyramid.util import DottedNameResolver
 from pyramid.exceptions import ConfigurationError
 from pyramid.settings import asbool
 from pyramid.renderers import render
+from pyramid.threadlocal import get_current_request
 import pyramid.events
 
 resolver = DottedNameResolver(None)
@@ -48,7 +49,9 @@ class DebugToolbarSubscriber(object):
 
     def process_beforerender(self, event):
         request = event['request']
-        if request is not None and request.debug_toolbar:
+        if request is None:
+            request = get_current_request()
+        if getattr(request, 'debug_toolbar', None) is not None:
             for panel in request.debug_toolbar.panels:
                 panel.process_beforerender(event)
 
@@ -86,6 +89,7 @@ class DebugToolbarSubscriber(object):
                     response_html,
                     '</body>',
                     toolbar_html + '</body>')]
+        del request.debug_toolbar
         return response
 
 # default config settings
@@ -112,11 +116,11 @@ def includeme(config):
     config.include('pyramid_jinja2')
     # XXX should be a better way to do this, IJinja2Environment nor
     # url_quote are APIs AFAIK
+    
     j2_env = config.registry.getUtility(IJinja2Environment)
     j2_env.filters['urlencode'] = url_quote
     config.add_static_view('_debug_toolbar/static',
                            'pyramid_debugtoolbar:static')
-    config.add_route('pyramid.debugtoolbar', '_debugtoolbar/{id}')
     classes = settings['debugtoolbar.classes'] = []
     for dottedname in settings['debugtoolbar.panels']:
         panel_class = resolver.resolve(dottedname)
