@@ -21,7 +21,8 @@ class RequestVarsDebugPanel(DebugPanel):
     def content(self):
         self.vars.update({
             'get': [(k, self.request.GET.getall(k)) for k in self.request.GET],
-            'post': [(k, self.request.POST.all(k)) for k in self.request.POST],
+            'post': [(k, self.request.POST.getall(k)) for k in
+                     self.request.POST],
             'cookies': [(k, self.request.cookies.get(k)) for k in
                         self.request.cookies],
             'view_name': '%s' % self.request.view_name,
