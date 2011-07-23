@@ -18,7 +18,6 @@ here = os.path.dirname(os.path.abspath(__file__))
 def test_page(request):
     title = 'Pyramid Debugtoolbar'
     log.info(title)
-    print request.registry.settings
     return {'title': title}
 
 @view_config(route_name='test_redirect')

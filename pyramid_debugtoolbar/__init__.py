@@ -128,7 +128,7 @@ default_settings = {
 #        'pyramid_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
         'pyramid_debugtoolbar.panels.logger.LoggingPanel',
         'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
-        
+        'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
         )
     }
 
