@@ -3,12 +3,10 @@ import logging
 
 from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPFound
-from pyramid.response import Response
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.view import view_config
 
 from paste.httpserver import serve
-import sqlite3
 
 logging.basicConfig()
 log = logging.getLogger(__file__)
@@ -28,9 +26,6 @@ def test_redirect(request):
 
 
 if __name__ == '__main__':
-    settings = {'debugtoolbar.secret_key': 'abc'}
-    config = Configurator(settings=settings)
-    
     # configuration settings
     settings = {}
     settings['debugtoolbar.secret_key'] = 'abc'

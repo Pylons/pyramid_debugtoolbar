@@ -4,6 +4,7 @@ from pyramid.settings import asbool
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 import pyramid.events
+from pyramid.encode import url_quote
 
 resolver = DottedNameResolver(None)
 
@@ -30,16 +31,18 @@ class DebugToolbar(object):
                 panel_instance.is_active = True
             self.panels.append(panel_instance)
 
-    def render_toolbar(self):
+    def render_toolbar(self, response):
         request = self.request
         static_path = request.static_url('pyramid_debugtoolbar:static/')
-        vars = {'panels': self.panels,
-                'static_path':static_path}
-        return render('pyramid_debugtoolbar:templates/base.jinja2',
-                      vars, request=request)
+        vars = {'panels': self.panels, 'static_path':static_path}
+        content = render('pyramid_debugtoolbar:templates/base.jinja2',
+                         vars, request=request)
+        content = content.encode(response.charset)
+        return content
 
 class DebugToolbarSubscriber(object):
-    _redirect_codes = [301, 302, 303, 304]
+    _redirect_codes = (301, 302, 303, 304)
+    _htmltypes = ('text/html', 'application/xml+html')
 
     def __init__(self, settings):
         secret_key = settings.get('debugtoolbar.secret_key')
@@ -89,6 +92,7 @@ class DebugToolbarSubscriber(object):
                         'redirect_to': redirect_to,
                         'redirect_code': redirect_code
                     })
+                    content = content.encode(response.charset)
                     response.content_length = len(content)
                     response.location = None
                     response.app_iter = [content]
@@ -96,12 +100,13 @@ class DebugToolbarSubscriber(object):
 
         # If the http response code is 200 then we process to add the
         # toolbar to the returned html response.
-        if response.status_int == 200:
+        if (response.status_int == 200 and
+            response.content_type in self._htmltypes):
             for panel in request.debug_toolbar.panels:
                 panel.process_response(request, response)
 
-            response_html = response.ubody
-            toolbar_html = request.debug_toolbar.render_toolbar()
+            response_html = response.body
+            toolbar_html = request.debug_toolbar.render_toolbar(response)
             response.app_iter = [
                 replace_insensitive(
                     response_html,
@@ -127,15 +132,21 @@ default_settings = {
     }
 
 def includeme(config):
+    panels = config.registry.settings.get('debugtoolbar.panels')
+    if isinstance(panels, basestring):
+        panels = filter(None, [x.strip() for x in panels.splitlines()])
     settings = default_settings.copy()
     settings.update(config.registry.settings)
-    from pyramid_jinja2 import IJinja2Environment
-    from pyramid.encode import url_quote
+    if panels is not None:
+        settings['debugtoolbar.panels'] = panels
     config.include('pyramid_jinja2')
-    # XXX should be a better way to do this, IJinja2Environment nor
-    # url_quote are APIs AFAIK
-    
-    j2_env = config.registry.getUtility(IJinja2Environment)
+    if hasattr(config, 'get_jinja2_environment'):
+        # pyramid_jinja2 after 1.0
+        j2_env = config.get_jinja2_environment()
+    else:
+        # pyramid_jinja2 1.0 and before
+        from pyramid_jinja2 import IJinja2Environment
+        j2_env = config.registry.getUtility(IJinja2Environment)
     j2_env.filters['urlencode'] = url_quote
     config.add_static_view('_debug_toolbar/static',
                            'pyramid_debugtoolbar:static')
