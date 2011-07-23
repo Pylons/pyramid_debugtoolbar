@@ -110,7 +110,6 @@ def includeme(config):
     from pyramid_jinja2 import IJinja2Environment
     from pyramid.encode import url_quote
     config.include('pyramid_jinja2')
-    config.add_jinja2_search_path('pyramid_debugtoolbar:templates/')
     # XXX should be a better way to do this, IJinja2Environment nor
     # url_quote are APIs AFAIK
     j2_env = config.registry.getUtility(IJinja2Environment)
