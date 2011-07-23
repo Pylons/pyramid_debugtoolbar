@@ -30,8 +30,8 @@ class ProfilerDebugPanel(DebugPanel):
         if self.is_active and hasattr(request, 'add_view_wrapper'):
             request.add_view_wrapper(self._wrap_view)
 
-    def _wrap_view(self, view_func, req, is_exc_view):
-        if not is_exc_view:
+    def _wrap_view(self, view_func, req, exc):
+        if not exc:
             return functools.partial(self.profiler.runcall, view_func)
         return view_func
 
