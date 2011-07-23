@@ -53,4 +53,5 @@ class HeaderDebugPanel(DebugPanel):
         self.vars.update({
             'headers': self.headers
         })
-        return self.render('panels/headers.jinja2', self.vars, self.request)
+        return self.render(
+            'panels/debugtoolbar_headers.jinja2', self.vars, self.request)

@@ -29,7 +29,7 @@ class TemplateDebugPanel(DebugPanel):
         return ''
 
     def content(self):
-        return self.render('panels/template.jinja2', {
+        return self.render('panels/debugtoolbar_template.jinja2', {
             'templates': self.templates
         }, request=self.request)
 

@@ -130,7 +130,7 @@ def sql_explain(render):
         query = 'EXPLAIN %s' % statement
 
     result = db.engine.execute(query, params)
-    return render('panels/sqlalchemy_explain.html', {
+    return render('panels/debugtoolbar_sqlalchemy_explain.jinja2', {
         'result': result.fetchall(),
         'headers': result.keys(),
         'sql': format_sql(statement, params),

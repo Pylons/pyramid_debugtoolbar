@@ -32,6 +32,6 @@ class RequestVarsDebugPanel(DebugPanel):
                             self.request.session.keys()]
             })
 
-        return self.render('panels/request_vars.jinja2', self.vars,
+        return self.render('panels/debugtoolbar_request_vars.jinja2', self.vars,
                            request=self.request)
 

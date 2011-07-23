@@ -90,6 +90,6 @@ class TimerDebugPanel(DebugPanel):
             'rows': rows,
         })
 
-        return self.render('panels/timer.jinja2', self.vars,
+        return self.render('panels/debugtoolbar_timer.jinja2', self.vars,
                            request=self.request)
 

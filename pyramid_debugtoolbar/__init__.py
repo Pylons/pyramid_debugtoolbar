@@ -63,7 +63,7 @@ class DebugToolbarSubscriber(object):
                 redirect_to = response.location
                 redirect_code = response.status_code
                 if redirect_to:
-                    content = render('redirect.jinja2', {
+                    content = render('debugtoolbar_redirect.jinja2', {
                         'redirect_to': redirect_to,
                         'redirect_code': redirect_code
                     })
