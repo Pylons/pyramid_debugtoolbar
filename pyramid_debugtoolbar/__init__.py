@@ -124,7 +124,7 @@ default_settings = {
         'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
         'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
         'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-        'pyramid_debugtoolbar.panels.template.TemplateDebugPanel',
+        'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
 #        'pyramid_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
         'pyramid_debugtoolbar.panels.logger.LoggingPanel',
         'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
