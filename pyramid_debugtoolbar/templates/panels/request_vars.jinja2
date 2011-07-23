@@ -30,7 +30,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in cookies %}
-				<tr class="{{ loop.cycle('flDebugOdd' 'flDebugEven') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|escape }}</td>
 				</tr>
@@ -56,7 +56,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in session %}
-				<tr class="{{ loop.cycle('flDebugOdd' 'flDebugEven') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|escape }}</td>
 				</tr>
@@ -78,7 +78,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in get %}
-				<tr class="{{ loop.cycle('flDebugOdd' 'flDebugEven') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|join(", ")|escape }}</td>
 				</tr>
@@ -100,7 +100,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in post %}
-				<tr class="{{ loop.cycle('row1' 'row2') }}">
+				<tr class="{{ loop.cycle('row1', 'row2') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|join(", ")|escape }}</td>
 				</tr>

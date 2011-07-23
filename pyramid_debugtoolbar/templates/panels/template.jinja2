@@ -3,13 +3,16 @@
 		<thead>
 			<tr>
 				<th>Filename</th>
-				<th>Context vars</th>
+				<th>System vars</th>
+				<th>View vars</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for template in templates %}
-				<tr class="{{ loop.cycle('fjDebugOdd' 'fjDebugEven') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ template.name }}</td>
+					<td></td>
+					<td></td>
 				</tr>
 			{% endfor %}
 		</tbody>

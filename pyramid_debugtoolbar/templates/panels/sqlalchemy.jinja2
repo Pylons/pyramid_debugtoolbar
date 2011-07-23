@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{% for query in queries %}
-			<tr class="{{ loop.cycle('flDebugOdd' 'flDebugEven') }}">
+			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 				<td>{{ '%.4f'|format(query.duration) }}</td>
 				<td>
 				{% if query.params %}
