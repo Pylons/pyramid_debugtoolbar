@@ -64,7 +64,7 @@ class DebugToolbarSubscriber(object):
         if self.intercept_redirects:
             if response.status_int in self._redirect_codes:
                 redirect_to = response.location
-                redirect_code = response.status_code
+                redirect_code = response.status_int
                 if redirect_to:
                     content = render(
                         'pyramid_debugtoolbar:templates/redirect.jinja2', {
@@ -74,7 +74,7 @@ class DebugToolbarSubscriber(object):
                     response.content_length = len(content)
                     response.location = None
                     response.app_iter = [content]
-                    response.status_code = 200
+                    response.status_int = 200
 
         # If the http response code is 200 then we process to add the
         # toolbar to the returned html response.
