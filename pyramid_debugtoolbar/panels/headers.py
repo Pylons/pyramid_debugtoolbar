@@ -43,6 +43,7 @@ class HeaderDebugPanel(DebugPanel):
         return ''
 
     def process_request(self, request):
+        self.request = request
         self.headers = dict(
             [(k, request.environ[k])
                 for k in self.header_filter if k in request.environ]
@@ -52,4 +53,4 @@ class HeaderDebugPanel(DebugPanel):
         self.vars.update({
             'headers': self.headers
         })
-        return self.render('panels/headers.jinja2', self.vars)
+        return self.render('panels/headers.jinja2', self.vars, self.request)

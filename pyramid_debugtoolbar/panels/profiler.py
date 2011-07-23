@@ -21,6 +21,7 @@ class ProfilerDebugPanel(DebugPanel):
         return bool(self.profiler)
 
     def process_request(self, request):
+        self.request = request
         if not self.is_active:
             return
 
@@ -110,4 +111,5 @@ class ProfilerDebugPanel(DebugPanel):
             'stats': self.stats,
             'function_calls': self.function_calls,
         })
-        return self.render('panels/profiler.jinja2', self.vars)
+        return self.render('panels/profiler.jinja2', self.vars,
+                           request=self.request)

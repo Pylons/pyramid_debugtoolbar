@@ -22,6 +22,7 @@ class TimerDebugPanel(DebugPanel):
         has_resource = True
 
     def process_request(self, request):
+        self.request = request
         self._start_time = time.time()
         if self.has_resource:
             self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
@@ -89,5 +90,6 @@ class TimerDebugPanel(DebugPanel):
             'rows': rows,
         })
 
-        return self.render('panels/timer.jinja2', self.vars)
+        return self.render('panels/timer.jinja2', self.vars,
+                           request=self.request)
 

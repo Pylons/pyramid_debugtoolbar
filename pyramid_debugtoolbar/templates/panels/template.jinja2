@@ -9,8 +9,7 @@
 		<tbody>
 			{% for template in templates %}
 				<tr class="{{ loop.cycle('fjDebugOdd' 'fjDebugEven') }}">
-					<td>{{ template.template.name }}</td>
-					<td>{{ template.context.keys()|join(', ') }}</td>
+					<td>{{ template.name }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

@@ -17,7 +17,7 @@ class VersionDebugPanel(DebugPanel):
         return _('Versions')
 
     def nav_subtitle(self):
-        return 'Flask %s' % pyramid_version
+        return 'Pyramid %s' % pyramid_version
 
     def url(self):
         return ''

@@ -21,8 +21,8 @@ class DebugPanel(object):
         # If the client enabled the panel
         self.is_active = False
 
-    def render(self, template_name, vars):
-        return render(template_name, vars)
+    def render(self, template_name, vars, request=None):
+        return render(template_name, vars, request=request)
 
     def dom_id(self):
         return 'flDebug%sPanel' % (self.name.replace(' ', ''))
@@ -47,7 +47,7 @@ class DebugPanel(object):
 
     # Standard middleware methods
     def process_request(self, request):
-        pass
+        self.request = request
 
     def process_response(self, request, response):
         pass

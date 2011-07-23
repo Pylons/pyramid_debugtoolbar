@@ -48,6 +48,7 @@ class LoggingPanel(DebugPanel):
     has_content = True
 
     def process_request(self, request):
+        self.request = request
         handler.clear_records()
 
     def get_and_delete(self):
@@ -84,6 +85,7 @@ class LoggingPanel(DebugPanel):
 
         self.vars.update({'records': records})
 
-        return self.render('panels/logger.jinja2', self.vars)
+        return self.render('panels/logger.jinja2', self.vars,
+                           request=self.request)
 
 

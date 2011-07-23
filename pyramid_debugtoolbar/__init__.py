@@ -48,7 +48,7 @@ class DebugToolbarSubscriber(object):
 
     def process_beforerender(self, event):
         request = event['request']
-        if request.debug_toolbar:
+        if request is not None and request.debug_toolbar:
             for panel in request.debug_toolbar.panels:
                 panel.process_beforerender(event)
 
@@ -59,7 +59,7 @@ class DebugToolbarSubscriber(object):
         # Intercept http redirect codes and display an html page with a
         # link to the target.
         if self.intercept_redirects:
-            if response.status_code in self._redirect_codes:
+            if response.status_int in self._redirect_codes:
                 redirect_to = response.location
                 redirect_code = response.status_code
                 if redirect_to:
@@ -74,7 +74,7 @@ class DebugToolbarSubscriber(object):
 
         # If the http response code is 200 then we process to add the
         # toolbar to the returned html response.
-        if response.status_code == 200:
+        if response.status_int == 200:
             for panel in request.debug_toolbar.panels:
                 panel.process_response(request, response)
 
@@ -105,7 +105,7 @@ default_settings = {
 
 def includeme(config):
     settings = default_settings.copy()
-    settings.update(config.settings)
+    settings.update(config.registry.settings)
     from pyramid_jinja2 import IJinja2Environment
     from pyramid.encode import url_quote
     config.include('pyramid_jinja2')
@@ -117,10 +117,11 @@ def includeme(config):
     config.add_static_view('_debug_toolbar/static',
                            'pyramid_debugtoolbar:static')
     config.add_route('pyramid.debugtoolbar', '_debugtoolbar/{id}')
-    classes = settings['debugtoolbar.classes'] = {}
+    classes = settings['debugtoolbar.classes'] = []
     for dottedname in settings['debugtoolbar.panels']:
         panel_class = resolver.resolve(dottedname)
         classes.append(panel_class)
+    config.registry.settings.update(settings)
     subscriber = DebugToolbarSubscriber(settings)
     config.add_subscriber(subscriber.process_request,
                           pyramid.events.NewRequest)

@@ -14,13 +14,7 @@ class TemplateDebugPanel(DebugPanel):
         self.templates = []
 
     def process_beforerender(self, event):
-        self.templates.append(event)
-
-    def process_request(self, request):
-        pass
-
-    def process_response(self, request, response):
-        pass
+        self.templates.append(event['renderer_info'])
 
     def nav_title(self):
         return _('Templates')
@@ -37,6 +31,6 @@ class TemplateDebugPanel(DebugPanel):
     def content(self):
         return self.render('panels/template.jinja2', {
             'templates': self.templates
-        })
+        }, request=self.request)
 
 
