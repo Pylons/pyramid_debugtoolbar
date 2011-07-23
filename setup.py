@@ -25,6 +25,8 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.1',
+    'pyramid_jinja2',
+    'Pygments',
     ]
 
 
