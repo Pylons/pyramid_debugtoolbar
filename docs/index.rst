@@ -7,7 +7,7 @@ Overview
 ``pyramid_debugtoolbar`` provides a debug toolbar useful while you're
 developing a :term:`Pyramid` application.
 
-Note that :mod:`pyramid_debugtoolbar` is a blatant rip-off of Matt van
+Note that :mod:`pyramid_debugtoolbar` is a blatant rip-off of Michael van
 Telligen's ``flask-debugtoolbar`` (which itself was ripped off from Rob
 Hudson's ``django-debugtoolbar``).
 

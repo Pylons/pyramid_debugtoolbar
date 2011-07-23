@@ -9,7 +9,7 @@ See `http://docs.pylonsproject.org/projects/pyramid_debugtoolbar/dev/
 or ``docs/index.rst`` in this distribution for detailed
 documentation.
 
-Note that ``pyramid_debugtoolbar`` is a blatant rip-off of Matt van
+Note that ``pyramid_debugtoolbar`` is a blatant rip-off of Michael van
 Telligen's ``flask-debugtoolbar`` (which itself was ripped off from Rob
 Hudson's ``django-debugtoolbar``).
 
