@@ -20,13 +20,13 @@ class RequestVarsDebugPanel(DebugPanel):
 
     def content(self):
         vars = {}
+        request = self.request
+        attrs = sorted(request.__dict__.items())
         vars.update({
-            'get': [(k, self.request.GET.getall(k)) for k in self.request.GET],
-            'post': [(k, self.request.POST.getall(k)) for k in
-                     self.request.POST],
-            'cookies': [(k, self.request.cookies.get(k)) for k in
-                        self.request.cookies],
-            'view_name': '%s' % self.request.view_name,
+            'get': [(k, request.GET.getall(k)) for k in request.GET],
+            'post': [(k, request.POST.getall(k)) for k in request.POST],
+            'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
+            'attrs': attrs,
         })
         if hasattr(self.request, 'session'):
             vars.update({
