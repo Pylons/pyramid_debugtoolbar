@@ -1,0 +1,21 @@
+<h4>Platform</h4>
+<div>{{ platform }}</div>
+
+<h4>Packages</h4>
+
+<table>
+	<thead>
+		<tr>
+			<th>Package Name</th>
+			<th>Version</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for package in packages %}
+			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+				<td>{{ package.name|escape }}</td>
+				<td>{{ package.version|escape }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
