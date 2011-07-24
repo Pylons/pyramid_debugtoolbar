@@ -418,3 +418,20 @@
 #flDebug .highlight .s2 { color:#333 } /* Literal.String.Double */
 #flDebug .highlight .cp { color:#333 } /* Comment.Preproc */
 
+#flDebug table.flDebugSortable .header { 
+    background-image: url(../img/bg.gif);     
+    cursor: pointer; 
+    font-weight: bold; 
+    background-repeat: no-repeat; 
+    background-position: center left; 
+    padding-left: 20px; 
+    margin-left: -1px; 
+} 
+
+#flDebug table.flDebugSortable .headerSortUp { 
+    background-image: url(../img/asc.gif); 
+} 
+
+#flDebug table.flDebugSortable .headerSortDown { 
+    background-image: url(../img/desc.gif); 
+} 
