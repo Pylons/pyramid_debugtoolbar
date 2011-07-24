@@ -40,7 +40,7 @@ class ProfilerDebugPanel(DebugPanel):
                     self.is_active = False
                     return False
                 function_calls = []
-                flist = stats.sort_stats('cumulative', 'time').fcn_list
+                flist = stats.sort_stats('cumulative').fcn_list
                 for func in flist:
                     current = {}
                     info = stats.stats[func]
