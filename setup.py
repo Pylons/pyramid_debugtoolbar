@@ -25,13 +25,12 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.1',
-    'pyramid_jinja2',
+    'pyramid_jinja2>=1.1', # get_jinja2_environment
     'Pygments',
     ]
 
-
 setup(name='pyramid_debugtoolbar',
-      version='0.2',
+      version='0.0',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,

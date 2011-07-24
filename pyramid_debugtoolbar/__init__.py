@@ -121,11 +121,9 @@ def toolbar_handler_factory(handler, registry):
             if response.content_type in _htmltypes:
                 response_html = response.body
                 toolbar_html = debug_toolbar.render_toolbar(response)
-                response.app_iter = [
-                    replace_insensitive(
-                        response_html,
-                        '</body>',
-                        toolbar_html + '</body>')]
+                body = replace_insensitive(response_html, '</body>',
+                                           toolbar_html + '</body>')
+                response.app_iter = [body]
 
             return response
         except Exception:
@@ -233,13 +231,7 @@ def includeme(config):
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
     config.include('pyramid_jinja2')
-    if hasattr(config, 'get_jinja2_environment'):
-        # pyramid_jinja2 after 1.0
-        j2_env = config.get_jinja2_environment()
-    else:
-        # pyramid_jinja2 1.0 and before
-        from pyramid_jinja2 import IJinja2Environment
-        j2_env = config.registry.getUtility(IJinja2Environment)
+    j2_env = config.get_jinja2_environment()
     j2_env.filters['urlencode'] = url_quote
     config.add_static_view('_debug_toolbar/static',
                            'pyramid_debugtoolbar:static')
