@@ -8,7 +8,7 @@
 	</thead>
 	<tbody>
 		<tr class="flDebugOdd">
-			<td colspan="2">{{ rendering.name }}</td>
+			<td colspan="2">{{ rendering.name|escape }}</td>
 		</tr>
 	</tbody>
 	<thead>
@@ -18,7 +18,7 @@
 	</thead>
 	<tbody>	
 		<tr class="flDebugOdd">
-			<td colspan="2">{{ rendering.val }}</td>
+			<td colspan="2">{{ rendering.val|escape }}</td>
 		</tr>
 	</tbody>
 	<thead>
@@ -29,8 +29,8 @@
 	<tbody>	
 		{% for key, value in rendering.system.iteritems() %}
 		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
-			<td>{{ key }}</td>
-			<td>{{ value }}</td>
+			<td>{{ key|escape }}</td>
+			<td>{{ value|escape }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
