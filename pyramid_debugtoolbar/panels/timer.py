@@ -25,23 +25,22 @@ class TimerDebugPanel(DebugPanel):
         self.request = request
 
     def wrap_handler(self, handler):
-        if not self.has_resource:
-            def noresource_timer_handler(request):
+        if self.has_resource:
+            def resource_timer_handler(request):
                 _start_time = time.time()
+                self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
                 result = handler(request)
+                self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
                 self.total_time = (time.time() - _start_time) * 1000
                 return result
-            return noresource_timer_handler
+            return resource_timer_handler
 
-        def timer_handler(request):
+        def noresource_timer_handler(request):
             _start_time = time.time()
-            self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
             result = handler(request)
-            self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
             self.total_time = (time.time() - _start_time) * 1000
             return result
-
-        return timer_handler
+        return noresource_timer_handler
 
     def nav_title(self):
         return _('Time')
