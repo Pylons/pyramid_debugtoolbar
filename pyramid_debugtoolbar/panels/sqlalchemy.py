@@ -131,7 +131,7 @@ def sql_explain(render):
 
     result = db.engine.execute(query, params)
     return render(
-        'pyramid_debugtoolbar:templates/panels/sqlalchemy_explain.jinja2', {
+        'pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.jinja2', {
             'result': result.fetchall(),
             'headers': result.keys(),
             'sql': format_sql(statement, params),

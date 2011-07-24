@@ -31,5 +31,5 @@ class SettingsDebugPanel(DebugPanel):
             'settings': self.settings
         }
         return self.render(
-            'pyramid_debugtoolbar:templates/panels/settings.jinja2',
+            'pyramid_debugtoolbar.panels:templates/settings.jinja2',
             vars, self.request)

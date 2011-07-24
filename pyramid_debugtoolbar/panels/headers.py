@@ -53,5 +53,5 @@ class HeaderDebugPanel(DebugPanel):
     def content(self):
         vars = {'headers': self.headers}
         return self.render(
-            'pyramid_debugtoolbar:templates/panels/headers.jinja2',
+            'pyramid_debugtoolbar.panels:templates/headers.jinja2',
             vars, self.request)

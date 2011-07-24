@@ -120,6 +120,6 @@ class ProfilerDebugPanel(DebugPanel):
             'function_calls': self.function_calls,
             }
         return self.render(
-            'pyramid_debugtoolbar:templates/panels/profiler.jinja2',
+            'pyramid_debugtoolbar.panels:templates/profiler.jinja2',
             vars, request=self.request)
 

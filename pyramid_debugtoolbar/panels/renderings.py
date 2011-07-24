@@ -35,7 +35,7 @@ class RenderingsDebugPanel(DebugPanel):
 
     def content(self):
         return self.render(
-            'pyramid_debugtoolbar:templates/panels/renderings.jinja2', {
+            'pyramid_debugtoolbar.panels:templates/renderings.jinja2', {
             'renderings': self.renderings
         }, request=self.request)
 

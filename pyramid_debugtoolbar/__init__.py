@@ -102,6 +102,7 @@ def toolbar_handler_factory(handler, registry):
                         toolbar_html + '</body>')]
         finally:
             return response
+
     return toolbar_handler
 
 # default config settings
