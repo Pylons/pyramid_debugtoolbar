@@ -8,14 +8,13 @@ class RenderingsDebugPanel(DebugPanel):
     """
     name = 'Template'
     has_content = True
-
-    def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
-        self.renderings = []
+    renderings = ()
 
     def process_beforerender(self, event):
+        if not self.renderings:
+            self.renderings = []
         name = event['renderer_info'].name
-        if name and name.startswith('pyramid_debugtoolbar:'):
+        if name and name.startswith('pyramid_debugtoolbar'):
             return
         system = getattr(event, '_system', 'unknown')
         val = getattr(event, 'rendering_val', 'unknown')
@@ -25,7 +24,8 @@ class RenderingsDebugPanel(DebugPanel):
         return _('Renderings')
 
     def nav_subtitle(self):
-        return "%d renderings" % len(self.renderings)
+        num = len(self.renderings)
+        return '%d %s' % (num, self.pluralize("rendering", "renderings", num))
 
     def title(self):
         return _('Renderings')

@@ -66,42 +66,41 @@ def toolbar_handler_factory(handler, registry):
         for panel in request.debug_toolbar.panels:
             panel.process_request(request)
 
-        try:
-            response = handler(request)
-            # Intercept http redirect codes and display an html page with a
-            # link to the target.
-            if intercept_redirects:
-                if response.status_int in _redirect_codes:
-                    redirect_to = response.location
-                    redirect_code = response.status_int
-                    if redirect_to:
-                        content = render(
-                            'pyramid_debugtoolbar:templates/redirect.jinja2', {
-                            'redirect_to': redirect_to,
-                            'redirect_code': redirect_code
-                        })
-                        content = content.encode(response.charset)
-                        response.content_length = len(content)
-                        response.location = None
-                        response.app_iter = [content]
-                        response.status_int = 200
+        response = handler(request)
+        # Intercept http redirect codes and display an html page with a
+        # link to the target.
+        if intercept_redirects:
+            if response.status_int in _redirect_codes:
+                redirect_to = response.location
+                redirect_code = response.status_int
+                if redirect_to:
+                    content = render(
+                        'pyramid_debugtoolbar:templates/redirect.jinja2', {
+                        'redirect_to': redirect_to,
+                        'redirect_code': redirect_code
+                    })
+                    content = content.encode(response.charset)
+                    response.content_length = len(content)
+                    response.location = None
+                    response.app_iter = [content]
+                    response.status_int = 200
 
-            # If the http response code is 200 then we process to add the
-            # toolbar to the returned html response.
-            if (response.status_int == 200 and
-                response.content_type in _htmltypes):
-                for panel in request.debug_toolbar.panels:
-                    panel.process_response(request, response)
+        # If the http response code is 200 then we process to add the
+        # toolbar to the returned html response.
+        if (response.status_int == 200 and
+            response.content_type in _htmltypes):
+            for panel in request.debug_toolbar.panels:
+                panel.process_response(request, response)
 
-                response_html = response.body
-                toolbar_html = request.debug_toolbar.render_toolbar(response)
-                response.app_iter = [
-                    replace_insensitive(
-                        response_html,
-                        '</body>',
-                        toolbar_html + '</body>')]
-        finally:
-            return response
+            response_html = response.body
+            toolbar_html = request.debug_toolbar.render_toolbar(response)
+            response.app_iter = [
+                replace_insensitive(
+                    response_html,
+                    '</body>',
+                    toolbar_html + '</body>')]
+
+        return response
 
     return toolbar_handler
 

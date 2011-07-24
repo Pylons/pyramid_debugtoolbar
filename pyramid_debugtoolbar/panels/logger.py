@@ -60,10 +60,9 @@ class LoggingPanel(DebugPanel):
         return _("Logging")
 
     def nav_subtitle(self):
-        # FIXME l10n: use ngettext
-        return "%s message%s" % (len(handler.get_records()),
-                                 (len(handler.get_records()) == 1)
-                                 and '' or 's')
+        records = handler.get_records()
+        num = len(records)
+        return '%d %s' % (num, self.pluralize("message", "messages", num))
 
     def title(self):
         return _('Log Messages')

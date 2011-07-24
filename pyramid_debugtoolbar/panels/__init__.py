@@ -1,6 +1,7 @@
 """Base DebugPanel class"""
 
 from pyramid.renderers import render
+from pyramid.i18n import get_localizer
 
 class DebugPanel(object):
     """
@@ -44,6 +45,11 @@ class DebugPanel(object):
 
     def content(self):
         raise NotImplementedError
+
+    def pluralize(self, singular, plural, n, domain=None, mapping=None):
+        localizer = get_localizer(self.request)
+        return localizer.pluralize(singular, plural, n, domain=domain,
+                                   mapping=mapping)
 
     # Standard middleware methods
     def process_request(self, request):
