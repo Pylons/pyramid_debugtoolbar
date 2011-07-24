@@ -63,10 +63,12 @@ def toolbar_handler_factory(handler, registry):
 
         request.debug_toolbar = DebugToolbar(request)
 
-        for panel in request.debug_toolbar.panels:
-            panel.process_request(request)
+        _handler = handler
 
-        response = handler(request)
+        for panel in request.debug_toolbar.panels:
+            _handler = panel.wrap_handler(_handler)
+
+        response = _handler(request)
         # Intercept http redirect codes and display an html page with a
         # link to the target.
         if intercept_redirects:

@@ -34,6 +34,13 @@ class HeaderDebugPanel(DebugPanel):
         'PATH_INFO',
     )
 
+    def __init__(self, request):
+        self.request = request
+        self.headers = dict(
+            [(k, request.environ[k])
+                for k in self.header_filter if k in request.environ]
+        )
+
     def nav_title(self):
         return _('HTTP Headers')
 
@@ -42,13 +49,6 @@ class HeaderDebugPanel(DebugPanel):
 
     def url(self):
         return ''
-
-    def process_request(self, request):
-        self.request = request
-        self.headers = dict(
-            [(k, request.environ[k])
-                for k in self.header_filter if k in request.environ]
-        )
 
     def content(self):
         vars = {'headers': self.headers}

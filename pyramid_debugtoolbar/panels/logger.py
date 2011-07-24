@@ -47,7 +47,7 @@ class LoggingPanel(DebugPanel):
     name = 'Logging'
     has_content = True
 
-    def process_request(self, request):
+    def __init__(self, request):
         self.request = request
         handler.clear_records()
 

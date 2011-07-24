@@ -21,7 +21,7 @@ class TimerDebugPanel(DebugPanel):
         has_content = True
         has_resource = True
 
-    def process_request(self, request):
+    def __init__(self, request):
         self.request = request
         self._start_time = time.time()
         if self.has_resource:

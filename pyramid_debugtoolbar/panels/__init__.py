@@ -16,11 +16,12 @@ class DebugPanel(object):
     # If the panel is disabled because the environment can't support it.
     down = False
 
+    # Default to is_active = False
+    is_active = False
+
     # Panel methods
     def __init__(self, request):
         self.request = request
-        # If the client enabled the panel
-        self.is_active = False
 
     def render(self, template_name, vars, request=None):
         return render(template_name, vars, request=request)
@@ -60,6 +61,9 @@ class DebugPanel(object):
 
     def process_beforerender(self, event):
         pass
+
+    def wrap_handler(self, handler):
+        return handler
     
 
 

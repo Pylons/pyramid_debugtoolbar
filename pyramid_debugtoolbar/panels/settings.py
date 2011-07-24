@@ -12,6 +12,11 @@ class SettingsDebugPanel(DebugPanel):
     name = 'Settings'
     has_content = True
 
+    def __init__(self, request):
+        self.request = request
+        self.settings = sorted(self.request.registry.settings.items(),
+                               key=itemgetter(0))
+
     def nav_title(self):
         return _('Settings')
 
@@ -20,11 +25,6 @@ class SettingsDebugPanel(DebugPanel):
 
     def url(self):
         return ''
-
-    def process_request(self, request):
-        self.request = request
-        self.settings = sorted(self.request.registry.settings.items(),
-                               key=itemgetter(0))
 
     def content(self):
         vars = {

@@ -2,12 +2,13 @@ try:
     import cProfile as profile
 except ImportError:
     import profile
-import functools
 import pstats
+import threading
 
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_fname
 
+lock = threading.Lock()
 
 class ProfilerDebugPanel(DebugPanel):
     """
@@ -16,79 +17,62 @@ class ProfilerDebugPanel(DebugPanel):
     name = 'Profiler'
 
     user_activate = True
+    stats = None
+    function_calls = None
 
     def has_content(self):
         return bool(self.profiler)
 
-    def process_request(self, request):
-        self.request = request
-        if not self.is_active:
-            return
-
-        if not hasattr(request, 'add_view_wrapper'):
-            self.is_active = False
-            return
-
+    def wrap_handler(self, handler):
         self.profiler = profile.Profile()
-        self.stats = None
-        request.add_view_wrapper(self._wrap_view)
+        def profile_handler(request):
+            with lock:
+                result = self.profiler.runcall(handler, request)
+                try:
+                    stats = pstats.Stats(self.profiler)
+                except TypeError:
+                    self.is_active = False
+                    return False
+                function_calls = []
+                for func in stats.sort_stats(1).fcn_list:
+                    current = {}
+                    info = stats.stats[func]
 
-    def _wrap_view(self, view_func, req, exc):
-        if not exc:
-            return functools.partial(self.profiler.runcall, view_func)
-        return view_func
+                    # Number of calls
+                    if info[0] != info[1]:
+                        current['ncalls'] = '%d/%d' % (info[1], info[0])
+                    else:
+                        current['ncalls'] = info[1]
 
-    def process_response(self, request, response):
-        if not self.is_active:
-            return False
+                    # Total time
+                    current['tottime'] = info[2] * 1000
 
-        if self.profiler is not None:
-            self.profiler.disable()
-            try:
-                stats = pstats.Stats(self.profiler)
-            except TypeError:
-                self.is_active = False
-                return False
-            function_calls = []
-            for func in stats.sort_stats(1).fcn_list:
-                current = {}
-                info = stats.stats[func]
+                    # Quotient of total time divided by number of calls
+                    if info[1]:
+                        current['percall'] = info[2] * 1000 / info[1]
+                    else:
+                        current['percall'] = 0
 
-                # Number of calls
-                if info[0] != info[1]:
-                    current['ncalls'] = '%d/%d' % (info[1], info[0])
-                else:
-                    current['ncalls'] = info[1]
+                    # Cumulative time
+                    current['cumtime'] = info[3] * 1000
 
-                # Total time
-                current['tottime'] = info[2] * 1000
+                    # Quotient of the cumulative time divded by the number of
+                    # primitive calls.
+                    if info[0]:
+                        current['percall_cum'] = info[3] * 1000 / info[0]
+                    else:
+                        current['percall_cum'] = 0
 
-                # Quotient of total time divided by number of calls
-                if info[1]:
-                    current['percall'] = info[2] * 1000 / info[1]
-                else:
-                    current['percall'] = 0
+                    # Filename
+                    filename = pstats.func_std_string(func)
+                    current['filename_long'] = filename
+                    current['filename'] = format_fname(filename)
+                    function_calls.append(current)
+                    self.stats = stats
+                    self.function_calls = function_calls
+                    return result
 
-                # Cumulative time
-                current['cumtime'] = info[3] * 1000
-
-                # Quotient of the cumulative time divded by the number of
-                # primitive calls.
-                if info[0]:
-                    current['percall_cum'] = info[3] * 1000 / info[0]
-                else:
-                    current['percall_cum'] = 0
-
-                # Filename
-                filename = pstats.func_std_string(func)
-                current['filename_long'] = filename
-                current['filename'] = format_fname(filename)
-                function_calls.append(current)
-
-            self.stats = stats
-            self.function_calls = function_calls
-            # destroy the profiler just in case
-        return response
+        return profile_handler
 
     def title(self):
         if self.down:
