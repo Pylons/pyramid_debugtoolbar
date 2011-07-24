@@ -154,7 +154,7 @@
 
 #flDebug code {
 	display:block;
-	font-family:Consolas, Monaco, "Bitstream Vera Sans Mono", "Lucida Console", monospace;
+	font-family: "Consolas", "Monaco", "Bitstream Vera Sans Mono", "Lucida Console", monospace;
 	white-space:pre;
 	overflow:auto;
 }

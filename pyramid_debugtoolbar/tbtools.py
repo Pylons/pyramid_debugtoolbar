@@ -37,8 +37,8 @@ HEADER = u'''\
 <html>
   <head>
     <title>%(title)s // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="/_debug_toolbar/static/css/style.css" type="text/css">
-    <script type="text/javascript" src="/_debug_toolbar/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/_debug_toolbar/static/css/debugger.css" type="text/css">
+    <script type="text/javascript" src="/_debug_toolbar/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="/_debug_toolbar/static/js/debugger.js"></script>
     <script type="text/javascript">
       var TRACEBACK = %(traceback_id)d,
