@@ -61,7 +61,7 @@ def toolbar_handler_factory(handler, registry):
         if request.path.startswith('/_debug_toolbar/'):
             return handler(request)
 
-        debug_toolbar = DebugToolbar(request)
+        debug_toolbar = request.debug_toolbar = DebugToolbar(request)
 
         _handler = handler
 
