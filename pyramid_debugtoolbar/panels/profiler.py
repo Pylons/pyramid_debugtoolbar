@@ -20,11 +20,17 @@ class ProfilerDebugPanel(DebugPanel):
     stats = None
     function_calls = None
 
+    def __init__(self, request):
+        self.request = request
+        self.profiler = profile.Profile()
+
     def has_content(self):
         return bool(self.profiler)
 
     def wrap_handler(self, handler):
-        self.profiler = profile.Profile()
+        if not self.is_active:
+            return handler
+
         def profile_handler(request):
             with lock:
                 result = self.profiler.runcall(handler, request)
@@ -34,7 +40,8 @@ class ProfilerDebugPanel(DebugPanel):
                     self.is_active = False
                     return False
                 function_calls = []
-                for func in stats.sort_stats(1).fcn_list:
+                flist = stats.sort_stats('cumulative', 'time').fcn_list
+                for func in flist:
                     current = {}
                     info = stats.stats[func]
 
@@ -68,9 +75,10 @@ class ProfilerDebugPanel(DebugPanel):
                     current['filename_long'] = filename
                     current['filename'] = format_fname(filename)
                     function_calls.append(current)
-                    self.stats = stats
-                    self.function_calls = function_calls
-                    return result
+
+                self.stats = stats
+                self.function_calls = function_calls
+                return result
 
         return profile_handler
 

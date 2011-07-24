@@ -61,11 +61,11 @@ def toolbar_handler_factory(handler, registry):
         if request.path.startswith('/_debug_toolbar/'):
             return handler(request)
 
-        request.debug_toolbar = DebugToolbar(request)
+        debug_toolbar = DebugToolbar(request)
 
         _handler = handler
 
-        for panel in request.debug_toolbar.panels:
+        for panel in debug_toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
         response = _handler(request)
@@ -91,11 +91,11 @@ def toolbar_handler_factory(handler, registry):
         # toolbar to the returned html response.
         if (response.status_int == 200 and
             response.content_type in _htmltypes):
-            for panel in request.debug_toolbar.panels:
+            for panel in debug_toolbar.panels:
                 panel.process_response(request, response)
 
             response_html = response.body
-            toolbar_html = request.debug_toolbar.render_toolbar(response)
+            toolbar_html = debug_toolbar.render_toolbar(response)
             response.app_iter = [
                 replace_insensitive(
                     response_html,
