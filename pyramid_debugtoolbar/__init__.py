@@ -1,5 +1,4 @@
 from pyramid.util import DottedNameResolver
-from pyramid.exceptions import ConfigurationError
 from pyramid.settings import asbool
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
@@ -40,84 +39,75 @@ class DebugToolbar(object):
         content = content.encode(response.charset)
         return content
 
-class DebugToolbarSubscriber(object):
+def beforerender_subscriber(event):
+    request = event['request']
+    if request is None:
+        request = get_current_request()
+    if getattr(request, 'debug_toolbar', None) is not None:
+        for panel in request.debug_toolbar.panels:
+            panel.process_beforerender(event)
+
+def toolbar_handler_factory(handler, registry):
+    settings = registry.settings
+    enabled = settings.get('debugtoolbar.enabled', False)
+    if not enabled:
+        return handler
+
     _redirect_codes = (301, 302, 303, 304)
     _htmltypes = ('text/html', 'application/xml+html')
+    intercept_redirects = settings.get('debugtoolbar.intercept_redirects')
 
-    def __init__(self, settings):
-        secret_key = settings.get('debugtoolbar.secret_key')
-        if secret_key is None:
-            raise ConfigurationError(
-                "The Pyramid debug toolbar requires the "
-                "'debugtoolbar.secret_key' config setting")
-            
-        self.secret_key = secret_key
-        self.intercept_redirects = asbool(
-            settings.get('debugtoolbar.intercept_redirects'))
-
-    def process_request(self, event):
-        request = event.request
+    def toolbar_handler(request):
         if request.path.startswith('/_debug_toolbar/'):
-            request.debug_toolbar = None
-            return False
+            return handler(request)
 
         request.debug_toolbar = DebugToolbar(request)
 
         for panel in request.debug_toolbar.panels:
             panel.process_request(request)
 
-        request.add_response_callback(self._process_response)
+        try:
+            response = handler(request)
+            # Intercept http redirect codes and display an html page with a
+            # link to the target.
+            if intercept_redirects:
+                if response.status_int in _redirect_codes:
+                    redirect_to = response.location
+                    redirect_code = response.status_int
+                    if redirect_to:
+                        content = render(
+                            'pyramid_debugtoolbar:templates/redirect.jinja2', {
+                            'redirect_to': redirect_to,
+                            'redirect_code': redirect_code
+                        })
+                        content = content.encode(response.charset)
+                        response.content_length = len(content)
+                        response.location = None
+                        response.app_iter = [content]
+                        response.status_int = 200
 
-    def process_beforerender(self, event):
-        request = event['request']
-        if request is None:
-            request = get_current_request()
-        if getattr(request, 'debug_toolbar', None) is not None:
-            for panel in request.debug_toolbar.panels:
-                panel.process_beforerender(event)
+            # If the http response code is 200 then we process to add the
+            # toolbar to the returned html response.
+            if (response.status_int == 200 and
+                response.content_type in _htmltypes):
+                for panel in request.debug_toolbar.panels:
+                    panel.process_response(request, response)
 
-    def _process_response(self, request, response):
-        if request.debug_toolbar is None:
+                response_html = response.body
+                toolbar_html = request.debug_toolbar.render_toolbar(response)
+                response.app_iter = [
+                    replace_insensitive(
+                        response_html,
+                        '</body>',
+                        toolbar_html + '</body>')]
+        finally:
             return response
-
-        # Intercept http redirect codes and display an html page with a
-        # link to the target.
-        if self.intercept_redirects:
-            if response.status_int in self._redirect_codes:
-                redirect_to = response.location
-                redirect_code = response.status_int
-                if redirect_to:
-                    content = render(
-                        'pyramid_debugtoolbar:templates/redirect.jinja2', {
-                        'redirect_to': redirect_to,
-                        'redirect_code': redirect_code
-                    })
-                    content = content.encode(response.charset)
-                    response.content_length = len(content)
-                    response.location = None
-                    response.app_iter = [content]
-                    response.status_int = 200
-
-        # If the http response code is 200 then we process to add the
-        # toolbar to the returned html response.
-        if (response.status_int == 200 and
-            response.content_type in self._htmltypes):
-            for panel in request.debug_toolbar.panels:
-                panel.process_response(request, response)
-
-            response_html = response.body
-            toolbar_html = request.debug_toolbar.render_toolbar(response)
-            response.app_iter = [
-                replace_insensitive(
-                    response_html,
-                    '</body>',
-                    toolbar_html + '</body>')]
-        del request.debug_toolbar
-        return response
+    return toolbar_handler
 
 # default config settings
 default_settings = {
     'debugtoolbar.intercept_redirects': True,
+    'debugtoolbar.enabled': True,
     'debugtoolbar.panels': (
         'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
         'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
@@ -140,6 +130,7 @@ def includeme(config):
     settings.update(config.registry.settings)
     if panels is not None:
         settings['debugtoolbar.panels'] = panels
+    settings['debugtoolbar.enabled'] = asbool(settings['debugtoolbar.enabled'])
     config.include('pyramid_jinja2')
     if hasattr(config, 'get_jinja2_environment'):
         # pyramid_jinja2 after 1.0
@@ -156,9 +147,7 @@ def includeme(config):
         panel_class = resolver.resolve(dottedname)
         classes.append(panel_class)
     config.registry.settings.update(settings)
-    subscriber = DebugToolbarSubscriber(settings)
-    config.add_subscriber(subscriber.process_request,
-                          pyramid.events.NewRequest)
-    config.add_subscriber(subscriber.process_beforerender,
+    config.add_request_handler(toolbar_handler_factory, 'debug_toolbar')
+    config.add_subscriber(beforerender_subscriber,
                           pyramid.events.BeforeRender)
         

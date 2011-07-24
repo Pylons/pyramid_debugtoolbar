@@ -31,7 +31,6 @@ def test_predicates(request):
 if __name__ == '__main__':
     # configuration settings
     settings = {}
-    settings['debugtoolbar.secret_key'] = 'abc'
     settings['mako.directories'] = os.path.join(here, 'templates')
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
