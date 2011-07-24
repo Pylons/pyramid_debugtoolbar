@@ -13,7 +13,7 @@ import code
 from types import CodeType
 import threading
 
-from pyramid_debugtoolbar.debug.repr import debug_repr, dump, helper
+from pyramid_debugtoolbar.repr import debug_repr, dump, helper
 from pyramid_debugtoolbar.utils import escape
 
 _local = threading.local()
@@ -176,12 +176,12 @@ class _InteractiveConsole(code.InteractiveInterpreter):
             self.showtraceback()
 
     def showtraceback(self):
-        from werkzeug.debug.tbtools import get_current_traceback
+        from pyramid_debugtoolbar.tbtools import get_current_traceback
         tb = get_current_traceback(skip=1)
         sys.stdout._write(tb.render_summary())
 
     def showsyntaxerror(self, filename=None):
-        from werkzeug.debug.tbtools import get_current_traceback
+        from pyramid_debugtoolbar.tbtools import get_current_traceback
         tb = get_current_traceback(skip=4)
         sys.stdout._write(tb.render_summary())
 

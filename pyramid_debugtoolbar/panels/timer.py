@@ -46,7 +46,6 @@ class TimerDebugPanel(DebugPanel):
         return _('Time')
 
     def nav_subtitle(self):
-        # TODO l10n
         if self.has_resource:
             utime = self._end_rusage.ru_utime - self._start_rusage.ru_utime
             stime = self._end_rusage.ru_stime - self._start_rusage.ru_stime

@@ -17,7 +17,7 @@ import codecs
 from tokenize import TokenError
 from pyramid.decorator import reify
 from pyramid_debugtoolbar.utils import escape
-from pyramid_debugtoolbar.debug.console import Console
+from pyramid_debugtoolbar.console import Console
 
 _coding_re = re.compile(r'coding[:=]\s*([-\w.]+)')
 _line_re = re.compile(r'^(.*?)$(?m)')
@@ -37,9 +37,9 @@ HEADER = u'''\
 <html>
   <head>
     <title>%(title)s // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css" type="text/css">
-    <script type="text/javascript" src="?__debugger__=yes&amp;cmd=resource&amp;f=jquery.js"></script>
-    <script type="text/javascript" src="?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js"></script>
+    <link rel="stylesheet" href="/_debug_toolbar/static/css/style.css" type="text/css">
+    <script type="text/javascript" src="/_debug_toolbar/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/_debug_toolbar/static/js/debugger.js"></script>
     <script type="text/javascript">
       var TRACEBACK = %(traceback_id)d,
           CONSOLE_MODE = %(console)s,
@@ -78,11 +78,8 @@ PAGE_HTML = HEADER + u'''\
   </form>
 </div>
 <div class="explanation">
-  The debugger caught an exception in your WSGI application.  You can now
-  look at the traceback which led to the error.  <span class="nojavascript">
-  If you enable JavaScript you can also use additional features such as code
-  execution (if the evalex feature is enabled), automatic pasting of the
-  exceptions and much more.</span>
+  The debugger caught an exception in your Pyramid application.  You can now
+  look at the traceback which led to the error.
 </div>
 ''' + FOOTER + '''
 <!--

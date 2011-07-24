@@ -7,8 +7,10 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.encode import url_quote
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPNotFound
 
-from pyramid_debugtoolbar.debug import DebuggedApplication
+from pyramid_debugtoolbar.tbtools import get_traceback, render_console_html
+from pyramid_debugtoolbar.console import Console
 
 resolver = DottedNameResolver(None)
 
@@ -44,6 +46,11 @@ class DebugToolbar(object):
         content = content.encode(response.charset)
         return content
 
+class ExceptionHistory(object):
+    def __init__(self):
+        self.frames = {}
+        self.tracebacks = {}
+
 def beforerender_subscriber(event):
     request = event['request']
     if request is None:
@@ -62,12 +69,15 @@ def toolbar_handler_factory(handler, registry):
     _htmltypes = ('text/html', 'application/xml+html')
     intercept_redirects = settings.get('debugtoolbar.intercept_redirects')
     intercept_exceptions = settings.get('debugtoolbar.intercept_exceptions')
-    debugger = None
+
+    exc_history = None
 
     if intercept_exceptions:
-        debugger = DebuggedApplication(None, evalex=True)
+        exc_history = ExceptionHistory()
 
     def toolbar_handler(request):
+        request.exc_history = exc_history
+
         if request.path.startswith('/_debug_toolbar/'):
             return handler(request)
 
@@ -116,16 +126,62 @@ def toolbar_handler_factory(handler, registry):
             return response
         except Exception:
             info = sys.exc_info()
-            if debugger:
-                app_iter = debugger.debug_exception(info)
-                response = Response()
-                response.app_iter = app_iter
+            if exc_history is not None:
+                tb = get_traceback(info=info,
+                                   skip=1,
+                                   show_hidden_frames=False,
+                                   ignore_system_exceptions=True)
+                for frame in tb.frames:
+                    exc_history.frames[frame.id] = frame
+                exc_history.tracebacks[tb.id] = tb
+                body = tb.render_full(evalex=True).encode('utf-8', 'replace')
+                response = Response(body)
                 response.status_int = 500
                 return response
-            else:
-                raise
+            raise
 
     return toolbar_handler
+
+class _ConsoleFrame(object):
+    """Helper class so that we can reuse the frame console code for the
+    standalone console.
+    """
+
+    def __init__(self, namespace):
+        self.console = Console(namespace)
+        self.id = 0
+
+class ExcDebugView(object):
+    def __init__(self, request):
+        self.request = request
+        frm = self.request.params.get('frm')
+        if frm is not None:
+            frm = int(frm)
+        self.frame = frm
+        cmd = self.request.params.get('cmd')
+        self.cmd = cmd
+
+    def source(self):
+        exc_history = self.request.exc_history
+        frame = exc_history.frames.get(self.frame)
+        return Response(frame.render_source(), content_type='text/html')
+
+    def execute(self):
+        exc_history = self.request.exc_history
+        if self.frame is not None and exc_history:
+            frame = exc_history.frames.get(self.frame)
+            if self.cmd is not None and frame is not None:
+                return Response(frame.console.eval(self.cmd),
+                                content_type='text/html')
+        return HTTPNotFound()
+        
+    def console(self):
+        exc_history = self.request.exc_history
+        if exc_history:
+            if 0 not in self.frames:
+                exc_history.frames[0] = _ConsoleFrame({})
+            return Response(render_console_html(), content_type='text/html')
+        return HTTPNotFound()
 
 # default config settings
 default_settings = {
@@ -174,4 +230,10 @@ def includeme(config):
     config.add_request_handler(toolbar_handler_factory, 'debug_toolbar')
     config.add_subscriber(beforerender_subscriber,
                           pyramid.events.BeforeRender)
+    config.add_route('debugtb.source', '/_debug_toolbar/source')
+    config.add_route('debugtb.execute', '/_debug_toolbar/execute')
+    config.add_route('debugtb.console', '/_debug_toolbar/console')
+    config.add_view(ExcDebugView, route_name='debugtb.source', attr='source')
+    config.add_view(ExcDebugView, route_name='debugtb.execute',attr='execute')
+    config.add_view(ExcDebugView, route_name='debugtb.console',attr='console')
         
