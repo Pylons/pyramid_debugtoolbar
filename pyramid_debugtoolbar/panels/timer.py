@@ -23,14 +23,20 @@ class TimerDebugPanel(DebugPanel):
 
     def __init__(self, request):
         self.request = request
-        self._start_time = time.time()
-        if self.has_resource:
-            self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
 
-    def process_response(self, request, response):
-        self.total_time = (time.time() - self._start_time) * 1000
-        if self.has_resource:
+    def wrap_handler(self, handler):
+        if not self.has_resource:
+            return handler
+
+        def timer_handler(request):
+            _start_time = time.time()
+            self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
+            result = handler(request)
             self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
+            self.total_time = (time.time() - _start_time) * 1000
+            return result
+
+        return timer_handler
 
     def nav_title(self):
         return _('Time')
@@ -40,7 +46,8 @@ class TimerDebugPanel(DebugPanel):
         if self.has_resource:
             utime = self._end_rusage.ru_utime - self._start_rusage.ru_utime
             stime = self._end_rusage.ru_stime - self._start_rusage.ru_stime
-            return 'CPU: %0.2fms (%0.2fms)' % ((utime + stime) * 1000.0, self.total_time)
+            return 'CPU: %0.2fms (%0.2fms)' % ((utime + stime) * 1000.0,
+                                               self.total_time)
         else:
             return 'TOTAL: %0.2fms' % (self.total_time)
 
@@ -51,7 +58,8 @@ class TimerDebugPanel(DebugPanel):
         return ''
 
     def _elapsed_ru(self, name):
-        return getattr(self._end_rusage, name) - getattr(self._start_rusage, name)
+        return getattr(self._end_rusage, name) - getattr(self._start_rusage,
+                                                         name)
 
     def content(self):
 

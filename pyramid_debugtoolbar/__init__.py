@@ -87,13 +87,13 @@ def toolbar_handler_factory(handler, registry):
                     response.app_iter = [content]
                     response.status_int = 200
 
+        for panel in debug_toolbar.panels:
+            panel.process_response(request, response)
+
         # If the http response code is 200 then we process to add the
         # toolbar to the returned html response.
         if (response.status_int == 200 and
             response.content_type in _htmltypes):
-            for panel in debug_toolbar.panels:
-                panel.process_response(request, response)
-
             response_html = response.body
             toolbar_html = debug_toolbar.render_toolbar(response)
             response.app_iter = [
