@@ -13,6 +13,9 @@ log = logging.getLogger(__file__)
 
 here = os.path.dirname(os.path.abspath(__file__))
 
+@view_config(route_name='exc')
+def exc(request):
+    raise NotImplementedError
 
 @view_config(route_name='test_page', renderer='index.mako')
 def test_page(request):
@@ -40,6 +43,7 @@ if __name__ == '__main__':
     config.add_route('test_page', '/')
     config.add_route('test_redirect', '/redirect')
     config.add_route('test_predicates', '/predicates', request_method='GET')
+    config.add_route('exc', '/exc')
     config.scan('__main__')
     config.include('pyramid_debugtoolbar')
     serve(config.make_wsgi_app())

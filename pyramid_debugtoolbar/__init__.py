@@ -1,9 +1,14 @@
+import sys
+
+import pyramid.events
 from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
-import pyramid.events
 from pyramid.encode import url_quote
+from pyramid.response import Response
+
+from pyramid_debugtoolbar.debug import DebuggedApplication
 
 resolver = DottedNameResolver(None)
 
@@ -56,6 +61,11 @@ def toolbar_handler_factory(handler, registry):
     _redirect_codes = (301, 302, 303, 304)
     _htmltypes = ('text/html', 'application/xml+html')
     intercept_redirects = settings.get('debugtoolbar.intercept_redirects')
+    intercept_exceptions = settings.get('debugtoolbar.intercept_exceptions')
+    debugger = None
+
+    if intercept_exceptions:
+        debugger = DebuggedApplication(None, evalex=True)
 
     def toolbar_handler(request):
         if request.path.startswith('/_debug_toolbar/'):
@@ -68,47 +78,59 @@ def toolbar_handler_factory(handler, registry):
         for panel in debug_toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
-        response = _handler(request)
-        # Intercept http redirect codes and display an html page with a
-        # link to the target.
-        if intercept_redirects:
-            if response.status_int in _redirect_codes:
-                redirect_to = response.location
-                redirect_code = response.status_int
-                if redirect_to:
-                    content = render(
-                        'pyramid_debugtoolbar:templates/redirect.jinja2', {
-                        'redirect_to': redirect_to,
-                        'redirect_code': redirect_code
-                    })
-                    content = content.encode(response.charset)
-                    response.content_length = len(content)
-                    response.location = None
-                    response.app_iter = [content]
-                    response.status_int = 200
+        try:
+            response = _handler(request)
+            # Intercept http redirect codes and display an html page with a
+            # link to the target.
+            if intercept_redirects:
+                if response.status_int in _redirect_codes:
+                    redirect_to = response.location
+                    redirect_code = response.status_int
+                    if redirect_to:
+                        content = render(
+                            'pyramid_debugtoolbar:templates/redirect.jinja2', {
+                            'redirect_to': redirect_to,
+                            'redirect_code': redirect_code
+                        })
+                        content = content.encode(response.charset)
+                        response.content_length = len(content)
+                        response.location = None
+                        response.app_iter = [content]
+                        response.status_int = 200
 
-        for panel in debug_toolbar.panels:
-            panel.process_response(request, response)
+            for panel in debug_toolbar.panels:
+                panel.process_response(request, response)
 
-        # If the http response code is 200 then we process to add the
-        # toolbar to the returned html response.
-        if (response.status_int == 200 and
-            response.content_type in _htmltypes):
-            response_html = response.body
-            toolbar_html = debug_toolbar.render_toolbar(response)
-            response.app_iter = [
-                replace_insensitive(
-                    response_html,
-                    '</body>',
-                    toolbar_html + '</body>')]
+            # If the http response code is 200 then we process to add the
+            # toolbar to the returned html response.
+            if (response.status_int == 200 and
+                response.content_type in _htmltypes):
+                response_html = response.body
+                toolbar_html = debug_toolbar.render_toolbar(response)
+                response.app_iter = [
+                    replace_insensitive(
+                        response_html,
+                        '</body>',
+                        toolbar_html + '</body>')]
 
-        return response
+            return response
+        except Exception:
+            info = sys.exc_info()
+            if debugger:
+                app_iter = debugger.debug_exception(info)
+                response = Response()
+                response.app_iter = app_iter
+                response.status_int = 500
+                return response
+            else:
+                raise
 
     return toolbar_handler
 
 # default config settings
 default_settings = {
     'debugtoolbar.intercept_redirects': True,
+    'debugtoolbar.intercept_exceptions': True,
     'debugtoolbar.enabled': True,
     'debugtoolbar.panels': (
         'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
