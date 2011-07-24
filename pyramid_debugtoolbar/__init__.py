@@ -26,10 +26,9 @@ def replace_insensitive(string, target, replacement):
         return string
 
 class DebugToolbar(object):
-    def __init__(self, request):
+    def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
-        panel_classes = self.request.registry.settings['debugtoolbar.classes']
         activated = self.request.cookies.get('fldt_active', '').split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
@@ -55,24 +54,29 @@ def beforerender_subscriber(event):
     request = event['request']
     if request is None:
         request = get_current_request()
-    if getattr(request, 'debug_toolbar', None) is not None:
+    attrs = request.__dict__
+    if attrs.get('debug_toolbar', None) is not None:
         for panel in request.debug_toolbar.panels:
             panel.process_beforerender(event)
 
+def get_setting(settings, name, default=None, prefix='debugtoolbar.'):
+    return settings.get('%s%s' % (prefix, name), default)
+
 def toolbar_handler_factory(handler, registry):
     settings = registry.settings
-    enabled = settings.get('debugtoolbar.enabled', False)
-    if not enabled:
+
+    if not get_setting(settings, 'enabled'):
         return handler
 
     _redirect_codes = (301, 302, 303, 304)
     _htmltypes = ('text/html', 'application/xml+html')
-    intercept_redirects = settings.get('debugtoolbar.intercept_redirects')
-    intercept_exceptions = settings.get('debugtoolbar.intercept_exceptions')
+    panel_classes = get_setting(settings, 'panels', [])
+    intercept_exc = get_setting(settings, 'intercept_exc')
+    intercept_redirects = get_setting(settings, 'intercept_redirects')
 
     exc_history = None
 
-    if intercept_exceptions:
+    if intercept_exc:
         exc_history = ExceptionHistory()
 
     def toolbar_handler(request):
@@ -81,7 +85,8 @@ def toolbar_handler_factory(handler, registry):
         if request.path.startswith('/_debug_toolbar/'):
             return handler(request)
 
-        debug_toolbar = request.debug_toolbar = DebugToolbar(request)
+        debug_toolbar = request.debug_toolbar = DebugToolbar(request,
+                                                             panel_classes)
 
         _handler = handler
 
@@ -182,34 +187,51 @@ class ExcDebugView(object):
             return Response(render_console_html(), content_type='text/html')
         return HTTPNotFound()
 
+def as_globals_list(value):
+    L = []
+    if isinstance(value, basestring):
+        value = filter(None, [x.strip() for x in value.splitlines()])
+    for dottedname in value:
+        obj = resolver.resolve(dottedname)
+        L.append(obj)
+    return L
+
 # default config settings
-default_settings = {
-    'debugtoolbar.intercept_redirects': True,
-    'debugtoolbar.intercept_exceptions': True,
-    'debugtoolbar.enabled': True,
-    'debugtoolbar.panels': (
-        'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
-        'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
-        'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
-        'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
-        'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-        'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
-#        'pyramid_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
-        'pyramid_debugtoolbar.panels.logger.LoggingPanel',
-        'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
-        'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
-        )
-    }
+default_panel_names = (
+    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
+    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
+    'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
+    'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
+    'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
+    'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
+#    'pyramid_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
+    'pyramid_debugtoolbar.panels.logger.LoggingPanel',
+    'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
+    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
+    )
+
+default_settings = (
+    ('enabled', asbool, 'true'),
+    ('intercept_exc', asbool, 'true'),
+    ('intercept_redirects', asbool, 'true'),
+    ('panels', as_globals_list, default_panel_names),
+    )
+
+def parse_settings(settings, prefix='debugtoolbar.'):
+    parsed = {}
+    def populate(name, convert=None, default=None):
+        if convert is None:
+            convert = lambda x: x
+        name = '%s%s' % (prefix, name)
+        value = convert(settings.get(name, default))
+        parsed[name] = value
+    for name, convert, default in default_settings:
+        populate(name, convert, default)
+    return parsed
 
 def includeme(config):
-    panels = config.registry.settings.get('debugtoolbar.panels')
-    if isinstance(panels, basestring):
-        panels = filter(None, [x.strip() for x in panels.splitlines()])
-    settings = default_settings.copy()
-    settings.update(config.registry.settings)
-    if panels is not None:
-        settings['debugtoolbar.panels'] = panels
-    settings['debugtoolbar.enabled'] = asbool(settings['debugtoolbar.enabled'])
+    settings = parse_settings(config.registry.settings)
+    config.registry.settings.update(settings)
     config.include('pyramid_jinja2')
     if hasattr(config, 'get_jinja2_environment'):
         # pyramid_jinja2 after 1.0
@@ -221,14 +243,8 @@ def includeme(config):
     j2_env.filters['urlencode'] = url_quote
     config.add_static_view('_debug_toolbar/static',
                            'pyramid_debugtoolbar:static')
-    classes = settings['debugtoolbar.classes'] = []
-    for dottedname in settings['debugtoolbar.panels']:
-        panel_class = resolver.resolve(dottedname)
-        classes.append(panel_class)
-    config.registry.settings.update(settings)
     config.add_request_handler(toolbar_handler_factory, 'debug_toolbar')
-    config.add_subscriber(beforerender_subscriber,
-                          pyramid.events.BeforeRender)
+    config.add_subscriber(beforerender_subscriber,pyramid.events.BeforeRender)
     config.add_route('debugtb.source', '/_debug_toolbar/source')
     config.add_route('debugtb.execute', '/_debug_toolbar/execute')
     config.add_route('debugtb.console', '/_debug_toolbar/console')
