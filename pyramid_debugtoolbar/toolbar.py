@@ -82,13 +82,9 @@ def toolbar_handler_factory(handler, registry):
             _handler = panel.wrap_handler(_handler)
 
         try:
-
             response = _handler(request)
-
         except Exception:
-
             info = sys.exc_info()
-
             if exc_history is not None:
                 tb = get_traceback(info=info,
                                    skip=1,
