@@ -27,8 +27,8 @@ class ExceptionDebugView(object):
         if self.frame is not None and exc_history:
             frame = exc_history.frames.get(self.frame)
             if self.cmd is not None and frame is not None:
-                return Response(frame.console.eval(self.cmd),
-                                content_type='text/html')
+                result = frame.console.eval(self.cmd)
+                return Response(result, content_type='text/html')
         return HTTPNotFound()
         
     @view_config(route_name='debugtoolbar.console',
