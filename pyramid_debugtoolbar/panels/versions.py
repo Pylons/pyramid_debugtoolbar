@@ -7,13 +7,15 @@ from pyramid_debugtoolbar.panels import DebugPanel
 
 _ = lambda x: x
 
+plat = 'Python %s on %s' % (sys.version, platform.platform())
+
 packages = []
 for distribution in pkg_resources.working_set:
     name = distribution.project_name
     packages.append({'version':distribution.version,
                      'lowername':name.lower(),
                      'name':name})
-    plat = 'Python %s on %s' % (sys.version, platform.platform())
+    
 packages = sorted(packages, key=itemgetter('lowername'))
 
 pyramid_version = pkg_resources.get_distribution('pyramid').version
