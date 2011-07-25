@@ -21,7 +21,7 @@
 
     <h1>{{ exception_type }}</h1>
     <div class="detail">
-      <pre class= "errormsg">{{ exception }}</pre>
+      <pre class= "errormsg">{{ exception|safe }}</pre>
     </div>
     <h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
     {{ summary|safe }}
