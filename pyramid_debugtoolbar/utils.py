@@ -94,3 +94,5 @@ def as_globals_list(value):
         L.append(obj)
     return L
 
+def get_setting(settings, name, default=None, prefix='debugtoolbar.'):
+    return settings.get('%s%s' % (prefix, name), default)
