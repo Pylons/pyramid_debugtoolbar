@@ -13,7 +13,7 @@ log = logging.getLogger(__file__)
 
 here = os.path.dirname(os.path.abspath(__file__))
 
-@view_config(route_name='exc')
+@view_config(route_name='test_exc')
 def exc(request):
     raise NotImplementedError
 
@@ -31,6 +31,14 @@ def test_redirect(request):
 def test_predicates(request):
     return {'title':'Test route predicates'}
 
+@view_config(route_name='test_chameleon_exc',
+             renderer='__main__:templates/error.pt')
+@view_config(route_name='test_mako_exc', renderer='error.mako')
+@view_config(route_name='test_jinja2_exc',
+             renderer='__main__:templates/error.jinja2')
+def test_template_exc(request):
+    return {'title':'Test template exceptions'}
+
 if __name__ == '__main__':
     # configuration settings
     settings = {}
@@ -43,7 +51,10 @@ if __name__ == '__main__':
     config.add_route('test_page', '/')
     config.add_route('test_redirect', '/redirect')
     config.add_route('test_predicates', '/predicates', request_method='GET')
-    config.add_route('exc', '/exc')
+    config.add_route('test_exc', '/exc')
+    config.add_route('test_chameleon_exc', '/chameleon_exc')
+    config.add_route('test_mako_exc', '/mako_exc')
+    config.add_route('test_jinja2_exc', '/jinja2_exc')
     config.scan('__main__')
     config.include('pyramid_debugtoolbar')
     serve(config.make_wsgi_app())

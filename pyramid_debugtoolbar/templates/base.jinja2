@@ -1,27 +1,38 @@
 <div id="flDebug" style="display:none;">
-    <script type="text/javascript">var DEBUG_TOOLBAR_STATIC_PATH = '{{ static_path }}'</script>
-    <script type="text/javascript" src="{{ static_path }}js/jquery-1.6.2.min.js"></script>
-    <script type="text/javascript" src="{{ static_path }}js/jquery.tablesorter.min.js"></script>
-    <script type="text/javascript" src="{{ static_path }}js/toolbar.js"></script>
+    <script type="text/javascript">
+      var DEBUG_TOOLBAR_STATIC_PATH = '{{ static_path }}';
+    </script>
+    <script type="text/javascript" 
+            src="{{ static_path }}js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" 
+            src="{{ static_path }}js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" 
+            src="{{ static_path }}js/toolbar.js"></script>
     <script type="text/javascript">$.noConflict();</script>
 
     <div style="display: none;" id="flDebugToolbar">
         <ol id="flDebugPanelList">
             {% if panels %}
-			<li><a id="flHideToolBarButton" href="#" title="Hide Toolbar">Hide &raquo;</a></li>
+			<li>
+              <a id="flHideToolBarButton" href="#" 
+                 title="Hide Toolbar">Hide &raquo;</a></li>
 			{% else %}
 			<li id="flDebugButton">DEBUG</li>
 			{% endif %}
 			{% for panel in panels %}
 				<li id="{{ panel.dom_id() }}">
 					{% if panel.has_content %}
-						<a href="{{ panel.url()|default("#") }}" title="{{ panel.title() }}" class="{{ panel.dom_id() }}">
+						<a href="{{ panel.url()|default("#") }}" 
+                           title="{{ panel.title() }}" 
+                           class="{{ panel.dom_id() }}">
 					{% else %}
 					    <div class="contentless">
 					{% endif %}
 
 					{{ panel.nav_title() }}
-					{% if panel.nav_subtitle() %}<br /><small>{{ panel.nav_subtitle() }}</small>{% endif %}
+					{% if panel.nav_subtitle() %}
+                        <br /><small>{{ panel.nav_subtitle() }}</small>
+                    {% endif %}
 
 					{% if panel.has_content %}
 						</a>
@@ -29,7 +40,8 @@
 					    </div>
 					{% endif %}
                     {% if panel.user_activate %}
-                    <span class="switch {{ 'active' if panel.is_active else 'inactive' }}" title="Enable or disable the panel"></span>
+                    <span class="switch {{ 'active' if panel.is_active else 'inactive' }}" 
+                          title="Enable or disable the panel"></span>
                     {% endif %}
 				</li>
 			{% endfor %}
