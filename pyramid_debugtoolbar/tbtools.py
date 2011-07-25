@@ -70,16 +70,38 @@ PAGE_HTML = HEADER + u'''\
   <form action="%(lodgeit_url)s" method="post">
     <p>
       <input type="hidden" name="language" value="pytb">
-      This is the Copy/Paste friendly version of the traceback.  <span
-      class="pastemessage">You can also paste this traceback into LodgeIt:
-      <input type="submit" value="create paste"></span>
+      This is the Copy/Paste friendly version of the traceback.
     </p>
     <textarea cols="50" rows="10" name="code" readonly>%(plaintext)s</textarea>
   </form>
 </div>
 <div class="explanation">
-  The debugger caught an exception in your Pyramid application.  You can now
-  look at the traceback which led to the error.
+  <p>
+      <b>Warning: this feature should not be enabled on production systems.</b>
+  </p>
+  <p>
+  Click on the <img src="_debug_toolbar/static/img/console.png"/> icon next
+  to any frame in the traceback to show an interactive console.  Type
+  arbitrary Python into the console; it will be evaluated in the context of
+  the associated frame.  In the interactive console there are helpers
+  available for introspection:
+  <ul>
+      <li><code>dump()</code> shows all variables in the frame
+      <li><code>dump(obj)</code> dumps all that\'s known about the object
+  </ul>
+  </p>
+  
+  <p>
+  Click on the <img src="_debug_toolbar/static/img/source.png"/> next to any
+  frame in the traceback to show the source of the file associated with the
+  frame.
+  </p>
+
+  <p>
+  Click on the traceback header to switch back and forth between a plaintext
+  version of the traceback and the interactive debugging page.
+  </p>
+
 </div>
 ''' + FOOTER + '''
 <!--
