@@ -1,29 +1,13 @@
 import sys
 
 import pyramid.events
-from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.encode import url_quote
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPNotFound
-
-from pyramid_debugtoolbar.tbtools import get_traceback, render_console_html
-from pyramid_debugtoolbar.console import Console
-
-resolver = DottedNameResolver(None)
-
-def replace_insensitive(string, target, replacement):
-    """Similar to string.replace() but is case insensitive
-    Code borrowed from: http://forums.devshed.com/python-programming-11/case-insensitive-string-replace-490921.html
-    """
-    no_case = string.lower()
-    index = no_case.rfind(target.lower())
-    if index >= 0:
-        return string[:index] + replacement + string[index + len(target):]
-    else: # no results so return the original string
-        return string
+from pyramid_debugtoolbar.utils import replace_insensitive, as_globals_list
+from pyramid_debugtoolbar.tbtools import get_traceback
 
 class DebugToolbar(object):
     def __init__(self, request, panel_classes):
@@ -54,13 +38,9 @@ def beforerender_subscriber(event):
     request = event['request']
     if request is None:
         request = get_current_request()
-    attrs = request.__dict__
-    if attrs.get('debug_toolbar', None) is not None:
+    if getattr(request, 'debug_toolbar', None) is not None:
         for panel in request.debug_toolbar.panels:
             panel.process_beforerender(event)
-
-def get_setting(settings, name, default=None, prefix='debugtoolbar.'):
-    return settings.get('%s%s' % (prefix, name), default)
 
 def toolbar_handler_factory(handler, registry):
     settings = registry.settings
@@ -68,8 +48,8 @@ def toolbar_handler_factory(handler, registry):
     if not get_setting(settings, 'enabled'):
         return handler
 
-    _redirect_codes = (301, 302, 303, 304)
-    _htmltypes = ('text/html', 'application/xml+html')
+    redirect_codes = (301, 302, 303, 304)
+    html_types = ('text/html', 'application/xml+html')
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
@@ -85,20 +65,22 @@ def toolbar_handler_factory(handler, registry):
         if request.path.startswith('/_debug_toolbar/'):
             return handler(request)
 
-        debug_toolbar = request.debug_toolbar = DebugToolbar(request,
-                                                             panel_classes)
-
+        debug_toolbar = DebugToolbar(request, panel_classes)
+        request.debug_toolbar = debug_toolbar
+        
         _handler = handler
 
         for panel in debug_toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
         try:
+
             response = _handler(request)
+
             # Intercept http redirect codes and display an html page with a
             # link to the target.
             if intercept_redirects:
-                if response.status_int in _redirect_codes:
+                if response.status_int in redirect_codes:
                     redirect_to = response.location
                     redirect_code = response.status_int
                     if redirect_to:
@@ -118,7 +100,7 @@ def toolbar_handler_factory(handler, registry):
 
             # If the body is HTML, then we add the toolbar to the returned
             # html response.
-            if response.content_type in _htmltypes:
+            if response.content_type in html_types:
                 response_html = response.body
                 toolbar_html = debug_toolbar.render_toolbar(response)
                 body = replace_insensitive(response_html, '</body>',
@@ -126,8 +108,11 @@ def toolbar_handler_factory(handler, registry):
                 response.app_iter = [body]
 
             return response
+
         except Exception:
+
             info = sys.exc_info()
+
             if exc_history is not None:
                 tb = get_traceback(info=info,
                                    skip=1,
@@ -137,62 +122,12 @@ def toolbar_handler_factory(handler, registry):
                     exc_history.frames[frame.id] = frame
                 exc_history.tracebacks[tb.id] = tb
                 body = tb.render_full(evalex=True).encode('utf-8', 'replace')
-                response = Response(body)
-                response.status_int = 500
+                response = Response(body, status=500)
                 return response
+
             raise
 
     return toolbar_handler
-
-class _ConsoleFrame(object):
-    """Helper class so that we can reuse the frame console code for the
-    standalone console.
-    """
-
-    def __init__(self, namespace):
-        self.console = Console(namespace)
-        self.id = 0
-
-class ExcDebugView(object):
-    def __init__(self, request):
-        self.request = request
-        frm = self.request.params.get('frm')
-        if frm is not None:
-            frm = int(frm)
-        self.frame = frm
-        cmd = self.request.params.get('cmd')
-        self.cmd = cmd
-
-    def source(self):
-        exc_history = self.request.exc_history
-        frame = exc_history.frames.get(self.frame)
-        return Response(frame.render_source(), content_type='text/html')
-
-    def execute(self):
-        exc_history = self.request.exc_history
-        if self.frame is not None and exc_history:
-            frame = exc_history.frames.get(self.frame)
-            if self.cmd is not None and frame is not None:
-                return Response(frame.console.eval(self.cmd),
-                                content_type='text/html')
-        return HTTPNotFound()
-        
-    def console(self):
-        exc_history = self.request.exc_history
-        if exc_history:
-            if 0 not in self.frames:
-                exc_history.frames[0] = _ConsoleFrame({})
-            return Response(render_console_html(), content_type='text/html')
-        return HTTPNotFound()
-
-def as_globals_list(value):
-    L = []
-    if isinstance(value, basestring):
-        value = filter(None, [x.strip() for x in value.splitlines()])
-    for dottedname in value:
-        obj = resolver.resolve(dottedname)
-        L.append(obj)
-    return L
 
 # default config settings
 default_panel_names = (
@@ -215,6 +150,9 @@ default_settings = (
     ('panels', as_globals_list, default_panel_names),
     )
 
+def get_setting(settings, name, default=None, prefix='debugtoolbar.'):
+    return settings.get('%s%s' % (prefix, name), default)
+
 def parse_settings(settings, prefix='debugtoolbar.'):
     parsed = {}
     def populate(name, convert=None, default=None):
@@ -233,14 +171,12 @@ def includeme(config):
     config.include('pyramid_jinja2')
     j2_env = config.get_jinja2_environment()
     j2_env.filters['urlencode'] = url_quote
-    config.add_static_view('_debug_toolbar/static',
-                           'pyramid_debugtoolbar:static')
+    config.add_static_view(
+        '_debug_toolbar/static', 'pyramid_debugtoolbar:static')
     config.add_request_handler(toolbar_handler_factory, 'debug_toolbar')
-    config.add_subscriber(beforerender_subscriber,pyramid.events.BeforeRender)
+    config.add_subscriber(beforerender_subscriber, pyramid.events.BeforeRender)
     config.add_route('debugtb.source', '/_debug_toolbar/source')
     config.add_route('debugtb.execute', '/_debug_toolbar/execute')
     config.add_route('debugtb.console', '/_debug_toolbar/console')
-    config.add_view(ExcDebugView, route_name='debugtb.source', attr='source')
-    config.add_view(ExcDebugView, route_name='debugtb.execute',attr='execute')
-    config.add_view(ExcDebugView, route_name='debugtb.console',attr='console')
+    config.scan('pyramid_debugtoolbar.views')
         

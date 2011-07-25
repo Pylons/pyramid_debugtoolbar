@@ -1,5 +1,6 @@
 import os.path
 import sys
+from pyramid.util import DottedNameResolver
 
 try:
     from pygments import highlight
@@ -71,5 +72,25 @@ def escape(s, quote=False):
         s = s.replace('"', "&quot;")
     return s
 
+def replace_insensitive(string, target, replacement):
+    """Similar to string.replace() but is case insensitive
+    Code borrowed from: http://forums.devshed.com/python-programming-11/case-insensitive-string-replace-490921.html
+    """
+    no_case = string.lower()
+    index = no_case.rfind(target.lower())
+    if index >= 0:
+        return string[:index] + replacement + string[index + len(target):]
+    else: # no results so return the original string
+        return string
 
+resolver = DottedNameResolver(None)
+
+def as_globals_list(value):
+    L = []
+    if isinstance(value, basestring):
+        value = filter(None, [x.strip() for x in value.splitlines()])
+    for dottedname in value:
+        obj = resolver.resolve(dottedname)
+        L.append(obj)
+    return L
 

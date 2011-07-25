@@ -201,3 +201,12 @@ class Console(object):
 
     def eval(self, code):
         return self._ipy.runsource(code)
+
+class _ConsoleFrame(object):
+    """Helper class so that we can reuse the frame console code for the
+    standalone console.
+    """
+    def __init__(self, namespace):
+        self.console = Console(namespace)
+        self.id = 0
+
