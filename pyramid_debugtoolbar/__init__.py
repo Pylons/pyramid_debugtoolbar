@@ -10,6 +10,9 @@ from pyramid_debugtoolbar.utils import replace_insensitive, as_globals_list
 from pyramid_debugtoolbar.tbtools import get_traceback
 
 class DebugToolbar(object):
+
+    html_types = ('text/html', 'application/xml+html')
+
     def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
@@ -20,14 +23,23 @@ class DebugToolbar(object):
                 panel_inst.is_active = True
             self.panels.append(panel_inst)
 
-    def render_toolbar(self, response):
+    def process_response(self, response):
+        # If the body is HTML, then we add the toolbar to the response.
         request = self.request
-        static_path = request.static_url('pyramid_debugtoolbar:static/')
-        vars = {'panels': self.panels, 'static_path':static_path}
-        content = render('pyramid_debugtoolbar:templates/base.jinja2',
-                         vars, request=request)
-        content = content.encode(response.charset)
-        return content
+
+        for panel in self.panels:
+            panel.process_response(request, response)
+
+        if response.content_type in self.html_types:
+            static_path = request.static_url('pyramid_debugtoolbar:static/')
+            vars = {'panels': self.panels, 'static_path':static_path}
+            toolbar_html = render('pyramid_debugtoolbar:templates/base.jinja2',
+                                  vars, request=request)
+            toolbar_html = toolbar_html.encode(response.charset)
+            response_html = response.body
+            body = replace_insensitive(response_html, '</body>',
+                                       toolbar_html + '</body>')
+            response.app_iter = [body]
 
 class ExceptionHistory(object):
     def __init__(self):
@@ -49,7 +61,6 @@ def toolbar_handler_factory(handler, registry):
         return handler
 
     redirect_codes = (301, 302, 303, 304)
-    html_types = ('text/html', 'application/xml+html')
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
@@ -65,12 +76,12 @@ def toolbar_handler_factory(handler, registry):
         if request.path.startswith('/_debug_toolbar/'):
             return handler(request)
 
-        debug_toolbar = DebugToolbar(request, panel_classes)
-        request.debug_toolbar = debug_toolbar
+        toolbar = DebugToolbar(request, panel_classes)
+        request.debug_toolbar = toolbar
         
         _handler = handler
 
-        for panel in debug_toolbar.panels:
+        for panel in toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
         try:
@@ -92,28 +103,15 @@ def toolbar_handler_factory(handler, registry):
                 exc_history.tracebacks[tb.id] = tb
                 body = tb.render_full(evalex=True).encode('utf-8', 'replace')
                 response = Response(body, status=500)
-
-                for panel in debug_toolbar.panels:
-                    panel.process_response(request, response)
-
-                # If the body is HTML, then we add the toolbar to the returned
-                # html response.
-                if response.content_type in html_types:
-                    response_html = response.body
-                    toolbar_html = debug_toolbar.render_toolbar(response)
-                    body = replace_insensitive(response_html, '</body>',
-                                               toolbar_html + '</body>')
-                    response.app_iter = [body]
-
+                toolbar.process_response(response)
                 return response
 
             raise
 
         else:
-
-            # Intercept http redirect codes and display an html page with a
-            # link to the target.
             if intercept_redirects:
+                # Intercept http redirect codes and display an html page with a
+                # link to the target.
                 if response.status_int in redirect_codes:
                     redirect_to = response.location
                     redirect_code = response.status_int
@@ -129,23 +127,11 @@ def toolbar_handler_factory(handler, registry):
                         response.app_iter = [content]
                         response.status_int = 200
 
-            for panel in debug_toolbar.panels:
-                panel.process_response(request, response)
-
-            # If the body is HTML, then we add the toolbar to the returned
-            # html response.
-            if response.content_type in html_types:
-                response_html = response.body
-                toolbar_html = debug_toolbar.render_toolbar(response)
-                body = replace_insensitive(response_html, '</body>',
-                                           toolbar_html + '</body>')
-                response.app_iter = [body]
-
+            toolbar.process_response(response)
             return response
 
     return toolbar_handler
 
-# default config settings
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
     'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
@@ -153,7 +139,6 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
     'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
     'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
-#    'pyramid_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
