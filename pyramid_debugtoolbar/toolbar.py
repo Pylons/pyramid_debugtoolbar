@@ -31,7 +31,7 @@ class DebugToolbar(object):
         if response.content_type in self.html_types:
             static_path = request.static_url(STATIC_PATH)
             vars = {'panels': self.panels, 'static_path':static_path}
-            toolbar_html = render('pyramid_debugtoolbar:templates/base.jinja2',
+            toolbar_html = render('pyramid_debugtoolbar:templates/panel.jinja2',
                                   vars, request=request)
             toolbar_html = toolbar_html.encode(response.charset)
             response_html = response.body
