@@ -77,6 +77,40 @@ def toolbar_handler_factory(handler, registry):
 
             response = _handler(request)
 
+        except Exception:
+
+            info = sys.exc_info()
+
+            if exc_history is not None:
+                tb = get_traceback(info=info,
+                                   skip=1,
+                                   show_hidden_frames=False,
+                                   ignore_system_exceptions=True)
+                for frame in tb.frames:
+                    exc_history.frames[frame.id] = frame
+
+                exc_history.tracebacks[tb.id] = tb
+                body = tb.render_full(evalex=True).encode('utf-8', 'replace')
+                response = Response(body, status=500)
+
+                for panel in debug_toolbar.panels:
+                    panel.process_response(request, response)
+
+                # If the body is HTML, then we add the toolbar to the returned
+                # html response.
+                if response.content_type in html_types:
+                    response_html = response.body
+                    toolbar_html = debug_toolbar.render_toolbar(response)
+                    body = replace_insensitive(response_html, '</body>',
+                                               toolbar_html + '</body>')
+                    response.app_iter = [body]
+
+                return response
+
+            raise
+
+        else:
+
             # Intercept http redirect codes and display an html page with a
             # link to the target.
             if intercept_redirects:
@@ -108,24 +142,6 @@ def toolbar_handler_factory(handler, registry):
                 response.app_iter = [body]
 
             return response
-
-        except Exception:
-
-            info = sys.exc_info()
-
-            if exc_history is not None:
-                tb = get_traceback(info=info,
-                                   skip=1,
-                                   show_hidden_frames=False,
-                                   ignore_system_exceptions=True)
-                for frame in tb.frames:
-                    exc_history.frames[frame.id] = frame
-                exc_history.tracebacks[tb.id] = tb
-                body = tb.render_full(evalex=True).encode('utf-8', 'replace')
-                response = Response(body, status=500)
-                return response
-
-            raise
 
     return toolbar_handler
 

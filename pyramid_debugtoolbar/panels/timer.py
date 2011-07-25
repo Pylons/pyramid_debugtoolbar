@@ -29,16 +29,26 @@ class TimerDebugPanel(DebugPanel):
             def resource_timer_handler(request):
                 _start_time = time.time()
                 self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
-                result = handler(request)
-                self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
-                self.total_time = (time.time() - _start_time) * 1000
+                try:
+                    result = handler(request)
+                except:
+                    raise
+                finally:
+                    self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
+                    self.total_time = (time.time() - _start_time) * 1000
+                    
                 return result
+                
             return resource_timer_handler
 
         def noresource_timer_handler(request):
             _start_time = time.time()
-            result = handler(request)
-            self.total_time = (time.time() - _start_time) * 1000
+            try:
+                result = handler(request)
+            except:
+                raise
+            finally:
+                self.total_time = (time.time() - _start_time) * 1000
             return result
         return noresource_timer_handler
 
