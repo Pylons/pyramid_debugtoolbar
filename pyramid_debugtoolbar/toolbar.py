@@ -5,6 +5,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
 from pyramid_debugtoolbar.utils import replace_insensitive, get_setting
 from pyramid_debugtoolbar.tbtools import get_traceback
+from pyramid_debugtoolbar import STATIC_PATH
 
 class DebugToolbar(object):
 
@@ -28,7 +29,7 @@ class DebugToolbar(object):
             panel.process_response(request, response)
 
         if response.content_type in self.html_types:
-            static_path = request.static_url('pyramid_debugtoolbar:static/')
+            static_path = request.static_url(STATIC_PATH)
             vars = {'panels': self.panels, 'static_path':static_path}
             toolbar_html = render('pyramid_debugtoolbar:templates/base.jinja2',
                                   vars, request=request)
@@ -68,9 +69,10 @@ def toolbar_handler_factory(handler, registry):
         exc_history = ExceptionHistory()
 
     def toolbar_handler(request):
+        root_path = request.route_path('debugtoolbar.root')
         request.exc_history = exc_history
 
-        if request.path.startswith('/_debug_toolbar/'):
+        if request.path.startswith(root_path):
             return handler(request)
 
         toolbar = DebugToolbar(request, panel_classes)
@@ -94,7 +96,8 @@ def toolbar_handler_factory(handler, registry):
                     exc_history.frames[frame.id] = frame
 
                 exc_history.tracebacks[tb.id] = tb
-                body = tb.render_full(evalex=True).encode('utf-8', 'replace')
+                body = tb.render_full(request, evalex=True).encode(
+                    'utf-8', 'replace')
                 response = Response(body, status=500)
                 toolbar.process_response(response)
                 return response
@@ -110,10 +113,9 @@ def toolbar_handler_factory(handler, registry):
                     redirect_code = response.status_int
                     if redirect_to:
                         content = render(
-                            'pyramid_debugtoolbar:templates/redirect.jinja2', {
-                            'redirect_to': redirect_to,
-                            'redirect_code': redirect_code
-                        })
+                            'pyramid_debugtoolbar:templates/redirect.jinja2',
+                            {'redirect_to': redirect_to,
+                            'redirect_code': redirect_code})
                         content = content.encode(response.charset)
                         response.content_length = len(content)
                         response.location = None

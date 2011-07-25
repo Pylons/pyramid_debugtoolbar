@@ -21,6 +21,7 @@ from pyramid.renderers import render
 
 from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.console import Console
+from pyramid_debugtoolbar import STATIC_PATH
 
 _coding_re = re.compile(r'coding[:=]\s*([-\w.]+)')
 _line_re = re.compile(r'^(.*?)$(?m)')
@@ -50,16 +51,6 @@ SOURCE_LINE_HTML = u'''\
   <td>%(code)s</td>
 </tr>
 '''
-
-
-def render_console_html():
-    vars = {
-        'evalex':           'true',
-        'console':          'true',
-        'title':            'Console',
-        'traceback_id':     -1
-    }
-    return render('pyramid_debugtoolbar:templates/console.jinja2', vars)
 
 
 def get_current_traceback(ignore_system_exceptions=False,
@@ -196,7 +187,7 @@ class Traceback(object):
         srv = ServerProxy('%sxmlrpc/' % lodgeit_url)
         return srv.pastes.newPaste('pytb', self.plaintext)
 
-    def render_summary(self, include_title=True):
+    def render_summary(self, include_title=True, request=None):
         """Render the traceback for the interactive console."""
         title = ''
         frames = []
@@ -228,11 +219,13 @@ class Traceback(object):
             'description':  description_wrapper % escape(self.exception)
         }
         return render('pyramid_debugtoolbar:templates/exception_summary.jinja2',
-                      vars)
+                      vars, request=request)
 
-    def render_full(self, evalex=False, lodgeit_url=None):
+    def render_full(self, request, evalex=False, lodgeit_url=None):
         """Render the Full HTML page with the traceback info."""
+        static_url = request.static_url(STATIC_PATH)
         exc = escape(self.exception)
+        summary = self.render_summary(include_title=False, request=request)
         vars = {
             'evalex':           evalex and 'true' or 'false',
             'console':          'false',
@@ -240,13 +233,14 @@ class Traceback(object):
             'title':            exc,
             'exception':        exc,
             'exception_type':   escape(self.exception_type),
-            'summary':          self.render_summary(include_title=False),
+            'summary':          summary,
             'plaintext':        self.plaintext,
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
-            'traceback_id':     self.id
+            'traceback_id':     self.id,
+            'static_path':      static_url,
         }
         return render('pyramid_debugtoolbar:templates/exception.jinja2',
-                      vars)
+                      vars, request=request)
 
     def generate_plaintext_traceback(self):
         """Like the plaintext attribute but returns a generator"""

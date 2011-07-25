@@ -14,6 +14,8 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     )
 
+STATIC_PATH = 'pyramid_debugtoolbar:static/'
+
 default_settings = (
     ('enabled', asbool, 'true'),
     ('intercept_exc', asbool, 'true'),
@@ -39,16 +41,16 @@ def includeme(config):
     config.include('pyramid_jinja2')
     j2_env = config.get_jinja2_environment()
     j2_env.filters['urlencode'] = url_quote
-    config.add_static_view(
-        '_debug_toolbar/static', 'pyramid_debugtoolbar:static')
+    config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_request_handler(
         'pyramid_debugtoolbar.toolbar.toolbar_handler_factory',
         'debug_toolbar')
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender')
-    config.add_route('debugtb.source', '/_debug_toolbar/source')
-    config.add_route('debugtb.execute', '/_debug_toolbar/execute')
-    config.add_route('debugtb.console', '/_debug_toolbar/console')
+    config.add_route('debugtoolbar.root', '/_debug_toolbar', static=True)
+    config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
+    config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
+    config.add_route('debugtoolbar.console', '/_debug_toolbar/console')
     config.scan('pyramid_debugtoolbar.views')
         

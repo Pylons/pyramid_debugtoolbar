@@ -4,12 +4,12 @@
 <html>
   <head>
     <title>{{title}} // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="/_debug_toolbar/static/css/debugger.css" 
+    <link rel="stylesheet" href="{{ static_path }}css/debugger.css" 
           type="text/css">
     <script type="text/javascript" 
-          src="/_debug_toolbar/static/js/jquery-1.6.2.min.js"></script>
+          src="{{ static_path }}js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" 
-          src="/_debug_toolbar/static/js/debugger.js"></script>
+          src="{{ static_path }}js/debugger.js"></script>
     <script type="text/javascript">
       var TRACEBACK = {{ traceback_id }},
           CONSOLE_MODE = {{ console }},
@@ -41,7 +41,7 @@
       </p>
       <p>
         
-        Click on the <img src="_debug_toolbar/static/img/console.png"/>
+        Click on the <img src="{{ static_path }}img/console.png"/>
         icon next to any frame in the traceback to show an interactive
         console.  Type arbitrary Python into the console; it will be
         evaluated in the context of the associated frame.  In the
@@ -54,7 +54,7 @@
       </p>
       
       <p>
-        Click on the <img src="_debug_toolbar/static/img/source.png"/> next
+        Click on the <img src="{{ static_path }}img/source.png"/> next
         to any frame in the traceback to show the source of the file
         associated with the frame.
       </p>
