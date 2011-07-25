@@ -5,12 +5,12 @@ from pyramid_debugtoolbar.utils import as_globals_list
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
     'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
-    'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
     'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
     'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
     'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
+    'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     )
 
