@@ -15,7 +15,10 @@ import inspect
 import traceback
 import codecs
 from tokenize import TokenError
+
 from pyramid.decorator import reify
+from pyramid.renderers import render
+
 from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.console import Console
 
@@ -29,104 +32,6 @@ try:
     system_exceptions += (GeneratorExit,)
 except NameError:
     pass
-
-
-HEADER = u'''\
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-  <head>
-    <title>%(title)s // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="/_debug_toolbar/static/css/debugger.css" type="text/css">
-    <script type="text/javascript" src="/_debug_toolbar/static/js/jquery-1.6.2.min.js"></script>
-    <script type="text/javascript" src="/_debug_toolbar/static/js/debugger.js"></script>
-    <script type="text/javascript">
-      var TRACEBACK = %(traceback_id)d,
-          CONSOLE_MODE = %(console)s,
-          EVALEX = %(evalex)s
-    </script>
-  </head>
-  <body>
-    <div class="debugger">
-'''
-FOOTER = u'''\
-      <div class="footer">
-        Brought to you by <strong class="arthur">DONT PANIC</strong>, your
-        friendly Werkzeug powered traceback interpreter.
-      </div>
-    </div>
-  </body>
-</html>
-'''
-
-PAGE_HTML = HEADER + u'''\
-<h1>%(exception_type)s</h1>
-<div class="detail">
-  <p class="errormsg">%(exception)s</p>
-</div>
-<h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
-%(summary)s
-<div class="plain">
-  <form action="%(lodgeit_url)s" method="post">
-    <p>
-      <input type="hidden" name="language" value="pytb">
-      This is the Copy/Paste friendly version of the traceback.
-    </p>
-    <textarea cols="50" rows="10" name="code" readonly>%(plaintext)s</textarea>
-  </form>
-</div>
-<div class="explanation">
-  <p>
-      <b>Warning: this feature should not be enabled on production systems.</b>
-  </p>
-  <p>
-  Click on the <img src="_debug_toolbar/static/img/console.png"/> icon next
-  to any frame in the traceback to show an interactive console.  Type
-  arbitrary Python into the console; it will be evaluated in the context of
-  the associated frame.  In the interactive console there are helpers
-  available for introspection:
-  <ul>
-      <li><code>dump()</code> shows all variables in the frame
-      <li><code>dump(obj)</code> dumps all that\'s known about the object
-  </ul>
-  </p>
-  
-  <p>
-  Click on the <img src="_debug_toolbar/static/img/source.png"/> next to any
-  frame in the traceback to show the source of the file associated with the
-  frame.
-  </p>
-
-  <p>
-  Click on the traceback header to switch back and forth between a plaintext
-  version of the traceback and the interactive debugging page.
-  </p>
-
-</div>
-''' + FOOTER + '''
-<!--
-
-%(plaintext_cs)s
-
--->
-'''
-
-CONSOLE_HTML = HEADER + u'''\
-<h1>Interactive Console</h1>
-<div class="explanation">
-In this console you can execute Python expressions in the context of the
-application.  The initial namespace was created by the debugger automatically.
-</div>
-<div class="console"><div class="inner">The Console requires JavaScript.</div></div>
-''' + FOOTER
-
-SUMMARY_HTML = u'''\
-<div class="%(classes)s">
-  %(title)s
-  <ul>%(frames)s</ul>
-  %(description)s
-</div>
-'''
 
 FRAME_HTML = u'''\
 <div class="frame" id="frame-%(id)d">
@@ -148,12 +53,13 @@ SOURCE_LINE_HTML = u'''\
 
 
 def render_console_html():
-    return CONSOLE_HTML % {
+    vars = {
         'evalex':           'true',
         'console':          'true',
         'title':            'Console',
         'traceback_id':     -1
     }
+    return render('pyramid_debugtoolbar:templates/console.jinja2', vars)
 
 
 def get_current_traceback(ignore_system_exceptions=False,
@@ -315,17 +221,19 @@ class Traceback(object):
         else:
             description_wrapper = u'<blockquote>%s</blockquote>'
 
-        return SUMMARY_HTML % {
+        vars = {
             'classes':      u' '.join(classes),
             'title':        title and u'<h3>%s</h3>' % title or u'',
             'frames':       u'\n'.join(frames),
             'description':  description_wrapper % escape(self.exception)
         }
+        return render('pyramid_debugtoolbar:templates/exception_summary.jinja2',
+                      vars)
 
     def render_full(self, evalex=False, lodgeit_url=None):
         """Render the Full HTML page with the traceback info."""
         exc = escape(self.exception)
-        return PAGE_HTML % {
+        vars = {
             'evalex':           evalex and 'true' or 'false',
             'console':          'false',
             'lodgeit_url':      escape(lodgeit_url),
@@ -337,6 +245,8 @@ class Traceback(object):
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
             'traceback_id':     self.id
         }
+        return render('pyramid_debugtoolbar:templates/exception.jinja2',
+                      vars)
 
     def generate_plaintext_traceback(self):
         """Like the plaintext attribute but returns a generator"""

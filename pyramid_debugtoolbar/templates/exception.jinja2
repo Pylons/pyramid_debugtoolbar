@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+    <title>{{title}} // Werkzeug Debugger</title>
+    <link rel="stylesheet" href="/_debug_toolbar/static/css/debugger.css" 
+          type="text/css">
+    <script type="text/javascript" 
+          src="/_debug_toolbar/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" 
+          src="/_debug_toolbar/static/js/debugger.js"></script>
+    <script type="text/javascript">
+      var TRACEBACK = {{ traceback_id }},
+          CONSOLE_MODE = {{ console }},
+          EVALEX = {{ evalex }};
+    </script>
+  </head>
+  <body>
+    <div class="debugger">
+
+    <h1>{{ exception_type }}</h1>
+    <div class="detail">
+      <p class= "errormsg">{{ exception }}</p>
+    </div>
+    <h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
+    {{ summary|safe }}
+    <div class="plain">
+      <p>
+        <input type="hidden" name="language" value="pytb">
+          This is the Copy/Paste friendly version of the traceback.
+        </p>
+        <textarea cols="50" rows="10" name="code" 
+                  readonly>{{ plaintext }}</textarea>
+      </div>
+      
+    <div class="explanation">
+      <p>
+        <b>Warning: this feature should not be enabled on production
+          systems.</b>
+      </p>
+      <p>
+        
+        Click on the <img src="_debug_toolbar/static/img/console.png"/>
+        icon next to any frame in the traceback to show an interactive
+        console.  Type arbitrary Python into the console; it will be
+        evaluated in the context of the associated frame.  In the
+        interactive console there are helpers available for introspection:
+        
+        <ul>
+          <li><code>dump()</code> shows all variables in the frame
+          <li><code>dump(obj)</code> dumps all that\'s known about the object
+        </ul>
+      </p>
+      
+      <p>
+        Click on the <img src="_debug_toolbar/static/img/source.png"/> next
+        to any frame in the traceback to show the source of the file
+        associated with the frame.
+      </p>
+      
+      <p>
+        Click on the traceback header to switch back and forth between a
+        plaintext version of the traceback and the interactive debugging
+        page.
+      </p>
+    </div>
+    
+    <div class="footer">
+      Brought to you by <strong class="arthur">DONT PANIC</strong>, your
+      friendly Werkzeug powered traceback interpreter.
+    </div>
+    </div>
+    <!--
+       
+       {{ plaintext_cs }}
+       
+      -->
+    
+  </body>
+  
+</html>
