@@ -5,13 +5,6 @@ from pyramid.util import DottedNameResolver
 SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
 
-try:
-    from pygments.styles import get_style_by_name
-    PYGMENT_STYLE = get_style_by_name('colorful')
-    HAVE_PYGMENTS = True
-except ImportError: # pragma: no cover
-    HAVE_PYGMENTS = False
-
 def format_fname(value):
     # If the value is not an absolute path, the it is a builtin or
     # a relative file (thus a project file).
