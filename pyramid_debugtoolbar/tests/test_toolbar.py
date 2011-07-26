@@ -75,6 +75,113 @@ class Test_beforerender_subscriber(unittest.TestCase):
         self._callFUT(event)
         self.assertTrue(event['processed'])
 
+    def test_with_request(self):
+        event = {}
+        event['request'] = self.request
+        self._callFUT(event)
+        self.assertTrue(event['processed'])
+
+class Test_toolbar_handler_factory(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+        
+    def _callFUT(self, handler, registry):
+        from pyramid_debugtoolbar.toolbar import toolbar_handler_factory
+        return toolbar_handler_factory(handler, registry)
+
+    def test_it_disabled(self):
+        def handler():
+            pass
+        result = self._callFUT(handler, self.config.registry)
+        self.assertTrue(result is handler)
+        
+    def test_it_enabled(self):
+        self.config.registry.settings['debugtoolbar.enabled'] = True
+        def handler():
+            pass
+        result = self._callFUT(handler, self.config.registry)
+        self.assertFalse(result is handler)
+
+class Test_toolbar_handler(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.registry.settings['debugtoolbar.enabled'] = True
+        self.config.add_route('debugtoolbar.root', '/_debug_toolbar')
+        self.config.add_static_view('_debugtoolbar/static',
+                                    'pyramid_debugtoolbar:static')
+        self.config.include('pyramid_jinja2')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def _makeHandler(self):
+        self.response = Response('OK')
+        def handler(request):
+            return self.response
+        return handler
+        
+    def _callFUT(self, request, handler=None):
+        registry = self.config.registry
+        from pyramid_debugtoolbar.toolbar import toolbar_handler_factory
+        if handler is None:
+            handler = self._makeHandler()
+        handler = toolbar_handler_factory(handler, registry)
+        return handler(request)
+
+    def test_it_startswith_root_path(self):
+        request = Request.blank('/_debug_toolbar')
+        result = self._callFUT(request)
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(result is self.response)
+
+    def test_it_calls_wrap_handler(self):
+        handler = self._makeHandler()
+        request = Request.blank('/')
+        self.config.registry.settings['debugtoolbar.panels'] = [ DummyPanel ]
+        request.registry = self.config.registry
+        result = self._callFUT(request, handler)
+        self.assertTrue(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(result is self.response)
+        self.assertTrue(handler.wrapped)
+        self.assertTrue(result.processed)
+
+    def test_it_raises_exception_no_intercept_exc(self):
+        request = Request.blank('/')
+        def handler(request):
+            raise NotImplementedError
+        self.assertRaises(NotImplementedError, self._callFUT, request, handler)
+
+    def test_it_raises_exception_intercept_exc(self):
+        request = Request.blank('/')
+        def handler(request):
+            raise NotImplementedError
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        response = self._callFUT(request, handler)
+        self.assertEqual(len(request.exc_history.tracebacks), 1)
+        self.assertTrue(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(response.status_int, 500)
+
+    def test_it_intercept_redirect_nonredirect_code(self):
+        request = Request.blank('/')
+        self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
+        result = self._callFUT(request)
+        self.assertTrue(result is self.response)
+
+    def test_it_intercept_redirect(self):
+        from pyramid.httpexceptions import HTTPFound
+        response = HTTPFound(location='http://other.com')
+        def handler(request):
+            return response
+        request = Request.blank('/')
+        self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
+        result = self._callFUT(request, handler)
+        self.assertTrue(result is response)
+        self.assertEqual(result.status_int, 200)
+        self.assertEqual(result.location, None)
+
 class DummyPanel(object):
     is_active = False
     down = False
@@ -84,6 +191,10 @@ class DummyPanel(object):
 
     def process_response(self, request, response):
         response.processed = True
+
+    def wrap_handler(self, handler):
+        handler.wrapped = True
+        return handler
         
     def dom_id(self):
         return 'id'
