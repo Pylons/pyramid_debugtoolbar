@@ -93,15 +93,13 @@ class Test_toolbar_handler_factory(unittest.TestCase):
         return toolbar_handler_factory(handler, registry)
 
     def test_it_disabled(self):
-        def handler():
-            pass
+        def handler(): pass
         result = self._callFUT(handler, self.config.registry)
         self.assertTrue(result is handler)
         
     def test_it_enabled(self):
         self.config.registry.settings['debugtoolbar.enabled'] = True
-        def handler():
-            pass
+        def handler(): pass
         result = self._callFUT(handler, self.config.registry)
         self.assertFalse(result is handler)
 

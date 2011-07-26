@@ -3,13 +3,10 @@ import sys
 from pyramid.util import DottedNameResolver
 
 try:
-    from pygments import highlight
-    from pygments.formatters import HtmlFormatter
-    from pygments.lexers import SqlLexer
     from pygments.styles import get_style_by_name
     PYGMENT_STYLE = get_style_by_name('colorful')
     HAVE_PYGMENTS = True
-except ImportError:
+except ImportError: # pragma: no cover
     HAVE_PYGMENTS = False
 
 def format_fname(value):
@@ -41,15 +38,6 @@ def format_fname(value):
         prefix_len -= 1
     path = value[prefix_len:]
     return '<%s>' % path
-
-def format_sql(query, args):
-    if not HAVE_PYGMENTS:
-        return query
-
-    return highlight(
-        query,
-        SqlLexer(encoding='utf-8'),
-        HtmlFormatter(encoding='utf-8', noclasses=True, style=PYGMENT_STYLE))
 
 def escape(s, quote=False):
     """Replace special characters "&", "<" and ">" to HTML-safe sequences.  If
