@@ -34,5 +34,5 @@ class Test_format_fname(unittest.TestCase):
     def test_here(self):
         val = __file__
         self.assertTrue(self._callFUT(val).startswith(
-            '<pyramid_debugtoolbar/tests/test_init.py'))
+            '<pyramid_debugtoolbar/tests/test_utils.py'))
 

@@ -27,8 +27,6 @@ default_settings = (
 def parse_settings(settings):
     parsed = {}
     def populate(name, convert=None, default=None):
-        if convert is None:
-            convert = lambda x: x
         name = '%s%s' % (SETTINGS_PREFIX, name)
         value = convert(settings.get(name, default))
         parsed[name] = value
