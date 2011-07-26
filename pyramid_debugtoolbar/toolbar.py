@@ -3,9 +3,10 @@ import sys
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
-from pyramid_debugtoolbar.utils import replace_insensitive, get_setting
 from pyramid_debugtoolbar.tbtools import get_traceback
-from pyramid_debugtoolbar import STATIC_PATH
+from pyramid_debugtoolbar.utils import get_setting
+from pyramid_debugtoolbar.utils import replace_insensitive
+from pyramid_debugtoolbar.utils import STATIC_PATH
 
 class DebugToolbar(object):
 

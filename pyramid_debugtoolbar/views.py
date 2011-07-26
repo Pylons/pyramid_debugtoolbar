@@ -3,7 +3,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from pyramid_debugtoolbar.console import _ConsoleFrame
-from pyramid_debugtoolbar import STATIC_PATH
+from pyramid_debugtoolbar.utils import STATIC_PATH
 
 class ExceptionDebugView(object):
     def __init__(self, request):

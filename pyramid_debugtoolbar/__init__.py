@@ -2,6 +2,7 @@ from pyramid.settings import asbool
 from pyramid.encode import url_quote
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
+from pyramid_debugtoolbar.utils import STATIC_PATH
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
@@ -14,8 +15,6 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     )
-
-STATIC_PATH = 'pyramid_debugtoolbar:static/'
 
 default_settings = (
     ('enabled', asbool, 'true'),

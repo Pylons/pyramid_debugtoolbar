@@ -19,9 +19,9 @@ from tokenize import TokenError
 from pyramid.decorator import reify
 from pyramid.renderers import render
 
-from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.console import Console
-from pyramid_debugtoolbar import STATIC_PATH
+from pyramid_debugtoolbar.utils import escape
+from pyramid_debugtoolbar.utils import STATIC_PATH
 
 _coding_re = re.compile(r'coding[:=]\s*([-\w.]+)')
 _line_re = re.compile(r'^(.*?)$(?m)')

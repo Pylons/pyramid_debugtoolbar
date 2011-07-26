@@ -3,6 +3,7 @@ import sys
 from pyramid.util import DottedNameResolver
 
 SETTINGS_PREFIX = 'debugtoolbar.'
+STATIC_PATH = 'pyramid_debugtoolbar:static/'
 
 try:
     from pygments.styles import get_style_by_name
