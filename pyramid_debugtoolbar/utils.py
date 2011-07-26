@@ -2,6 +2,8 @@ import os.path
 import sys
 from pyramid.util import DottedNameResolver
 
+SETTINGS_PREFIX = 'debugtoolbar.'
+
 try:
     from pygments.styles import get_style_by_name
     PYGMENT_STYLE = get_style_by_name('colorful')
@@ -19,11 +21,6 @@ def format_fname(value):
             return value
         return '.' + os.path.sep + value
 
-    ## # If the file is absolute and within the project root handle it as
-    ## # a project file
-    ## if value.startswith(current_app.root_path):
-    ##     return "." + value[len(current_app.root_path):]
-
     # Loop through sys.path to find the longest match and return
     # the relative path from there.
     prefix = None
@@ -34,7 +31,7 @@ def format_fname(value):
             prefix = new_prefix
             prefix_len = len(prefix)
 
-    if not prefix.endswith(os.path.sep):
+    if not prefix.endswith(os.path.sep): # pragma: no cover
         prefix_len -= 1
     path = value[prefix_len:]
     return '<%s>' % path
@@ -82,5 +79,5 @@ def as_globals_list(value):
         L.append(obj)
     return L
 
-def get_setting(settings, name, default=None, prefix='debugtoolbar.'):
-    return settings.get('%s%s' % (prefix, name), default)
+def get_setting(settings, name, default=None):
+    return settings.get('%s%s' % (SETTINGS_PREFIX, name), default)

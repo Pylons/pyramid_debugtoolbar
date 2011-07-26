@@ -1,6 +1,7 @@
 from pyramid.settings import asbool
 from pyramid.encode import url_quote
 from pyramid_debugtoolbar.utils import as_globals_list
+from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
@@ -23,12 +24,12 @@ default_settings = (
     ('panels', as_globals_list, default_panel_names),
     )
 
-def parse_settings(settings, prefix='debugtoolbar.'):
+def parse_settings(settings):
     parsed = {}
     def populate(name, convert=None, default=None):
         if convert is None:
             convert = lambda x: x
-        name = '%s%s' % (prefix, name)
+        name = '%s%s' % (SETTINGS_PREFIX, name)
         value = convert(settings.get(name, default))
         parsed[name] = value
     for name, convert, default in default_settings:
