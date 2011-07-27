@@ -39,7 +39,8 @@ For a demonstration:
   $ cd pyramid_debugtoolbar
   $ $VENV/bin/python setup.py develop
 
-- Run the ``demo/demo.py`` file using the virtualenv's Python::
+- Run the ``pyramid_debugtoolbar`` package's ``demo/demo.py`` file using the
+  virtualenv's Python::
 
   $ $VENV/bin/python demo/demo.py
 
