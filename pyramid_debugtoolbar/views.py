@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
 
@@ -18,18 +18,21 @@ class ExceptionDebugView(object):
     @view_config(route_name='debugtoolbar.source')
     def source(self):
         exc_history = self.request.exc_history
-        frame = exc_history.frames.get(self.frame)
-        return Response(frame.render_source(), content_type='text/html')
+        if self.frame is not None:
+            frame = exc_history.frames.get(self.frame)
+            if frame is not None:
+                return Response(frame.render_source(), content_type='text/html')
+        return HTTPBadRequest()
 
     @view_config(route_name='debugtoolbar.execute')
     def execute(self):
         exc_history = self.request.exc_history
-        if self.frame is not None and exc_history:
+        if self.frame is not None and self.cmd is not None:
             frame = exc_history.frames.get(self.frame)
-            if self.cmd is not None and frame is not None:
+            if frame is not None:
                 result = frame.console.eval(self.cmd)
                 return Response(result, content_type='text/html')
-        return HTTPNotFound()
+        return HTTPBadRequest()
         
     @view_config(route_name='debugtoolbar.console',
                  renderer='pyramid_debugtoolbar:templates/console.jinja2')
@@ -48,5 +51,5 @@ class ExceptionDebugView(object):
             if 0 not in exc_history.frames:
                 exc_history.frames[0] = _ConsoleFrame({})
             return vars
-        return HTTPNotFound()
+        return HTTPBadRequest()
 
