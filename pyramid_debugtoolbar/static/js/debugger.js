@@ -45,7 +45,7 @@ $(function() {
               sourceView.slideUp('fast');
             });
         $.get('/_debug_toolbar/source', 
-                        {frm: frameID}, function(data) {
+                {frm: frameID, token: TOKEN}, function(data) {
           $('table', sourceView)
             .replaceWith(data);
           if (!sourceView.is(':visible'))
@@ -96,7 +96,7 @@ $(function() {
       $.ajax({
         dataType:     'json',
         url:          '/_debug_toolbar/paste',
-        data:         {tb: TRACEBACK},
+        data:         {tb: TRACEBACK, token: TOKEN},
         success:      function(data) {
           $('div.plain span.pastemessage')
             .removeClass('pastemessage')
@@ -134,7 +134,7 @@ function openShell(consoleNode, target, frameID) {
     .submit(function() {
       var cmd = command.val();
       $.get('/_debug_toolbar/execute', {
-          cmd: cmd, frm: frameID}, function(data) {
+              cmd: cmd, frm: frameID, token:DEBUGGER_TOKEN}, function(data) {
         var tmp = $('<div>').html(data);
         $('span.extended', tmp).each(function() {
           var hidden = $(this).wrap('<span>').hide();

@@ -13,7 +13,10 @@ class TestExceptionDebugView(unittest.TestCase):
         return ExceptionDebugView(request)
 
     def _makeRequest(self):
+        import hashlib
         request = testing.DummyRequest()
+        request.secret = 'abc';
+        request.params['token'] = hashlib.sha256('abc').hexdigest()
         return request
 
     def _makeExceptionHistory(self, frames=None):

@@ -1,5 +1,6 @@
-from pyramid.settings import asbool
+from pyramid.config import ConfigurationError
 from pyramid.encode import url_quote
+from pyramid.settings import asbool
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -17,11 +18,16 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     )
 
+def bare(x): return x
+
+nodefault = object()
+
 default_settings = (
     ('enabled', asbool, 'true'),
     ('intercept_exc', asbool, 'true'),
     ('intercept_redirects', asbool, 'true'),
     ('panels', as_globals_list, default_panel_names),
+    ('secret', bare, nodefault),
     )
 
 def parse_settings(settings):
@@ -29,6 +35,10 @@ def parse_settings(settings):
     def populate(name, convert, default):
         name = '%s%s' % (SETTINGS_PREFIX, name)
         value = convert(settings.get(name, default))
+        if value is nodefault:
+            raise ConfigurationError(
+                'Pyramid debug toolbar requires a "%s" configuration '
+                'value, but none exists in the Pyramid settings' % name)
         parsed[name] = value
     for name, convert, default in default_settings:
         populate(name, convert, default)

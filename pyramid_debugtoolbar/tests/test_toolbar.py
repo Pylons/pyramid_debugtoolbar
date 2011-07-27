@@ -157,6 +157,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
         response = self._callFUT(request, handler)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertTrue(hasattr(request, 'debug_toolbar'))

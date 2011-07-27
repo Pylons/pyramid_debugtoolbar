@@ -1,6 +1,3 @@
-- Secret key in console execute query string (see
-  http://news.ycombinator.com/item?id=2802281).
-
 - Response headers in headers view.
 
 - Disambiguate panel UI ordering from panel invocation ordering.

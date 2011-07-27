@@ -11,6 +11,7 @@
 import re
 import os
 import sys
+import hashlib
 import inspect
 import traceback
 import codecs
@@ -216,7 +217,7 @@ class Traceback(object):
             'classes':      u' '.join(classes),
             'title':        title and u'<h3>%s</h3>' % title or u'',
             'frames':       u'\n'.join(frames),
-            'description':  description_wrapper % escape(self.exception)
+            'description':  description_wrapper % escape(self.exception),
         }
         return render('pyramid_debugtoolbar:templates/exception_summary.jinja2',
                       vars, request=request)
@@ -238,6 +239,7 @@ class Traceback(object):
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
             'traceback_id':     self.id,
             'static_path':      static_url,
+            'token':            hashlib.sha256(request.secret).hexdigest(),
         }
         return render('pyramid_debugtoolbar:templates/exception.jinja2',
                       vars, request=request)

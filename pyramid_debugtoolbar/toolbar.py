@@ -64,6 +64,7 @@ def toolbar_handler_factory(handler, registry):
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
+    secret = get_setting(settings, 'secret')
 
     exc_history = None
 
@@ -73,6 +74,7 @@ def toolbar_handler_factory(handler, registry):
     def toolbar_handler(request):
         root_path = request.route_path('debugtoolbar.root')
         request.exc_history = exc_history
+        request.secret = secret
 
         if request.path.startswith(root_path):
             return handler(request)
