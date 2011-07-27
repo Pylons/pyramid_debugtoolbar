@@ -230,14 +230,17 @@
 	border-collapse:collapse;
 	width:100%;
 	background-color:#fff;
-	display:block;
 	margin-top:0.8em;
 	overflow: auto;
+}
+#flDebug .panelContent tr {
+    width:100%;
 }
 #flDebug .panelContent tbody td,
 #flDebug .panelContent tbody th {
 	vertical-align:top;
 	padding:2px 3px;
+	width:auto;
 }
 #flDebug .panelContent thead th {
 	padding:1px 6px 1px 3px;

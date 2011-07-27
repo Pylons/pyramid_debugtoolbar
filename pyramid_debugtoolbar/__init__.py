@@ -14,6 +14,7 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.profiler.ProfilerDebugPanel',
     'pyramid_debugtoolbar.panels.timer.TimerDebugPanel',
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
+    'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     )
 
 default_settings = (

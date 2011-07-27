@@ -1,0 +1,20 @@
+	<table>
+		<thead>
+			<tr>
+				<th>Time&nbsp;(ms)</th>
+				<th>Query</th>
+				<th>Params</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for query in queries %}
+			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+				<td>{{ '%.4f'|format(query.duration) }}</td>
+				<td>{{ query.sql|safe }}</td>
+				<td>{{ query.params|escape }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+	</table>
+
+
