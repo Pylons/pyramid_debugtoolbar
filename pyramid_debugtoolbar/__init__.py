@@ -20,8 +20,6 @@ default_panel_names = (
 
 def bare(x): return x
 
-nodefault = object()
-
 default_settings = (
     ('enabled', asbool, 'true'),
     ('intercept_exc', asbool, 'true'),
@@ -34,10 +32,6 @@ def parse_settings(settings):
     def populate(name, convert, default):
         name = '%s%s' % (SETTINGS_PREFIX, name)
         value = convert(settings.get(name, default))
-        if value is nodefault:
-            raise ConfigurationError(
-                'Pyramid debug toolbar requires a "%s" configuration '
-                'value, but none exists in the Pyramid settings' % name)
         parsed[name] = value
     for name, convert, default in default_settings:
         populate(name, convert, default)

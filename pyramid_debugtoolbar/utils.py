@@ -9,7 +9,7 @@ try:
     from pygments.styles import get_style_by_name
     PYGMENT_STYLE = get_style_by_name('colorful')
     HAVE_PYGMENTS = True
-except ImportError:
+except ImportError: # pragma: no cover
     HAVE_PYGMENTS = False
 
 SETTINGS_PREFIX = 'debugtoolbar.'
@@ -40,8 +40,8 @@ def format_fname(value):
     path = value[prefix_len:]
     return '<%s>' % path
 
-def format_sql(query, args):
-    if not HAVE_PYGMENTS:
+def format_sql(query):
+    if not HAVE_PYGMENTS: # pragma: no cover
         return query
 
     return highlight(

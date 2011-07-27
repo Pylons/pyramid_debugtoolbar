@@ -36,3 +36,12 @@ class Test_format_fname(unittest.TestCase):
         self.assertTrue(self._callFUT(val).startswith(
             '<pyramid_debugtoolbar/tests/test_utils.py'))
 
+
+class Test_format_sql(unittest.TestCase):
+    def _callFUT(self, query):
+        from pyramid_debugtoolbar.utils import format_sql
+        return format_sql(query)
+
+    def test_it(self):
+        result = self._callFUT('SELECT * FROM TBL')
+        self.assertTrue(result.startswith('<div'))

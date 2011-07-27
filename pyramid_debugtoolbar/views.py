@@ -8,7 +8,10 @@ from pyramid_debugtoolbar.utils import STATIC_PATH
 class ExceptionDebugView(object):
     def __init__(self, request):
         self.request = request
-        self.exc_history = request.exc_history
+        exc_history = request.exc_history
+        if exc_history is None:
+            raise HTTPBadRequest('No exception history')
+        self.exc_history = exc_history
         token = self.request.params.get('token')
         if not token:
             raise HTTPBadRequest('No token in request')
@@ -45,17 +48,15 @@ class ExceptionDebugView(object):
     def console(self):
         static_path = self.request.static_url(STATIC_PATH)
         exc_history = self.exc_history
-        if exc_history:
-            vars = {
-                'evalex':           'true',
-                'console':          'true',
-                'title':            'Console',
-                'traceback_id':     -1,
-                'static_path':      static_path,
-                'token':            self.token,
-                }
-            if 0 not in exc_history.frames:
-                exc_history.frames[0] = _ConsoleFrame({})
-            return vars
-        return HTTPBadRequest()
+        vars = {
+            'evalex':           'true',
+            'console':          'true',
+            'title':            'Console',
+            'traceback_id':     -1,
+            'static_path':      static_path,
+            'token':            exc_history.token,
+            }
+        if 0 not in exc_history.frames:
+            exc_history.frames[0] = _ConsoleFrame({})
+        return vars
 

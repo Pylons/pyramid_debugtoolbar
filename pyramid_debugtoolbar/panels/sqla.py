@@ -72,7 +72,7 @@ class SQLADebugPanel(DebugPanel):
         for query in self.queries:
             data.append({
                 'duration': query['duration'],
-                'sql': format_sql(query['statement'], query['parameters']),
+                'sql': format_sql(query['statement']),
                 'raw_sql': query['statement'],
                 'params': query['parameters'],
                 'context': query['context']

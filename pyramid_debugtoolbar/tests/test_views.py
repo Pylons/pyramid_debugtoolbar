@@ -16,6 +16,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request = testing.DummyRequest()
         request.secret = 'abc';
         request.params['token'] = 'token'
+        request.exc_history = self._makeExceptionHistory()
         return request
 
     def _makeExceptionHistory(self, frames=None):
@@ -24,11 +25,30 @@ class TestExceptionDebugView(unittest.TestCase):
             frames = {0:frm}
         exc_history = DummyExceptionHistory(frames)
         return exc_history
+
+    def test_no_exc_history(self):
+        from pyramid.httpexceptions import HTTPBadRequest
+        request = self._makeRequest()
+        request.static_url = lambda *arg, **kw: 'http://static'
+        request.params['frm'] = '0'
+        request.exc_history = None
+        self.assertRaises(HTTPBadRequest, self._makeOne, request)
+
+    def test_without_token_in_request(self):
+        from pyramid.httpexceptions import HTTPBadRequest
+        request = self._makeRequest()
+        del request.params['token']
+        self.assertRaises(HTTPBadRequest, self._makeOne, request)
+
+    def test_with_bad_token_in_request(self):
+        from pyramid.httpexceptions import HTTPBadRequest
+        request = self._makeRequest()
+        request.params['token'] = 'wrong'
+        self.assertRaises(HTTPBadRequest, self._makeOne, request)
         
     def test_source(self):
         request = self._makeRequest()
         request.params['frm'] = '0'
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.source()
         self.assertEqual(response.body, 'source')
@@ -36,7 +56,6 @@ class TestExceptionDebugView(unittest.TestCase):
 
     def test_source_no_frame(self):
         request = self._makeRequest()
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.source()
         self.assertEqual(response.status_int, 400)
@@ -44,7 +63,6 @@ class TestExceptionDebugView(unittest.TestCase):
     def test_source_frame_not_found(self):
         request = self._makeRequest()
         request.params['frm'] = '1'
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.source()
         self.assertEqual(response.status_int, 400)
@@ -53,7 +71,6 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         request.params['frm'] = '0'
         request.params['cmd'] = 'doit'
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.execute()
         self.assertEqual(response.body, 'evaled')
@@ -62,7 +79,6 @@ class TestExceptionDebugView(unittest.TestCase):
     def test_execute_frame_is_None(self):
         request = self._makeRequest()
         request.params['cmd'] = 'doit'
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.execute()
         self.assertEqual(response.status_int, 400)
@@ -70,7 +86,6 @@ class TestExceptionDebugView(unittest.TestCase):
     def test_execute_cmd_is_None(self):
         request = self._makeRequest()
         request.params['frm'] = '0'
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.execute()
         self.assertEqual(response.status_int, 400)
@@ -79,10 +94,33 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         request.params['frm'] = '1'
         request.params['cmd'] = 'doit'
-        request.exc_history = self._makeExceptionHistory()
         view = self._makeOne(request)
         response = view.execute()
         self.assertEqual(response.status_int, 400)
+
+    def test_console(self):
+        request = self._makeRequest()
+        request.static_url = lambda *arg, **kw: 'http://static'
+        request.params['frm'] = '0'
+        view = self._makeOne(request)
+        result = view.console()
+        self.assertEqual(result,
+                         {'console': 'true',
+                          'title': 'Console',
+                          'evalex': 'true',
+                          'traceback_id': -1,
+                          'token': 'token',
+                          'static_path': 'http://static'}
+                         )
+
+    def test_console_no_initial_history_frame(self):
+        request = self._makeRequest()
+        request.static_url = lambda *arg, **kw: 'http://static'
+        request.params['frm'] = '0'
+        request.exc_history.frames = {}
+        view = self._makeOne(request)
+        view.console()
+        self.assertEqual(len(request.exc_history.frames), 1)
 
 class DummyExceptionHistory(object):
     def __init__(self, frames):
