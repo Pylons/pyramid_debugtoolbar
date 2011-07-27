@@ -57,6 +57,31 @@ class TestExceptionDebugView(unittest.TestCase):
         self.assertEqual(response.body, 'evaled')
         self.assertEqual(response.content_type, 'text/html')
 
+    def test_execute_frame_is_None(self):
+        request = self._makeRequest()
+        request.params['cmd'] = 'doit'
+        request.exc_history = self._makeExceptionHistory()
+        view = self._makeOne(request)
+        response = view.execute()
+        self.assertEqual(response.status_int, 400)
+
+    def test_execute_cmd_is_None(self):
+        request = self._makeRequest()
+        request.params['frm'] = '0'
+        request.exc_history = self._makeExceptionHistory()
+        view = self._makeOne(request)
+        response = view.execute()
+        self.assertEqual(response.status_int, 400)
+
+    def test_execute_nosuchframe(self):
+        request = self._makeRequest()
+        request.params['frm'] = '1'
+        request.params['cmd'] = 'doit'
+        request.exc_history = self._makeExceptionHistory()
+        view = self._makeOne(request)
+        response = view.execute()
+        self.assertEqual(response.status_int, 400)
+
 class DummyExceptionHistory(object):
     def __init__(self, frames):
         self.frames = frames
