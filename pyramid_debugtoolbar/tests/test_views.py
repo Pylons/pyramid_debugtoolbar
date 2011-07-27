@@ -13,10 +13,9 @@ class TestExceptionDebugView(unittest.TestCase):
         return ExceptionDebugView(request)
 
     def _makeRequest(self):
-        import hashlib
         request = testing.DummyRequest()
         request.secret = 'abc';
-        request.params['token'] = hashlib.sha256('abc').hexdigest()
+        request.params['token'] = 'token'
         return request
 
     def _makeExceptionHistory(self, frames=None):
@@ -87,7 +86,9 @@ class TestExceptionDebugView(unittest.TestCase):
 
 class DummyExceptionHistory(object):
     def __init__(self, frames):
+        self.token = 'token'
         self.frames = frames
+
 class DummyConsole(object):
     def eval(self, cmd):
         return 'evaled'

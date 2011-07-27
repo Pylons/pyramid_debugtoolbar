@@ -27,7 +27,6 @@ default_settings = (
     ('intercept_exc', asbool, 'true'),
     ('intercept_redirects', asbool, 'true'),
     ('panels', as_globals_list, default_panel_names),
-    ('secret', bare, nodefault),
     )
 
 def parse_settings(settings):

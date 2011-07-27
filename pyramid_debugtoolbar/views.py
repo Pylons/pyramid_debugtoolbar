@@ -5,16 +5,14 @@ from pyramid.view import view_config
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
 
-import hashlib
-
 class ExceptionDebugView(object):
     def __init__(self, request):
         self.request = request
-        self.hashed_token = hashlib.sha256(request.secret).hexdigest()
+        self.exc_history = request.exc_history
         token = self.request.params.get('token')
         if not token:
             raise HTTPBadRequest('No token in request')
-        if not token == self.hashed_token:
+        if not token == self.exc_history.token:
             raise HTTPBadRequest('Bad token in request')
         frm = self.request.params.get('frm')
         if frm is not None:
@@ -25,7 +23,7 @@ class ExceptionDebugView(object):
 
     @view_config(route_name='debugtoolbar.source')
     def source(self):
-        exc_history = self.request.exc_history
+        exc_history = self.exc_history
         if self.frame is not None:
             frame = exc_history.frames.get(self.frame)
             if frame is not None:
@@ -34,7 +32,7 @@ class ExceptionDebugView(object):
 
     @view_config(route_name='debugtoolbar.execute')
     def execute(self):
-        exc_history = self.request.exc_history
+        exc_history = self.exc_history
         if self.frame is not None and self.cmd is not None:
             frame = exc_history.frames.get(self.frame)
             if frame is not None:
@@ -45,9 +43,8 @@ class ExceptionDebugView(object):
     @view_config(route_name='debugtoolbar.console',
                  renderer='pyramid_debugtoolbar:templates/console.jinja2')
     def console(self):
-        request = self.request
-        static_path = request.static_url(STATIC_PATH)
-        exc_history = request.exc_history
+        static_path = self.request.static_url(STATIC_PATH)
+        exc_history = self.exc_history
         if exc_history:
             vars = {
                 'evalex':           'true',
@@ -55,7 +52,7 @@ class ExceptionDebugView(object):
                 'title':            'Console',
                 'traceback_id':     -1,
                 'static_path':      static_path,
-                'token':            self.hashed_token,
+                'token':            self.token,
                 }
             if 0 not in exc_history.frames:
                 exc_history.frames[0] = _ConsoleFrame({})

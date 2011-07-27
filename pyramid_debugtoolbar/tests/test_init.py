@@ -12,15 +12,14 @@ class Test_parse_settings(unittest.TestCase):
         settings = {'debugtoolbar.enabled':'false',
                     'debugtoolbar.intercept_exc':'false',
                     'debugtoolbar.intercept_redirects': 'false',
-                    'debugtoolbar.panels': panels,
-                    'debugtoolbar.secret':'abc'}
+                    'debugtoolbar.panels': panels}
         result = self._callFUT(settings)
         self.assertEqual(result,
                          {'debugtoolbar.enabled':False,
                           'debugtoolbar.intercept_exc': False,
                           'debugtoolbar.intercept_redirects': False,
                           'debugtoolbar.panels': [DummyPanel, DummyPanel],
-                          'debugtoolbar.secret':'abc'}
+                          }
                          )
 
 class Test_includeme(unittest.TestCase):
@@ -32,7 +31,6 @@ class Test_includeme(unittest.TestCase):
         return includeme(config)
 
     def test_it(self):
-        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
         self._callFUT(self.config)
 
     

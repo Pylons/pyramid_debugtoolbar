@@ -43,7 +43,6 @@ if __name__ == '__main__':
     # configuration settings
     settings = {}
     settings['mako.directories'] = os.path.join(here, 'templates')
-    settings['debugtoolbar.secret'] = 'see1jskj'
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
