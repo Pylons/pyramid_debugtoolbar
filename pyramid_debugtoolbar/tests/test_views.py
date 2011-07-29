@@ -125,6 +125,24 @@ class TestExceptionDebugView(unittest.TestCase):
         view.console()
         self.assertEqual(len(request.exc_history.frames), 1)
 
+    def test_exception_summary(self):
+        from pyramid.renderers import render
+        self.config.include('pyramid_jinja2')
+        request = self._makeRequest()
+        request.static_url = lambda *arg, **kw: 'http://static'
+        vars = {
+            'classes':      u'classfoo class&bar',
+            'title':        u'<h3>TEH TITLE</h3>',
+            'frames':       u'<pre>Frame1</pre><pre>Frame2</pre>',
+        }
+        html = render(
+            'pyramid_debugtoolbar:templates/exception_summary.jinja2',
+            vars, request=request)
+        self.assert_(u'<div class="classfoo class&amp;bar">' in html, html)
+        self.assert_(u'<h3>TEH TITLE</h3>' in html, html)
+        self.assert_(u'<pre>Frame1</pre><pre>Frame2</pre>' in html, html)
+
+
 class DummyExceptionHistory(object):
     def __init__(self, frames):
         self.token = 'token'
