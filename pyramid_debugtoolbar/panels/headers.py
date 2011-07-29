@@ -9,19 +9,10 @@ class HeaderDebugPanel(DebugPanel):
     """
     name = 'Header'
     has_content = True
-    # List of headers we want to display
-    header_filter = (
+
+    # List of CGI headers to display along with HTTP_ custom headers
+    request_header_filter = (
         'CONTENT_TYPE',
-        'HTTP_ACCEPT',
-        'HTTP_ACCEPT_CHARSET',
-        'HTTP_ACCEPT_ENCODING',
-        'HTTP_ACCEPT_LANGUAGE',
-        'HTTP_CACHE_CONTROL',
-        'HTTP_CONNECTION',
-        'HTTP_HOST',
-        'HTTP_KEEP_ALIVE',
-        'HTTP_REFERER',
-        'HTTP_USER_AGENT',
         'QUERY_STRING',
         'REMOTE_ADDR',
         'REMOTE_HOST',
@@ -36,10 +27,10 @@ class HeaderDebugPanel(DebugPanel):
 
     def __init__(self, request):
         self.request = request
-        self.headers = dict(
-            [(k, request.environ[k])
-                for k in self.header_filter if k in request.environ]
-        )
+        self.request_headers = dict([
+            (k, request.environ[k]) for k in request.environ
+            if k in self.header_filter or k.startswith('HTTP_')
+        ])
 
     def nav_title(self):
         return _('HTTP Headers')
