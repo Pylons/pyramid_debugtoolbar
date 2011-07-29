@@ -16,7 +16,9 @@ SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
 ROOT_ROUTE_NAME = 'debugtoolbar.root'
 
-def format_fname(value):
+def format_fname(value, _sys_path=None):
+    if _sys_path is None:
+        _sys_path = sys.path # dependency injection
     # If the value is not an absolute path, the it is a builtin or
     # a relative file (thus a project file).
     if not os.path.isabs(value):
@@ -28,18 +30,24 @@ def format_fname(value):
 
     # Loop through sys.path to find the longest match and return
     # the relative path from there.
-    prefix = None
     prefix_len = 0
-    for path in sys.path:
-        new_prefix = os.path.commonprefix([path, value])
-        if len(new_prefix) > prefix_len:
-            prefix = new_prefix
-            prefix_len = len(prefix)
+    value_segs = value.split(os.path.sep)
+    for path in _sys_path:
+        count = common_segment_count(path.split(os.path.sep), value_segs)
+        if count > prefix_len:
+            prefix_len = count
+    return '<%s>' % os.path.sep.join(value_segs[prefix_len:])
 
-    if not prefix.endswith(os.path.sep): # pragma: no cover
-        prefix_len -= 1
-    path = value[prefix_len:]
-    return '<%s>' % path
+def common_segment_count(path, value):
+    """Return the number of path segments common to both"""
+    i = 0
+    if len(path) <= len(value):
+        for x1, x2 in zip(path, value):
+            if x1 == x2:
+                i += 1
+            else:
+                return 0
+    return i
 
 def format_sql(query):
     if not HAVE_PYGMENTS: # pragma: no cover

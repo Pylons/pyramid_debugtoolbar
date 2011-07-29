@@ -16,9 +16,9 @@ class Test_escape(unittest.TestCase):
 
 
 class Test_format_fname(unittest.TestCase):
-    def _callFUT(self, value):
+    def _callFUT(self, value, sys_path=None):
         from pyramid_debugtoolbar.utils import format_fname
-        return format_fname(value)
+        return format_fname(value, sys_path)
 
     def test_builtin(self):
         self.assertEqual(self._callFUT('{a}'), '{a}')
@@ -31,10 +31,22 @@ class Test_format_fname(unittest.TestCase):
         val = '..' + os.path.sep + 'foo'
         self.assertEqual(self._callFUT(val), './../foo')
 
-    def test_here(self):
-        val = __file__
-        self.assertTrue(self._callFUT(val).startswith(
-            '<pyramid_debugtoolbar/tests/test_utils.py'))
+    def test_module_file_path(self):
+        sys_path = [
+            '/foo/',
+            '/foo/bar',
+            '/usr/local/python/site-packages/',
+        ]
+        modpath = self._callFUT(
+            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py', sys_path)
+        self.assertEqual(modpath, 
+            '<pyramid_debugtoolbar/tests/debugfoo.py>')
+
+    def test_no_matching_sys_path(self):
+        val = '/foo/bar/pyramid_debugtoolbar/foo.py'
+        sys_path = ['/bar/baz']
+        self.assertEqual(self._callFUT(val, sys_path),
+            '</foo/bar/pyramid_debugtoolbar/foo.py>')
 
 
 class Test_format_sql(unittest.TestCase):
