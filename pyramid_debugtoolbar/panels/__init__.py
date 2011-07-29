@@ -11,7 +11,7 @@ class DebugPanel(object):
     has_content = False # If content returns something, set to true in subclass
 
     # If the client is able to activate/de-activate the panel
-    user_enable = False
+    user_activate = False
 
     # If the panel is disabled because the environment can't support it.
     down = False
