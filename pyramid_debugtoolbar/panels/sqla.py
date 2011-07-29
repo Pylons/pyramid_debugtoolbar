@@ -47,10 +47,7 @@ class SQLADebugPanel(DebugPanel):
     def has_content(self):
         return True if self.queries else False
 
-    def process_request(self, request):
-        pass
-
-    def process_response(self, request, response):
+    def process_response(self, response):
         pass
 
     def nav_title(self):

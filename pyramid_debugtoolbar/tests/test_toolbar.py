@@ -193,7 +193,7 @@ class DummyPanel(object):
     def __init__(self, request):
         self.request = request
 
-    def process_response(self, request, response):
+    def process_response(self, response):
         response.processed = True
 
     def wrap_handler(self, handler):

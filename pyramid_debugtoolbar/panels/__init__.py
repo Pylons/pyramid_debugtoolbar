@@ -53,7 +53,7 @@ class DebugPanel(object):
                                    mapping=mapping)
 
     # Standard middleware methods
-    def process_response(self, request, response):
+    def process_response(self, response):
         pass
 
     def process_beforerender(self, event):

@@ -29,7 +29,7 @@ class DebugToolbar(object):
         request = self.request
 
         for panel in self.panels:
-            panel.process_response(request, response)
+            panel.process_response(response)
 
         if response.content_type in self.html_types:
             static_path = request.static_url(STATIC_PATH)
