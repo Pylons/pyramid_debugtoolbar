@@ -1,0 +1,52 @@
+<table>
+	<colgroup>
+		<col style="width:20%"/>
+		<col/>
+	</colgroup>
+	<thead>
+		<tr>
+			<th>Resource</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for key, value in timing_rows %}
+			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+				<td>{{ key|escape }}</td>
+				<td>{{ value|escape }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<h4>Profile</h4>
+{% if stats %}
+    <p>Times in milliseconds</p>
+    <table class="flDebugSortable">
+        <thead>
+            <tr>
+                <th>Calls</th>
+                <th>Total</th>
+                <th>Percall</th>
+                <th>Cumu</th>
+                <th>CumuPer</th>
+                <th>Func</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in function_calls %}
+                <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+                    <td>{{ row.ncalls }}</td>
+                    <td>{{ row.tottime }}</td>
+                    <td>{{ '%.4f'|format(row.percall) }}</td>
+                    <td>{{ row.cumtime }}</td>
+                    <td>{{ '%.4f'|format(row.percall_cum) }}</td>
+                    <td title="{{ row.filename_long }}">{{ row.filename|escape }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>The profiler is not activated. Activate the checkbox in the toolbar to use it.</p>
+{% endif %}
+
