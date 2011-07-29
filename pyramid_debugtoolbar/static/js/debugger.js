@@ -44,8 +44,8 @@ $(function() {
             .click(function() {
               sourceView.slideUp('fast');
             });
-        $.get(DEBUG_TOOLBAR_ROOT_PATH + '/source', 
-                {frm: frameID, token: TOKEN}, function(data) {
+       $.get(DEBUG_TOOLBAR_ROOT_PATH + '/source', 
+                {frm: frameID, token: DEBUGGER_TOKEN}, function(data) {
           $('table', sourceView)
             .replaceWith(data);
           if (!sourceView.is(':visible'))
@@ -96,7 +96,7 @@ $(function() {
       $.ajax({
         dataType:     'json',
         url:          DEBUG_TOOLBAR_ROOT_PATH + '/paste',
-        data:         {tb: TRACEBACK, token: TOKEN},
+        data:         {tb: TRACEBACK, token: DEBUGGER_TOKEN},
         success:      function(data) {
           $('div.plain span.pastemessage')
             .removeClass('pastemessage')
