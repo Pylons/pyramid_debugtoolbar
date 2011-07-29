@@ -1,3 +1,4 @@
+<h4>Request Headers</h4>
 <table>
 	<thead>
 		<tr>
@@ -6,7 +7,25 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for key, value in headers.iteritems() %}
+		{% for key, value in request_headers %}
+			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+				<td>{{ key|escape }}</td>
+				<td>{{ value|escape }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<h4>Response Headers</h4>
+<table>
+	<thead>
+		<tr>
+			<th>Key</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for key, value in response_headers %}
 			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 				<td>{{ key|escape }}</td>
 				<td>{{ value|escape }}</td>

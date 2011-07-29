@@ -27,10 +27,15 @@ class HeaderDebugPanel(DebugPanel):
 
     def __init__(self, request):
         self.request = request
-        self.request_headers = dict([
-            (k, request.environ[k]) for k in request.environ
-            if k in self.header_filter or k.startswith('HTTP_')
-        ])
+        self.request_headers = [
+            (k, request.environ[k]) for k in sorted(request.environ)
+            if k in self.request_header_filter or k.startswith('HTTP_')
+        ]
+
+    def process_response(self, response):
+        self.response_headers = [
+            (k, v) for k, v in sorted(response.headerlist)
+        ]
 
     def nav_title(self):
         return _('HTTP Headers')
@@ -42,7 +47,8 @@ class HeaderDebugPanel(DebugPanel):
         return ''
 
     def content(self):
-        vars = {'headers': self.headers}
+        vars = {'request_headers': self.request_headers,
+                'response_headers': self.response_headers}
         return self.render(
             'pyramid_debugtoolbar.panels:templates/headers.jinja2',
             vars, self.request)
