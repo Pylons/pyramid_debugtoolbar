@@ -43,9 +43,12 @@ class DebugToolbarTests(unittest.TestCase):
         self.assertTrue(response.processed)
 
     def test_process_response_html(self):
+        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+        from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config.include('pyramid_jinja2')
         self.config.add_static_view('_debugtoolbar/static',
-                                    'pyramid_debugtoolbar:static')
+                                    STATIC_PATH)
+        self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
@@ -105,11 +108,13 @@ class Test_toolbar_handler_factory(unittest.TestCase):
 
 class Test_toolbar_handler(unittest.TestCase):
     def setUp(self):
+        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+        from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config = testing.setUp()
         self.config.registry.settings['debugtoolbar.enabled'] = True
-        self.config.add_route('debugtoolbar.root', '/_debug_toolbar')
+        self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_static_view('_debugtoolbar/static',
-                                    'pyramid_debugtoolbar:static')
+                                    STATIC_PATH)
         self.config.include('pyramid_jinja2')
 
     def tearDown(self):

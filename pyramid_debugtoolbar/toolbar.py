@@ -8,6 +8,7 @@ from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 class DebugToolbar(object):
 
@@ -32,7 +33,9 @@ class DebugToolbar(object):
 
         if response.content_type in self.html_types:
             static_path = request.static_url(STATIC_PATH)
-            vars = {'panels': self.panels, 'static_path':static_path}
+            root_path = request.route_url(ROOT_ROUTE_NAME)
+            vars = {'panels': self.panels, 'static_path': static_path,
+                    'root_path': root_path}
             toolbar_html = render(
                 'pyramid_debugtoolbar:templates/toolbar.jinja2',
                 vars, request=request)

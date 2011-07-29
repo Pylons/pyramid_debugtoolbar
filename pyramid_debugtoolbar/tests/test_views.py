@@ -101,6 +101,7 @@ class TestExceptionDebugView(unittest.TestCase):
     def test_console(self):
         request = self._makeRequest()
         request.static_url = lambda *arg, **kw: 'http://static'
+        request.route_url = lambda *arg, **kw: 'http://root'
         request.params['frm'] = '0'
         view = self._makeOne(request)
         result = view.console()
@@ -110,12 +111,14 @@ class TestExceptionDebugView(unittest.TestCase):
                           'evalex': 'true',
                           'traceback_id': -1,
                           'token': 'token',
-                          'static_path': 'http://static'}
+                          'static_path': 'http://static',
+                          'root_path':'http://root'}
                          )
 
     def test_console_no_initial_history_frame(self):
         request = self._makeRequest()
         request.static_url = lambda *arg, **kw: 'http://static'
+        request.route_url = lambda *arg, **kw: 'http://root'
         request.params['frm'] = '0'
         request.exc_history.frames = {}
         view = self._makeOne(request)

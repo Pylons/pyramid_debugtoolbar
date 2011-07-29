@@ -14,6 +14,7 @@ except ImportError: # pragma: no cover
 
 SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
+ROOT_ROUTE_NAME = 'debugtoolbar.root'
 
 def format_fname(value):
     # If the value is not an absolute path, the it is a builtin or

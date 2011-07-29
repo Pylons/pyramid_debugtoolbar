@@ -1,9 +1,9 @@
-from pyramid.config import ConfigurationError
 from pyramid.encode import url_quote
 from pyramid.settings import asbool
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
@@ -50,7 +50,7 @@ def includeme(config):
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender')
-    config.add_route('debugtoolbar.root', '/_debug_toolbar', static=True)
+    config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar', static=True)
     config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
     config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
     config.add_route('debugtoolbar.console', '/_debug_toolbar/console')

@@ -4,6 +4,7 @@ from pyramid.view import view_config
 
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 class ExceptionDebugView(object):
     def __init__(self, request):
@@ -47,12 +48,14 @@ class ExceptionDebugView(object):
                  renderer='pyramid_debugtoolbar:templates/console.jinja2')
     def console(self):
         static_path = self.request.static_url(STATIC_PATH)
+        toolbar_root_path = self.request.route_url(ROOT_ROUTE_NAME)
         exc_history = self.exc_history
         vars = {
             'evalex':           'true',
             'console':          'true',
             'title':            'Console',
             'traceback_id':     -1,
+            'root_path':        toolbar_root_path,
             'static_path':      static_path,
             'token':            exc_history.token,
             }

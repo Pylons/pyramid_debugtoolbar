@@ -21,7 +21,7 @@ $(function() {
      * Add an interactive console to the frames
      */
     if (EVALEX)
-      $('<img src="/_debug_toolbar/static/img/console.png">')
+      $('<img src="' + DEBUG_TOOLBAR_STATIC_PATH + '/img/console.png">')
         .attr('title', 'Open an interactive python shell in this frame')
         .click(function() {
           consoleNode = openShell(consoleNode, target, frameID);
@@ -32,7 +32,7 @@ $(function() {
     /**
      * Show sourcecode
      */
-    var sourceButton = $('<img src="/_debug_toolbar/static/img/source.png">')
+    var sourceButton = $('<img src="' + DEBUG_TOOLBAR_STATIC_PATH + '/img/source.png">')
       .attr('title', 'Display the sourcecode for this frame')
       .click(function() {
         if (!sourceView)
@@ -44,7 +44,7 @@ $(function() {
             .click(function() {
               sourceView.slideUp('fast');
             });
-        $.get('/_debug_toolbar/source', 
+        $.get(DEBUG_TOOLBAR_ROOT_PATH + '/source', 
                 {frm: frameID, token: TOKEN}, function(data) {
           $('table', sourceView)
             .replaceWith(data);
@@ -95,7 +95,7 @@ $(function() {
       label.val('submitting...');
       $.ajax({
         dataType:     'json',
-        url:          '/_debug_toolbar/paste',
+        url:          DEBUG_TOOLBAR_ROOT_PATH + '/paste',
         data:         {tb: TRACEBACK, token: TOKEN},
         success:      function(data) {
           $('div.plain span.pastemessage')
@@ -133,7 +133,7 @@ function openShell(consoleNode, target, frameID) {
   var form = $('<form>&gt;&gt;&gt; </form>')
     .submit(function() {
       var cmd = command.val();
-      $.get('/_debug_toolbar/execute', {
+      $.get(DEBUG_TOOLBAR_ROOT_PATH + '/execute', {
               cmd: cmd, frm: frameID, token:DEBUGGER_TOKEN}, function(data) {
         var tmp = $('<div>').html(data);
         $('span.extended', tmp).each(function() {
