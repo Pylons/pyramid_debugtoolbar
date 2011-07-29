@@ -24,6 +24,7 @@ class ProfilerDebugPanel(DebugPanel):
         self.request = request
         self.profiler = profile.Profile()
 
+    @property
     def has_content(self):
         return bool(self.profiler)
 
