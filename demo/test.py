@@ -47,9 +47,9 @@ class PageTest(unittest.TestCase):
         browser.open('/exc')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_element_present("css=.console-icon"))
-        self.failIf(browser.is_element_present("css=.first-console"))
+        self.failIf(browser.is_element_present("css=.console"))
         browser.fire_event("css=.console-icon", "click")
-        self.failUnless(browser.is_element_present("css=.first-console"))
+        self.failUnless(browser.is_element_present("css=.console"))
 
 if __name__ == '__main__':
     setUpModule()
