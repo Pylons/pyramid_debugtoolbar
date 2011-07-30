@@ -146,8 +146,8 @@ information.
 
 .. image:: sqla.png
 
-Exceptions
-----------
+Exception Handling
+------------------
 
 When an exception is raised and the ``debugtoolbar.intercept_exc`` setting is
 ``true``, Pyramid presents a debugging page.  You can examine locals in each
@@ -155,6 +155,15 @@ frame in the traceback and execute code in the context of each frame.  Read
 the instructions on the exception handling page for more information.
 
 .. image:: exc.png
+
+Redirect Handling
+-----------------
+
+When a response is returned to Pyramid that has a redirect status code (301,
+302, etc) and the ``debugtoolbar.intercept_redirect`` setting is ``true``,
+Pyramid presents an interim page with a link to the target of the redirect.
+You can use the toolbar on the redirect source page, then when finished, use
+the link to continue to the target page.
 
 Settings
 --------
