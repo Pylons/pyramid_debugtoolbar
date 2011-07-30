@@ -13,9 +13,6 @@ class DebugPanel(object):
     # If the client is able to activate/de-activate the panel
     user_activate = False
 
-    # If the panel is disabled because the environment can't support it.
-    down = False
-
     # Default to is_active = False
     is_active = False
 
