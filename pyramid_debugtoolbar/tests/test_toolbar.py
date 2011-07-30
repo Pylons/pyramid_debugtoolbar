@@ -23,16 +23,14 @@ class DebugToolbarTests(unittest.TestCase):
         self.assertEqual(panel.request, request)
         self.assertEqual(panel.is_active, True)
 
-    def test_ctor_panel_is_down(self):
+    def test_ctor_panel_has_content(self):
         request = Request.blank('/')
         request.cookies['fldt_active'] = 'id'
-        class DummyDownPanel(DummyPanel):
-            down = True
-        toolbar = self._makeOne(request, [DummyDownPanel])
+        toolbar = self._makeOne(request, [DummyPanel])
         self.assertEqual(len(toolbar.panels), 1)
         panel = toolbar.panels[0]
         self.assertEqual(panel.request, request)
-        self.assertEqual(panel.is_active, False)
+        self.assertEqual(panel.is_active, True)
 
     def test_process_response_nonhtml(self):
         response = Response()
@@ -188,7 +186,7 @@ class Test_toolbar_handler(unittest.TestCase):
 
 class DummyPanel(object):
     is_active = False
-    down = False
+    has_content = False
 
     def __init__(self, request):
         self.request = request

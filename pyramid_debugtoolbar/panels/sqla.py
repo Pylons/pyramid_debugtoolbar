@@ -36,8 +36,7 @@ class SQLADebugPanel(DebugPanel):
     Panel that displays the time a response took in milliseconds.
     """
     name = 'SQLAlchemy'
-    down = not has_sqla
-    has_content = True
+    has_content = not has_sqla
 
     @property
     def queries(self):
