@@ -127,7 +127,8 @@ class Test_toolbar_handler(unittest.TestCase):
         
     def _callFUT(self, request, handler=None):
         registry = self.config.registry
-        request.remote_addr = '127.0.0.1'
+        if request.remote_addr is None:
+            request.remote_addr = '127.0.0.1'
         from pyramid_debugtoolbar.toolbar import toolbar_handler_factory
         if handler is None:
             handler = self._makeHandler()
@@ -136,6 +137,13 @@ class Test_toolbar_handler(unittest.TestCase):
 
     def test_it_startswith_root_path(self):
         request = Request.blank('/_debug_toolbar')
+        result = self._callFUT(request)
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(result is self.response)
+
+    def test_it_bad_remote_addr(self):
+        request = Request.blank('/')
+        request.remote_addr = '123.123.123.123'
         result = self._callFUT(request)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
