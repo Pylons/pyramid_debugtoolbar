@@ -83,6 +83,14 @@ class PageTest(unittest.TestCase):
         result = browser.is_visible('css=#flDebugVersionPanel-content')
         self.failUnless(result)
 
+    def test_requestvars_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugRequestVarsPanel", 'click')
+        result = browser.is_visible('css=#flDebugRequestVarsPanel-content')
+        self.failUnless(result)
+
 if __name__ == '__main__':
     setUpModule()
     try:
