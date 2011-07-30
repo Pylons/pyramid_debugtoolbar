@@ -92,7 +92,7 @@ class PageTest(unittest.TestCase):
         self.failUnless(result)
 
     def test_performance_panel(self):
-        browser.open('/test_sqla')
+        browser.open('/')
         browser.wait_for_page_to_load("30000")
         browser.fire_event("css=a#flShowToolbarButton", 'click')
         browser.fire_event("css=a.flDebugPerformancePanel", 'click')
