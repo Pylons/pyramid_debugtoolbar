@@ -23,27 +23,33 @@ def setUpModule():
 def tearDownModule():
     browser.stop()
 
-class HomePageTest(unittest.TestCase):
-    def test_it(self):
+class PageTest(unittest.TestCase):
+    def test_home_page(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("example"))
         self.failUnless(browser.is_element_present('id=flDebugToolbar'))
 
-class RedirectTest(unittest.TestCase):
-    def test_it(self):
+    def test_redirect(self):
         browser.open('/redirect')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("Redirect"))
         self.failUnless(browser.is_element_present('id=flDebugToolbar'))
 
-class ExceptionTest(unittest.TestCase):
-    def test_it(self):
+    def test_exception(self):
         browser.open('/exc')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("NotImplementedError"))
         self.failUnless(browser.is_element_present('id=flDebugToolbar'))
         self.failUnless(browser.is_element_present('css=.debugger'))
+
+    def test_exception_console(self):
+        browser.open('/exc')
+        browser.wait_for_page_to_load("30000")
+        self.failUnless(browser.is_element_present("css=.console-icon"))
+        self.failIf(browser.is_element_present("css=.first-console"))
+        browser.fire_event("css=.console-icon", "click")
+        self.failUnless(browser.is_element_present("css=.first-console"))
 
 if __name__ == '__main__':
     setUpModule()
