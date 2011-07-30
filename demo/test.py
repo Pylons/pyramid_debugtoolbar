@@ -28,12 +28,22 @@ class HomePageTest(unittest.TestCase):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("example"))
+        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
 
 class RedirectTest(unittest.TestCase):
     def test_it(self):
         browser.open('/redirect')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("Redirect"))
+        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+
+class ExceptionTest(unittest.TestCase):
+    def test_it(self):
+        browser.open('/exc')
+        browser.wait_for_page_to_load("30000")
+        self.failUnless(browser.is_text_present("NotImplementedError"))
+        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+        self.failUnless(browser.is_element_present('css=.debugger'))
 
 if __name__ == '__main__':
     setUpModule()
