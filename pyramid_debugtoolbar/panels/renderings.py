@@ -4,7 +4,8 @@ _ = lambda x: x
 
 class RenderingsDebugPanel(DebugPanel):
     """
-    Panel that displays the renderers used during the request.
+    Panel that displays the renderers (templates and 'static' renderers such
+    as JSON) used during a request.
     """
     name = 'Template'
     has_content = True

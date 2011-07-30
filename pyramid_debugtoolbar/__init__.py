@@ -39,6 +39,9 @@ def parse_settings(settings):
     return parsed
 
 def includeme(config):
+    """ Activate the debug toolbar; usually called via
+    ``config.include('pyramid_debugtoolbar')`` instead of being invoked
+    directly. """
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
     config.include('pyramid_jinja2')

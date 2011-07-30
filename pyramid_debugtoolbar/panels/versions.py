@@ -22,7 +22,8 @@ pyramid_version = pkg_resources.get_distribution('pyramid').version
 
 class VersionDebugPanel(DebugPanel):
     """
-    Panel that displays the Pyramid version.
+    Panel that displays the Python version, the Pyramid version, and the
+    versions of other software on your PYTHONPATH.
     """
     name = 'Version'
     has_content = True

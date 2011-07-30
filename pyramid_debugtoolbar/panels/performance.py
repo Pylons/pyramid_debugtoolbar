@@ -19,7 +19,7 @@ lock = threading.Lock()
 
 class PerformanceDebugPanel(DebugPanel):
     """
-    Panel that looks at the performance of requests.
+    Panel that looks at the performance of a request.
 
     It will display the time a request took and, optionally, the
     cProfile output.

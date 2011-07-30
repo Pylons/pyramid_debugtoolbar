@@ -7,7 +7,8 @@ _ = lambda x: x
 
 class SettingsDebugPanel(DebugPanel):
     """
-    A panel to display application settings.
+    A panel to display Pyramid deployment settings for your application (the
+    values in ``registry.settings``).
     """
     name = 'Settings'
     has_content = True

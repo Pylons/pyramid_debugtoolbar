@@ -5,7 +5,7 @@ _ = lambda x: x
 
 class HeaderDebugPanel(DebugPanel):
     """
-    A panel to display HTTP headers.
+    A panel to display HTTP request and response headers.
     """
     name = 'Header'
     has_content = True

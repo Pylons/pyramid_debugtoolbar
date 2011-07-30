@@ -4,7 +4,8 @@ _ = lambda x: x
 
 class RequestVarsDebugPanel(DebugPanel):
     """
-    A panel to display request variables (POST/GET, session, cookies).
+    A panel to display request variables (POST/GET, session, cookies, and
+    ad-hoc request attributes).
     """
     name = 'RequestVars'
     has_content = True

@@ -12,7 +12,7 @@ _ = lambda x: x
 
 class RoutesDebugPanel(DebugPanel):
     """
-    A panel to display application routes.
+    A panel to display the routes used by your Pyramid application.
     """
     name = 'Routes'
     has_content = True
