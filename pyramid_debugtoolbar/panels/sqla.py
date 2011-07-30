@@ -36,15 +36,12 @@ class SQLADebugPanel(DebugPanel):
     Panel that displays the time a response took in milliseconds.
     """
     name = 'SQLAlchemy'
-    has_content = not has_sqla
+    has_content = has_sqla
 
     @property
     def queries(self):
         registry = get_current_registry()
         return registry.get('sqla_queries', [])
-
-    def process_response(self, response):
-        pass
 
     def nav_title(self):
         return _('SQLAlchemy')
