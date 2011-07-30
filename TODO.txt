@@ -1,3 +1,2 @@
-- Response headers in headers view.
+- Docs.
 
-- Disambiguate panel UI ordering from panel invocation ordering.
