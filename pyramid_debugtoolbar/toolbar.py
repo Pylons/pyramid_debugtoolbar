@@ -79,7 +79,7 @@ def toolbar_handler_factory(handler, registry):
         exc_history = ExceptionHistory()
 
     def toolbar_handler(request):
-        root_path = request.route_path('debugtoolbar.root')
+        root_path = request.route_path(ROOT_ROUTE_NAME)
         request.exc_history = exc_history
         remote_addr = request.remote_addr
 
