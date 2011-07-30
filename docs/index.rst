@@ -166,6 +166,8 @@ Pyramid presents an interim page with a link to the target of the redirect.
 You can use the toolbar on the redirect source page, then when finished, use
 the link to continue to the target page.
 
+.. image:: redirect.png
+
 Settings
 --------
 
