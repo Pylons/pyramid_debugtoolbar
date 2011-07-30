@@ -8,6 +8,11 @@ from pyramid.view import view_config
 
 from paste.httpserver import serve
 
+try:
+    import sqlalchemy
+except ImportError: # pragma: no cover
+    sqlalchemy = None
+
 logging.basicConfig()
 log = logging.getLogger(__file__)
 
@@ -56,5 +61,7 @@ if __name__ == '__main__':
     config.add_route('test_mako_exc', '/mako_exc')
     config.add_route('test_jinja2_exc', '/jinja2_exc')
     config.scan('__main__')
+    if sqlalchemy:
+        config.include('sqla')
     config.include('pyramid_debugtoolbar')
     serve(config.make_wsgi_app())
