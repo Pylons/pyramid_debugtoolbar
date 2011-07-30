@@ -88,7 +88,15 @@ class PageTest(unittest.TestCase):
         browser.wait_for_page_to_load("30000")
         browser.fire_event("css=a#flShowToolbarButton", 'click')
         browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
-        result = browser.is_visible('css=#flDebugSQLAlchemy-content')
+        result = browser.is_visible('css=#flDebugSQLAlchemyPanel-content')
+        self.failUnless(result)
+
+    def test_performance_panel(self):
+        browser.open('/test_sqla')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugPerformancePanel", 'click')
+        result = browser.is_visible('css=#flDebugPerformancePanel-content')
         self.failUnless(result)
 
     def test_renderings_panel(self):
