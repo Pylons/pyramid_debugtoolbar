@@ -17,8 +17,6 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     )
 
-def bare(x): return x
-
 default_settings = (
     ('enabled', asbool, 'true'),
     ('intercept_exc', asbool, 'true'),
