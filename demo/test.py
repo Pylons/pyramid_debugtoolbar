@@ -51,6 +51,30 @@ class PageTest(unittest.TestCase):
         browser.fire_event("css=.console-icon", "click")
         self.failUnless(browser.is_element_present("css=.console"))
 
+    def test_settings_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugSettingsPanel", 'click')
+        result = browser.is_visible('css=#flDebugSettingsPanel-content')
+        self.failUnless(result)
+
+    def test_headers_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugHeaderPanel", 'click')
+        result = browser.is_visible('css=#flDebugHeaderPanel-content')
+        self.failUnless(result)
+
+    def test_renderings_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugTemplatePanel", 'click')
+        result = browser.is_visible('css=#flDebugTemplatePanel-content')
+        self.failUnless(result)
+
     def test_version_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
