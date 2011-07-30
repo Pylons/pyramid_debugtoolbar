@@ -30,7 +30,7 @@ install_requires = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='0.0',
+      version='0.1',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
