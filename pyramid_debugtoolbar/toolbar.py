@@ -136,4 +136,8 @@ def toolbar_handler_factory(handler, registry):
             toolbar.process_response(response)
             return response
 
+        finally:
+            # break circref
+            del request.debug_toolbar
+
     return toolbar_handler

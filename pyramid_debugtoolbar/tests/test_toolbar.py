@@ -146,7 +146,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.panels'] = [ DummyPanel ]
         request.registry = self.config.registry
         result = self._callFUT(request, handler)
-        self.assertTrue(hasattr(request, 'debug_toolbar'))
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
         self.assertTrue(handler.wrapped)
         self.assertTrue(result.processed)
@@ -165,7 +165,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
         response = self._callFUT(request, handler)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
-        self.assertTrue(hasattr(request, 'debug_toolbar'))
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(response.status_int, 500)
 
     def test_it_intercept_redirect_nonredirect_code(self):
