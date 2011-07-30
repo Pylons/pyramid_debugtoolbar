@@ -1,3 +1,6 @@
+
+import hashlib
+import json
 import time
 
 from pyramid.threadlocal import get_current_registry
@@ -6,7 +9,15 @@ from pyramid_debugtoolbar.utils import format_sql
 
 try:
     from sqlalchemy import event
+    from sqlalchemy import exc
     from sqlalchemy.engine.base import Engine
+    from sqlalchemy.pool import Pool
+
+    @event.listens_for(Engine, "connect")
+    def _connect(dbapi_conn, conn_rec):
+        registry = get_current_registry()
+        registry['sqla_conn_rec'] = conn_rec
+
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
         registry = get_current_registry()
@@ -64,16 +75,31 @@ class SQLADebugPanel(DebugPanel):
 
         data = []
         for query in self.queries:
+            is_select = query['statement'].strip().lower().startswith('select')
+            params = ''
+            try:
+                params = json.dumps(query['parameters'])
+            except TypeError:
+                pass # object not JSON serializable
+
+            hash = hashlib.sha1(
+                self.request.exc_history.token +
+                query['statement'] + params).hexdigest()
+
             data.append({
                 'duration': query['duration'],
                 'sql': format_sql(query['statement']),
                 'raw_sql': query['statement'],
-                'params': query['parameters'],
+                'hash': hash,
+                'params': params,
+                'is_select': is_select,
                 'context': query['context']
             })
+
         vars = {'queries': data}
         registry = get_current_registry()
         del registry['sqla_queries']
+
         return self.render(
             'pyramid_debugtoolbar.panels:templates/sqlalchemy.jinja2',
             vars, self.request)

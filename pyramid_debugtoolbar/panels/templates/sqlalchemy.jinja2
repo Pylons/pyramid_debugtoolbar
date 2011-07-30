@@ -1,20 +1,27 @@
-	<table>
-		<thead>
-			<tr>
-				<th>Time&nbsp;(ms)</th>
-				<th>Query</th>
-				<th>Params</th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for query in queries %}
-			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
-				<td>{{ '%.4f'|format(query.duration) }}</td>
-				<td>{{ query.sql|safe }}</td>
-				<td>{{ query.params|escape }}</td>
-			</tr>
-		{% endfor %}
+<table>
+	<thead>
+		<tr>
+			<th>Time&nbsp;(ms)</th>
+			<th>Action</th>
+			<th>Query</th>
+			<th>Params</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for query in queries %}
+		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+			<td>{{ '%.4f'|format(query.duration) }}</td>
+			<td>
+			{% if query.params %}
+				{% if query.is_select %}
+				<a class="remoteCall" href="/_debug_toolbar/sqlalchemy/sql_explain?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}">EXPLAIN</a><br />
+				{% endif %}
+			{% endif %}
+			</td>
+			<td>{{ query.sql|safe }}</td>
+			<td>{{ query.params|escape }}</td>
+		</tr>
+	{% endfor %}
 	</tbody>
-	</table>
-
+</table>
 
