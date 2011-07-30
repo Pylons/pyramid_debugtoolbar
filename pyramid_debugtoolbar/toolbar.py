@@ -1,5 +1,6 @@
 import sys
 import os
+from urllib import unquote
 
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
@@ -17,7 +18,8 @@ class DebugToolbar(object):
     def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
-        activated = self.request.cookies.get('fldt_active', '').split(';')
+        fldt_active = unquote(self.request.cookies.get('fldt_active', ''))
+        activated = fldt_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
             if panel_inst.dom_id() in activated and not panel_inst.down:
