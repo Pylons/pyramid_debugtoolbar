@@ -92,10 +92,14 @@ def replace_insensitive(string, target, replacement):
 
 resolver = DottedNameResolver(None)
 
-def as_globals_list(value):
-    L = []
+def as_list(value):
     if isinstance(value, basestring):
         value = filter(None, [x.strip() for x in value.splitlines()])
+    return value
+
+def as_globals_list(value):
+    L = []
+    value = as_list(value)
     for dottedname in value:
         obj = resolver.resolve(dottedname)
         L.append(obj)

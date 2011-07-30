@@ -110,6 +110,7 @@ class Test_toolbar_handler(unittest.TestCase):
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config = testing.setUp()
         self.config.registry.settings['debugtoolbar.enabled'] = True
+        self.config.registry.settings['debugtoolbar.hosts'] = ['127.0.0.1']
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
@@ -126,6 +127,7 @@ class Test_toolbar_handler(unittest.TestCase):
         
     def _callFUT(self, request, handler=None):
         registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
         from pyramid_debugtoolbar.toolbar import toolbar_handler_factory
         if handler is None:
             handler = self._makeHandler()

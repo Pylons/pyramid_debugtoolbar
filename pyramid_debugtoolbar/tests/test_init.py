@@ -12,13 +12,15 @@ class Test_parse_settings(unittest.TestCase):
         settings = {'debugtoolbar.enabled':'false',
                     'debugtoolbar.intercept_exc':'false',
                     'debugtoolbar.intercept_redirects': 'false',
-                    'debugtoolbar.panels': panels}
+                    'debugtoolbar.panels': panels,
+                    'debugtoolbar.hosts': '127.0.0.1',}
         result = self._callFUT(settings)
         self.assertEqual(result,
                          {'debugtoolbar.enabled':False,
                           'debugtoolbar.intercept_exc': False,
                           'debugtoolbar.intercept_redirects': False,
                           'debugtoolbar.panels': [DummyPanel, DummyPanel],
+                          'debugtoolbar.hosts': ['127.0.0.1'],
                           }
                          )
 
@@ -32,8 +34,8 @@ class Test_includeme(unittest.TestCase):
 
     def test_it(self):
         self._callFUT(self.config)
-
-    
+        self.assertEqual(self.config.registry.settings['debugtoolbar.hosts'],
+                         ('127.0.0.1', '::1'))
 
 class DummyPanel(object):
     pass

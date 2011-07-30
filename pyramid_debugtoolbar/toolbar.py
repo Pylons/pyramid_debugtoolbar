@@ -71,6 +71,7 @@ def toolbar_handler_factory(handler, registry):
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
+    hosts = get_setting(settings, 'hosts')
 
     exc_history = None
 
@@ -80,8 +81,9 @@ def toolbar_handler_factory(handler, registry):
     def toolbar_handler(request):
         root_path = request.route_path('debugtoolbar.root')
         request.exc_history = exc_history
+        remote_addr = request.remote_addr
 
-        if request.path.startswith(root_path):
+        if (request.path.startswith(root_path) or (not remote_addr in hosts)):
             return handler(request)
 
         toolbar = DebugToolbar(request, panel_classes)

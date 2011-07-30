@@ -1,6 +1,7 @@
 from pyramid.encode import url_quote
 from pyramid.settings import asbool
 from pyramid_debugtoolbar.utils import as_globals_list
+from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -17,11 +18,14 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     )
 
+default_hosts = ('127.0.0.1', '::1')
+
 default_settings = (
     ('enabled', asbool, 'true'),
     ('intercept_exc', asbool, 'true'),
     ('intercept_redirects', asbool, 'true'),
     ('panels', as_globals_list, default_panel_names),
+    ('hosts', as_list, default_hosts),
     )
 
 def parse_settings(settings):
