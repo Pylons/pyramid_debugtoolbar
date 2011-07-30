@@ -1,5 +1,5 @@
 ``pyramid_debugtoolbar``
-=======================
+========================
 
 ``pyramid_debugtoolbar`` provides a debug toolbar useful while you're
 developing your Pyramid application.
