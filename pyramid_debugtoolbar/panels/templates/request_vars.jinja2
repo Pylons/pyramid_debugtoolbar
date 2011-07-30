@@ -83,7 +83,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in post %}
-				<tr class="{{ loop.cycle('row1', 'row2') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|join(", ")|escape }}</td>
 				</tr>
@@ -105,7 +105,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in attrs %}
-				<tr class="{{ loop.cycle('row1', 'row2') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|escape }}</td>
 				</tr>
@@ -127,7 +127,7 @@
 		</thead>
 		<tbody>
 			{% for key, value in environ %}
-				<tr class="{{ loop.cycle('row1', 'row2') }}">
+				<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 					<td>{{ key|escape }}</td>
 					<td>{{ value|escape }}</td>
 				</tr>
