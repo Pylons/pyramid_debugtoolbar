@@ -101,7 +101,8 @@ Displays HTTP request and response headers for the current page.
 Request Vars
 ~~~~~~~~~~~~
 
-Displays objects attached to the request of the current page.
+Displays objects attached to the request of the current page and the WSGI
+environment.
 
 .. image:: requestvars.png
 
