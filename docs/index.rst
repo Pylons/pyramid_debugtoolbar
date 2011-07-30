@@ -67,7 +67,7 @@ will appear over your application's HTML:
 
 .. image:: toolbar-closed.png
 
-If you click on the logo, the toolbar will expand:
+If you click on the "Pyramid DT" logo, the toolbar will expand:
 
 .. image:: toolbar-open.png
 
