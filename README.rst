@@ -39,10 +39,15 @@ For a demonstration:
   $ cd pyramid_debugtoolbar
   $ $VENV/bin/python setup.py develop
 
+- Install the ``pyramid_debugtoolbar/demo`` package into the virtualenv::
+
+  $ cd demo
+  $ $VENV/bin/python setup.py develop
+
 - Run the ``pyramid_debugtoolbar`` package's ``demo/demo.py`` file using the
   virtualenv's Python::
 
-  $ $VENV/bin/python demo/demo.py
+  $ $VENV/bin/python demo.py
 
 You will see a page full of test options to try when you visit
 ``http://localhost:8080``.
