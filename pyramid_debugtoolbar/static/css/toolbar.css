@@ -66,6 +66,10 @@
 	color:#fff;
 }
 
+#flDebug #flDebugToolbar li>div.contentless  {
+	color: #383838;
+}
+
 #flDebug #flDebugToolbar li a:hover {
 	background: #333;
 }
