@@ -123,7 +123,10 @@ Performance
 ~~~~~~~~~~~
 
 Displays timing information, and, if enabled, Python profiling information
-for the current page.
+for the current page.  When the checkbox on the performance panel is green,
+the request will be profiled and profiling information will be gathered and
+displayed on the panel output.  When it is red, only timing will be done and
+no profiling information will be captured.
 
 .. image:: performance.png
 
@@ -145,13 +148,12 @@ information.
 Exceptions
 ----------
 
-When an exception is raised, Pyramid presents a debugging page:
+When an exception is raised and the ``debugtoolbar.intercept_exc`` setting is
+``true``, Pyramid presents a debugging page.  You can examine locals in each
+frame in the traceback and execute code in the context of each frame.  Read
+the instructions on the exception handling page for more information.
 
 .. image:: exc.png
-
-You can examine locals in each frame in the traceback and execute code in the
-context of each frame.  Read the instructions on the exception handling page
-for more information.
 
 Settings
 --------
