@@ -59,12 +59,36 @@ class PageTest(unittest.TestCase):
         result = browser.is_visible('css=#flDebugSettingsPanel-content')
         self.failUnless(result)
 
+    def test_logging_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugLoggingPanel", 'click')
+        result = browser.is_visible('css=#flDebugLoggingPanel-content')
+        self.failUnless(result)
+
+    def test_routes_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugRoutesPanel", 'click')
+        result = browser.is_visible('css=#flDebugRoutesPanel-content')
+        self.failUnless(result)
+
     def test_headers_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
         browser.fire_event("css=a#flShowToolbarButton", 'click')
         browser.fire_event("css=a.flDebugHeaderPanel", 'click')
         result = browser.is_visible('css=#flDebugHeaderPanel-content')
+        self.failUnless(result)
+
+    def test_sqla_panel(self):
+        browser.open('/test_sqla')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
+        result = browser.is_visible('css=#flDebugSQLAlchemy-content')
         self.failUnless(result)
 
     def test_renderings_panel(self):
