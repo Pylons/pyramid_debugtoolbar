@@ -94,7 +94,7 @@ class ProfilerDebugPanel(DebugPanel):
 
     def nav_subtitle(self):
         if not self.is_active:
-            return "in-active"
+            return "inactive"
         return '%.2fms' % (float(self.stats.total_tt)*1000,)
 
     def url(self):
