@@ -21,7 +21,8 @@ $(function() {
      * Add an interactive console to the frames
      */
     if (EVALEX)
-      $('<img src="' + DEBUG_TOOLBAR_STATIC_PATH + '/img/console.png">')
+      $('<img class="console-icon" src="' 
+        + DEBUG_TOOLBAR_STATIC_PATH + '/img/console.png">')
         .attr('title', 'Open an interactive python shell in this frame')
         .click(function() {
           consoleNode = openShell(consoleNode, target, frameID);
