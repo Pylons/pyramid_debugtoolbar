@@ -115,3 +115,25 @@
 {% else %}
 	<p>No request attributes</p>
 {% endif %}
+
+<h4>Request environ</h4>
+{% if environ %}
+	<table>
+		<thead>
+			<tr>
+				<th>Attribute</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in environ %}
+				<tr class="{{ loop.cycle('row1', 'row2') }}">
+					<td>{{ key|escape }}</td>
+					<td>{{ value|escape }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+	<p>No request environ</p>
+{% endif %}

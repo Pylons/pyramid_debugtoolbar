@@ -22,12 +22,16 @@ class RequestVarsDebugPanel(DebugPanel):
     def content(self):
         vars = {}
         request = self.request
-        attrs = sorted(request.__dict__.items())
+        attr_dict = request.__dict__.copy()
+        # environ is displayed separately
+        del attr_dict['environ']
+        attrs = sorted(attr_dict.items())
         vars.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],
             'post': [(k, request.POST.getall(k)) for k in request.POST],
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
             'attrs': attrs,
+            'environ': sorted(request.environ.items()),
         })
         if hasattr(self.request, 'session'):
             vars.update({
