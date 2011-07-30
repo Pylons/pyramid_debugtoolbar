@@ -9,7 +9,8 @@ developing a :term:`Pyramid` application.
 
 :mod:`pyramid_debugtoolbar` is a blatant rip-off of Michael van Tellingen's
 ``flask-debugtoolbar`` (which itself was derived from Rob Hudson's
-``django-debugtoolbar``).
+``django-debugtoolbar``).  It also includes a lightly sanded down version of
+the Werkzeug debugger code by Armin Ronacher and team.
 
 .. warning:: This package only works with Pyramid 1.1.1 and above.  As of
    this writing, Pyramid 1.1.1 has not yet been released, which effectively
