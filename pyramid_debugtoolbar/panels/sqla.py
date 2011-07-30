@@ -37,15 +37,12 @@ class SQLADebugPanel(DebugPanel):
     """
     name = 'SQLAlchemy'
     down = not has_sqla
+    has_content = True
 
     @property
     def queries(self):
         registry = get_current_registry()
         return registry.get('sqla_queries', [])
-
-    @property
-    def has_content(self):
-        return True if self.queries else False
 
     def process_response(self, response):
         pass
@@ -65,6 +62,9 @@ class SQLADebugPanel(DebugPanel):
         return ''
 
     def content(self):
+        if not self.queries:
+            return 'No queries in executed in request.'
+
         data = []
         for query in self.queries:
             data.append({
