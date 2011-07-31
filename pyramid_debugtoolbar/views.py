@@ -1,5 +1,3 @@
-import hashlib
-import json
 
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
@@ -8,7 +6,6 @@ from pyramid.view import view_config
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import format_sql
 
 class ExceptionDebugView(object):
     def __init__(self, request):
@@ -66,46 +63,3 @@ class ExceptionDebugView(object):
         if 0 not in exc_history.frames:
             exc_history.frames[0] = _ConsoleFrame({})
         return vars
-
-
-class SQLAlchemyViews(object):
-    def __init__(self, request):
-        self.request = request
-
-    @view_config(route_name='debugtoolbar.sql_explain',
-                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.jinja2')
-    def sql_explain(self):
-        stmt = self.request.params['sql']
-        params = self.request.params['params']
-
-        # Validate hash
-        hash = hashlib.sha1(
-            self.request.exc_history.token + stmt + params).hexdigest()
-        if hash != self.request.params['hash']:
-            raise HTTPBadRequest('Bad token in request')
-
-        # Make sure it is a select statement
-        if not stmt.lower().strip().startswith('select'):
-            raise HTTPBadRequest('Not a SELECT SQL statement')
-
-        params = json.loads(params)
-
-        _conn_rec = self.request.registry['sqla_conn_rec']
-        conn_rec = _conn_rec._ConnectionRecord__pool.recreate()
-        _dbapi_conn = conn_rec.connect()
-        dbapi_conn = _dbapi_conn.connection
-
-        if repr(dbapi_conn).startswith('<sqlite'):
-            query = 'EXPLAIN QUERY PLAN %s' % stmt
-        else:
-            query = 'EXPLAIN %s' % stmt
-
-        result = dbapi_conn.execute(query, params).fetchall()
-        dbapi_conn.close()
-
-        return {
-            'result': result,
-            'headers': ['selectid', 'order', 'from', 'detail'],
-            'sql': format_sql(stmt),
-            'duration': float(self.request.params['duration']),
-        }

@@ -58,7 +58,5 @@ def includeme(config):
     config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
     config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
     config.add_route('debugtoolbar.console', '/_debug_toolbar/console')
-    config.add_route('debugtoolbar.sql_explain',
-                     '/_debug_toolbar/sqlalchemy/sql_explain')
     config.scan('pyramid_debugtoolbar.views')
         
