@@ -11,12 +11,6 @@ try:
     from sqlalchemy import event
     from sqlalchemy import exc
     from sqlalchemy.engine.base import Engine
-    from sqlalchemy.pool import Pool
-
-    @event.listens_for(Engine, "connect")
-    def _connect(dbapi_conn, conn_rec):
-        registry = get_current_registry()
-        registry['sqla_conn_rec'] = conn_rec
 
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
