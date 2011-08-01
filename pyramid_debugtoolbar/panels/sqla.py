@@ -9,27 +9,28 @@ from pyramid_debugtoolbar.utils import format_sql
 
 try:
     from sqlalchemy import event
-    from sqlalchemy import exc
     from sqlalchemy.engine.base import Engine
 
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
         registry = get_current_registry()
-        registry['sqla_start_timer'] = time.time()
+        if registry is not None:
+            registry['sqla_start_timer'] = time.time()
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
         stop_timer = time.time()
         registry = get_current_registry()
-        queries = registry.get('sqla_queries', [])
-        queries.append({
-            'duration': stop_timer - registry['sqla_start_timer'],
-            'statement': stmt,
-            'parameters': params,
-            'context': context
-        })
-        registry['sqla_queries'] = queries
-        del registry['sqla_start_timer']
+        if registry is not None:
+            queries = registry.get('sqla_queries', [])
+            queries.append({
+                'duration': stop_timer - registry['sqla_start_timer'],
+                'statement': stmt,
+                'parameters': params,
+                'context': context
+            })
+            registry['sqla_queries'] = queries
+            del registry['sqla_start_timer']
     has_sqla = True
 except ImportError:
     has_sqla = False
@@ -46,7 +47,7 @@ class SQLADebugPanel(DebugPanel):
 
     @property
     def queries(self):
-        registry = get_current_registry()
+        registry = self.request.registry
         return registry.get('sqla_queries', [])
 
     def nav_title(self):
@@ -91,7 +92,7 @@ class SQLADebugPanel(DebugPanel):
             })
 
         vars = {'queries': data}
-        registry = get_current_registry()
+        registry = self.request.registry
         del registry['sqla_queries']
 
         return self.render(

@@ -32,11 +32,11 @@ class SettingsDebugPanel(DebugPanel):
         # filter out non-pyramid prefixed settings to avoid duplication
         if 'pyramid.default_locale_name' in settings:
             self.settings = sorted([
-                (k, v) for k, v in self.request.registry.settings.items()
+                (k, v) for k, v in request.registry.settings.items()
                 if k not in self.filter_old_settings
             ], key=itemgetter(0))
         else:
-            self.settings = sorted(self.request.registry.settings.items(),
+            self.settings = sorted(request.registry.settings.items(),
                                    key=itemgetter(0))
 
     def nav_title(self):

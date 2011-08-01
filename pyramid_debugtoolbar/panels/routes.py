@@ -19,10 +19,9 @@ class RoutesDebugPanel(DebugPanel):
 
     def __init__(self, request):
         self.request = request
-        registry = request.registry
-        self.mapper = registry.queryUtility(IRoutesMapper)
+        self.mapper = request.registry.queryUtility(IRoutesMapper)
         if self.mapper is None:
-            self.down = True
+            self.has_content = False
             self.is_active = False
 
     def nav_title(self):

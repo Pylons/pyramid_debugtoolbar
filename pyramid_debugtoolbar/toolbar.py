@@ -126,7 +126,8 @@ def toolbar_handler_factory(handler, registry):
                         content = render(
                             'pyramid_debugtoolbar:templates/redirect.jinja2',
                             {'redirect_to': redirect_to,
-                            'redirect_code': redirect_code})
+                            'redirect_code': redirect_code},
+                            request=request)
                         content = content.encode(response.charset)
                         response.content_length = len(content)
                         response.location = None
