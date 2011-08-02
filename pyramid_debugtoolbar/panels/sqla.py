@@ -3,6 +3,7 @@ import hashlib
 import json
 import threading
 import time
+import weakref
 
 from pyramid.threadlocal import get_current_request
 from pyramid_debugtoolbar.panels import DebugPanel
@@ -16,24 +17,27 @@ try:
 
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
-        setattr(conn.engine, 'pdtb_start_timer', time.time())
+        setattr(conn, 'pdtb_start_timer', time.time())
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
         stop_timer = time.time()
         request = get_current_request()
-        if request.registry is not None:
+        if request is not None:
             with lock:
-                request.registry['pdtb_sqla_engine'] = conn.engine
+                engines = getattr(request.registry, 'pdtb_sqla_engines', {})
+                engines[id(conn.engine)] = weakref.ref(conn.engine)
+                setattr(request.registry, 'pdtb_sqla_engines', engines)
                 queries = getattr(request, 'pdtb_sqla_queries', [])
                 queries.append({
-                    'duration': stop_timer - conn.engine.pdtb_start_timer,
+                    'engine_id': id(conn.engine),
+                    'duration': stop_timer - conn.pdtb_start_timer,
                     'statement': stmt,
                     'parameters': params,
                     'context': context
                 })
                 setattr(request, 'pdtb_sqla_queries', queries)
-                delattr(conn.engine, 'pdtb_start_timer')
+        delattr(conn, 'pdtb_start_timer')
                 
     has_sqla = True
 except ImportError:
@@ -86,6 +90,7 @@ class SQLADebugPanel(DebugPanel):
                 query['statement'] + params).hexdigest()
 
             data.append({
+                'engine_id': query['engine_id'],
                 'duration': query['duration'],
                 'sql': format_sql(query['statement']),
                 'raw_sql': query['statement'],

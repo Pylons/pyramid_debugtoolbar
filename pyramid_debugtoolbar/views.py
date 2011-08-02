@@ -78,7 +78,8 @@ class SQLAlchemyViews(object):
     def sql_select(self):
         stmt = self.request.params['sql']
         params = self.request.params['params']
- 
+        engine_id = self.request.params['engine_id']
+
         # Validate hash
         hash = hashlib.sha1(
             self.request.exc_history.token + stmt + params).hexdigest()
@@ -89,8 +90,12 @@ class SQLAlchemyViews(object):
         if not stmt.lower().strip().startswith('select'):
             raise HTTPBadRequest('Not a SELECT SQL statement')
 
-        params = json.loads(params) 
-        engine = self.request.registry['pdtb_sqla_engine']
+        if not engine_id:
+            raise HTTPBadRequest('No valid database engine')
+
+        engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
+                      [int(engine_id)]()
+        params = json.loads(params)
         result = engine.execute(stmt, params)
 
         return {
@@ -105,27 +110,32 @@ class SQLAlchemyViews(object):
     def sql_explain(self):
         stmt = self.request.params['sql']
         params = self.request.params['params']
- 
+        engine_id = self.request.params['engine_id']
+
         # Validate hash
         hash = hashlib.sha1(
             self.request.exc_history.token + stmt + params).hexdigest()
         if hash != self.request.params['hash']:
             raise HTTPBadRequest('Bad token in request')
- 
+
         # Make sure it is a select statement
         if not stmt.lower().strip().startswith('select'):
             raise HTTPBadRequest('Not a SELECT SQL statement')
 
-        params = json.loads(params) 
-        engine = self.request.registry['pdtb_sqla_engine']
+        if not engine_id:
+            raise HTTPBadRequest('No valid database engine')
+
+        engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
+                      [int(engine_id)]()
+        params = json.loads(params)
 
         if engine.name.startswith('sqlite'):
             query = 'EXPLAIN QUERY PLAN %s' % stmt
         else:
             query = 'EXPLAIN %s' % stmt
- 
+
         result = engine.execute(query, params)
- 
+
         return {
             'result': result.fetchall(),
             'headers': result.keys(),
