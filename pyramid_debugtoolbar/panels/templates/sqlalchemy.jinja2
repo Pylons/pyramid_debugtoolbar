@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th>Time&nbsp;(ms)</th>
+			<th>Action</th>
 			<th>Query</th>
 			<th>Params</th>
 		</tr>
@@ -10,6 +11,14 @@
 	{% for query in queries %}
 		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 			<td>{{ '%.4f'|format(query.duration) }}</td>
+			<td>
+			{% if query.params %}
+				{% if query.is_select %}
+				<a class="remoteCall" href="/_debug_toolbar/sqlalchemy/sql_select?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}">SELECT</a><br />
+				<a class="remoteCall" href="/_debug_toolbar/sqlalchemy/sql_explain?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}">EXPLAIN</a><br />
+				{% endif %}
+			{% endif %}
+			</td>
 			<td>{{ query.sql|safe }}</td>
 			<td>{{ query.params|escape }}</td>
 		</tr>

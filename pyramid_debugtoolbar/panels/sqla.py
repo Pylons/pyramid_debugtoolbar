@@ -1,11 +1,14 @@
 
 import hashlib
 import json
+import threading
 import time
 
-from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_request
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
+
+lock = threading.Lock()
 
 try:
     from sqlalchemy import event
@@ -13,29 +16,31 @@ try:
 
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
-        registry = get_current_registry()
-        if registry is not None:
-            registry['sqla_start_timer'] = time.time()
+        setattr(conn.engine, 'pdtb_start_timer', time.time())
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
         stop_timer = time.time()
-        registry = get_current_registry()
-        if registry is not None:
-            queries = registry.get('sqla_queries', [])
-            queries.append({
-                'duration': stop_timer - registry['sqla_start_timer'],
-                'statement': stmt,
-                'parameters': params,
-                'context': context
-            })
-            registry['sqla_queries'] = queries
-            del registry['sqla_start_timer']
+        request = get_current_request()
+        if request.registry is not None:
+            with lock:
+                request.registry['pdtb_sqla_engine'] = conn.engine
+                queries = getattr(request, 'pdtb_sqla_queries', [])
+                queries.append({
+                    'duration': stop_timer - conn.engine.pdtb_start_timer,
+                    'statement': stmt,
+                    'parameters': params,
+                    'context': context
+                })
+                setattr(request, 'pdtb_sqla_queries', queries)
+                delattr(conn.engine, 'pdtb_start_timer')
+                
     has_sqla = True
 except ImportError:
     has_sqla = False
 
 _ = lambda x: x
+
 
 class SQLADebugPanel(DebugPanel):
     """
@@ -47,8 +52,7 @@ class SQLADebugPanel(DebugPanel):
 
     @property
     def queries(self):
-        registry = self.request.registry
-        return registry.get('sqla_queries', [])
+        return getattr(self.request, 'pdtb_sqla_queries', [])
 
     def nav_title(self):
         return _('SQLAlchemy')
@@ -92,8 +96,7 @@ class SQLADebugPanel(DebugPanel):
             })
 
         vars = {'queries': data}
-        registry = self.request.registry
-        del registry['sqla_queries']
+        delattr(self.request, 'pdtb_sqla_queries')
 
         return self.render(
             'pyramid_debugtoolbar.panels:templates/sqlalchemy.jinja2',
