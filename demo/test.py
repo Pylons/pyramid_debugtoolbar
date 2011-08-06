@@ -91,6 +91,24 @@ class PageTest(unittest.TestCase):
         result = browser.is_visible('css=#flDebugSQLAlchemyPanel-content')
         self.failUnless(result)
 
+    def test_sqla_select_panel(self):
+        browser.open('/test_sqla')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
+        browser.fire_event("link=SELECT", 'click')
+        result = browser.get_text('css=#flDebugWindow .flDebugPanelTitle h3')
+        self.assertEqual(result, 'SQL Select')
+
+    def test_sqla_explain_panel(self):
+        browser.open('/test_sqla')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#flShowToolbarButton", 'click')
+        browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
+        browser.fire_event("link=EXPLAIN", 'click')
+        result = browser.get_text('css=#flDebugWindow .flDebugPanelTitle h3')
+        self.assertEqual(result, 'SQL Explained')
+
     def test_performance_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
