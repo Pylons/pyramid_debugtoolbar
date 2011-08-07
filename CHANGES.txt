@@ -1,8 +1,12 @@
-Next release
-------------
+0.1 (2011-08-07)
+----------------
 
 - Add SQLAlchemy "explain" and "select" pages (available from the SQLALchemy
-  panel, next to each query).
+  panel next to each query shown in the page).
+
+- Requires newer Pyramid trunk (checked out on 2011-08-07 or later).
+
+- Add a link to the SQLAlchemy demo page from the demo app index page.
 
 0.1 (2011-07-30)
 ----------------
