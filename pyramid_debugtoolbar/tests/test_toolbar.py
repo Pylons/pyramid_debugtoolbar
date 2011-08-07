@@ -82,7 +82,7 @@ class Test_beforerender_subscriber(unittest.TestCase):
         self._callFUT(event)
         self.assertTrue(event['processed'])
 
-class Test_toolbar_handler_factory(unittest.TestCase):
+class Test_toolbar_tween_factory(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
@@ -90,8 +90,8 @@ class Test_toolbar_handler_factory(unittest.TestCase):
         testing.tearDown()
         
     def _callFUT(self, handler, registry):
-        from pyramid_debugtoolbar.toolbar import toolbar_handler_factory
-        return toolbar_handler_factory(handler, registry)
+        from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
+        return toolbar_tween_factory(handler, registry)
 
     def test_it_disabled(self):
         def handler(): pass
@@ -129,10 +129,10 @@ class Test_toolbar_handler(unittest.TestCase):
         registry = self.config.registry
         if request.remote_addr is None:
             request.remote_addr = '127.0.0.1'
-        from pyramid_debugtoolbar.toolbar import toolbar_handler_factory
+        from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
         if handler is None:
             handler = self._makeHandler()
-        handler = toolbar_handler_factory(handler, registry)
+        handler = toolbar_tween_factory(handler, registry)
         return handler(request)
 
     def test_it_startswith_root_path(self):

@@ -61,7 +61,7 @@ def beforerender_subscriber(event):
         for panel in request.debug_toolbar.panels:
             panel.process_beforerender(event)
 
-def toolbar_handler_factory(handler, registry):
+def toolbar_tween_factory(handler, registry):
     settings = registry.settings
 
     if not get_setting(settings, 'enabled'):
@@ -78,7 +78,7 @@ def toolbar_handler_factory(handler, registry):
     if intercept_exc:
         exc_history = ExceptionHistory()
 
-    def toolbar_handler(request):
+    def toolbar_tween(request):
         root_path = request.route_path(ROOT_ROUTE_NAME)
         request.exc_history = exc_history
         remote_addr = request.remote_addr
@@ -141,4 +141,4 @@ def toolbar_handler_factory(handler, registry):
             # break circref
             del request.debug_toolbar
 
-    return toolbar_handler
+    return toolbar_tween

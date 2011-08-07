@@ -48,9 +48,7 @@ def includeme(config):
     j2_env = config.get_jinja2_environment()
     j2_env.filters['urlencode'] = url_quote
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-    config.add_request_handler(
-        'pyramid_debugtoolbar.toolbar.toolbar_handler_factory',
-        'debug_toolbar')
+    config.add_tween('pyramid_debugtoolbar.toolbar.toolbar_tween_factory')
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender')
