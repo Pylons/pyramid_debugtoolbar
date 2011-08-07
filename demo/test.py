@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import time
 
 # to run:
 # console 1: java -jar selenium-server.jar
@@ -97,6 +98,9 @@ class PageTest(unittest.TestCase):
         browser.fire_event("css=a#flShowToolbarButton", 'click')
         browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=SELECT", 'click')
+        browser.wait_for_condition(
+            '!selenium.isElementPresent("id=flSqlaTable")',
+            "30000")
         result = browser.get_text('css=#flDebugWindow .flDebugPanelTitle h3')
         self.assertEqual(result, 'SQL Select')
 
@@ -106,6 +110,9 @@ class PageTest(unittest.TestCase):
         browser.fire_event("css=a#flShowToolbarButton", 'click')
         browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=EXPLAIN", 'click')
+        browser.wait_for_condition(
+            '!selenium.isElementPresent("id=flSqlaTable")',
+            "30000")
         result = browser.get_text('css=#flDebugWindow .flDebugPanelTitle h3')
         self.assertEqual(result, 'SQL Explained')
 

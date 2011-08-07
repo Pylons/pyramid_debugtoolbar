@@ -1,3 +1,9 @@
+Next release
+------------
+
+- Add SQLAlchemy "explain" and "select" pages (available from the SQLALchemy
+  panel, next to each query).
+
 0.1 (2011-07-30)
 ----------------
 
