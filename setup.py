@@ -48,6 +48,12 @@ setup(name='pyramid_debugtoolbar',
       license="BSD",
       packages=find_packages(),
       include_package_data=True,
+      package_data={
+          'pyramid_debugtoolbar.panels': [
+              '*.jinja2',
+              'templates/*'
+          ],
+      },
       zip_safe=False,
       install_requires=install_requires,
       tests_require=install_requires,
