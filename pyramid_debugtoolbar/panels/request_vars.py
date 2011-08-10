@@ -25,7 +25,8 @@ class RequestVarsDebugPanel(DebugPanel):
         attr_dict = request.__dict__.copy()
         # environ is displayed separately
         del attr_dict['environ']
-        attr_dict['response'] = repr(attr_dict['response'])
+        if 'response' in attr_dict:
+            attr_dict['response'] = repr(attr_dict['response'])
         attrs = sorted(attr_dict.items())
         vars.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],

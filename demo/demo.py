@@ -48,6 +48,7 @@ if __name__ == '__main__':
     # configuration settings
     settings = {}
     settings['mako.directories'] = os.path.join(here, 'templates')
+    settings['mako.module_directory'] = os.path.join(here, 'mako_modules')
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
