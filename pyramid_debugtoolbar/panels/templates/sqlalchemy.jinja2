@@ -14,8 +14,8 @@
 			<td>
 			{% if query.params %}
 				{% if query.is_select %}
-				<a class="remoteCall" href="/_debug_toolbar/sqlalchemy/sql_select?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}&amp;engine_id={{ query.engine_id|string|urlencode }}">SELECT</a><br />
-				<a class="remoteCall" href="/_debug_toolbar/sqlalchemy/sql_explain?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}&amp;engine_id={{ query.engine_id|string|urlencode }}">EXPLAIN</a><br />
+				<a class="remoteCall" href="{{ root_path }}/sqlalchemy/sql_select?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}&amp;engine_id={{ query.engine_id|string|urlencode }}">SELECT</a><br />
+				<a class="remoteCall" href="{{ root_path}}/sqlalchemy/sql_explain?sql={{ query.raw_sql|urlencode }}&amp;params={{ query.params|urlencode }}&amp;duration={{ query.duration|string|urlencode }}&amp;hash={{ query.hash }}&amp;engine_id={{ query.engine_id|string|urlencode }}">EXPLAIN</a><br />
 				{% endif %}
 			{% endif %}
 			</td>

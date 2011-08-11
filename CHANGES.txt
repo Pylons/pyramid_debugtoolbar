@@ -6,6 +6,8 @@ Next release
 
 - Add an "alias" to the add_tween call; requires newest Pyramid trunk.
 
+- Dynamicize URLs for SQLAlchemy subpanels.
+
 0.2 (2011-08-07)
 ----------------
 

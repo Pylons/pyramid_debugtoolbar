@@ -8,6 +8,8 @@ import weakref
 from pyramid.threadlocal import get_current_request
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
+from pyramid_debugtoolbar.utils import STATIC_PATH
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 lock = threading.Lock()
 
@@ -97,10 +99,15 @@ class SQLADebugPanel(DebugPanel):
                 'hash': hash,
                 'params': params,
                 'is_select': is_select,
-                'context': query['context']
+                'context': query['context'],
             })
 
-        vars = {'queries': data}
+        vars = {
+            'static_path': self.request.static_url(STATIC_PATH),
+            'root_path': self.request.route_url(ROOT_ROUTE_NAME),
+            'queries':data,
+            }
+
         delattr(self.request, 'pdtb_sqla_queries')
 
         return self.render(
