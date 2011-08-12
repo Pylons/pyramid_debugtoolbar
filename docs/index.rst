@@ -42,7 +42,7 @@ following line:
 
 .. code-block:: ini
 
-   pyramid.include = pyramid_debugtoolbar
+   pyramid.includes = pyramid_debugtoolbar
 
 .. warning:: The debug toolbar should never be enabled in a production
    environment or on a machine with its Pyramid HTTP port exposed directly to
