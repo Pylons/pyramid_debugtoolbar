@@ -24,7 +24,7 @@ except IOError:
     README = CHANGES = ''
 
 install_requires = [
-    'pyramid>=1.1.1dev',
+    'pyramid>=1.2dev',
     'pyramid_jinja2>=1.1', # get_jinja2_environment
     'Pygments',
     ]

@@ -8,6 +8,9 @@ Next release
 
 - Dynamicize URLs for SQLAlchemy subpanels.
 
+- Require "pyramid>=1.2dev" for install; the trunk is now "1.2dev" instead of
+  "1.1.1dev".
+
 0.2 (2011-08-07)
 ----------------
 
