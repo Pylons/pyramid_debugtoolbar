@@ -92,10 +92,18 @@ def replace_insensitive(string, target, replacement):
 
 resolver = DottedNameResolver(None)
 
-def as_list(value):
+def as_cr_separated_list(value):
     if isinstance(value, basestring):
         value = filter(None, [x.strip() for x in value.splitlines()])
     return value
+
+def as_list(value):
+    values = as_cr_separated_list(value)
+    result = []
+    for value in values:
+        subvalues = value.split()
+        result.extend(subvalues)
+    return result
 
 def as_globals_list(value):
     L = []

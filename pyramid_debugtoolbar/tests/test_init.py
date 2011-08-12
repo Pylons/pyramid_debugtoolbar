@@ -35,7 +35,14 @@ class Test_includeme(unittest.TestCase):
     def test_it(self):
         self._callFUT(self.config)
         self.assertEqual(self.config.registry.settings['debugtoolbar.hosts'],
-                         ('127.0.0.1', '::1'))
+                         ['127.0.0.1', '::1'])
+
+    def test_it_with_complex_hosts(self):
+        s = self.config.registry.settings
+        s['debugtoolbar.hosts'] ='127.0.0.1 192.168.1.1 \n 192.168.1.2'
+        self._callFUT(self.config)
+        self.assertEqual(self.config.registry.settings['debugtoolbar.hosts'],
+                         ['127.0.0.1', '192.168.1.1', '192.168.1.2'])
 
 class DummyPanel(object):
     pass
