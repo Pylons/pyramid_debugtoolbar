@@ -60,6 +60,46 @@ hand side of the page.  Additionally:
   to examine the state of the redirect page before proceeding to the redirect
   target page.
 
+Settings
+~~~~~~~~
+
+Settings can be used to control the operation of the toolbar. These settings 
+are typically specified in the Pyramid "app" section of the Pyramid ``.ini``
+file.
+
+``debugtoolbar.hosts``
+
+   If the request's REMOTE_ADDR is not in this list, the toolbar will not be
+   displayed and the exception handler will not be active.  Default:
+   ['127.0.0.1', '::1'].  This should be a list or, if defined in a Paste ini
+   file, a single-line list of IP addresses separated by spaces.
+
+``debugtoolbar.enabled``
+
+   ``true`` if the toolbar is enabled; ``false`` if the toolbar is disabled.
+   Default: ``true``.  This disables both the exception handler and the
+   toolbar overlay.
+
+``debugtoolbar.intercept_exc``
+
+   ``true`` if the exception debugger is enabled; ``false`` if the exception
+   debugger is disabled.  Default: ``true``.  This differs from
+   ``debugtoolbar.enabled``: it only disables the exception handler.
+
+``debugtoolbar.intercept_redirects``
+
+   ``true`` if the redirection handler is enabled; ``false`` if the handler
+   is disabled.  Default: ``true``.  This differs from
+   ``debugtoolbar.enabled``: it only disables the redirection handler.
+
+``debugtoolbar.panels``
+
+    A list of dotted Python global names to panel classes.  Defaults to a
+    list of all panel types known by :mod:`pyramid_debugtoolbar`, as
+    documented in :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an
+    ``.ini`` file, it should be a space-separated sequence of dotted
+    Python names.
+
 The Toolbar
 -----------
 
@@ -167,45 +207,6 @@ You can use the toolbar on the redirect source page, then when finished, use
 the link to continue to the target page.
 
 .. image:: redirect.png
-
-Settings
---------
-
-Settings can be used to control the operation of the toolbar (usually in the
-Pyramid ``.ini`` file within the Pyramid "app" section).
-
-``debugtoolbar.hosts``
-
-   If the request's REMOTE_ADDR is not in this list, the toolbar will not be
-   displayed, and the exception handler will not be active.  Default:
-   ['127.0.0.1', '::1'].  This should be a list, or if defined in a Paste ini
-   file, a linebreak separated list of IP addresses.
-
-``debugtoolbar.enabled``
-
-   ``true`` if the toolbar is enabled; ``false`` if the toolbar is disabled.
-   Default: ``true``.  This disables both the exception handler and the
-   toolbar overlay.
-
-``debugtoolbar.intercept_exc``
-
-   ``true`` if the exception debugger is enabled; ``false`` if the exception
-   debugger is disabled.  Default: ``true``.  This differs from
-   ``debugtoolbar.enabled``: it only disables the exception handler.
-
-``debugtoolbar.intercept_redirects``
-
-   ``true`` if the redirection handler is enabled; ``false`` if the handler
-   is disabled.  Default: ``true``.  This differs from
-   ``debugtoolbar.enabled``: it only disables the redirection handler.
-
-``debugtoolbar.panels``
-
-    A list of dotted Python global names to panel classes.  Defaults to a
-    list of all panel types known by :mod:`pyramid_debugtoolbar`, as
-    documented in :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an
-    ``.ini`` file, it should be a linefeed-separated sequence of dotted
-    Python names.
 
 More Information
 ----------------
