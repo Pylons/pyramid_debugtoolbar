@@ -3,6 +3,7 @@ import logging
 
 from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.view import view_config
 
@@ -21,6 +22,10 @@ here = os.path.dirname(os.path.abspath(__file__))
 @view_config(route_name='test_exc')
 def exc(request):
     raise NotImplementedError
+
+@view_config(route_name='test_notfound')
+def notfound(request):
+    raise HTTPNotFound()
 
 @view_config(route_name='test_page', renderer='index.mako')
 def test_page(request):
@@ -58,6 +63,7 @@ if __name__ == '__main__':
     config.add_route('test_redirect', '/redirect')
     config.add_route('test_predicates', '/predicates', request_method='GET')
     config.add_route('test_exc', '/exc')
+    config.add_route('test_notfound', '/notfound')
     config.add_route('test_chameleon_exc', '/chameleon_exc')
     config.add_route('test_mako_exc', '/mako_exc')
     config.add_route('test_jinja2_exc', '/jinja2_exc')

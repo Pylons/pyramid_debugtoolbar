@@ -10,6 +10,7 @@ from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid.httpexceptions import WSGIHTTPException
 
 class DebugToolbar(object):
 
@@ -30,6 +31,10 @@ class DebugToolbar(object):
         # If the body is HTML, then we add the toolbar to the response.
         request = self.request
 
+        if isinstance(response, WSGIHTTPException):
+            # the body of a WSGIHTTPException needs to be "prepared"
+            response.prepare(request.environ)
+
         for panel in self.panels:
             panel.process_response(response)
 
@@ -41,8 +46,8 @@ class DebugToolbar(object):
             toolbar_html = render(
                 'pyramid_debugtoolbar:templates/toolbar.jinja2',
                 vars, request=request)
-            toolbar_html = toolbar_html.encode(response.charset)
             response_html = response.body
+            toolbar_html = toolbar_html.encode(response.charset)
             body = replace_insensitive(response_html, '</body>',
                                        toolbar_html + '</body>')
             response.app_iter = [body]
@@ -97,9 +102,8 @@ def toolbar_tween_factory(handler, registry):
         try:
             response = _handler(request)
         except Exception:
-            info = sys.exc_info()
             if exc_history is not None:
-                tb = get_traceback(info=info,
+                tb = get_traceback(info=sys.exc_info(),
                                    skip=1,
                                    show_hidden_frames=False,
                                    ignore_system_exceptions=True)

@@ -4,12 +4,19 @@ Next release
 - Request vars panel would cause a UnicodeDecodeError under some
   circumstances (see https://github.com/Pylons/pyramid_debugtoolbar/issues/9).
 
-- Add an "alias" to the add_tween call; requires newest Pyramid trunk.
-
 - Dynamicize URLs for SQLAlchemy subpanels.
 
 - Require "pyramid>=1.2dev" for install; the trunk is now "1.2dev" instead of
   "1.1.1dev".
+
+- Requires trunk after 2011-08-13: WSGIHTTPException "prepare" method and
+  ``alias`` param to add_tween.
+
+- Fix memory leak.
+
+- HTML HTTP exceptions now are rendered with the debug toolbar div.
+
+- Added NotFound page to demo app and selenium tests.
 
 0.2 (2011-08-07)
 ----------------

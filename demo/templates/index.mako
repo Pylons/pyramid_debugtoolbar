@@ -11,6 +11,9 @@
           <a href="${request.route_url('test_exc')}">Exception example</a>
         </p>
         <p>
+          <a href="${request.route_url('test_notfound')}">Not found example</a>
+        </p>
+        <p>
           <a href="${request.route_url('test_sqla')}">SQLAlchemy example</a>
         </p>
         <p>

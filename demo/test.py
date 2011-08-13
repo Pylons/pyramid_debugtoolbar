@@ -44,6 +44,12 @@ class PageTest(unittest.TestCase):
         self.failUnless(browser.is_element_present('id=flDebugToolbar'))
         self.failUnless(browser.is_element_present('css=.debugger'))
 
+    def test_notfound(self):
+        browser.open('/notfound')
+        browser.wait_for_page_to_load("30000")
+        self.failUnless(browser.is_text_present("Not Found"))
+        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+
     def test_exception_console(self):
         browser.open('/exc')
         browser.wait_for_page_to_load("30000")
