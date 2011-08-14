@@ -17,9 +17,8 @@ class RenderingsDebugPanel(DebugPanel):
         name = event['renderer_info'].name
         if name and name.startswith('pyramid_debugtoolbar'):
             return
-        system = getattr(event, '_system', 'unknown')
         val = getattr(event, 'rendering_val', 'unknown')
-        self.renderings.append(dict(name=name, system=system, val=val))
+        self.renderings.append(dict(name=name, system=event, val=val))
 
     def nav_title(self):
         return _('Renderings')

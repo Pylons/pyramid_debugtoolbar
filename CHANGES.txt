@@ -9,8 +9,8 @@ Next release
 - Require "pyramid>=1.2dev" for install; the trunk is now "1.2dev" instead of
   "1.1.1dev".
 
-- Requires trunk after 2011-08-13: WSGIHTTPException "prepare" method and
-  ``alias`` param to add_tween.
+- Requires trunk after 2011-08-14: WSGIHTTPException "prepare" method and
+  ``alias`` param to add_tween, BeforeRender event has no "_system" attr.
 
 - Fix memory leak.
 
