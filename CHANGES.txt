@@ -1,3 +1,10 @@
+Next release
+------------
+
+- Change the default value for ``debugtoolbar.intercept_redirects`` to
+  ``false.`` Rationale: it confuses people when first developing if the
+  application they're working on has a home page which does a redirection.
+
 0.3 (2011-08-15)
 ----------------
 
