@@ -154,43 +154,44 @@ class PerformanceDebugPanel(DebugPanel):
                                                          name)
 
     def content(self):
-        utime = 1000 * self._elapsed_ru('ru_utime')
-        stime = 1000 * self._elapsed_ru('ru_stime')
-        vcsw = self._elapsed_ru('ru_nvcsw')
-        ivcsw = self._elapsed_ru('ru_nivcsw')
-        minflt = self._elapsed_ru('ru_minflt')
-        majflt = self._elapsed_ru('ru_majflt')
+        if self.has_resource:
+            utime = 1000 * self._elapsed_ru('ru_utime')
+            stime = 1000 * self._elapsed_ru('ru_stime')
+            vcsw = self._elapsed_ru('ru_nvcsw')
+            ivcsw = self._elapsed_ru('ru_nivcsw')
+            minflt = self._elapsed_ru('ru_minflt')
+            majflt = self._elapsed_ru('ru_majflt')
 
 # these are documented as not meaningful under Linux.  If you're running BSD
 # feel free to enable them, and add any others that I hadn't gotten to before
 # I noticed that I was getting nothing but zeroes and that the docs agreed. :-(
 #
-#        blkin = self._elapsed_ru('ru_inblock')
-#        blkout = self._elapsed_ru('ru_oublock')
-#        swap = self._elapsed_ru('ru_nswap')
-#        rss = self._end_rusage.ru_maxrss
-#        srss = self._end_rusage.ru_ixrss
-#        urss = self._end_rusage.ru_idrss
-#        usrss = self._end_rusage.ru_isrss
+#            blkin = self._elapsed_ru('ru_inblock')
+#            blkout = self._elapsed_ru('ru_oublock')
+#            swap = self._elapsed_ru('ru_nswap')
+#            rss = self._end_rusage.ru_maxrss
+#            srss = self._end_rusage.ru_ixrss
+#            urss = self._end_rusage.ru_idrss
+#            usrss = self._end_rusage.ru_isrss
 
-        # TODO l10n on values
-        rows = (
-            (_('User CPU time'), '%0.3f msec' % utime),
-            (_('System CPU time'), '%0.3f msec' % stime),
-            (_('Total CPU time'), '%0.3f msec' % (utime + stime)),
-            (_('Elapsed time'), '%0.3f msec' % self.total_time),
-            (_('Context switches'), '%d voluntary, %d involuntary' % (
-                vcsw, ivcsw)),
-#            (_('Memory use'), '%d max RSS, %d shared, %d unshared' % (
-#                rss, srss, urss + usrss)),
-#            (_('Page faults'), '%d no i/o, %d requiring i/o' % (
-#                minflt, majflt)),
-#            (_('Disk operations'), '%d in, %d out, %d swapout' % (
-#                blkin, blkout, swap)),
-        )
-        vars = {
-            'timing_rows': rows,
-        }
+            # TODO l10n on values
+            rows = (
+                (_('User CPU time'), '%0.3f msec' % utime),
+                (_('System CPU time'), '%0.3f msec' % stime),
+                (_('Total CPU time'), '%0.3f msec' % (utime + stime)),
+                (_('Elapsed time'), '%0.3f msec' % self.total_time),
+                (_('Context switches'), '%d voluntary, %d involuntary' % (
+                    vcsw, ivcsw)),
+#                (_('Memory use'), '%d max RSS, %d shared, %d unshared' % (
+#                    rss, srss, urss + usrss)),
+#                (_('Page faults'), '%d no i/o, %d requiring i/o' % (
+#                    minflt, majflt)),
+#                (_('Disk operations'), '%d in, %d out, %d swapout' % (
+#                    blkin, blkout, swap)),
+            )
+            vars = {
+                'timing_rows': rows,
+            }
         if self.is_active:
             vars.update({
                 'stats': self.stats,
