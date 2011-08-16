@@ -154,6 +154,7 @@ class PerformanceDebugPanel(DebugPanel):
                                                          name)
 
     def content(self):
+        vars = {}
         if self.has_resource:
             utime = 1000 * self._elapsed_ru('ru_utime')
             stime = 1000 * self._elapsed_ru('ru_stime')
@@ -189,14 +190,10 @@ class PerformanceDebugPanel(DebugPanel):
 #                (_('Disk operations'), '%d in, %d out, %d swapout' % (
 #                    blkin, blkout, swap)),
             )
-            vars = {
-                'timing_rows': rows,
-            }
+            vars['timing_rows'] = rows
         if self.is_active:
-            vars.update({
-                'stats': self.stats,
-                'function_calls': self.function_calls,
-            })
+            vars['stats'] = self.stats
+            vars['function_calls'] = self.function_calls
         return self.render(
             'pyramid_debugtoolbar.panels:templates/performance.jinja2',
             vars, request=self.request)
