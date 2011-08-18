@@ -1,3 +1,4 @@
+{% if timing_rows %}
 <table>
 	<colgroup>
 		<col style="width:20%"/>
@@ -18,6 +19,10 @@
 		{% endfor %}
 	</tbody>
 </table>
+{% else %}
+    <p>Resource statistics have been disabled. This is because the 'resource'
+    module could not be found. This module is not supported under Windows.</p>
+{% endif %}
 
 <h4>Profile</h4>
 {% if stats %}
