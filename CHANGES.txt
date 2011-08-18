@@ -1,5 +1,5 @@
-Next release
-------------
+0.4 (2011-08-18)
+----------------
 
 - Change the default value for ``debugtoolbar.intercept_redirects`` to
   ``false.`` Rationale: it confuses people when first developing if the
