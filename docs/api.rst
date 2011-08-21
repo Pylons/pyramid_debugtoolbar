@@ -7,6 +7,8 @@
 
 .. autofunction:: includeme
 
+.. autofunction:: toolbar_tween_factory
+
 .. automodule:: pyramid_debugtoolbar.panels.sqla
 
 .. autoclass:: SQLADebugPanel

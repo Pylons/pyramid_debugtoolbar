@@ -67,6 +67,7 @@ def beforerender_subscriber(event):
             panel.process_beforerender(event)
 
 def toolbar_tween_factory(handler, registry):
+    """ Pyramid tween factory for the debug toolbar """
     settings = registry.settings
 
     if not get_setting(settings, 'enabled'):

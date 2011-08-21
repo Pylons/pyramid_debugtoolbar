@@ -1,3 +1,9 @@
+Next release
+------------
+
+- Do not register an alias when registering an implicit tween factory (compat
+  with future 1.2 release).
+
 0.5 (2011-08-18)
 ----------------
 

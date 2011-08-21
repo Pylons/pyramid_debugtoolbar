@@ -5,6 +5,8 @@ from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.toolbar import toolbar_tween_factory # API
+toolbar_tween_factory = toolbar_tween_factory # pyflakes
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
@@ -48,8 +50,7 @@ def includeme(config):
     j2_env = config.get_jinja2_environment()
     j2_env.filters['urlencode'] = url_quote
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-    config.add_tween('pyramid_debugtoolbar.toolbar.toolbar_tween_factory',
-                     alias='pdbt')
+    config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender')
@@ -62,4 +63,3 @@ def includeme(config):
     config.add_route('debugtoolbar.sql_explain',
                      '/_debug_toolbar/sqlalchemy/sql_explain')
     config.scan('pyramid_debugtoolbar.views')
-        
