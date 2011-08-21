@@ -1,7 +1,7 @@
 
 import hashlib
-import json
 
+from pyramid.compat import json
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config

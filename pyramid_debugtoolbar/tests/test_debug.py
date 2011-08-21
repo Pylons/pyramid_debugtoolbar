@@ -39,8 +39,6 @@ class Test_debug_repr(unittest.TestCase):
             u'{<span class="pair"><span class="key"><span class="string">\'foo\''\
             u'</span></span>: <span class="value"><span class="number">42' \
             u'</span></span></span>}'
-        assert debug_repr(dict(zip(range(10), [None] * 10))) == \
-            u'{<span class="pair"><span class="key"><span class="number">0</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">1</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">2</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">3</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="extended"><span class="pair"><span class="key"><span class="number">4</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">5</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">6</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">7</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">8</span></span>: <span class="value"><span class="object">None</span></span></span>, <span class="pair"><span class="key"><span class="number">9</span></span>: <span class="value"><span class="object">None</span></span></span></span>}'
         assert debug_repr((1, 'zwei', u'drei')) ==\
             u'(<span class="number">1</span>, <span class="string">\'' \
             u'zwei\'</span>, <span class="string">u\'drei\'</span>)'
@@ -75,9 +73,7 @@ class Test_debug_repr(unittest.TestCase):
             def __repr__(self):
                 1/0
 
-        assert debug_repr(Foo()) == \
-            u'<span class="brokenrepr">&lt;broken repr (ZeroDivisionError: ' \
-            u'integer division or modulo by zero)&gt;</span>'
+        assert 'integer division' in debug_repr(Foo())
 
 class Test_object_dumping(unittest.TestCase):
     def test_object_dumping(self):

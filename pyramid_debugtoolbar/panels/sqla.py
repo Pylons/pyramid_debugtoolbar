@@ -1,11 +1,13 @@
+from __future__ import with_statement
 
 import hashlib
-import json
 import threading
 import time
 import weakref
 
+from pyramid.compat import json
 from pyramid.threadlocal import get_current_request
+
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import STATIC_PATH

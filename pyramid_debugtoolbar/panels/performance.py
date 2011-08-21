@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 try:
     import cProfile as profile
 except ImportError: # pragma: no cover
