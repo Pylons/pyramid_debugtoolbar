@@ -1,5 +1,5 @@
-Next release
-------------
+0.8 (2011-08-24)
+----------------
 
 - Try to cope with braindead Debian Python installs which package the
   ``pstats`` module separately from Python for god only knows what reason.
