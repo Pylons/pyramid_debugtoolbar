@@ -1,3 +1,10 @@
+Next release
+------------
+
+- Try to cope with braindead Debian Python installs which package the
+  ``pstats`` module separately from Python for god only knows what reason.
+  Turn the performance panel off in this case instead of crashing.
+
 0.7 (2011-08-24)
 ----------------
 

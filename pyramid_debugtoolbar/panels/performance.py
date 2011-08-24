@@ -3,12 +3,20 @@ from __future__ import with_statement
 try:
     import cProfile as profile
 except ImportError: # pragma: no cover
-    import profile
+    try:
+        import profile
+    except ImportError: # pragma: no cover
+        profile = None
 try:
     import resource
-except ImportError:
-    pass # Will fail on Win32 systems
-import pstats
+except ImportError: # pragma: no cover
+    resource = None # Will fail on Win32 systems
+try:
+    import pstats
+except ImportError: # pragma: no cover
+    pstats = None # will fail on braindead Debian systems that package pstats
+                  # separately from python for god-knows-what-reason
+
 import threading
 import time
 
@@ -27,22 +35,16 @@ class PerformanceDebugPanel(DebugPanel):
     cProfile output.
     """
     name = 'Performance'
-    has_content = True
-
     user_activate = True
     stats = None
     function_calls = None
-
-    try: # if resource module not available, don't show content panel
-        resource
-    except NameError:
-        has_resource = False
-    else:
-        has_resource = True
+    has_resource = bool(resource)
+    has_content = bool(pstats and profile)
 
     def __init__(self, request):
         self.request = request
-        self.profiler = profile.Profile()
+        if profile is not None:
+            self.profiler = profile.Profile()
 
     def _wrap_timer_handler(self, handler):
         if self.has_resource:
@@ -162,8 +164,8 @@ class PerformanceDebugPanel(DebugPanel):
             stime = 1000 * self._elapsed_ru('ru_stime')
             vcsw = self._elapsed_ru('ru_nvcsw')
             ivcsw = self._elapsed_ru('ru_nivcsw')
-            minflt = self._elapsed_ru('ru_minflt')
-            majflt = self._elapsed_ru('ru_majflt')
+            ## minflt = self._elapsed_ru('ru_minflt')
+            ## majflt = self._elapsed_ru('ru_majflt')
 
 # these are documented as not meaningful under Linux.  If you're running BSD
 # feel free to enable them, and add any others that I hadn't gotten to before
