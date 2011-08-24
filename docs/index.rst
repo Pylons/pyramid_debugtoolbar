@@ -12,10 +12,7 @@ developing a :term:`Pyramid` application.
 ``django-debugtoolbar``).  It also includes a lightly sanded down version of
 the Werkzeug debugger code by Armin Ronacher and team.
 
-.. warning:: This package only works with Pyramid 1.2 and above.  As of
-   this writing, Pyramid 1.2 has not yet been released, which effectively
-   means that this package only works with the Pyramid trunk at
-   http://github.com/Pylons/pyramid
+.. warning:: This package only works with Pyramid 1.2a1 and better.
 
 Installation
 ------------

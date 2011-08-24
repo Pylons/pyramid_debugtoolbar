@@ -4,8 +4,7 @@
 ``pyramid_debugtoolbar`` provides a debug toolbar useful while you're
 developing your Pyramid application.
 
-This code requires the Pyramid trunk (aka 1.1.1dev); no released version of
-Pyramid (e.g. 1.0 or 1.1) will run it.
+This code requires Pyramid 1.2a1 or better.
 
 Note that ``pyramid_debugtoolbar`` is a blatant rip-off of Michael van
 Tellingen's ``flask-debugtoolbar`` (which itself was derived from Rob
