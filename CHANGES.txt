@@ -1,3 +1,10 @@
+Next release
+------------
+
+- ``response.charset`` in some undefined user-reported cases may be ``None``,
+  which would lead to an exception when attempting to render the debug
+  toolbar.  In such cases we now assume the charset is UTF-8.
+
 0.8 (2011-08-24)
 ----------------
 

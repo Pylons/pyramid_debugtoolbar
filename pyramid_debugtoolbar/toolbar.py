@@ -47,7 +47,7 @@ class DebugToolbar(object):
                 'pyramid_debugtoolbar:templates/toolbar.jinja2',
                 vars, request=request)
             response_html = response.body
-            toolbar_html = toolbar_html.encode(response.charset)
+            toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
             body = replace_insensitive(response_html, '</body>',
                                        toolbar_html + '</body>')
             response.app_iter = [body]
