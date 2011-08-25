@@ -52,8 +52,11 @@ def test_template_exc(request):
 if __name__ == '__main__':
     # configuration settings
     settings = {}
+    settings['debug_templates'] = True
+    settings['reload_templates'] = True
     settings['mako.directories'] = os.path.join(here, 'templates')
     settings['mako.module_directory'] = os.path.join(here, 'mako_modules')
+    #settings['mako.strict_undefined'] = True
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
