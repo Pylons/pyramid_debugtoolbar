@@ -100,3 +100,4 @@ Contributors
 - Chris McDonough, 2011/07/22
 - Blaise Laflamme, 2011/07/22
 - Michael Merickel, 2011/07/22
+- Ben Bangert, 2011/08/26
