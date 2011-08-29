@@ -1,5 +1,5 @@
-Next release
-------------
+0.9 (2011-08-29)
+----------------
 
 - Fixed indentation of SQL EXPLAIN by replacing spaces with HTML spaces.
 
