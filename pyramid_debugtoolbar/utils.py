@@ -115,3 +115,13 @@ def as_globals_list(value):
 
 def get_setting(settings, name, default=None):
     return settings.get('%s%s' % (SETTINGS_PREFIX, name), default)
+
+def dictrepr(d):
+    out = {}
+    for val in d:
+        try:
+            out[val] = repr(d[val])
+        except:
+            # defensive
+            out[val] = '<unknown>'
+    return sorted(out.items())

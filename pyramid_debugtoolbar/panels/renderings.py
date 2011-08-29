@@ -1,4 +1,5 @@
 from pyramid_debugtoolbar.panels import DebugPanel
+from pyramid_debugtoolbar.utils import dictrepr
 
 _ = lambda x: x
 
@@ -17,8 +18,13 @@ class RenderingsDebugPanel(DebugPanel):
         name = event['renderer_info'].name
         if name and name.startswith('pyramid_debugtoolbar'):
             return
-        val = getattr(event, 'rendering_val', 'unknown')
-        self.renderings.append(dict(name=name, system=event, val=val))
+        val = getattr(event, 'rendering_val', '<unknown>')
+        try:
+            val = repr(val)
+        except:
+            # crazyass code raises an exception during __repr__ (formish)
+            val = '<unknown>'
+        self.renderings.append(dict(name=name, system=dictrepr(event), val=val))
 
     def nav_title(self):
         return _('Renderings')

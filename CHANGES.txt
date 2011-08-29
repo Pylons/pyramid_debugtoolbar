@@ -5,6 +5,9 @@ Next release
   which would lead to an exception when attempting to render the debug
   toolbar.  In such cases we now assume the charset is UTF-8.
 
+- Some renderings of the request vars and renderer values would raise an
+  uncaught exception.
+
 0.8 (2011-08-24)
 ----------------
 

@@ -1,4 +1,6 @@
 from pyramid_debugtoolbar.panels import DebugPanel
+from pyramid_debugtoolbar.utils import dictrepr
+
 
 _ = lambda x: x
 
@@ -27,22 +29,19 @@ class RequestVarsDebugPanel(DebugPanel):
         del attr_dict['environ']
         if 'response' in attr_dict:
             attr_dict['response'] = repr(attr_dict['response'])
-        attrs = sorted(attr_dict.items())
         vars.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],
             'post': [(k, request.POST.getall(k)) for k in request.POST],
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
-            'attrs': attrs,
-            'environ': sorted(request.environ.items()),
+            'attrs': dictrepr(attr_dict),
+            'environ': dictrepr(request.environ),
         })
         if hasattr(self.request, 'session'):
             vars.update({
-                'session': [(k, self.request.session.get(k)) for k in
-                            self.request.session.keys()]
+                'session': dictrepr(self.request.session),
             })
 
         return self.render(
             'pyramid_debugtoolbar.panels:templates/request_vars.jinja2',
             vars,
             request=self.request)
-
