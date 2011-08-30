@@ -1,3 +1,23 @@
+Next release
+------------
+
+- The ``debugtoolbar.intercept_exc`` setting is now a tri-state setting.  It
+  can be one of ``debug``, ``display`` or ``false``.  ``debug`` means show
+  the pretty traceback page with debugging controls.  ``display`` means show
+  the pretty traceback package but omit the debugging controls.  ``false``
+  means don't show the pretty traceback page.  For backwards compatibility
+  purposes, ``true`` means ``debug``.
+
+- A URL is now logged to the console for each exception when
+  ``debugtoolbar.intercept_exc`` is ``debug`` or ``display``.  This URL leads
+  to a rendering of the "pretty" traceback page for an exception.  This is
+  useful when the exception was caused by an AJAX or non-human-driven
+  request.  This URL is also injected into the pretty traceback page (at the
+  bottom).
+
+- "Unfixed" indentation of SQL EXPLAIN done in 0.9, it broke the explain page
+  when a column value isn't a string.
+
 0.9 (2011-08-29)
 ----------------
 

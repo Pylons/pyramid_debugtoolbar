@@ -1,6 +1,9 @@
 import os.path
 import sys
+from logging import getLogger
+
 from pyramid.util import DottedNameResolver
+from pyramid.settings import asbool
 
 try:
     from pygments import highlight
@@ -15,6 +18,7 @@ except ImportError: # pragma: no cover
 SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
 ROOT_ROUTE_NAME = 'debugtoolbar.root'
+EXC_ROUTE_NAME = 'debugtoolbar.exception'
 
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
@@ -113,6 +117,16 @@ def as_globals_list(value):
         L.append(obj)
     return L
 
+def as_display_debug_or_false(value):
+    if isinstance(value, basestring):
+        val = value.lower().strip()
+        if val in ('display', 'debug'):
+            return val
+    b = asbool(value)
+    if b: # bw compat for dbt <=0.9
+        return 'debug'
+    return False
+
 def get_setting(settings, name, default=None):
     return settings.get('%s%s' % (SETTINGS_PREFIX, name), default)
 
@@ -125,3 +139,6 @@ def dictrepr(d):
             # defensive
             out[val] = '<unknown>'
     return sorted(out.items())
+
+logger = getLogger('pyramid_debugtoolbar')
+

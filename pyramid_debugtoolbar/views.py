@@ -29,6 +29,17 @@ class ExceptionDebugView(object):
         self.frame = frm
         cmd = self.request.params.get('cmd')
         self.cmd = cmd
+        tb = self.request.params.get('tb')
+        if tb is not None:
+            tb = int(tb)
+        self.tb = tb
+
+    @view_config(route_name='debugtoolbar.exception')
+    def exception(self):
+        tb = self.exc_history.tracebacks[self.tb]
+        body = tb.render_full(self.request).encode('utf-8', 'replace')
+        response = Response(body, status=500)
+        return response
 
     @view_config(route_name='debugtoolbar.source')
     def source(self):
@@ -41,12 +52,13 @@ class ExceptionDebugView(object):
 
     @view_config(route_name='debugtoolbar.execute')
     def execute(self):
-        exc_history = self.exc_history
-        if self.frame is not None and self.cmd is not None:
-            frame = exc_history.frames.get(self.frame)
-            if frame is not None:
-                result = frame.console.eval(self.cmd)
-                return Response(result, content_type='text/html')
+        if self.request.exc_history.eval_exc:
+            exc_history = self.exc_history
+            if self.frame is not None and self.cmd is not None:
+                frame = exc_history.frames.get(self.frame)
+                if frame is not None:
+                    result = frame.console.eval(self.cmd)
+                    return Response(result, content_type='text/html')
         return HTTPBadRequest()
         
     @view_config(route_name='debugtoolbar.console',
@@ -56,10 +68,10 @@ class ExceptionDebugView(object):
         toolbar_root_path = self.request.route_url(ROOT_ROUTE_NAME)
         exc_history = self.exc_history
         vars = {
-            'evalex':           'true',
+            'evalex':           exc_history.eval_exc and 'true' or 'false',
             'console':          'true',
             'title':            'Console',
-            'traceback_id':     -1,
+            'traceback_id':     self.tb or -1,
             'root_path':        toolbar_root_path,
             'static_path':      static_path,
             'token':            exc_history.token,

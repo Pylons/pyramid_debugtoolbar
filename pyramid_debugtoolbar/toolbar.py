@@ -10,6 +10,8 @@ from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
+from pyramid_debugtoolbar.utils import logger
 from pyramid.httpexceptions import WSGIHTTPException
 
 class DebugToolbar(object):
@@ -54,7 +56,7 @@ class DebugToolbar(object):
 
 class ExceptionHistory(object):
     def __init__(self):
-        self.token = os.urandom(20).encode('hex')
+        self.token = os.urandom(10).encode('hex')
         self.frames = {}
         self.tracebacks = {}
 
@@ -83,6 +85,7 @@ def toolbar_tween_factory(handler, registry):
 
     if intercept_exc:
         exc_history = ExceptionHistory()
+        exc_history.eval_exc = intercept_exc == 'debug'
 
     def toolbar_tween(request):
         root_path = request.route_path(ROOT_ROUTE_NAME)
@@ -112,10 +115,13 @@ def toolbar_tween_factory(handler, registry):
                     exc_history.frames[frame.id] = frame
 
                 exc_history.tracebacks[tb.id] = tb
-                body = tb.render_full(request, evalex=True).encode(
-                    'utf-8', 'replace')
+                body = tb.render_full(request).encode('utf-8', 'replace')
                 response = Response(body, status=500)
                 toolbar.process_response(response)
+                qs = {'token':exc_history.token, 'tb':str(tb.id)}
+                msg = 'Exception at %s, traceback url: %s' 
+                exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
+                logger.info(msg % (request.path_info, exc_url))
                 return response
 
             raise

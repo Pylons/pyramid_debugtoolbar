@@ -2,9 +2,11 @@ from pyramid.encode import url_quote
 from pyramid.settings import asbool
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
+from pyramid_debugtoolbar.utils import as_display_debug_or_false
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.toolbar import toolbar_tween_factory # API
 toolbar_tween_factory = toolbar_tween_factory # pyflakes
 
@@ -24,7 +26,7 @@ default_hosts = ('127.0.0.1', '::1')
 
 default_settings = (
     ('enabled', asbool, 'true'),
-    ('intercept_exc', asbool, 'true'),
+    ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
     ('panels', as_globals_list, default_panel_names),
     ('hosts', as_list, default_hosts),
@@ -58,6 +60,7 @@ def includeme(config):
     config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
     config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
     config.add_route('debugtoolbar.console', '/_debug_toolbar/console')
+    config.add_route(EXC_ROUTE_NAME, '/_debug_toolbar/exception')
     config.add_route('debugtoolbar.sql_select',
                      '/_debug_toolbar/sqlalchemy/sql_select')
     config.add_route('debugtoolbar.sql_explain',

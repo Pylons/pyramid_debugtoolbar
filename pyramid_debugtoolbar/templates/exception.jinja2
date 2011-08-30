@@ -42,6 +42,8 @@
         <b>Warning: this feature should not be enabled on production
           systems.</b>
       </p>
+
+      {% if evalex %}
       <p>
         
         Click on the <img src="{{ static_path }}img/console.png"/>
@@ -55,6 +57,7 @@
           <li><code>dump(obj)</code> dumps all that's known about the object
         </ul>
       </p>
+      {% endif %}
       
       <p>
         Click on the <img src="{{ static_path }}img/source.png"/> next
@@ -63,9 +66,13 @@
       </p>
       
       <p>
-        Click on the traceback header to switch back and forth between a
-        plaintext version of the traceback and the interactive debugging
-        page.
+        Click on the traceback header to switch back and forth between the
+        rendered version of the traceback and a plaintext copy-paste-friendly
+        version of the traceback.
+      </p>
+
+      <p>
+        URL to recover this traceback page: <a href="{{ url }}">{{ url }}</a>
       </p>
     </div>
     
