@@ -1,5 +1,5 @@
-Next release
-------------
+0.9.1 (2011-08-30)
+------------------
 
 - The ``debugtoolbar.intercept_exc`` setting is now a tri-state setting.  It
   can be one of ``debug``, ``display`` or ``false``.  ``debug`` means show
