@@ -13,7 +13,7 @@
 	</tbody>
 	<thead>
 		<tr>
-			<th colspan="2">Args</th>
+			<th colspan="2">Rendering Value</th>
 		</tr>
 	</thead>
 	<tbody>	
@@ -23,11 +23,11 @@
 	</tbody>
 	<thead>
 		<tr>
-			<th colspan="2">System</th>
+			<th colspan="2">System Values</th>
 		</tr>
 	</thead>
 	<tbody>	
-		{% for key, value in rendering.system.iteritems() %}
+		{% for key, value in rendering.system %}
 		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
 			<td>{{ key|escape }}</td>
 			<td>{{ value|escape }}</td>

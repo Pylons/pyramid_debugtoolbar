@@ -23,6 +23,7 @@ from pyramid_debugtoolbar.console import Console
 from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 
 _coding_re = re.compile(r'coding[:=]\s*([-\w.]+)')
 _line_re = re.compile(r'^(.*?)$(?m)')
@@ -222,12 +223,15 @@ class Traceback(object):
         return render('pyramid_debugtoolbar:templates/exception_summary.jinja2',
                       vars, request=request)
 
-    def render_full(self, request, evalex=False, lodgeit_url=None):
+    def render_full(self, request, lodgeit_url=None):
         """Render the Full HTML page with the traceback info."""
         static_path = request.static_url(STATIC_PATH)
         root_path = request.route_url(ROOT_ROUTE_NAME)
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
+        qs = {'token':request.exc_history.token, 'tb':str(self.id)}
+        url = request.route_url(EXC_ROUTE_NAME, _query=qs)
+        evalex = request.exc_history.eval_exc
         vars = {
             'evalex':           evalex and 'true' or 'false',
             'console':          'false',
@@ -242,6 +246,7 @@ class Traceback(object):
             'static_path':      static_path,
             'token':            request.exc_history.token,
             'root_path':        root_path,
+            'url':              url,
         }
         return render('pyramid_debugtoolbar:templates/exception.jinja2',
                       vars, request=request)

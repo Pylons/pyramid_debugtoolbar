@@ -24,6 +24,7 @@ class TestExceptionDebugView(unittest.TestCase):
             frm = DummyFrame()
             frames = {0:frm}
         exc_history = DummyExceptionHistory(frames)
+        exc_history.eval_exc = True
         return exc_history
 
     def test_no_exc_history(self):
@@ -112,7 +113,8 @@ class TestExceptionDebugView(unittest.TestCase):
                           'traceback_id': -1,
                           'token': 'token',
                           'static_path': 'http://static',
-                          'root_path':'http://root'}
+                          'root_path':'http://root',
+                          }
                          )
 
     def test_console_no_initial_history_frame(self):
