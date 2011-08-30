@@ -140,5 +140,6 @@ class SQLAlchemyViews(object):
             'result': result.fetchall(),
             'headers': result.keys(),
             'sql': format_sql(stmt),
+            'str': str,
             'duration': float(self.request.params['duration']),
         }
