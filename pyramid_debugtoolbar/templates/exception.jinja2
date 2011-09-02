@@ -46,11 +46,12 @@
       {% if evalex %}
       <p>
         
-        Click on the <img src="{{ static_path }}img/console.png"/>
-        icon next to any frame in the traceback to show an interactive
-        console.  Type arbitrary Python into the console; it will be
-        evaluated in the context of the associated frame.  In the
-        interactive console there are helpers available for introspection:
+        Hover over any gray area in the traceback and click on the
+        <img src="{{ static_path }}img/console.png"/> icon on the right hand
+        side of that gray area to show an interactive console for the
+        associated frame.  Type arbitrary Python into the console; it will be
+        evaluated in the context of the associated frame.  In the interactive
+        console there are helpers available for introspection:
         
         <ul>
           <li><code>dump()</code> shows all variables in the frame
@@ -60,9 +61,9 @@
       {% endif %}
       
       <p>
-        Click on the <img src="{{ static_path }}img/source.png"/> next
-        to any frame in the traceback to show the source of the file
-        associated with the frame.
+        Hover over any gray area in the traceback and click on <img src="{{
+        static_path }}img/source.png"/> on the right hand side of that gray
+        area to show the source of the file associated with the frame.
       </p>
       
       <p>
