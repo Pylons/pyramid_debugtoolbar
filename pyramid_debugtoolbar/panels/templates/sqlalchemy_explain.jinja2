@@ -22,7 +22,7 @@
 				{% for row in result %}
 				    <tr class="{{ loop.cycle('fjDebugOdd', 'fjDebugEven') }}">
 						{% for column in row %}
-						<td>{{ column|safe }}</td>
+						<td>{{ str(column).replace(' ', '&nbsp;')|safe }}</td>
 						{% endfor %}
 					</tr>
 				{% endfor %}
