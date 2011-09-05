@@ -106,6 +106,7 @@ def toolbar_tween_factory(handler, registry):
         try:
             response = _handler(request)
         except Exception:
+            logger.exception(request.url)
             if exc_history is not None:
                 tb = get_traceback(info=sys.exc_info(),
                                    skip=1,
