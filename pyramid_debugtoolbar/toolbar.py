@@ -106,7 +106,6 @@ def toolbar_tween_factory(handler, registry):
         try:
             response = _handler(request)
         except Exception:
-            logger.exception(request.url)
             if exc_history is not None:
                 tb = get_traceback(info=sys.exc_info(),
                                    skip=1,
@@ -120,11 +119,13 @@ def toolbar_tween_factory(handler, registry):
                 response = Response(body, status=500)
                 toolbar.process_response(response)
                 qs = {'token':exc_history.token, 'tb':str(tb.id)}
-                msg = 'Exception at %s, traceback url: %s' 
+                msg = 'Exception at %s\ntraceback url: %s' 
                 exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
-                logger.info(msg % (request.path_info, exc_url))
+                exc_msg = msg % (request.url, exc_url)
+                logger.exception(exc_msg)
                 return response
-
+            else:
+                logger.exception('Exception at %s' % request.url)
             raise
 
         else:

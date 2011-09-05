@@ -4,6 +4,8 @@ Next release
 - Log an exception body to the debug toolbar logger when an exception
   happens.
 
+- Don't reset the root logger level to NOTSET in the logging panel.
+
 0.9.1 (2011-08-30)
 ------------------
 

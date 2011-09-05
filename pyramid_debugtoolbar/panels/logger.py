@@ -40,7 +40,6 @@ class ThreadTrackingHandler(logging.Handler):
             del self.records[thread]
 
 handler = ThreadTrackingHandler()
-logging.root.setLevel(logging.NOTSET)
 logging.root.addHandler(handler)
 
 class LoggingPanel(DebugPanel):
