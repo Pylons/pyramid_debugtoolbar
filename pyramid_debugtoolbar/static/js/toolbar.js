@@ -1,9 +1,9 @@
 (function($) {
     $.cookie = function(name, value, options) { if (typeof value != 'undefined') { options = options || {}; if (value === null) { value = ''; options.expires = -1; } var expires = ''; if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) { var date; if (typeof options.expires == 'number') { date = new Date(); date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000)); } else { date = options.expires; } expires = '; expires=' + date.toUTCString(); } var path = options.path ? '; path=' + (options.path) : ''; var domain = options.domain ? '; domain=' + (options.domain) : ''; var secure = options.secure ? '; secure' : ''; document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join(''); } else { var cookieValue = null; if (document.cookie && document.cookie != '') { var cookies = document.cookie.split(';'); for (var i = 0; i < cookies.length; i++) { var cookie = $.trim(cookies[i]); if (cookie.substring(0, name.length + 1) == (name + '=')) { cookieValue = decodeURIComponent(cookie.substring(name.length + 1)); break; } } } return cookieValue; } };
     $('head').append('<link rel="stylesheet" href="'+DEBUG_TOOLBAR_STATIC_PATH+'css/toolbar.css?'+ Math.random() +'" type="text/css" />');
-	var COOKIE_NAME = 'fldt';
+	var COOKIE_NAME = 'p_dt';
     var COOKIE_NAME_ACTIVE = COOKIE_NAME +'_active';
-	var fldt = {
+	var p_dt = {
 		init: function() {
 			$('#flDebug').show();
 			var current = null;
@@ -70,20 +70,20 @@
 				return false;
 			});
 			$('#flDebugTemplatePanel a.flTemplateShowContext').click(function() {
-				fldt.toggle_arrow($(this).children('.toggleArrow'))
-				fldt.toggle_content($(this).parent().next());
+				p_dt.toggle_arrow($(this).children('.toggleArrow'))
+				p_dt.toggle_content($(this).parent().next());
 				return false;
 			});
 			$('#flDebugSQLPanel a.flSQLShowStacktrace').click(function() {
-				fldt.toggle_content($('.flSQLHideStacktraceDiv', $(this).parents('tr')));
+				p_dt.toggle_content($('.flSQLHideStacktraceDiv', $(this).parents('tr')));
 				return false;
 			});
 			$('#flHideToolBarButton').click(function() {
-				fldt.hide_toolbar(true);
+				p_dt.hide_toolbar(true);
 				return false;
 			});
 			$('#flShowToolBarButton').click(function() {
-				fldt.show_toolbar();
+				p_dt.show_toolbar();
 				return false;
 			});
 			$(document).bind('close.flDebug', function() {
@@ -99,14 +99,14 @@
 				}
 				// Otherwise, just minimize the toolbar
 				if ($('#flDebugToolbar').is(':visible')) {
-					fldt.hide_toolbar(true);
+					p_dt.hide_toolbar(true);
 					return;
 				}
 			});
 			if ($.cookie(COOKIE_NAME)) {
-				fldt.hide_toolbar(false);
+				p_dt.hide_toolbar(false);
 			} else {
-				fldt.show_toolbar(false);
+				p_dt.show_toolbar(false);
 			}
 		},
 		toggle_content: function(elem) {
@@ -142,7 +142,7 @@
 			// Set up keybindings
 			$(document).bind('keydown.flDebug', function(e) {
 				if (e.keyCode == 27) {
-					fldt.close();
+					p_dt.close();
 				}
 			});
 			$('#flDebugToolbarHandle').hide();
@@ -163,7 +163,7 @@
 		}
 	};
 	$(document).ready(function() {
-		fldt.init();
+		p_dt.init();
 		$(".flDebugSortable").tablesorter();
 	});
 })(jQuery);
