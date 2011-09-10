@@ -78,7 +78,7 @@
 				p_dt.toggle_content($('.pSQLHideStacktraceDiv', $(this).parents('tr')));
 				return false;
 			});
-			$('#flHideToolBarButton').click(function() {
+			$('#pHideToolBarButton').click(function() {
 				p_dt.hide_toolbar(true);
 				return false;
 			});
