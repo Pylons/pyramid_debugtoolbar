@@ -101,3 +101,4 @@ Contributors
 - Blaise Laflamme, 2011/07/22
 - Michael Merickel, 2011/07/22
 - Ben Bangert, 2011/08/26
+- Daniel Haaker, 2011/09/11
