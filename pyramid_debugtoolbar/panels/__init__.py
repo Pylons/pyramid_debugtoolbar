@@ -24,7 +24,7 @@ class DebugPanel(object):
         return render(template_name, vars, request=request)
 
     def dom_id(self):
-        return 'flDebug%sPanel' % (self.name.replace(' ', ''))
+        return 'pDebug%sPanel' % (self.name.replace(' ', ''))
 
     def nav_title(self):
         """Title showing in toolbar"""

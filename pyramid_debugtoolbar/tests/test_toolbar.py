@@ -54,7 +54,7 @@ class DebugToolbarTests(unittest.TestCase):
         toolbar = self._makeOne(request, [DummyPanel])
         toolbar.process_response(response)
         self.assertTrue(response.processed)
-        self.failUnless('div id="flDebug"' in response.app_iter[0])
+        self.failUnless('div id="pDebug"' in response.app_iter[0])
 
 class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
