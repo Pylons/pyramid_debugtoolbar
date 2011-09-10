@@ -86,6 +86,14 @@
                 p_dt.show_toolbar();
                 return false;
             });
+            $("#pShowToolBarButton").hover(function() {
+                $(this).data('pTimeout', setTimeout(function() {
+                    p_dt.show_toolbar(false, true);
+                    return false;
+                }, 1000));
+            }, function () {
+                clearTimeout($(this).data('pTimeout'));
+            });
             $(document).bind('close.pDebug', function() {
                 // If a sub-panel is open, close that
                 if ($('#pDebugWindow').is(':visible')) {
@@ -138,7 +146,8 @@
                 });
             }
         },
-        show_toolbar: function(animate) {
+        show_toolbar: function(animate, auto_hide) {
+            auto_hide = auto_hide || false
             // Set up keybindings
             $(document).bind('keydown.pDebug', function(e) {
                 if (e.keyCode == 27) {
@@ -151,10 +160,12 @@
             } else {
                 $('#pDebugToolbar').show();
             }
-            $.cookie(COOKIE_NAME, null, {
-                path: '/',
-                expires: -1
-            });
+            if (auto_hide == false) {
+                $.cookie(COOKIE_NAME, null, {
+                    path: '/',
+                    expires: -1
+                });
+            }
         },
         toggle_arrow: function(elem) {
             var uarr = String.fromCharCode(0x25b6);
