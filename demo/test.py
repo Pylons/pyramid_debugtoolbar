@@ -29,26 +29,26 @@ class PageTest(unittest.TestCase):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("example"))
-        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
 
     def test_redirect(self):
         browser.open('/redirect')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("Redirect"))
-        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
 
     def test_exception(self):
         browser.open('/exc')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("NotImplementedError"))
-        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
         self.failUnless(browser.is_element_present('css=.debugger'))
 
     def test_notfound(self):
         browser.open('/notfound')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("Not Found"))
-        self.failUnless(browser.is_element_present('id=flDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
 
     def test_exception_console(self):
         browser.open('/exc')
@@ -61,97 +61,97 @@ class PageTest(unittest.TestCase):
     def test_settings_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugSettingsPanel", 'click')
-        result = browser.is_visible('css=#flDebugSettingsPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugSettingsPanel", 'click')
+        result = browser.is_visible('css=#pDebugSettingsPanel-content')
         self.failUnless(result)
 
     def test_logging_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugLoggingPanel", 'click')
-        result = browser.is_visible('css=#flDebugLoggingPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugLoggingPanel", 'click')
+        result = browser.is_visible('css=#pDebugLoggingPanel-content')
         self.failUnless(result)
 
     def test_routes_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugRoutesPanel", 'click')
-        result = browser.is_visible('css=#flDebugRoutesPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugRoutesPanel", 'click')
+        result = browser.is_visible('css=#pDebugRoutesPanel-content')
         self.failUnless(result)
 
     def test_headers_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugHeaderPanel", 'click')
-        result = browser.is_visible('css=#flDebugHeaderPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugHeaderPanel", 'click')
+        result = browser.is_visible('css=#pDebugHeaderPanel-content')
         self.failUnless(result)
 
     def test_sqla_panel(self):
         browser.open('/test_sqla')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
-        result = browser.is_visible('css=#flDebugSQLAlchemyPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
+        result = browser.is_visible('css=#pDebugSQLAlchemyPanel-content')
         self.failUnless(result)
 
     def test_sqla_select_panel(self):
         browser.open('/test_sqla')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=SELECT", 'click')
         browser.wait_for_condition(
-            '!selenium.isElementPresent("id=flSqlaTable")',
+            '!selenium.isElementPresent("id=pSqlaTable")',
             "30000")
-        result = browser.get_text('css=#flDebugWindow .flDebugPanelTitle h3')
+        result = browser.get_text('css=#pDebugWindow .pDebugPanelTitle h3')
         self.assertEqual(result, 'SQL Select')
 
     def test_sqla_explain_panel(self):
         browser.open('/test_sqla')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugSQLAlchemyPanel", 'click')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=EXPLAIN", 'click')
         browser.wait_for_condition(
-            '!selenium.isElementPresent("id=flSqlaTable")',
+            '!selenium.isElementPresent("id=pSqlaTable")',
             "30000")
-        result = browser.get_text('css=#flDebugWindow .flDebugPanelTitle h3')
+        result = browser.get_text('css=#pDebugWindow .pDebugPanelTitle h3')
         self.assertEqual(result, 'SQL Explained')
 
     def test_performance_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugPerformancePanel", 'click')
-        result = browser.is_visible('css=#flDebugPerformancePanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugPerformancePanel", 'click')
+        result = browser.is_visible('css=#pDebugPerformancePanel-content')
         self.failUnless(result)
 
     def test_renderings_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugTemplatePanel", 'click')
-        result = browser.is_visible('css=#flDebugTemplatePanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugTemplatePanel", 'click')
+        result = browser.is_visible('css=#pDebugTemplatePanel-content')
         self.failUnless(result)
 
     def test_version_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugVersionPanel", 'click')
-        result = browser.is_visible('css=#flDebugVersionPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugVersionPanel", 'click')
+        result = browser.is_visible('css=#pDebugVersionPanel-content')
         self.failUnless(result)
 
     def test_requestvars_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#flShowToolbarButton", 'click')
-        browser.fire_event("css=a.flDebugRequestVarsPanel", 'click')
-        result = browser.is_visible('css=#flDebugRequestVarsPanel-content')
+        browser.fire_event("css=a#pShowToolbarButton", 'click')
+        browser.fire_event("css=a.pDebugRequestVarsPanel", 'click')
+        result = browser.is_visible('css=#pDebugRequestVarsPanel-content')
         self.failUnless(result)
 
 if __name__ == '__main__':

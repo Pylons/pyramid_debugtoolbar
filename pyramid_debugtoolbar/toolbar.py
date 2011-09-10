@@ -21,8 +21,8 @@ class DebugToolbar(object):
     def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
-        fldt_active = unquote(self.request.cookies.get('fldt_active', ''))
-        activated = fldt_active.split(';')
+        p_dt_active = unquote(self.request.cookies.get('p_dt_active', ''))
+        activated = p_dt_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
             if panel_inst.dom_id() in activated and panel_inst.has_content:

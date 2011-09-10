@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{% for route_info in routes %}
-			<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+			<tr class="{{ loop.cycle('pDebugOdd', 'pDebugEven') }}">
 				<td>{{ route_info.route.name|escape }}</td>
 				<td>{{ route_info.route.pattern|escape }}</td>
 				<td>{{ route_info.view_callable }}</td>

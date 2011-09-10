@@ -16,7 +16,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def test_ctor_panel_is_up(self):
         request = Request.blank('/')
-        request.cookies['fldt_active'] = 'id'
+        request.cookies['p_dt_active'] = 'id'
         toolbar = self._makeOne(request, [DummyPanelWithContent])
         self.assertEqual(len(toolbar.panels), 1)
         panel = toolbar.panels[0]
@@ -25,7 +25,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def test_ctor_panel_has_content(self):
         request = Request.blank('/')
-        request.cookies['fldt_active'] = 'id'
+        request.cookies['p_dt_active'] = 'id'
         toolbar = self._makeOne(request, [DummyPanelWithContent])
         self.assertEqual(len(toolbar.panels), 1)
         panel = toolbar.panels[0]
@@ -54,7 +54,7 @@ class DebugToolbarTests(unittest.TestCase):
         toolbar = self._makeOne(request, [DummyPanel])
         toolbar.process_response(response)
         self.assertTrue(response.processed)
-        self.failUnless('div id="flDebug"' in response.app_iter[0])
+        self.failUnless('div id="pDebug"' in response.app_iter[0])
 
 class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):

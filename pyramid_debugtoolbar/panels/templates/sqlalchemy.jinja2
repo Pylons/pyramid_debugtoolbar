@@ -1,4 +1,4 @@
-<table id="flSqlaTable>
+<table id="pSqlaTable>
 	<thead>
 		<tr>
 			<th>Time&nbsp;(ms)</th>
@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 	{% for query in queries %}
-		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+		<tr class="{{ loop.cycle('pDebugOdd', 'pDebugEven') }}">
 			<td>{{ '%.4f'|format(query.duration) }}</td>
 			<td>
 			{% if query.params %}

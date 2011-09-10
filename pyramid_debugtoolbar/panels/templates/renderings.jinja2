@@ -7,7 +7,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="flDebugOdd">
+		<tr class="pDebugOdd">
 			<td colspan="2">{{ rendering.name|escape }}</td>
 		</tr>
 	</tbody>
@@ -17,7 +17,7 @@
 		</tr>
 	</thead>
 	<tbody>	
-		<tr class="flDebugOdd">
+		<tr class="pDebugOdd">
 			<td colspan="2">{{ rendering.val|escape }}</td>
 		</tr>
 	</tbody>
@@ -28,7 +28,7 @@
 	</thead>
 	<tbody>	
 		{% for key, value in rendering.system %}
-		<tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+		<tr class="{{ loop.cycle('pDebugOdd', 'pDebugEven') }}">
 			<td>{{ key|escape }}</td>
 			<td>{{ value|escape }}</td>
 		</tr>

@@ -1,4 +1,4 @@
-<div id="flDebug" style="display:none;">
+<div id="pDebug" style="display:none;">
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '{{ static_path }}';
     </script>
@@ -10,14 +10,14 @@
             src="{{ static_path }}js/toolbar.js"></script>
     <script type="text/javascript">$.noConflict(true);</script>
 
-    <div style="display: none;" id="flDebugToolbar">
-        <ol id="flDebugPanelList">
+    <div style="display: none;" id="pDebugToolbar">
+        <ol id="pDebugPanelList">
             {% if panels %}
 			<li>
-              <a id="flHideToolBarButton" href="#" 
+              <a id="pHideToolBarButton" href="#" 
                  title="Hide Toolbar">Hide &raquo;</a></li>
 			{% else %}
-			<li id="flDebugButton">DEBUG</li>
+			<li id="pDebugButton">DEBUG</li>
 			{% endif %}
 			{% for panel in panels %}
 				<li id="{{ panel.dom_id() }}">
@@ -47,17 +47,17 @@
 			{% endfor %}
         </ol>
     </div>
-    <div style="display:none;" id="flDebugToolbarHandle">
-		<a title="Show Toolbar" id="flShowToolBarButton" href="#">&laquo;</a>
+    <div style="display:none;" id="pDebugToolbarHandle">
+		<a title="Show Toolbar" id="pShowToolBarButton" href="#">&laquo;</a>
 	</div>
 	{% for panel in panels %}
 		{% if panel.has_content %}
 			<div id="{{ panel.dom_id() }}-content" class="panelContent">
-				<div class="flDebugPanelTitle">
-					<a href="" class="flDebugClose">Close</a>
+				<div class="pDebugPanelTitle">
+					<a href="" class="pDebugClose">Close</a>
 					<h3>{{ panel.title()|safe }}</h3>
 				</div>
-				<div class="flDebugPanelContent">
+				<div class="pDebugPanelContent">
 				    <div class="scroll">
 				        {{ panel.content()|safe }}
 				    </div>
@@ -65,5 +65,5 @@
 			</div>
 		{% endif %}
 	{% endfor %}
-    <div id="flDebugWindow" class="panelContent"></div>
+    <div id="pDebugWindow" class="panelContent"></div>
 </div>
