@@ -56,6 +56,7 @@ if __name__ == '__main__':
     settings['reload_templates'] = True
     settings['mako.directories'] = os.path.join(here, 'templates')
     settings['mako.module_directory'] = os.path.join(here, 'mako_modules')
+    settings['debugtoolbar.hosts'] = ['127.0.0.1', '192.168.1.147']
     #settings['mako.strict_undefined'] = True
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
@@ -74,4 +75,4 @@ if __name__ == '__main__':
     if sqlalchemy:
         config.include('sqla')
     config.include('pyramid_debugtoolbar')
-    serve(config.make_wsgi_app())
+    serve(config.make_wsgi_app(), host='0.0.0.0')
