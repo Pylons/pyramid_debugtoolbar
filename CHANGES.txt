@@ -3,12 +3,11 @@ Next release
 
 - All debug toolbar panels and underlying views are now always executable by
   entirely anonymous users, regardless of the default permission that may be
-  in effect.
+  in effect (use the ``NO_PERMISSION_REQUIRED`` permission for all
+  debugtoolbar views).
 
 - Toolbar cookie settings name changed (from fldt to p_dt), to avoid messing
   up folks who use both the flask debugtoolbar and Pyramid's.
-
-- Use the ``NO_PERMISSION_REQUIRED`` permission for all debugtoolbar views.
 
 0.9.2 (2011-09-05)
 ------------------
