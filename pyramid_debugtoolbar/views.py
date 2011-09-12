@@ -1,8 +1,8 @@
-
 import hashlib
 
 from pyramid.compat import json
 from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
 from pyramid.view import view_config
 
@@ -34,14 +34,16 @@ class ExceptionDebugView(object):
             tb = int(tb)
         self.tb = tb
 
-    @view_config(route_name='debugtoolbar.exception')
+    @view_config(route_name='debugtoolbar.exception',
+                 permission=NO_PERMISSION_REQUIRED)
     def exception(self):
         tb = self.exc_history.tracebacks[self.tb]
         body = tb.render_full(self.request).encode('utf-8', 'replace')
         response = Response(body, status=500)
         return response
 
-    @view_config(route_name='debugtoolbar.source')
+    @view_config(route_name='debugtoolbar.source',
+                 permission=NO_PERMISSION_REQUIRED)
     def source(self):
         exc_history = self.exc_history
         if self.frame is not None:
@@ -50,7 +52,8 @@ class ExceptionDebugView(object):
                 return Response(frame.render_source(), content_type='text/html')
         return HTTPBadRequest()
 
-    @view_config(route_name='debugtoolbar.execute')
+    @view_config(route_name='debugtoolbar.execute',
+                 permission=NO_PERMISSION_REQUIRED)
     def execute(self):
         if self.request.exc_history.eval_exc:
             exc_history = self.exc_history
@@ -86,7 +89,8 @@ class SQLAlchemyViews(object):
         self.request = request
 
     @view_config(route_name='debugtoolbar.sql_select',
-                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.jinja2')
+                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.jinja2',
+                 permission=NO_PERMISSION_REQUIRED)
     def sql_select(self):
         stmt = self.request.params['sql']
         params = self.request.params['params']
@@ -118,7 +122,8 @@ class SQLAlchemyViews(object):
         }
 
     @view_config(route_name='debugtoolbar.sql_explain',
-                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.jinja2')
+                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.jinja2',
+                 permission=NO_PERMISSION_REQUIRED)
     def sql_explain(self):
         stmt = self.request.params['sql']
         params = self.request.params['params']
