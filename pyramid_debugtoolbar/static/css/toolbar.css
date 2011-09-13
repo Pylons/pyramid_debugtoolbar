@@ -55,8 +55,8 @@
 	width:auto;
 }
 
-#pDebug #pDebugToolbar li>a,
-#pDebug #pDebugToolbar li>div.contentless  {
+#pDebug #pDebugToolbar li a,
+#pDebug #pDebugToolbar li div.contentless  {
 	font-weight:normal;
 	font-style:normal;
 	text-decoration:none;
@@ -68,6 +68,12 @@
 
 #pDebug #pDebugToolbar li>div.contentless  {
 	color: #383838;
+}
+
+#pDebug #pDebugToolbar li,
+#pDebug #pDebugToolbar a {
+	display: inline-block;
+	width: 100%;
 }
 
 #pDebug #pDebugToolbar li a:hover {
