@@ -1,5 +1,5 @@
-Next release
-------------
+0.9.3 (2011-09-12)
+------------------
 
 - All debug toolbar panels and underlying views are now always executable by
   entirely anonymous users, regardless of the default permission that may be
