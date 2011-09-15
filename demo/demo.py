@@ -31,7 +31,7 @@ def notfound(request):
 def test_page(request):
     title = 'Pyramid Debugtoolbar'
     log.info(title)
-    return {'title': title}
+    return {'title': title, 'show_sqla_link': bool(sqlalchemy)}
 
 @view_config(route_name='test_redirect')
 def test_redirect(request):
