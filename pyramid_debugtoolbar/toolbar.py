@@ -18,10 +18,9 @@ class DebugToolbar(object):
 
     html_types = ('text/html', 'application/xml+html')
 
-    def __init__(self, request, panel_classes, button_style=''):
+    def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
-        self.button_style = button_style
         p_dt_active = unquote(self.request.cookies.get('p_dt_active', ''))
         activated = p_dt_active.split(';')
         for panel_class in panel_classes:
@@ -44,8 +43,10 @@ class DebugToolbar(object):
         if response.content_type in self.html_types:
             static_path = request.static_url(STATIC_PATH)
             root_path = request.route_url(ROOT_ROUTE_NAME)
+            button_style = get_setting(request.registry.settings,
+                                       'button_style', '')
             vars = {'panels': self.panels, 'static_path': static_path,
-                    'root_path': root_path, 'button_style': self.button_style}
+                    'root_path': root_path, 'button_style': button_style}
             toolbar_html = render(
                 'pyramid_debugtoolbar:templates/toolbar.jinja2',
                 vars, request=request)
@@ -81,7 +82,6 @@ def toolbar_tween_factory(handler, registry):
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
     hosts = get_setting(settings, 'hosts')
-    button_style = get_setting(settings, 'button_style', '')
 
     exc_history = None
 
@@ -97,7 +97,7 @@ def toolbar_tween_factory(handler, registry):
         if (request.path.startswith(root_path) or (not remote_addr in hosts)):
             return handler(request)
 
-        toolbar = DebugToolbar(request, panel_classes, button_style)
+        toolbar = DebugToolbar(request, panel_classes)
         request.debug_toolbar = toolbar
         
         _handler = handler

@@ -10,9 +10,9 @@ class DebugToolbarTests(unittest.TestCase):
     def tearDown(self):
         del self.config
         
-    def _makeOne(self, request, panel_classes, button_style=''):
+    def _makeOne(self, request, panel_classes):
         from pyramid_debugtoolbar.toolbar import DebugToolbar
-        return DebugToolbar(request, panel_classes, button_style)
+        return DebugToolbar(request, panel_classes)
 
     def test_ctor_panel_is_up(self):
         request = Request.blank('/')
@@ -63,15 +63,16 @@ class DebugToolbarTests(unittest.TestCase):
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
         self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
+        self.config.registry.settings['debugtoolbar.button_style'] = \
+            'top:120px;zoom:50%'
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
         request.registry = self.config.registry
-        button_style = 'top:120px;zoom:50%'
-        toolbar = self._makeOne(request, [DummyPanel], button_style)
+        toolbar = self._makeOne(request, [DummyPanel])
         toolbar.process_response(response)
         self.assertTrue(response.processed)
-        self.failUnless(button_style in response.app_iter[0])
+        self.failUnless('top:120px;zoom:50%' in response.app_iter[0])
 
 class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
@@ -180,6 +181,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request = Request.blank('/')
         def handler(request):
             raise NotImplementedError
+        request.registry = self.config.registry
         self.assertRaises(NotImplementedError, self._callFUT, request, handler)
 
     def test_it_raises_exception_intercept_exc(self):
@@ -189,6 +191,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
         self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
         response = self._callFUT(request, handler)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
@@ -197,6 +200,7 @@ class Test_toolbar_handler(unittest.TestCase):
     def test_it_intercept_redirect_nonredirect_code(self):
         request = Request.blank('/')
         self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
+        request.registry = self.config.registry
         result = self._callFUT(request)
         self.assertTrue(result is self.response)
 
@@ -206,6 +210,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             return response
         request = Request.blank('/')
+        request.registry = self.config.registry
         self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
         result = self._callFUT(request, handler)
         self.assertTrue(result is response)
