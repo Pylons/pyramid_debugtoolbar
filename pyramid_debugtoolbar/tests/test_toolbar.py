@@ -10,9 +10,9 @@ class DebugToolbarTests(unittest.TestCase):
     def tearDown(self):
         del self.config
         
-    def _makeOne(self, request, panel_classes):
+    def _makeOne(self, request, panel_classes, button_style=''):
         from pyramid_debugtoolbar.toolbar import DebugToolbar
-        return DebugToolbar(request, panel_classes)
+        return DebugToolbar(request, panel_classes, button_style)
 
     def test_ctor_panel_is_up(self):
         request = Request.blank('/')
@@ -55,6 +55,23 @@ class DebugToolbarTests(unittest.TestCase):
         toolbar.process_response(response)
         self.assertTrue(response.processed)
         self.failUnless('div id="pDebug"' in response.app_iter[0])
+
+    def test_passing_of_button_style(self):
+        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+        from pyramid_debugtoolbar.utils import STATIC_PATH
+        self.config.include('pyramid_jinja2')
+        self.config.add_static_view('_debugtoolbar/static',
+                                    STATIC_PATH)
+        self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
+        response = Response('<body></body>')
+        response.content_type = 'text/html'
+        request = Request.blank('/')
+        request.registry = self.config.registry
+        button_style = 'top:120px;zoom:50%'
+        toolbar = self._makeOne(request, [DummyPanel], button_style)
+        toolbar.process_response(response)
+        self.assertTrue(response.processed)
+        self.failUnless(button_style in response.app_iter[0])
 
 class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
