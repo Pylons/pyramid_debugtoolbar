@@ -43,8 +43,10 @@ class DebugToolbar(object):
         if response.content_type in self.html_types:
             static_path = request.static_url(STATIC_PATH)
             root_path = request.route_url(ROOT_ROUTE_NAME)
+            button_style = get_setting(request.registry.settings,
+                                       'button_style', '')
             vars = {'panels': self.panels, 'static_path': static_path,
-                    'root_path': root_path}
+                    'root_path': root_path, 'button_style': button_style}
             toolbar_html = render(
                 'pyramid_debugtoolbar:templates/toolbar.jinja2',
                 vars, request=request)
