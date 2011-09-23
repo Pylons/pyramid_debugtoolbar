@@ -133,6 +133,7 @@
 	right:0;
 	z-index:100000000;
 	opacity:0.75;
+	filter:alpha(opacity=75);
 }
 
 #pDebug a#pShowToolBarButton {
@@ -151,6 +152,7 @@
 	text-indent:-999999px;
 	background:#000 url(../img/djdt_vertical.png) no-repeat left center;
 	opacity:0.5;
+	filter:alpha(opacity=50);
 }
 
 #pDebug a#pShowToolBarButton:hover {
