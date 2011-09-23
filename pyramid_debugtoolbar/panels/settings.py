@@ -50,8 +50,15 @@ class SettingsDebugPanel(DebugPanel):
 
     def content(self):
         vars = {
-            'settings': self.settings
+            'settings': [(k, decode_safely(v)) for k, v in self.settings]
         }
         return self.render(
             'pyramid_debugtoolbar.panels:templates/settings.jinja2',
             vars, self.request)
+
+
+def decode_safely(x):
+    try:
+        return x.decode('utf-8', 'replace')
+    except AttributeError:
+        return x
