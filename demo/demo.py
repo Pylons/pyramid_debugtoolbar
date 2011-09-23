@@ -27,6 +27,10 @@ def exc(request):
 def notfound(request):
     raise HTTPNotFound()
 
+@view_config(context=HTTPNotFound, renderer='notfound.mako')
+def notfound_view(request):
+    return {}
+
 @view_config(route_name='test_page', renderer='index.mako')
 def test_page(request):
     title = 'Pyramid Debugtoolbar'

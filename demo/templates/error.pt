@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>${title}</title>
     </head>
     <body>
-      ${request.doesntexist}
+        ${request.doesntexist}
     </body>
 </html>
