@@ -105,7 +105,7 @@ class PageTest(unittest.TestCase):
         browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=SELECT", 'click')
         browser.wait_for_condition(
-            '!selenium.isElementPresent("id=pSqlaTable")',
+            "selenium.isElementPresent(\"//table[@id='pSqlaTable']\")",
             "30000")
         result = browser.get_text('css=#pDebugWindow .pDebugPanelTitle h3')
         self.assertEqual(result, 'SQL Select')
@@ -117,7 +117,7 @@ class PageTest(unittest.TestCase):
         browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=EXPLAIN", 'click')
         browser.wait_for_condition(
-            '!selenium.isElementPresent("id=pSqlaTable")',
+            "selenium.isElementPresent(\"//table[@id='pSqlaTable']\")",
             "30000")
         result = browser.get_text('css=#pDebugWindow .pDebugPanelTitle h3')
         self.assertEqual(result, 'SQL Explained')
