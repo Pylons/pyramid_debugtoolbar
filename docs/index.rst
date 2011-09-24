@@ -118,6 +118,15 @@ file.
     ``.ini`` file, it should be a space-separated sequence of dotted
     Python names.
 
+``debugtoolbar.button_style``
+
+    Any inline css styles you want to apply to the toolbar button. This
+    will override the default style (top:30px) set by ``toolbar.css``. If,
+    for example, you want the toolbar button to show up at the bottom off the
+    screen, just set ``debugtoolbar.button_style`` to 'top:auto;bottom:30px;'.
+    If you're browser support the zoom property, you can even control the
+    magnification level of the toolbar button (ie. 'zoom:50%').
+
 The Toolbar
 -----------
 
