@@ -13,6 +13,7 @@ import code
 from types import CodeType
 import threading
 
+from pyramid_debugtoolbar.compat import exec_
 from pyramid_debugtoolbar.repr import debug_repr, dump, helper
 from pyramid_debugtoolbar.utils import escape
 
@@ -171,7 +172,7 @@ class _InteractiveConsole(code.InteractiveInterpreter):
 
     def runcode(self, code):
         try:
-            exec code in self.globals, self.locals
+            exec_(code, self.globals, self.locals)
         except Exception:
             self.showtraceback()
 

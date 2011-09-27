@@ -20,6 +20,9 @@ try:
     from collections import deque
 except ImportError: # pragma: no cover
     deque = None
+
+from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.utils import escape
 
 
@@ -122,7 +125,7 @@ class DebugReprGenerator(object):
             if have_extended_section:
                 buf.append('</span>')
             buf.append(right)
-            return _add_subclass_info(u''.join(buf), obj, base)
+            return _add_subclass_info(text_(''.join(buf), obj, base))
         return proxy
 
     list_repr = _sequence_repr_maker('[', ']', list)
@@ -140,7 +143,8 @@ class DebugReprGenerator(object):
             pattern = 'ur' + pattern[1:]
         else:
             pattern = 'r' + pattern
-        return u're.compile(<span class="string regex">%s</span>)' % pattern
+        return text_(
+            're.compile(<span class="string regex">%s</span>)' % pattern)
 
     def string_repr(self, obj, limit=70):
         buf = ['<span class="string">']
@@ -156,11 +160,11 @@ class DebugReprGenerator(object):
         else:
             buf.append(a)
         buf.append('</span>')
-        return _add_subclass_info(u''.join(buf), obj, (str, unicode))
+        return _add_subclass_info(text_(''.join(buf), obj, string_types))
 
     def dict_repr(self, d, recursive, limit=5):
         if recursive:
-            return _add_subclass_info(u'{...}', d, dict)
+            return _add_subclass_info(text_('{...}'), d, dict)
         buf = ['{']
         have_extended_section = False
         for idx, (key, value) in enumerate(d.iteritems()):
@@ -175,17 +179,17 @@ class DebugReprGenerator(object):
         if have_extended_section:
             buf.append('</span>')
         buf.append('}')
-        return _add_subclass_info(u''.join(buf), d, dict)
+        return _add_subclass_info(text_(''.join(buf)), d, dict)
 
     def object_repr(self, obj):
-        return u'<span class="object">%s</span>' % \
-               escape(repr(obj).decode('utf-8', 'replace'))
+        return text_('<span class="object">%s</span>' % 
+                     escape(repr(obj).decode('utf-8', 'replace')))
 
     def dispatch_repr(self, obj, recursive):
         if obj is helper:
-            return u'<span class="help">%r</span>' % helper
+            return text_('<span class="help">%r</span>' % helper)
         if isinstance(obj, (int, long, float, complex)):
-            return u'<span class="number">%r</span>' % obj
+            return text_('<span class="number">%r</span>' % obj)
         if isinstance(obj, basestring):
             return self.string_repr(obj)
         if isinstance(obj, RegexType):
@@ -209,8 +213,8 @@ class DebugReprGenerator(object):
             info = ''.join(format_exception_only(*sys.exc_info()[:2]))
         except Exception: # pragma: no cover
             info = '?'
-        return u'<span class="brokenrepr">&lt;broken repr (%s)&gt;' \
-               u'</span>' % escape(info.decode('utf-8', 'ignore').strip())
+        return text_('<span class="brokenrepr">&lt;broken repr (%s)&gt;'
+                     '</span>' % escape(info.decode('utf-8', 'ignore').strip()))
 
     def repr(self, obj):
         recursive = False

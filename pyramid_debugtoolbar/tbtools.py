@@ -19,6 +19,8 @@ from tokenize import TokenError
 from pyramid.decorator import reify
 from pyramid.renderers import render
 
+from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import exec_
 from pyramid_debugtoolbar.console import Console
 from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -36,23 +38,23 @@ try:
 except NameError:
     pass
 
-FRAME_HTML = u'''\
+FRAME_HTML = text_('''\
 <div class="frame" id="frame-%(id)d">
   <h4>File <cite class="filename">"%(filename)s"</cite>,
       line <em class="line">%(lineno)s</em>,
       in <code class="function">%(function_name)s</code></h4>
   <pre>%(current_line)s</pre>
 </div>
-'''
+''')
 
-SOURCE_TABLE_HTML = u'<table class=source>%s</table>'
+SOURCE_TABLE_HTML = text_('<table class=source>%s</table>')
 
-SOURCE_LINE_HTML = u'''\
+SOURCE_LINE_HTML = text_('''\
 <tr class="%(classes)s">
   <td class=lineno>%(lineno)s</td>
   <td>%(code)s</td>
 </tr>
-'''
+''')
 
 
 def get_current_traceback(ignore_system_exceptions=False,
@@ -103,7 +105,7 @@ class Line(object):
 
     def render(self):
         return SOURCE_LINE_HTML % {
-            'classes':      u' '.join(self.classes),
+            'classes':      text_(' '.join(self.classes)),
             'lineno':       self.lineno,
             'code':         escape(self.code)
         }
@@ -199,25 +201,26 @@ class Traceback(object):
 
         if include_title:
             if self.is_syntax_error:
-                title = u'Syntax Error'
+                title = text_('Syntax Error')
             else:
-                title = u'Traceback <em>(most recent call last)</em>:'
+                title = text_('Traceback <em>(most recent call last)</em>:')
 
         for frame in self.frames:
-            frames.append(u'<li%s>%s' % (
-                frame.info and u' title="%s"' % escape(frame.info) or u'',
+            frames.append(text_('<li%s>%s' % (
+                frame.info) and text_(' title="%s"' % escape(frame.info)) or
+                                text_(''),
                 frame.render()
             ))
 
         if self.is_syntax_error:
-            description_wrapper = u'<pre class=syntaxerror>%s</pre>'
+            description_wrapper = text_('<pre class=syntaxerror>%s</pre>')
         else:
-            description_wrapper = u'<blockquote>%s</blockquote>'
+            description_wrapper = text_('<blockquote>%s</blockquote>')
 
         vars = {
-            'classes':      u' '.join(classes),
-            'title':        title and u'<h3>%s</h3>' % title or u'',
-            'frames':       u'\n'.join(frames),
+            'classes':      text_(' '.join(classes)),
+            'title':        title and text_('<h3>%s</h3>' % title) or text_(''),
+            'frames':       text_('\n'.join(frames)),
             'description':  description_wrapper % escape(self.exception),
         }
         return render('pyramid_debugtoolbar:templates/exception_summary.jinja2',
@@ -253,19 +256,19 @@ class Traceback(object):
 
     def generate_plaintext_traceback(self):
         """Like the plaintext attribute but returns a generator"""
-        yield u'Traceback (most recent call last):'
+        yield text_('Traceback (most recent call last):')
         for frame in self.frames:
-            yield u'  File "%s", line %s, in %s' % (
+            yield text_('  File "%s", line %s, in %s' % (
                 frame.filename,
                 frame.lineno,
                 frame.function_name
-            )
-            yield u'    ' + frame.current_line.strip()
+            ))
+            yield text_('    ' + frame.current_line.strip())
         yield self.exception
 
     @reify
     def plaintext(self):
-        return u'\n'.join(self.generate_plaintext_traceback())
+        return text_('\n'.join(self.generate_plaintext_traceback()))
 
     id = property(lambda x: id(x))
 
@@ -339,8 +342,8 @@ class Frame(object):
 
     def render_source(self):
         """Render the sourcecode."""
-        return SOURCE_TABLE_HTML % u'\n'.join(line.render() for line in
-                                              self.get_annotated_lines())
+        return SOURCE_TABLE_HTML % text_('\n'.join(line.render() for line in
+                                              self.get_annotated_lines()))
 
     def eval(self, code, mode='single'):
         """Evaluate code in the context of the frame."""
@@ -350,7 +353,7 @@ class Frame(object):
             code = compile(code, '<interactive>', mode)
         if mode != 'exec':
             return eval(code, self.globals, self.locals)
-        exec code in self.globals, self.locals
+        exec_(code, self.globals, self.locals)
 
     @reify
     def sourcelines(self):
@@ -409,7 +412,7 @@ class Frame(object):
         try:
             return self.sourcelines[self.lineno - 1]
         except IndexError:
-            return u''
+            return text_('')
 
     @reify
     def console(self):

@@ -12,3 +12,4 @@ dist/
 nosetests.xml
 coverage.xml
 env26/
+env32/

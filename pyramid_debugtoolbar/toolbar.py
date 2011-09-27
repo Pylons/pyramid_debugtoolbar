@@ -1,11 +1,11 @@
 import sys
 import os
-from urllib import unquote
 
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
 from pyramid_debugtoolbar.tbtools import get_traceback
+from pyramid_debugtoolbar.compat import url_unquote
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -21,7 +21,7 @@ class DebugToolbar(object):
     def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
-        p_dt_active = unquote(self.request.cookies.get('p_dt_active', ''))
+        p_dt_active = url_unquote(self.request.cookies.get('p_dt_active', ''))
         activated = p_dt_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
