@@ -1,14 +1,16 @@
-Next release
-------------
+0.9.4 (2011-09-28)
+------------------
 
 - Upgrade to jquery 1.6.4 and tablesorter plugin 2.0.5b
+
 - Introduced new setting ``debugtoolbar.button_style``. Which can be used
   to override the default style (top:30px) set by ``toolbar.css``.
 
-- Compatible with Python 3.2 (requires Pyramid 1.3dev).
+- Compatible with Python 3.2 (requires Pyramid 1.3dev+).
 
-- Appease settings values that were sensitive to __getattr__ in the settings
-  debug panel.  See https://github.com/Pylons/pyramid_debugtoolbar/issues/30
+- Appease settings values that were sensitive to ``__getattr__`` in the
+  settings debug panel (e.g. MongoDB databases).  See
+  https://github.com/Pylons/pyramid_debugtoolbar/issues/30
 
 0.9.3 (2011-09-12)
 ------------------
