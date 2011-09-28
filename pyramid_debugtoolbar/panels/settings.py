@@ -26,18 +26,18 @@ class SettingsDebugPanel(DebugPanel):
     ]
 
     def __init__(self, request):
+        # always repr this stuff before it's sent to the template to appease
+        # dumbass stuff like MongoDB's __getattr__ that always returns a
+        # Collection, which fails when Jinja tries to look up __html__ on it.
         self.request = request
         settings = request.registry.settings
-
         # filter out non-pyramid prefixed settings to avoid duplication
         if 'pyramid.default_locale_name' in settings:
-            self.settings = sorted([
-                (k, v) for k, v in request.registry.settings.items()
-                if k not in self.filter_old_settings
-            ], key=itemgetter(0))
+            reprs = [(k, repr(v)) for k, v in settings.items()
+                     if k not in self.filter_old_settings]
         else:
-            self.settings = sorted(request.registry.settings.items(),
-                                   key=itemgetter(0))
+            reprs = [(k, repr(v)) for k, v in settings.items()]
+        self.settings = sorted(reprs, key=itemgetter(0))
 
     def nav_title(self):
         return _('Settings')
