@@ -10,6 +10,8 @@ import re
 import sys
 from pyramid_debugtoolbar.repr import debug_repr, DebugReprGenerator, dump, helper
 from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import PY3
 from pyramid_debugtoolbar.console import HTMLStringO
 import unittest
 
@@ -18,8 +20,6 @@ class Test_debug_repr(unittest.TestCase):
         assert debug_repr([]) == '[]'
         assert debug_repr([1, 2]) == \
             '[<span class="number">1</span>, <span class="number">2</span>]'
-        ## import pdb; pdb.set_trace()
-        ## result = debug_repr([1, 'test'])
         assert debug_repr([1, 'test']) == \
             '[<span class="number">1</span>, <span class="string">\'test\'</span>]'
         assert debug_repr([None]) == \
@@ -42,9 +42,16 @@ class Test_debug_repr(unittest.TestCase):
             '{<span class="pair"><span class="key"><span class="string">\'foo\''\
             '</span></span>: <span class="value"><span class="number">42' \
             '</span></span></span>}'
-        assert debug_repr((1, 'zwei', text_('drei'))) ==\
-            '(<span class="number">1</span>, <span class="string">\'' \
-            'zwei\'</span>, <span class="string">u\'drei\'</span>)'
+        result = debug_repr((1, bytes_('zwei'), text_('drei')))
+        if PY3:
+            expected = (
+                '(<span class="number">1</span>, <span class="string">b\''
+                'zwei\'</span>, <span class="string">\'drei\'</span>)')
+        else:
+            expected = (
+                '(<span class="number">1</span>, <span class="string">\''
+                'zwei\'</span>, <span class="string">u\'drei\'</span>)')
+        assert result == expected
 
         class Foo(object):
             def __repr__(self):
@@ -58,10 +65,17 @@ class Test_debug_repr(unittest.TestCase):
             '<span class="module">pyramid_debugtoolbar.tests.test_debug.</span>MyList([' \
             '<span class="number">1</span>, <span class="number">2</span>])'
 
-        assert debug_repr(re.compile(r'foo\d')) == \
+        result = debug_repr(re.compile(r'foo\d'))
+        assert result == \
             're.compile(<span class="string regex">r\'foo\\d\'</span>)'
-        assert debug_repr(re.compile(text_(r'foo\d'))) == \
-            're.compile(<span class="string regex">ur\'foo\\d\'</span>)'
+        result = debug_repr(re.compile(text_(r'foo\d')))
+        if PY3:
+            assert result == \
+                   're.compile(<span class="string regex">r\'foo\\d\'</span>)'
+        else:
+            assert result == \
+                   're.compile(<span class="string regex">ur\'foo\\d\'</span>)'
+            
 
         assert debug_repr(frozenset('x')) == \
             'frozenset([<span class="string">\'x\'</span>])'
@@ -76,7 +90,9 @@ class Test_debug_repr(unittest.TestCase):
             def __repr__(self):
                 1/0
 
-        assert 'integer division' in debug_repr(Foo())
+        result = debug_repr(Foo())
+
+        assert 'division' in result
 
 class Test_object_dumping(unittest.TestCase):
     def test_object_dumping(self):

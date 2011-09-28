@@ -95,12 +95,12 @@ class _Helper(object):
 helper = _Helper()
 
 
-def _add_subclass_info(inner, obj, base):
-    if isinstance(base, tuple):
-        for base in base:
+def _add_subclass_info(inner, obj, bases):
+    if isinstance(bases, tuple):
+        for base in bases:
             if type(obj) is base:
                 return inner
-    elif type(obj) is base:
+    elif type(obj) is bases:
         return inner
     module = ''
     if obj.__class__.__module__ not in ('builtins', '__builtin__','exceptions'):
@@ -142,11 +142,15 @@ class DebugReprGenerator(object):
     del _sequence_repr_maker
 
     def regex_repr(self, obj):
-        pattern = repr(obj.pattern).decode('string-escape', 'ignore')
-        if pattern[:1] == 'u':
-            pattern = 'ur' + pattern[1:]
-        else:
+        if PY3:
+            pattern = text_("'%s'" % str(obj.pattern), 'string-escape', 'ignore')
             pattern = 'r' + pattern
+        else:
+            pattern = text_(repr(obj.pattern), 'string-escape', 'ignore')
+            if pattern[:1] == 'u':
+                pattern = 'ur' + pattern[1:]
+            else:
+                pattern = 'r' + pattern
         return text_(
             're.compile(<span class="string regex">%s</span>)' % pattern)
 
@@ -171,8 +175,6 @@ class DebugReprGenerator(object):
         escaped = escape(obj)
         a = repr(escaped[:limit])
         b = repr(escaped[limit:])
-        a = a[1:]
-        b = b[1:]
         if b != "''":
             buf.extend((a[:-1], '<span class="extended">', b[1:], '</span>'))
         else:
@@ -263,7 +265,6 @@ class DebugReprGenerator(object):
                 break
         self._stack.append(obj)
         try:
-            return self.dispatch_repr(obj, recursive)
             try:
                 return self.dispatch_repr(obj, recursive)
             except Exception:

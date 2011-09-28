@@ -8,7 +8,6 @@ from pyramid.settings import asbool
 from pyramid_debugtoolbar.compat import binary_type
 from pyramid_debugtoolbar.compat import text_type
 from pyramid_debugtoolbar.compat import string_types
-from pyramid_debugtoolbar.compat import text_
 
 
 try:
@@ -80,13 +79,10 @@ def escape(s, quote=False):
     """
     if s is None:
         return ''
-    elif hasattr(s, '__html__'):
+    if hasattr(s, '__html__'):
         return s.__html__()
-    elif not isinstance(s, text_type):
-        if isinstance(s, binary_type):
-            s = text_(s)
-        else:
-            s = repr(s)
+    if not isinstance(s, (text_type, binary_type)):
+        s = text_type(s)
     s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
     if quote:
         s = s.replace('"', "&quot;")
