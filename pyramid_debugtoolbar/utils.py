@@ -5,6 +5,12 @@ from logging import getLogger
 from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 
+from pyramid_debugtoolbar.compat import binary_type
+from pyramid_debugtoolbar.compat import text_type
+from pyramid_debugtoolbar.compat import string_types
+from pyramid_debugtoolbar.compat import text_
+
+
 try:
     from pygments import highlight
     from pygments.formatters import HtmlFormatter
@@ -76,8 +82,11 @@ def escape(s, quote=False):
         return ''
     elif hasattr(s, '__html__'):
         return s.__html__()
-    elif not isinstance(s, basestring):
-        s = unicode(s)
+    elif not isinstance(s, text_type):
+        if isinstance(s, binary_type):
+            s = text_(s)
+        else:
+            s = repr(s)
     s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
     if quote:
         s = s.replace('"', "&quot;")
@@ -97,7 +106,7 @@ def replace_insensitive(string, target, replacement):
 resolver = DottedNameResolver(None)
 
 def as_cr_separated_list(value):
-    if isinstance(value, basestring):
+    if isinstance(value, string_types):
         value = filter(None, [x.strip() for x in value.splitlines()])
     return value
 
@@ -118,7 +127,7 @@ def as_globals_list(value):
     return L
 
 def as_display_debug_or_false(value):
-    if isinstance(value, basestring):
+    if isinstance(value, string_types):
         val = value.lower().strip()
         if val in ('display', 'debug'):
             return val

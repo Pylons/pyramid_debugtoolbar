@@ -22,7 +22,9 @@ except ImportError: # pragma: no cover
     deque = None
 
 from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import iteritems_
 from pyramid_debugtoolbar.compat import string_types
+from pyramid_debugtoolbar.compat import long
 from pyramid_debugtoolbar.utils import escape
 
 
@@ -86,7 +88,6 @@ class _Helper(object):
             title = 'Help'
             text = paragraphs[0]
         sys.stdout._write(HELP_HTML % {'title': title, 'text': text})
-
 
 helper = _Helper()
 
@@ -167,7 +168,7 @@ class DebugReprGenerator(object):
             return _add_subclass_info(text_('{...}'), d, dict)
         buf = ['{']
         have_extended_section = False
-        for idx, (key, value) in enumerate(d.iteritems()):
+        for idx, (key, value) in enumerate(iteritems_(d)):
             if idx:
                 buf.append(', ')
             if idx == limit - 1:
@@ -190,7 +191,7 @@ class DebugReprGenerator(object):
             return text_('<span class="help">%r</span>' % helper)
         if isinstance(obj, (int, long, float, complex)):
             return text_('<span class="number">%r</span>' % obj)
-        if isinstance(obj, basestring):
+        if isinstance(obj, string_types):
             return self.string_repr(obj)
         if isinstance(obj, RegexType):
             return self.regex_repr(obj)
@@ -213,8 +214,10 @@ class DebugReprGenerator(object):
             info = ''.join(format_exception_only(*sys.exc_info()[:2]))
         except Exception: # pragma: no cover
             info = '?'
-        return text_('<span class="brokenrepr">&lt;broken repr (%s)&gt;'
-                     '</span>' % escape(info.decode('utf-8', 'ignore').strip()))
+        return text_(
+            '<span class="brokenrepr">&lt;broken repr (%s)&gt;'
+            '</span>' % escape(text_(info, 'utf-8', 'ignore')).strip()
+            )
 
     def repr(self, obj):
         recursive = False
@@ -236,8 +239,8 @@ class DebugReprGenerator(object):
         if isinstance(obj, dict):
             title = 'Contents of'
             items = []
-            for key, value in obj.iteritems():
-                if not isinstance(key, basestring):
+            for key, value in iteritems_(obj):
+                if not isinstance(key, string_types):
                     items = None
                     break
                 items.append((key, self.repr(value)))

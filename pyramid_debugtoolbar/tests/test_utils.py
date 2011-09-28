@@ -1,12 +1,16 @@
 import unittest
 import os
 
+from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import text_
+
+
 class Test_escape(unittest.TestCase):
     def test_escape(self):
         from pyramid_debugtoolbar.utils import escape
         class Foo(str):
             def __html__(self):
-                return unicode(self)
+                return text_(self)
         assert escape(None) == ''
         assert escape(42) == '42'
         assert escape('<>') == '&lt;&gt;'
@@ -56,4 +60,4 @@ class Test_format_sql(unittest.TestCase):
 
     def test_it(self):
         result = self._callFUT('SELECT * FROM TBL')
-        self.assertTrue(result.startswith('<div'))
+        self.assertTrue(result.startswith(bytes_('<div')))

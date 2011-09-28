@@ -1,26 +1,6 @@
 import sys
 import types
 
-try: # pragma: no cover
-    import __pypy__
-    PYPY = True
-except: # pragma: no cover
-    __pypy__ = None
-    PYPY = False
-
-try:
-    import cPickle as pickle
-except ImportError: # pragma: no cover
-    import pickle
-
-try:
-    import json
-except ImportError: # pragma: no cover
-    try:
-        import simplejson as json
-    except NotImplementedError:
-        from django.utils import simplejson as json # GAE
-
 # True if we are running on Python 3.
 PY3 = sys.version_info[0] == 3
 
@@ -37,7 +17,8 @@ else:
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
-    long = long
+
+# TODO check if errors is ever used
 
 def text_(s, encoding='latin-1', errors='strict'):
     if isinstance(s, binary_type):
@@ -45,20 +26,9 @@ def text_(s, encoding='latin-1', errors='strict'):
     return s # pragma: no cover
 
 def bytes_(s, encoding='latin-1', errors='strict'):
-    if isinstance(s, text_type):
+    if isinstance(s, text_type): # pragma: no cover
         return s.encode(encoding, errors)
     return s
-
-if PY3: # pragma: no cover
-    def ascii_native_(s):
-        if isinstance(s, text_type):
-            s = s.encode('ascii')
-        return str(s, 'ascii', 'strict')
-else:
-    def ascii_native_(s):
-        if isinstance(s, text_type):
-            s = s.encode('ascii')
-        return str(s)
 
 if PY3: # pragma: no cover
     def native_(s, encoding='latin-1', errors='strict'):
@@ -72,28 +42,21 @@ else:
         return str(s)
 
 if PY3: # pragma: no cover
-    from urllib import parse
-    urlparse = parse
-    from urllib.parse import quote as url_quote
-    from urllib.parse import quote_plus as url_quote_plus
-    from urllib.parse import unquote as url_unquote
-    from urllib.parse import urlencode as url_encode
-    from urllib.request import urlopen as url_open
-    url_unquote_text = url_unquote
-    url_unquote_native = url_unquote
+    def reraise(exc_info):
+        etype, exc, tb = exc_info
+        if exc.__traceback__ is not tb:
+            raise exc.with_traceback(tb)
+        raise exc
+else: # pragma: no cover
+    exec("def reraise(exc): raise exc[0], exc[1], exc[2]")
+
+if PY3: # pragma: no cover
+    from io import StringIO
+    from io import BytesIO
 else:
-    import urlparse
-    from urllib import quote as url_quote
-    from urllib import quote_plus as url_quote_plus
-    from urllib import unquote as url_unquote
-    from urllib import urlencode as url_encode
-    from urllib2 import urlopen as url_open
-    def url_unquote_text(v, encoding='utf-8', errors='replace'):
-        v = url_unquote(v)
-        return v.decode(encoding, errors)
-    def url_unquote_native(v, encoding='utf-8', errors='replace'):
-        return native_(url_unquote_text(v, encoding, errors))
-        
+    from StringIO import StringIO
+    BytesIO = StringIO
+    
 
 if PY3: # pragma: no cover
     import builtins
@@ -174,6 +137,35 @@ else: # pragma: no cover
         write(end)
 
 if PY3: # pragma: no cover
+    from urllib import parse
+    urlparse = parse
+    from urllib.parse import quote as url_quote
+    from urllib.parse import quote_plus as url_quote_plus
+    from urllib.parse import unquote as url_unquote
+    from urllib.parse import urlencode as url_encode
+    from urllib.request import urlopen as url_open
+    url_unquote_text = url_unquote
+    url_unquote_native = url_unquote
+else:
+    import urlparse
+    from urllib import quote as url_quote
+    from urllib import quote_plus as url_quote_plus
+    from urllib import unquote as url_unquote
+    from urllib import urlencode as url_encode
+    from urllib2 import urlopen as url_open
+    def url_unquote_text(v, encoding='utf-8', errors='replace'):
+        v = url_unquote(v)
+        return v.decode(encoding, errors)
+    def url_unquote_native(v, encoding='utf-8', errors='replace'):
+        return native_(url_unquote_text(v, encoding, errors))
+
+if PY3:
+    xrange_ = range
+else:
+    xrange = xrange
+    
+
+if PY3: # pragma: no cover
     def iteritems_(d):
         return d.items()
     def itervalues_(d):
@@ -188,39 +180,3 @@ else:
     def iterkeys_(d):
         return d.iterkeys()
 
-
-if PY3: # pragma: no cover
-    def map_(*arg):
-        return list(map(*arg))
-else:
-    map_ = map
-    
-if PY3: # pragma: no cover
-    def is_nonstr_iter(v):
-        if isinstance(v, str):
-            return False
-        return hasattr(v, '__iter__')
-else:
-    def is_nonstr_iter(v):
-        return hasattr(v, '__iter__')
-    
-if PY3: # pragma: no cover
-    im_func = '__func__'
-else:
-    im_func = 'im_func'
-
-try: # pragma: no cover
-    import configparser
-except ImportError: # pragma: no cover
-    import ConfigParser
-    configparser = ConfigParser
-
-try:
-    from Cookie import SimpleCookie
-except ImportError: # pragma: no cover
-    from http.cookies import SimpleCookie
-
-if PY3: # pragma: no cover
-    from html import escape
-else:
-    from cgi import escape

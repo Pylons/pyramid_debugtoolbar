@@ -1,3 +1,4 @@
+import binascii
 import sys
 import os
 
@@ -6,6 +7,8 @@ from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
 from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.compat import url_unquote
+from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -52,13 +55,15 @@ class DebugToolbar(object):
                 vars, request=request)
             response_html = response.body
             toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
-            body = replace_insensitive(response_html, '</body>',
-                                       toolbar_html + '</body>')
+            body = replace_insensitive(
+                response_html, bytes_('</body>'),
+                toolbar_html + bytes_('</body>')
+                )
             response.app_iter = [body]
 
 class ExceptionHistory(object):
     def __init__(self):
-        self.token = os.urandom(10).encode('hex')
+        self.token = text_(binascii.hexlify(os.urandom(10)))
         self.frames = {}
         self.tracebacks = {}
 

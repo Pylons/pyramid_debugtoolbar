@@ -9,39 +9,40 @@
 import re
 import sys
 from pyramid_debugtoolbar.repr import debug_repr, DebugReprGenerator, dump, helper
+from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.console import HTMLStringO
 import unittest
 
 class Test_debug_repr(unittest.TestCase):
     def test_debug_repr(self):
-        assert debug_repr([]) == u'[]'
+        assert debug_repr([]) == '[]'
         assert debug_repr([1, 2]) == \
-            u'[<span class="number">1</span>, <span class="number">2</span>]'
+            '[<span class="number">1</span>, <span class="number">2</span>]'
         assert debug_repr([1, 'test']) == \
-            u'[<span class="number">1</span>, <span class="string">\'test\'</span>]'
+            '[<span class="number">1</span>, <span class="string">\'test\'</span>]'
         assert debug_repr([None]) == \
-            u'[<span class="object">None</span>]'
+            '[<span class="object">None</span>]'
         assert debug_repr(list(range(20))) == (
-            u'[<span class="number">0</span>, <span class="number">1</span>, '
-            u'<span class="number">2</span>, <span class="number">3</span>, '
-            u'<span class="number">4</span>, <span class="number">5</span>, '
-            u'<span class="number">6</span>, <span class="number">7</span>, '
-            u'<span class="extended"><span class="number">8</span>, '
-            u'<span class="number">9</span>, <span class="number">10</span>, '
-            u'<span class="number">11</span>, <span class="number">12</span>, '
-            u'<span class="number">13</span>, <span class="number">14</span>, '
-            u'<span class="number">15</span>, <span class="number">16</span>, '
-            u'<span class="number">17</span>, <span class="number">18</span>, '
-            u'<span class="number">19</span></span>]'
+            '[<span class="number">0</span>, <span class="number">1</span>, '
+            '<span class="number">2</span>, <span class="number">3</span>, '
+            '<span class="number">4</span>, <span class="number">5</span>, '
+            '<span class="number">6</span>, <span class="number">7</span>, '
+            '<span class="extended"><span class="number">8</span>, '
+            '<span class="number">9</span>, <span class="number">10</span>, '
+            '<span class="number">11</span>, <span class="number">12</span>, '
+            '<span class="number">13</span>, <span class="number">14</span>, '
+            '<span class="number">15</span>, <span class="number">16</span>, '
+            '<span class="number">17</span>, <span class="number">18</span>, '
+            '<span class="number">19</span></span>]'
         )
-        assert debug_repr({}) == u'{}'
+        assert debug_repr({}) == '{}'
         assert debug_repr({'foo': 42}) == \
-            u'{<span class="pair"><span class="key"><span class="string">\'foo\''\
-            u'</span></span>: <span class="value"><span class="number">42' \
-            u'</span></span></span>}'
-        assert debug_repr((1, 'zwei', u'drei')) ==\
-            u'(<span class="number">1</span>, <span class="string">\'' \
-            u'zwei\'</span>, <span class="string">u\'drei\'</span>)'
+            '{<span class="pair"><span class="key"><span class="string">\'foo\''\
+            '</span></span>: <span class="value"><span class="number">42' \
+            '</span></span></span>}'
+        assert debug_repr((1, 'zwei', text_('drei'))) ==\
+            '(<span class="number">1</span>, <span class="string">\'' \
+            'zwei\'</span>, <span class="string">u\'drei\'</span>)'
 
         class Foo(object):
             def __repr__(self):
@@ -52,22 +53,22 @@ class Test_debug_repr(unittest.TestCase):
             pass
         tmp = debug_repr(MyList([1, 2]))
         assert tmp == \
-            u'<span class="module">pyramid_debugtoolbar.tests.test_debug.</span>MyList([' \
-            u'<span class="number">1</span>, <span class="number">2</span>])'
+            '<span class="module">pyramid_debugtoolbar.tests.test_debug.</span>MyList([' \
+            '<span class="number">1</span>, <span class="number">2</span>])'
 
         assert debug_repr(re.compile(r'foo\d')) == \
-            u're.compile(<span class="string regex">r\'foo\\d\'</span>)'
-        assert debug_repr(re.compile(ur'foo\d')) == \
-            u're.compile(<span class="string regex">ur\'foo\\d\'</span>)'
+            're.compile(<span class="string regex">r\'foo\\d\'</span>)'
+        assert debug_repr(re.compile(text_(r'foo\d'))) == \
+            're.compile(<span class="string regex">ur\'foo\\d\'</span>)'
 
         assert debug_repr(frozenset('x')) == \
-            u'frozenset([<span class="string">\'x\'</span>])'
+            'frozenset([<span class="string">\'x\'</span>])'
         assert debug_repr(set('x')) == \
-            u'set([<span class="string">\'x\'</span>])'
+            'set([<span class="string">\'x\'</span>])'
 
         a = [1]
         a.append(a)
-        assert debug_repr(a) == u'[<span class="number">1</span>, [...]]'
+        assert debug_repr(a) == '[<span class="number">1</span>, [...]]'
 
         class Foo(object):
             def __repr__(self):
@@ -115,6 +116,8 @@ class Test_debug_dump(unittest.TestCase):
             y = sys.stdout.reset()
         finally:
             sys.stdout = old
+
+        print(x)
 
         assert 'Details for list object at' in x
         assert '<span class="number">1</span>' in x

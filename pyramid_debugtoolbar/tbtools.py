@@ -19,8 +19,12 @@ from tokenize import TokenError
 from pyramid.decorator import reify
 from pyramid.renderers import render
 
+from pyramid_debugtoolbar.compat import text_type
+from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import native_
 from pyramid_debugtoolbar.compat import exec_
+from pyramid_debugtoolbar.compat import xrange_
 from pyramid_debugtoolbar.console import Console
 from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -74,7 +78,7 @@ def get_traceback(info, ignore_system_exceptions=False,
     exc_type, exc_value, tb = info
     if ignore_system_exceptions and exc_type in system_exceptions:
         raise
-    for x in xrange(skip):
+    for x in xrange_(skip):
         if tb.tb_next is None:
             break
         tb = tb.tb_next
@@ -175,7 +179,7 @@ class Traceback(object):
     def exception(self):
         """String representation of the exception."""
         buf = traceback.format_exception_only(self.exc_type, self.exc_value)
-        return ''.join(buf).strip().decode('utf-8', 'replace')
+        return native_(''.join(buf).strip(), 'utf-8', 'replace')
     exception = property(exception)
 
     def log(self, logfile=None):
@@ -206,9 +210,10 @@ class Traceback(object):
                 title = text_('Traceback <em>(most recent call last)</em>:')
 
         for frame in self.frames:
-            frames.append(text_('<li%s>%s' % (
-                frame.info) and text_(' title="%s"' % escape(frame.info)) or
-                                text_(''),
+            frames.append(
+                text_('<li%s>%s') % (
+                frame.info and text_(' title="%s"' % escape(frame.info)) or
+                    text_(''),
                 frame.render()
             ))
 
@@ -347,8 +352,8 @@ class Frame(object):
 
     def eval(self, code, mode='single'):
         """Evaluate code in the context of the frame."""
-        if isinstance(code, basestring):
-            if isinstance(code, unicode):
+        if isinstance(code, string_types):
+            if isinstance(code, text_type):
                 code = UTF8_COOKIE + code.encode('utf-8')
             code = compile(code, '<interactive>', mode)
         if mode != 'exec':
@@ -373,7 +378,7 @@ class Frame(object):
 
         if source is None:
             try:
-                f = file(self.filename)
+                f = open(self.filename)
             except IOError:
                 return []
             try:
@@ -382,7 +387,7 @@ class Frame(object):
                 f.close()
 
         # already unicode?  return right away
-        if isinstance(source, unicode):
+        if isinstance(source, text_type):
             return source.splitlines()
 
         # yes. it should be ascii, but we don't want to reject too many

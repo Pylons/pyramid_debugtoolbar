@@ -14,6 +14,8 @@ from types import CodeType
 import threading
 
 from pyramid_debugtoolbar.compat import exec_
+from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import binary_type
 from pyramid_debugtoolbar.repr import debug_repr, dump, helper
 from pyramid_debugtoolbar.utils import escape
 
@@ -50,8 +52,8 @@ class HTMLStringO(object):
         return val
 
     def _write(self, x):
-        if isinstance(x, str):
-            x = x.decode('utf-8', 'replace')
+        if isinstance(x, binary_type):
+            x = text_(x, 'utf-8', 'replace')
         self._buffer.append(x)
 
     def write(self, x):

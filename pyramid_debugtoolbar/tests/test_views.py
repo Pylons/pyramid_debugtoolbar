@@ -1,4 +1,7 @@
 import unittest
+
+from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import bytes_
 from pyramid import testing
 
 class TestExceptionDebugView(unittest.TestCase):
@@ -52,7 +55,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request.params['frm'] = '0'
         view = self._makeOne(request)
         response = view.source()
-        self.assertEqual(response.body, 'source')
+        self.assertEqual(response.body, bytes_('source'))
         self.assertEqual(response.content_type, 'text/html')
 
     def test_source_no_frame(self):
@@ -74,7 +77,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request.params['cmd'] = 'doit'
         view = self._makeOne(request)
         response = view.execute()
-        self.assertEqual(response.body, 'evaled')
+        self.assertEqual(response.body, bytes_('evaled'))
         self.assertEqual(response.content_type, 'text/html')
 
     def test_execute_frame_is_None(self):
@@ -133,16 +136,16 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         request.static_url = lambda *arg, **kw: 'http://static'
         vars = {
-            'classes':      u'classfoo class&bar',
-            'title':        u'<h3>TEH TITLE</h3>',
-            'frames':       u'<pre>Frame1</pre><pre>Frame2</pre>',
+            'classes':      text_('classfoo class&bar'),
+            'title':        text_('<h3>TEH TITLE</h3>'),
+            'frames':       text_('<pre>Frame1</pre><pre>Frame2</pre>'),
         }
         html = render(
             'pyramid_debugtoolbar:templates/exception_summary.jinja2',
             vars, request=request)
-        self.assert_(u'<div class="classfoo class&amp;bar">' in html, html)
-        self.assert_(u'<h3>TEH TITLE</h3>' in html, html)
-        self.assert_(u'<pre>Frame1</pre><pre>Frame2</pre>' in html, html)
+        self.assert_(text_('<div class="classfoo class&amp;bar">') in html,html)
+        self.assert_(text_('<h3>TEH TITLE</h3>') in html, html)
+        self.assert_(text_('<pre>Frame1</pre><pre>Frame2</pre>') in html, html)
 
 
 class DummyExceptionHistory(object):
