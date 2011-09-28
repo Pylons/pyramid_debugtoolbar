@@ -143,9 +143,12 @@ class TestExceptionDebugView(unittest.TestCase):
         html = render(
             'pyramid_debugtoolbar:templates/exception_summary.jinja2',
             vars, request=request)
-        self.assert_(text_('<div class="classfoo class&amp;bar">') in html,html)
-        self.assert_(text_('<h3>TEH TITLE</h3>') in html, html)
-        self.assert_(text_('<pre>Frame1</pre><pre>Frame2</pre>') in html, html)
+        self.assertTrue(
+            text_('<div class="classfoo class&amp;bar">') in html,html)
+        self.assertTrue(
+            text_('<h3>TEH TITLE</h3>') in html, html)
+        self.assertTrue(
+            text_('<pre>Frame1</pre><pre>Frame2</pre>') in html, html)
 
 
 class DummyExceptionHistory(object):

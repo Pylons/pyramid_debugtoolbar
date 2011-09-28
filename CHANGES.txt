@@ -5,6 +5,8 @@ Next release
 - Introduced new setting ``debugtoolbar.button_style``. Which can be used
   to override the default style (top:30px) set by ``toolbar.css``.
 
+- Compatible with Python 3.2 (requires Pyramid 1.3dev).
+
 0.9.3 (2011-09-12)
 ------------------
 
