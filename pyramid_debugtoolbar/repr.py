@@ -216,7 +216,7 @@ class DebugReprGenerator(object):
             info = '?'
         return text_(
             '<span class="brokenrepr">&lt;broken repr (%s)&gt;'
-            '</span>' % escape(text_(info, 'utf-8', 'ignore')).strip()
+            '</span>' % escape(text_(info, 'utf-8', 'ignore').strip())
             )
 
     def repr(self, obj):
