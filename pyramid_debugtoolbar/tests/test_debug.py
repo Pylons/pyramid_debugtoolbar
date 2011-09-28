@@ -18,6 +18,8 @@ class Test_debug_repr(unittest.TestCase):
         assert debug_repr([]) == '[]'
         assert debug_repr([1, 2]) == \
             '[<span class="number">1</span>, <span class="number">2</span>]'
+        ## import pdb; pdb.set_trace()
+        ## result = debug_repr([1, 'test'])
         assert debug_repr([1, 'test']) == \
             '[<span class="number">1</span>, <span class="string">\'test\'</span>]'
         assert debug_repr([None]) == \
@@ -116,8 +118,6 @@ class Test_debug_dump(unittest.TestCase):
             y = sys.stdout.reset()
         finally:
             sys.stdout = old
-
-        print(x)
 
         assert 'Details for list object at' in x
         assert '<span class="number">1</span>' in x

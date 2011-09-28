@@ -6,6 +6,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
 from pyramid.view import view_config
 
+from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -98,7 +99,7 @@ class SQLAlchemyViews(object):
 
         # Validate hash
         hash = hashlib.sha1(
-            self.request.exc_history.token + stmt + params).hexdigest()
+            bytes_(self.request.exc_history.token + stmt + params)).hexdigest()
         if hash != self.request.params['hash']:
             raise HTTPBadRequest('Bad token in request')
  
@@ -131,7 +132,7 @@ class SQLAlchemyViews(object):
 
         # Validate hash
         hash = hashlib.sha1(
-            self.request.exc_history.token + stmt + params).hexdigest()
+            bytes_(self.request.exc_history.token + stmt + params)).hexdigest()
         if hash != self.request.params['hash']:
             raise HTTPBadRequest('Bad token in request')
 

@@ -8,6 +8,7 @@ import weakref
 from pyramid.compat import json
 from pyramid.threadlocal import get_current_request
 
+from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -90,8 +91,8 @@ class SQLADebugPanel(DebugPanel):
                 pass # object not JSON serializable
 
             hash = hashlib.sha1(
-                self.request.exc_history.token +
-                query['statement'] + params).hexdigest()
+                bytes_(self.request.exc_history.token +
+                       query['statement'] + params)).hexdigest()
 
             data.append({
                 'engine_id': query['engine_id'],

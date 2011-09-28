@@ -17,6 +17,7 @@ else:
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
+    long = long
 
 # TODO check if errors is ever used
 
@@ -162,7 +163,7 @@ else:
 if PY3:
     xrange_ = range
 else:
-    xrange = xrange
+    xrange_ = xrange
     
 
 if PY3: # pragma: no cover

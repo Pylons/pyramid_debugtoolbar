@@ -22,9 +22,12 @@ except ImportError: # pragma: no cover
     deque = None
 
 from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import text_type
+from pyramid_debugtoolbar.compat import binary_type
 from pyramid_debugtoolbar.compat import iteritems_
 from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.compat import long
+from pyramid_debugtoolbar.compat import PY3
 from pyramid_debugtoolbar.utils import escape
 
 
@@ -79,7 +82,7 @@ class _Helper(object):
             return
         import pydoc
         pydoc.help(topic)
-        rv = sys.stdout.reset().decode('utf-8', 'ignore')
+        rv = text_(sys.stdout.reset(), 'utf-8', 'ignore')
         paragraphs = _paragraph_re.split(rv)
         if len(paragraphs) > 1:
             title = paragraphs[0]
@@ -100,7 +103,7 @@ def _add_subclass_info(inner, obj, base):
     elif type(obj) is base:
         return inner
     module = ''
-    if obj.__class__.__module__ not in ('__builtin__', 'exceptions'):
+    if obj.__class__.__module__ not in ('builtins', '__builtin__','exceptions'):
         module = '<span class="module">%s.</span>' % obj.__class__.__module__
     return '%s%s(%s)' % (module, obj.__class__.__name__, inner)
 
@@ -126,7 +129,7 @@ class DebugReprGenerator(object):
             if have_extended_section:
                 buf.append('</span>')
             buf.append(right)
-            return _add_subclass_info(text_(''.join(buf), obj, base))
+            return _add_subclass_info(text_(''.join(buf)), obj, base)
         return proxy
 
     list_repr = _sequence_repr_maker('[', ']', list)
@@ -147,12 +150,12 @@ class DebugReprGenerator(object):
         return text_(
             're.compile(<span class="string regex">%s</span>)' % pattern)
 
-    def string_repr(self, obj, limit=70):
+    def py2_string_repr(self, obj, limit=70):
         buf = ['<span class="string">']
         escaped = escape(obj)
         a = repr(escaped[:limit])
         b = repr(escaped[limit:])
-        if isinstance(obj, unicode):
+        if isinstance(obj, text_type):
             buf.append('u')
             a = a[1:]
             b = b[1:]
@@ -161,7 +164,34 @@ class DebugReprGenerator(object):
         else:
             buf.append(a)
         buf.append('</span>')
-        return _add_subclass_info(text_(''.join(buf), obj, string_types))
+        return _add_subclass_info(text_('').join(buf), obj, (str, unicode))
+
+    def py3_text_repr(self, obj, limit=70):
+        buf = ['<span class="string">']
+        escaped = escape(obj)
+        a = repr(escaped[:limit])
+        b = repr(escaped[limit:])
+        a = a[1:]
+        b = b[1:]
+        if b != "''":
+            buf.extend((a[:-1], '<span class="extended">', b[1:], '</span>'))
+        else:
+            buf.append(a)
+        buf.append('</span>')
+        return _add_subclass_info(text_(''.join(buf)), obj, text_type)
+
+    def py3_binary_repr(self, obj, limit=70):
+        buf = ['<span class="string">']
+        escaped = escape(text_(obj, 'utf-8', 'replace'))
+        a = repr(escaped[:limit])
+        b = repr(escaped[limit:])
+        buf.append('b')
+        if b != "''":
+            buf.extend((a[:-1], '<span class="extended">', b[1:], '</span>'))
+        else:
+            buf.append(a)
+        buf.append('</span>')
+        return _add_subclass_info(text_(''.join(buf)), obj, binary_type)
 
     def dict_repr(self, d, recursive, limit=5):
         if recursive:
@@ -184,15 +214,21 @@ class DebugReprGenerator(object):
 
     def object_repr(self, obj):
         return text_('<span class="object">%s</span>' % 
-                     escape(repr(obj).decode('utf-8', 'replace')))
+                     escape(text_(repr(obj), 'utf-8', 'replace')))
 
     def dispatch_repr(self, obj, recursive):
         if obj is helper:
             return text_('<span class="help">%r</span>' % helper)
         if isinstance(obj, (int, long, float, complex)):
             return text_('<span class="number">%r</span>' % obj)
-        if isinstance(obj, string_types):
-            return self.string_repr(obj)
+        if PY3:
+            if isinstance(obj, text_type):
+                return self.py3_text_repr(obj)
+            if isinstance(obj, binary_type):
+                return self.py3_binary_repr(obj)
+        else:
+            if isinstance(obj, basestring):
+                return self.py2_string_repr(obj)
         if isinstance(obj, RegexType):
             return self.regex_repr(obj)
         if isinstance(obj, list):
@@ -227,6 +263,7 @@ class DebugReprGenerator(object):
                 break
         self._stack.append(obj)
         try:
+            return self.dispatch_repr(obj, recursive)
             try:
                 return self.dispatch_repr(obj, recursive)
             except Exception:

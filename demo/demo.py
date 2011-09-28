@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.view import view_config
 
-from paste.httpserver import serve
+from wsgiref.simple_server import make_server
 
 try:
     import sqlalchemy
@@ -79,4 +79,5 @@ if __name__ == '__main__':
     if sqlalchemy:
         config.include('sqla')
     config.include('pyramid_debugtoolbar')
-    serve(config.make_wsgi_app(), host='0.0.0.0')
+    httpd = make_server('', 8080, config.make_wsgi_app())
+    httpd.serve_forever()
