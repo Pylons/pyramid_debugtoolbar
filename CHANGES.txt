@@ -7,6 +7,9 @@ Next release
 
 - Compatible with Python 3.2 (requires Pyramid 1.3dev).
 
+- Appease settings values that were sensitive to __getattr__ in the settings
+  debug panel.  See https://github.com/Pylons/pyramid_debugtoolbar/issues/30
+
 0.9.3 (2011-09-12)
 ------------------
 
