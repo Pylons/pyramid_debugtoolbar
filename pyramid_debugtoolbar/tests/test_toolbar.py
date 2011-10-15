@@ -56,7 +56,7 @@ class DebugToolbarTests(unittest.TestCase):
         toolbar = self._makeOne(request, [DummyPanel])
         toolbar.process_response(response)
         self.assertTrue(response.processed)
-        self.failUnless(bytes_('div id="pDebug"') in response.app_iter[0])
+        self.assertTrue(bytes_('div id="pDebug"') in response.app_iter[0])
 
     def test_passing_of_button_style(self):
         from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -74,7 +74,7 @@ class DebugToolbarTests(unittest.TestCase):
         toolbar = self._makeOne(request, [DummyPanel])
         toolbar.process_response(response)
         self.assertTrue(response.processed)
-        self.failUnless(bytes_('top:120px;zoom:50%') in response.app_iter[0])
+        self.assertTrue(bytes_('top:120px;zoom:50%') in response.app_iter[0])
 
 class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
