@@ -49,10 +49,6 @@ def set_mako_config(settings):
     if 'mako.directories' in settings:
         tmpl_dirs.append(settings['mako.directories'])
     config['mako.directories'] = ', '.join(tmpl_dirs)
-    if not 'mako.module_directory' in settings:
-        config['mako.module_directory'] = '/tmp/mako_modules'
-    else:
-        config['mako.module_directory'] = settings['mako.module_directory']
     return config
 
 def includeme(config):
