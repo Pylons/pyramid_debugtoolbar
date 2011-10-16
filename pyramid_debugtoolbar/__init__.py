@@ -47,7 +47,7 @@ def set_mako_config(settings):
     tmpl_dirs = ['pyramid_debugtoolbar:templates',
             'pyramid_debugtoolbar.panels:templates']
     if 'mako.directories' in settings:
-        tmpl_dirs.append(settings['mako.diretories'])
+        tmpl_dirs.append(settings['mako.directories'])
     config['mako.directories'] = ', '.join(tmpl_dirs)
     if not 'mako.module_directory' in settings:
         config['mako.module_directory'] = '/tmp/mako_modules'
