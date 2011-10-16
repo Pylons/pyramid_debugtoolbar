@@ -3,6 +3,8 @@ Next release
 
 - Adjust tox setup to test older Pyramid and WebOb branches under 2.5.
 
+- Convert all templates to Mako.
+
 0.9.4 (2011-09-28)
 ------------------
 
