@@ -3,38 +3,38 @@
 
 <html>
   <head>
-    <title>{{title}} // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="{{ static_path }}css/debugger.css" 
+    <title>${title} // Werkzeug Debugger</title>
+    <link rel="stylesheet" href="${static_path}css/debugger.css" 
           type="text/css">
     <script type="text/javascript" 
-          src="{{ static_path }}js/jquery-1.6.4.min.js"></script>
+          src="${static_path}js/jquery-1.6.4.min.js"></script>
     <script type="text/javascript" 
-          src="{{ static_path }}js/debugger.js"></script>
+          src="${static_path}js/debugger.js"></script>
     <script type="text/javascript">
-      var TRACEBACK = {{ traceback_id }},
-          DEBUGGER_TOKEN = "{{ token }}",
-          CONSOLE_MODE = {{ console }},
-          EVALEX = {{ evalex }},
-          DEBUG_TOOLBAR_STATIC_PATH = "{{ static_path }}",
-          DEBUG_TOOLBAR_ROOT_PATH = "{{ root_path }}";
+      var TRACEBACK = ${traceback_id},
+          DEBUGGER_TOKEN = "${token}",
+          CONSOLE_MODE = ${console},
+          EVALEX = ${evalex},
+          DEBUG_TOOLBAR_STATIC_PATH = "${static_path}",
+          DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
     </script>
   </head>
   <body>
     <div class="debugger">
 
-    <h1>{{ exception_type }}</h1>
+    <h1>${exception_type}</h1>
     <div class="detail">
-      <pre class= "errormsg">{{ exception|safe }}</pre>
+      <pre class= "errormsg">${exception|n}</pre>
     </div>
     <h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
-    {{ summary|safe }}
+    ${summary|n}
     <div class="plain">
       <p>
         <input type="hidden" name="language" value="pytb">
           This is the Copy/Paste friendly version of the traceback.
         </p>
         <textarea cols="50" rows="10" name="code" 
-                  readonly>{{ plaintext }}</textarea>
+                  readonly>${plaintext}</textarea>
       </div>
       
     <div class="explanation">
@@ -43,11 +43,11 @@
           systems.</b>
       </p>
 
-      {% if evalex %}
+      % if evalex:
       <p>
         
         Hover over any gray area in the traceback and click on the
-        <img src="{{ static_path }}img/console.png"/> icon on the right hand
+        <img src="${static_path}img/console.png"/> icon on the right hand
         side of that gray area to show an interactive console for the
         associated frame.  Type arbitrary Python into the console; it will be
         evaluated in the context of the associated frame.  In the interactive
@@ -58,12 +58,12 @@
           <li><code>dump(obj)</code> dumps all that's known about the object
         </ul>
       </p>
-      {% endif %}
+      % endif
       
       <p>
-        Hover over any gray area in the traceback and click on <img src="{{
-        static_path }}img/source.png"/> on the right hand side of that gray
-        area to show the source of the file associated with the frame.
+        Hover over any gray area in the traceback and click on 
+        <img src="${static_path}img/source.png"/> on the right hand side 
+        of that gray area to show the source of the file associated with the frame.
       </p>
       
       <p>
@@ -73,7 +73,7 @@
       </p>
 
       <p>
-        URL to recover this traceback page: <a href="{{ url }}">{{ url }}</a>
+        URL to recover this traceback page: <a href="${url}">${url}</a>
       </p>
     </div>
     
@@ -84,7 +84,7 @@
     </div>
     <!--
        
-       {{ plaintext_cs }}
+       ${plaintext_cs}
        
       -->
     

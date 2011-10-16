@@ -1,4 +1,4 @@
-{% if timing_rows %}
+% if timing_rows:
 <table>
 	<colgroup>
 		<col style="width:20%"/>
@@ -11,21 +11,21 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for key, value in timing_rows %}
-			<tr class="{{ loop.cycle('pDebugOdd', 'pDebugEven') }}">
-				<td>{{ key|escape }}</td>
-				<td>{{ value|escape }}</td>
+		% for i, (key, value) in enumerate(timing_rows):
+			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+				<td>${key|h}</td>
+				<td>${value|h}</td>
 			</tr>
-		{% endfor %}
+		% endfor
 	</tbody>
 </table>
-{% else %}
+% else:
     <p>Resource statistics have been disabled. This is because the 'resource'
     module could not be found. This module is not supported under Windows.</p>
-{% endif %}
+% endif
 
 <h4>Profile</h4>
-{% if stats %}
+% if stats:
     <p>Times in milliseconds</p>
     <table class="pDebugSortable">
         <thead>
@@ -39,19 +39,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in function_calls %}
-                <tr class="{{ loop.cycle('pDebugOdd', 'pDebugEven') }}">
-                    <td>{{ row.ncalls }}</td>
-                    <td>{{ row.tottime }}</td>
-                    <td>{{ '%.4f'|format(row.percall) }}</td>
-                    <td>{{ row.cumtime }}</td>
-                    <td>{{ '%.4f'|format(row.percall_cum) }}</td>
-                    <td title="{{ row.filename_long }}">{{ row.filename|escape }}</td>
+            % for i, row in enumerate(function_calls):
+                <tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+                    <td>${row['ncalls']}</td>
+                    <td>${row['tottime']}</td>
+                    <td>${'%.4f' % row['percall']}</td>
+                    <td>${row['cumtime']}</td>
+                    <td>${'%.4f' % row['percall_cum']}</td>
+                    <td title="${row['filename_long']}">${row['filename']|h}</td>
                 </tr>
-            {% endfor %}
+            % endfor
         </tbody>
     </table>
-{% else %}
+% else:
     <p>The profiler is not activated. Activate the checkbox in the toolbar to use it.</p>
-{% endif %}
+% endif
 

@@ -66,7 +66,7 @@ class ExceptionDebugView(object):
         return HTTPBadRequest()
         
     @view_config(route_name='debugtoolbar.console',
-                 renderer='pyramid_debugtoolbar:templates/console.jinja2')
+                 renderer='pyramid_debugtoolbar:templates/console.mako')
     def console(self):
         static_path = self.request.static_url(STATIC_PATH)
         toolbar_root_path = self.request.route_url(ROOT_ROUTE_NAME)
@@ -90,7 +90,7 @@ class SQLAlchemyViews(object):
         self.request = request
 
     @view_config(route_name='debugtoolbar.sql_select',
-                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.jinja2',
+                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.mako',
                  permission=NO_PERMISSION_REQUIRED)
     def sql_select(self):
         stmt = self.request.params['sql']
@@ -123,7 +123,7 @@ class SQLAlchemyViews(object):
         }
 
     @view_config(route_name='debugtoolbar.sql_explain',
-                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.jinja2',
+                 renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.mako',
                  permission=NO_PERMISSION_REQUIRED)
     def sql_explain(self):
         stmt = self.request.params['sql']

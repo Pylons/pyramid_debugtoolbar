@@ -15,9 +15,9 @@ users_table = Table(
 
 def initialize_sql(settings):
     engine = create_engine('sqlite://',
-                           connect_args={'check_same_thread':False},
-                           poolclass=StaticPool,
-                           echo=True)
+            connect_args={'check_same_thread':False},
+            poolclass=StaticPool,
+            echo=True)
     settings['engine'] = engine
 
     try:
@@ -28,13 +28,15 @@ def initialize_sql(settings):
 def populate_db(engine):
     meta.create_all(bind=engine)
 
+    users = ('blaflamme', 'mcdonc', 'mmerickel')
     try:
-        engine.execute('insert into users (id, name) values (:id, :name)',
-                       id=1, name='blaze')
+        for i, user in enumerate(users):
+            engine.execute('insert into users (id, name) values (:id, :name)',
+                    id=i, name=user)
     except:
         pass
 
-@view_config(route_name='test_sqla', renderer='sqla.mako')
+@view_config(route_name='test_sqla', renderer='__main__:templates/sqla.mako')
 def test_sqla(request):
     engine = request.registry.settings['engine']
     users = engine.execute('select * from users')

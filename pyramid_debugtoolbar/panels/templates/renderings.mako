@@ -1,5 +1,5 @@
-{% if renderings %}
-{% for rendering in renderings %}
+% if renderings:
+% for rendering in renderings:
 <table>
 	<thead>
 		<tr>
@@ -8,7 +8,7 @@
 	</thead>
 	<tbody>
 		<tr class="pDebugOdd">
-			<td colspan="2">{{ rendering.name|escape }}</td>
+			<td colspan="2">${rendering['name']|h}</td>
 		</tr>
 	</tbody>
 	<thead>
@@ -18,7 +18,7 @@
 	</thead>
 	<tbody>	
 		<tr class="pDebugOdd">
-			<td colspan="2">{{ rendering.val|escape }}</td>
+			<td colspan="2">${rendering['val']|h}</td>
 		</tr>
 	</tbody>
 	<thead>
@@ -27,17 +27,17 @@
 		</tr>
 	</thead>
 	<tbody>	
-		{% for key, value in rendering.system %}
-		<tr class="{{ loop.cycle('pDebugOdd', 'pDebugEven') }}">
-			<td>{{ key|escape }}</td>
-			<td>{{ value|escape }}</td>
+		% for i, (key, value) in enumerate(rendering['system']):
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${value|h}</td>
 		</tr>
-		{% endfor %}
+		% endfor
 	</tbody>
 </table>
-{% endfor %}
-{% else %}
+% endfor
+% else:
 <p>No renderings performed.</p>
-{% endif %}
+% endif
 
 

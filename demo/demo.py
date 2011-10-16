@@ -14,6 +14,11 @@ try:
 except ImportError: # pragma: no cover
     sqlalchemy = None
 
+try:
+    import pyramid_jinja2
+except ImportError: # pragma: no cover
+    pyramid_jinja2 = None
+
 logging.basicConfig()
 log = logging.getLogger(__file__)
 
@@ -27,29 +32,34 @@ def exc(request):
 def notfound(request):
     raise HTTPNotFound()
 
-@view_config(context=HTTPNotFound, renderer='notfound.mako')
+@view_config(context=HTTPNotFound, renderer='__main__:templates/notfound.mako')
 def notfound_view(request):
     return {}
 
-@view_config(route_name='test_page', renderer='index.mako')
+@view_config(route_name='test_page', renderer='__main__:templates/index.mako')
 def test_page(request):
     title = 'Pyramid Debugtoolbar'
     log.info(title)
-    return {'title': title, 'show_sqla_link': bool(sqlalchemy)}
+    return {
+        'title': title,
+        'show_jinja2_link': bool(pyramid_jinja2),
+        'show_sqla_link': bool(sqlalchemy)}
 
 @view_config(route_name='test_redirect')
 def test_redirect(request):
     return HTTPFound(location=request.route_url('test_page'))
 
-@view_config(route_name='test_predicates', renderer='index.mako')
+@view_config(route_name='test_predicates',
+        renderer='__main__:templates/index.mako')
 def test_predicates(request):
     return {'title':'Test route predicates'}
 
 @view_config(route_name='test_chameleon_exc',
              renderer='__main__:templates/error.pt')
-@view_config(route_name='test_mako_exc', renderer='error.mako')
+@view_config(route_name='test_mako_exc',
+        renderer='__main__:templates/error.mako')
 @view_config(route_name='test_jinja2_exc',
-             renderer='__main__:templates/error.jinja2')
+        renderer='__main__:templates/error.jinja2')
 def test_template_exc(request):
     return {'title':'Test template exceptions'}
 
@@ -58,10 +68,10 @@ if __name__ == '__main__':
     settings = {}
     settings['debug_templates'] = True
     settings['reload_templates'] = True
-    settings['mako.directories'] = os.path.join(here, 'templates')
-    settings['mako.module_directory'] = os.path.join(here, 'mako_modules')
+    settings['mako.directories'] = '__main__:templates'
+    settings['mako.module_directory'] = '__main__:mako_modules'
     settings['debugtoolbar.hosts'] = ['127.0.0.1', '192.168.1.147']
-    #settings['mako.strict_undefined'] = True
+    settings['debugtoolbar.intercept_redirects'] = True
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
@@ -76,6 +86,8 @@ if __name__ == '__main__':
     config.add_route('test_mako_exc', '/mako_exc')
     config.add_route('test_jinja2_exc', '/jinja2_exc')
     config.scan('__main__')
+    if pyramid_jinja2:
+        config.include('pyramid_jinja2')
     if sqlalchemy:
         config.include('sqla')
     config.include('pyramid_debugtoolbar')

@@ -65,6 +65,6 @@ class RoutesDebugPanel(DebugPanel):
                 'routes': registry.debugtoolbar_routeinfo,
                 }
             return self.render(
-                'pyramid_debugtoolbar.panels:templates/routes.jinja2',
+                'pyramid_debugtoolbar.panels:templates/routes.mako',
                 vars, self.request)
         return ''

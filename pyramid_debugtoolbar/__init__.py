@@ -42,15 +42,20 @@ def parse_settings(settings):
         populate(name, convert, default)
     return parsed
 
+def fix_mako_templates(settings):
+    settings['mako.directories'] = ', '.join([settings.get(
+            'mako.directories', ''), 'pyramid_debugtoolbar:templates',
+            'pyramid_debugtoolbar.panels:templates'])
+    if not 'mako.module_directory' in settings:
+        settings['mako.module_directory'] = '/tmp/mako_modules'
+
 def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
     directly. """
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    config.include('pyramid_jinja2')
-    j2_env = config.get_jinja2_environment()
-    j2_env.filters['urlencode'] = url_quote
+    fix_mako_templates(config.registry.settings)
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(

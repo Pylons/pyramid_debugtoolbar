@@ -228,7 +228,7 @@ class Traceback(object):
             'frames':       text_('\n'.join(frames)),
             'description':  description_wrapper % escape(self.exception),
         }
-        return render('pyramid_debugtoolbar:templates/exception_summary.jinja2',
+        return render('pyramid_debugtoolbar:templates/exception_summary.mako',
                       vars, request=request)
 
     def render_full(self, request, lodgeit_url=None):
@@ -256,7 +256,7 @@ class Traceback(object):
             'root_path':        root_path,
             'url':              url,
         }
-        return render('pyramid_debugtoolbar:templates/exception.jinja2',
+        return render('pyramid_debugtoolbar:templates/exception.mako',
                       vars, request=request)
 
     def generate_plaintext_traceback(self):

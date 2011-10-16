@@ -1,9 +1,9 @@
 (function($) {
     $.cookie = function(name, value, options) { if (typeof value != 'undefined') { options = options || {}; if (value === null) { value = ''; options.expires = -1; } var expires = ''; if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) { var date; if (typeof options.expires == 'number') { date = new Date(); date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000)); } else { date = options.expires; } expires = '; expires=' + date.toUTCString(); } var path = options.path ? '; path=' + (options.path) : ''; var domain = options.domain ? '; domain=' + (options.domain) : ''; var secure = options.secure ? '; secure' : ''; document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join(''); } else { var cookieValue = null; if (document.cookie && document.cookie != '') { var cookies = document.cookie.split(';'); for (var i = 0; i < cookies.length; i++) { var cookie = $.trim(cookies[i]); if (cookie.substring(0, name.length + 1) == (name + '=')) { cookieValue = decodeURIComponent(cookie.substring(name.length + 1)); break; } } } return cookieValue; } };
     $('head').append('<link rel="stylesheet" href="'+DEBUG_TOOLBAR_STATIC_PATH+'css/toolbar.css?'+ Math.random() +'" type="text/css" />');
-    var COOKIE_NAME = 'p_dt';
+    var COOKIE_NAME = 'pdtb';
     var COOKIE_NAME_ACTIVE = COOKIE_NAME +'_active';
-    var p_dt = {
+    var pdtb = {
         init: function() {
             $('#pDebug').show();
             var current = null;
@@ -70,25 +70,25 @@
                 return false;
             });
             $('#pDebugTemplatePanel a.pTemplateShowContext').click(function() {
-                p_dt.toggle_arrow($(this).children('.toggleArrow'))
-                p_dt.toggle_content($(this).parent().next());
+                pdtb.toggle_arrow($(this).children('.toggleArrow'))
+                pdtb.toggle_content($(this).parent().next());
                 return false;
             });
             $('#pDebugSQLPanel a.pSQLShowStacktrace').click(function() {
-                p_dt.toggle_content($('.pSQLHideStacktraceDiv', $(this).parents('tr')));
+                pdtb.toggle_content($('.pSQLHideStacktraceDiv', $(this).parents('tr')));
                 return false;
             });
             $('#pHideToolBarButton').click(function() {
-                p_dt.hide_toolbar(true);
+                pdtb.hide_toolbar(true);
                 return false;
             });
             $('#pShowToolBarButton').click(function() {
-                p_dt.show_toolbar();
+                pdtb.show_toolbar();
                 return false;
             });
             $("#pShowToolBarButton").hover(function() {
                 $(this).data('pTimeout', setTimeout(function() {
-                    p_dt.show_toolbar(false, true);
+                    pdtb.show_toolbar(false, true);
                     return false;
                 }, 1000));
             }, function () {
@@ -107,14 +107,14 @@
                 }
                 // Otherwise, just minimize the toolbar
                 if ($('#pDebugToolbar').is(':visible')) {
-                    p_dt.hide_toolbar(true);
+                    pdtb.hide_toolbar(true);
                     return;
                 }
             });
             if ($.cookie(COOKIE_NAME)) {
-                p_dt.hide_toolbar(false);
+                pdtb.hide_toolbar(false);
             } else {
-                p_dt.show_toolbar(false);
+                pdtb.show_toolbar(false);
             }
         },
         toggle_content: function(elem) {
@@ -151,7 +151,7 @@
             // Set up keybindings
             $(document).bind('keydown.pDebug', function(e) {
                 if (e.keyCode == 27) {
-                    p_dt.close();
+                    pdtb.close();
                 }
             });
             $('#pDebugToolbarHandle').hide();
@@ -174,7 +174,7 @@
         }
     };
     $(document).ready(function() {
-        p_dt.init();
+        pdtb.init();
         $(".pDebugSortable").tablesorter();
     });
 })(jQuery);

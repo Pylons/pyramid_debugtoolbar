@@ -14,19 +14,21 @@
         <p>
           <a href="${request.route_url('test_notfound')}">Not found example</a>
         </p>
-	% if show_sqla_link:
+		% if show_sqla_link:
         <p>
           <a href="${request.route_url('test_sqla')}">SQLAlchemy example</a>
         </p>
-	% endif
+		% endif
         <p>
           <a href="${request.route_url('test_chameleon_exc')}">Chameleon Exception example</a>
         </p>
         <p>
           <a href="${request.route_url('test_mako_exc')}">Mako Exception example</a>
         </p>
+		% if show_jinja2_link:
         <p>
           <a href="${request.route_url('test_jinja2_exc')}">Jinja2 Exception example</a>
         </p>
+		% endif
     </body>
 </html>

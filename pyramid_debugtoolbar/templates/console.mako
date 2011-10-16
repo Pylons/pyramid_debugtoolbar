@@ -2,18 +2,18 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
   <head>
-    <title>{{ title }} // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="{{ static_path }}css/debugger.css" 
+    <title>${title} // Werkzeug Debugger</title>
+    <link rel="stylesheet" href="${static_path}css/debugger.css" 
           type="text/css">
     <script type="text/javascript" 
-            src="{{ static_path }}js/jquery-1.6.4.min.js"></script>
+            src="${static_path}js/jquery-1.6.4.min.js"></script>
     <script type="text/javascript" 
-            src="{{ static_path }}js/debugger.js"></script>
+            src="${static_path}js/debugger.js"></script>
     <script type="text/javascript">
-      var TRACEBACK = {{traceback_id}},
-          CONSOLE_MODE = {{console}},
-          DEBUGGER_TOKEN = "{{token}}",
-          EVALEX = {{evalex}};
+      var TRACEBACK = ${traceback_id},
+          CONSOLE_MODE = ${console},
+          DEBUGGER_TOKEN = "${token}",
+          EVALEX = ${evalex};
     </script>
   </head>
   <body>

@@ -24,8 +24,8 @@ class DebugToolbar(object):
     def __init__(self, request, panel_classes):
         self.request = request
         self.panels = []
-        p_dt_active = url_unquote(self.request.cookies.get('p_dt_active', ''))
-        activated = p_dt_active.split(';')
+        pdtb_active = url_unquote(self.request.cookies.get('pdtb_active', ''))
+        activated = pdtb_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
             if panel_inst.dom_id() in activated and panel_inst.has_content:
@@ -47,12 +47,12 @@ class DebugToolbar(object):
             static_path = request.static_url(STATIC_PATH)
             root_path = request.route_url(ROOT_ROUTE_NAME)
             button_style = get_setting(request.registry.settings,
-                                       'button_style', '')
+                    'button_style', '')
             vars = {'panels': self.panels, 'static_path': static_path,
                     'root_path': root_path, 'button_style': button_style}
             toolbar_html = render(
-                'pyramid_debugtoolbar:templates/toolbar.jinja2',
-                vars, request=request)
+                    'pyramid_debugtoolbar:templates/toolbar.mako',
+                    vars, request=request)
             response_html = response.body
             toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
             body = replace_insensitive(
@@ -144,7 +144,7 @@ def toolbar_tween_factory(handler, registry):
                     redirect_code = response.status_int
                     if redirect_to:
                         content = render(
-                            'pyramid_debugtoolbar:templates/redirect.jinja2',
+                            'pyramid_debugtoolbar:templates/redirect.mako',
                             {'redirect_to': redirect_to,
                             'redirect_code': redirect_code},
                             request=request)
