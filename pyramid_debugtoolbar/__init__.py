@@ -1,4 +1,3 @@
-from pyramid.encode import url_quote
 from pyramid.settings import asbool
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
@@ -42,23 +41,14 @@ def parse_settings(settings):
         populate(name, convert, default)
     return parsed
 
-def set_mako_config(settings):
-    config = {}
-    tmpl_dirs = ['pyramid_debugtoolbar:templates',
-            'pyramid_debugtoolbar.panels:templates']
-    if 'mako.directories' in settings:
-        tmpl_dirs.append(settings['mako.directories'])
-    config['mako.directories'] = ', '.join(tmpl_dirs)
-    return config
-
 def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
     directly. """
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    mako_config = set_mako_config(config.registry.settings)
-    config.registry.settings.update(mako_config)
+    if not 'mako.directories' in config.registry.settings:
+        config.registry.settings['mako.directories'] = []
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(

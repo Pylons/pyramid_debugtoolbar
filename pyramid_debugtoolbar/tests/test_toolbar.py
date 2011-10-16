@@ -8,9 +8,7 @@ from pyramid_debugtoolbar.compat import bytes_
 class DebugToolbarTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        from pyramid_debugtoolbar import set_mako_config
-        mako_config = set_mako_config(self.config.registry.settings)
-        self.config.registry.settings.update(mako_config)
+        self.config.registry.settings['mako.directories'] = []
 
     def tearDown(self):
         del self.config
@@ -132,9 +130,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config = testing.setUp()
         self.config.registry.settings['debugtoolbar.enabled'] = True
         self.config.registry.settings['debugtoolbar.hosts'] = ['127.0.0.1']
-        from pyramid_debugtoolbar import set_mako_config
-        mako_config = set_mako_config(self.config.registry.settings)
-        self.config.registry.settings.update(mako_config)
+        self.config.registry.settings['mako.directories'] = []
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)

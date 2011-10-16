@@ -7,9 +7,7 @@ from pyramid import testing
 class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        from pyramid_debugtoolbar import set_mako_config
-        mako_config = set_mako_config(self.config.registry.settings)
-        self.config.registry.settings.update(mako_config)
+        self.config.registry.settings['mako.directories'] = []
 
     def tearDown(self):
         testing.tearDown()
