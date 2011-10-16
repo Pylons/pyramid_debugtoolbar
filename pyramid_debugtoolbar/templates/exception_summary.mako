@@ -1,4 +1,4 @@
 <div class="${classes}">
-  ${title|h}
+  ${title|n}
   <ul>${frames|n}</ul>
 </div>

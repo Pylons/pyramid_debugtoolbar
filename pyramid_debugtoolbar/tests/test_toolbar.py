@@ -8,6 +8,9 @@ from pyramid_debugtoolbar.compat import bytes_
 class DebugToolbarTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        from pyramid_debugtoolbar import set_mako_config
+        mako_config = set_mako_config(self.config.registry.settings)
+        self.config.registry.settings.update(mako_config)
 
     def tearDown(self):
         del self.config
@@ -45,7 +48,6 @@ class DebugToolbarTests(unittest.TestCase):
     def test_process_response_html(self):
         from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
-        self.config.include('pyramid_jinja2')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
         self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
@@ -61,7 +63,6 @@ class DebugToolbarTests(unittest.TestCase):
     def test_passing_of_button_style(self):
         from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
-        self.config.include('pyramid_jinja2')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
         self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
@@ -131,10 +132,12 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config = testing.setUp()
         self.config.registry.settings['debugtoolbar.enabled'] = True
         self.config.registry.settings['debugtoolbar.hosts'] = ['127.0.0.1']
+        from pyramid_debugtoolbar import set_mako_config
+        mako_config = set_mako_config(self.config.registry.settings)
+        self.config.registry.settings.update(mako_config)
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
-        self.config.include('pyramid_jinja2')
 
     def tearDown(self):
         testing.tearDown()
@@ -222,6 +225,7 @@ class Test_toolbar_handler(unittest.TestCase):
 class DummyPanel(object):
     is_active = False
     has_content = False
+    user_activate = False
 
     def __init__(self, request):
         self.request = request

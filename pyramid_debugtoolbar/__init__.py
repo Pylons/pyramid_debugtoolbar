@@ -42,12 +42,18 @@ def parse_settings(settings):
         populate(name, convert, default)
     return parsed
 
-def fix_mako_templates(settings):
-    settings['mako.directories'] = ', '.join([settings.get(
-            'mako.directories', ''), 'pyramid_debugtoolbar:templates',
-            'pyramid_debugtoolbar.panels:templates'])
+def set_mako_config(settings):
+    config = {}
+    tmpl_dirs = ['pyramid_debugtoolbar:templates',
+            'pyramid_debugtoolbar.panels:templates']
+    if 'mako.directories' in settings:
+        tmpl_dirs.append(settings['mako.diretories'])
+    config['mako.directories'] = ', '.join(tmpl_dirs)
     if not 'mako.module_directory' in settings:
-        settings['mako.module_directory'] = '/tmp/mako_modules'
+        config['mako.module_directory'] = '/tmp/mako_modules'
+    else:
+        config['mako.module_directory'] = settings['mako.module_directory']
+    return config
 
 def includeme(config):
     """ Activate the debug toolbar; usually called via
@@ -55,7 +61,8 @@ def includeme(config):
     directly. """
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    fix_mako_templates(config.registry.settings)
+    mako_config = set_mako_config(config.registry.settings)
+    config.registry.settings.update(mako_config)
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(

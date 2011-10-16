@@ -7,6 +7,9 @@ from pyramid import testing
 class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        from pyramid_debugtoolbar import set_mako_config
+        mako_config = set_mako_config(self.config.registry.settings)
+        self.config.registry.settings.update(mako_config)
 
     def tearDown(self):
         testing.tearDown()
@@ -132,7 +135,6 @@ class TestExceptionDebugView(unittest.TestCase):
 
     def test_exception_summary(self):
         from pyramid.renderers import render
-        self.config.include('pyramid_jinja2')
         request = self._makeRequest()
         request.static_url = lambda *arg, **kw: 'http://static'
         vars = {
@@ -141,7 +143,7 @@ class TestExceptionDebugView(unittest.TestCase):
             'frames':       text_('<pre>Frame1</pre><pre>Frame2</pre>'),
         }
         html = render(
-            'pyramid_debugtoolbar:templates/exception_summary.jinja2',
+            'pyramid_debugtoolbar:templates/exception_summary.mako',
             vars, request=request)
         self.assertTrue(
             text_('<div class="classfoo class&amp;bar">') in html,html)
