@@ -1,4 +1,4 @@
-$(function() {
+jq(function($) {
   var sourceView = null;
 
   /**
@@ -116,85 +116,85 @@ $(function() {
   // not scaling textarea.
   var plainTraceback = $('div.plain textarea');
   plainTraceback.replaceWith($('<pre>').text(plainTraceback.text()));
-});
 
+    /**
+     * Helper function for shell initialization
+     */
+    function openShell(consoleNode, target, frameID) {
+      if (consoleNode)
+        return consoleNode.slideToggle('fast');
+      consoleNode = $('<pre class="console">')
+        .appendTo(target.parent())
+        .hide()
+      var historyPos = 0, history = [''];
+      var output = $('<div class="output">[console ready]</div>')
+        .appendTo(consoleNode);
+      var form = $('<form>&gt;&gt;&gt; </form>')
+        .submit(function() {
+          var cmd = command.val();
+          $.get(DEBUG_TOOLBAR_ROOT_PATH + '/execute', {
+                  cmd: cmd, frm: frameID, token:DEBUGGER_TOKEN}, function(data) {
+            var tmp = $('<div>').html(data);
+            $('span.extended', tmp).each(function() {
+              var hidden = $(this).wrap('<span>').hide();
+              hidden
+                .parent()
+                .append($('<a href="#" class="toggle">&nbsp;&nbsp;</a>')
+                  .click(function() {
+                    hidden.toggle();
+                    $(this).toggleClass('open')
+                    return false;
+                  }));
+            });
+            output.append(tmp);
+            command.focus();
+            consoleNode.scrollTop(command.position().top);
+            var old = history.pop();
+            history.push(cmd);
+            if (typeof old != 'undefined')
+              history.push(old);
+            historyPos = history.length - 1;
+          });
+          command.val('');
+          return false;
+        }).
+        appendTo(consoleNode);
 
-/**
- * Helper function for shell initialization
- */
-function openShell(consoleNode, target, frameID) {
-  if (consoleNode)
-    return consoleNode.slideToggle('fast');
-  consoleNode = $('<pre class="console">')
-    .appendTo(target.parent())
-    .hide()
-  var historyPos = 0, history = [''];
-  var output = $('<div class="output">[console ready]</div>')
-    .appendTo(consoleNode);
-  var form = $('<form>&gt;&gt;&gt; </form>')
-    .submit(function() {
-      var cmd = command.val();
-      $.get(DEBUG_TOOLBAR_ROOT_PATH + '/execute', {
-              cmd: cmd, frm: frameID, token:DEBUGGER_TOKEN}, function(data) {
-        var tmp = $('<div>').html(data);
-        $('span.extended', tmp).each(function() {
-          var hidden = $(this).wrap('<span>').hide();
-          hidden
-            .parent()
-            .append($('<a href="#" class="toggle">&nbsp;&nbsp;</a>')
-              .click(function() {
-                hidden.toggle();
-                $(this).toggleClass('open')
-                return false;
-              }));
+      var command = $('<input type="text">')
+        .appendTo(form)
+        .keydown(function(e) {
+          if (e.charCode == 100 && e.ctrlKey) {
+            output.text('--- screen cleared ---');
+            return false;
+          }
+          else if (e.charCode == 0 && (e.keyCode == 38 || e.keyCode == 40)) {
+            if (e.keyCode == 38 && historyPos > 0)
+              historyPos--;
+            else if (e.keyCode == 40 && historyPos < history.length)
+              historyPos++;
+            command.val(history[historyPos]);
+            return false;
+          }
         });
-        output.append(tmp);
+        
+      return consoleNode.slideDown('fast', function() {
         command.focus();
-        consoleNode.scrollTop(command.position().top);
-        var old = history.pop();
-        history.push(cmd);
-        if (typeof old != 'undefined')
-          history.push(old);
-        historyPos = history.length - 1;
       });
-      command.val('');
-      return false;
-    }).
-    appendTo(consoleNode);
+    }
 
-  var command = $('<input type="text">')
-    .appendTo(form)
-    .keydown(function(e) {
-      if (e.charCode == 100 && e.ctrlKey) {
-        output.text('--- screen cleared ---');
-        return false;
+    /**
+     * Focus the current block in the source view.
+     */
+    function focusSourceBlock() {
+      var tmp, line = $('table.source tr.current');
+      for (var i = 0; i < 7; i++) {
+        tmp = line.prev();
+        if (!(tmp && tmp.is('.in-frame')))
+          break
+        line = tmp;
       }
-      else if (e.charCode == 0 && (e.keyCode == 38 || e.keyCode == 40)) {
-        if (e.keyCode == 38 && historyPos > 0)
-          historyPos--;
-        else if (e.keyCode == 40 && historyPos < history.length)
-          historyPos++;
-        command.val(history[historyPos]);
-        return false;
-      }
-    });
-    
-  return consoleNode.slideDown('fast', function() {
-    command.focus();
-  });
-}
+      var container = $('div.sourceview');
+      container.scrollTop(line.offset().top);
+    }
 
-/**
- * Focus the current block in the source view.
- */
-function focusSourceBlock() {
-  var tmp, line = $('table.source tr.current');
-  for (var i = 0; i < 7; i++) {
-    tmp = line.prev();
-    if (!(tmp && tmp.is('.in-frame')))
-      break
-    line = tmp;
-  }
-  var container = $('div.sourceview');
-  container.scrollTop(line.offset().top);
-}
+});
