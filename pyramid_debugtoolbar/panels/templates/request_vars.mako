@@ -62,7 +62,7 @@
 	<tbody>
 		% for i, (key, value) in enumerate(get):
 			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h }}</td>
+				<td>${key|h}</td>
 				<td>${', '.join(value)|h}</td>
 			</tr>
 		% endfor
