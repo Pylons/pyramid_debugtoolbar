@@ -25,7 +25,6 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.2dev',
-    'pyramid_jinja2>=1.1', # get_jinja2_environment
     'Pygments',
     ]
 
@@ -47,7 +46,8 @@ setup(name='pyramid_debugtoolbar',
         "License :: Repoze Public License",
         ],
       keywords='wsgi pylons pyramid transaction',
-      author="Chris McDonough, Michael Merickel, Casey Duncan, Blaise Laflamme",
+      author=("Chris McDonough, Michael Merickel, Casey Duncan, "
+              "Blaise Laflamme"),
       author_email="pylons-devel@googlegroups.com",
       url="http://docs.pylonsproject.org",
       license="BSD",
