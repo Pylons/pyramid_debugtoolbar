@@ -13,10 +13,10 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(cookies):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h}</td>
-				<td>${value|h}</td>
-			</tr>
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${value|h}</td>
+		</tr>
 		% endfor
 	</tbody>
 </table>
@@ -39,10 +39,10 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(session):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h}</td>
-				<td>${value|h}</td>
-			</tr>
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${value|h}</td>
+		</tr>
 		% endfor
 	</tbody>
 </table>
@@ -61,10 +61,10 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(get):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h}</td>
-				<td>${', '.join(value)|h}</td>
-			</tr>
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${', '.join(value)|h}</td>
+		</tr>
 		% endfor
 	</tbody>
 </table>
@@ -83,10 +83,10 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(post):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h}</td>
-				<td>${', '.join(value)|h}</td>
-			</tr>
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${', '.join(isinstance(v, (str, unicode)) and v or repr(v) for v in value)|h}</td>
+		</tr>
 		% endfor
 	</tbody>
 </table>
@@ -105,10 +105,10 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(attrs):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h}</td>
-				<td>${value|h}</td>
-			</tr>
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${value|h}</td>
+		</tr>
 		% endfor
 	</tbody>
 </table>
@@ -127,10 +127,10 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(environ):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-				<td>${key|h}</td>
-				<td>${value|h}</td>
-			</tr>
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${key|h}</td>
+			<td>${value|h}</td>
+		</tr>
 		% endfor
 	</tbody>
 </table>
