@@ -28,7 +28,7 @@ EXC_ROUTE_NAME = 'debugtoolbar.exception'
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
         _sys_path = sys.path # dependency injection
-    # If the value is not an absolute path, the it is a builtin or
+    # If the value is not an absolute path, then it is a builtin or
     # a relative file (thus a project file).
     if not os.path.isabs(value):
         if value.startswith(('{', '<')):

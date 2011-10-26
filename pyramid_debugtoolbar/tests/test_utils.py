@@ -33,18 +33,19 @@ class Test_format_fname(unittest.TestCase):
 
     def test_unknown(self):
         val = '..' + os.path.sep + 'foo'
-        self.assertEqual(self._callFUT(val), './../foo')
+        self.assertEqual(self._callFUT(val), os.path.join('.', '..', 'foo'))
 
     def test_module_file_path(self):
+        root = os.path.sep
         sys_path = [
-            '/foo/',
-            '/foo/bar',
-            '/usr/local/python/site-packages/',
+            os.path.join(root, 'foo', ''),
+            os.path.join(root, 'foo', 'bar'),
+            os.path.join(root, 'usr', 'local', 'python', 'site-packages')
         ]
-        modpath = self._callFUT(
-            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py', sys_path)
-        self.assertEqual(modpath, 
-            '<pyramid_debugtoolbar/tests/debugfoo.py>')
+        modpath = self._callFUT(os.path.join(root, 'foo', 'bar',
+            'pyramid_debugtoolbar', 'tests', 'debugfoo.py'), sys_path)
+        self.assertEqual(modpath, '<%s>' %
+            os.path.join('pyramid_debugtoolbar', 'tests', 'debugfoo.py'))
 
     def test_no_matching_sys_path(self):
         val = '/foo/bar/pyramid_debugtoolbar/foo.py'
