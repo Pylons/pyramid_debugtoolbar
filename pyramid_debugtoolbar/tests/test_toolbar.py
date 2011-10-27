@@ -12,7 +12,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def tearDown(self):
         del self.config
-        
+
     def _makeOne(self, request, panel_classes):
         from pyramid_debugtoolbar.toolbar import DebugToolbar
         return DebugToolbar(request, panel_classes)
@@ -107,7 +107,7 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-        
+
     def _callFUT(self, handler, registry):
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
         return toolbar_tween_factory(handler, registry)
@@ -116,7 +116,7 @@ class Test_toolbar_tween_factory(unittest.TestCase):
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
         self.assertTrue(result is handler)
-        
+
     def test_it_enabled(self):
         self.config.registry.settings['debugtoolbar.enabled'] = True
         def handler(): pass
@@ -143,7 +143,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             return self.response
         return handler
-        
+
     def _callFUT(self, request, handler=None):
         registry = self.config.registry
         if request.remote_addr is None:
@@ -197,6 +197,33 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(response.status_int, 500)
+        self.assertTrue('NotImplementedError' in response.body)
+
+    def test_intercept_exc_with_latin1_message(self):
+        request = Request.blank('/')
+        def handler(request):
+            raise NotImplementedError(u'K\xe4se!'.encode('latin-1'))
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
+        self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
+        response = self._callFUT(request, handler)
+        self.assertTrue(response.status_int, 500)
+        self.assertTrue('charset=UTF-8' in response.body and
+            u'NotImplementedError: K\xe4se!'.encode('utf-8') in response.body)
+
+    def test_intercept_exc_with_utf8_message(self):
+        request = Request.blank('/')
+        def handler(request):
+            raise NotImplementedError(u'K\xe4se!'.encode('utf-8'))
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
+        self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
+        response = self._callFUT(request, handler)
+        self.assertTrue(response.status_int, 500)
+        self.assertTrue('charset=UTF-8' in response.body and
+            u'NotImplementedError: K\xe4se!'.encode('utf-8') in response.body)
 
     def test_it_intercept_redirect_nonredirect_code(self):
         request = Request.blank('/')
@@ -232,7 +259,7 @@ class DummyPanel(object):
     def wrap_handler(self, handler):
         handler.wrapped = True
         return handler
-        
+
     def dom_id(self):
         return 'id'
 

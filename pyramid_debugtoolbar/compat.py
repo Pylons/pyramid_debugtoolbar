@@ -21,25 +21,45 @@ else:
 
 # TODO check if errors is ever used
 
-def text_(s, encoding='latin-1', errors='strict'):
+def text_(s, encoding=None, errors='strict'):
     if isinstance(s, binary_type):
+        if not encoding:
+            try:
+                return s.decode('utf-8')
+            except UnicodeDecodeError:
+                encoding = 'latin-1'
         return s.decode(encoding, errors)
     return s # pragma: no cover
 
-def bytes_(s, encoding='latin-1', errors='strict'):
+def bytes_(s, encoding=None, errors='strict'):
     if isinstance(s, text_type): # pragma: no cover
+        if not encoding:
+            try:
+                return s.encode('latin-1')
+            except UnicodeEncodeError:
+                encoding = 'utf-8'
         return s.encode(encoding, errors)
     return s
 
 if PY3: # pragma: no cover
-    def native_(s, encoding='latin-1', errors='strict'):
+    def native_(s, encoding=None, errors='strict'):
         if isinstance(s, text_type):
             return s
+        if not encoding:
+            try:
+                return str(s, 'utf-8')
+            except UnicodeDecodeError:
+                encoding = 'latin-1'
         return str(s, encoding, errors)
 else:
-    def native_(s, encoding='latin-1', errors='strict'):
+    def native_(s, encoding=None, errors='strict'):
         if isinstance(s, text_type): # pragma: no cover
             return s.encode(encoding, errors)
+        if not encoding:
+            try:
+                return s.encode('latin-1')
+            except UnicodeEncodeError:
+                encoding = 'utf-8'
         return str(s)
 
 if PY3: # pragma: no cover
@@ -124,7 +144,7 @@ if PY3: # pragma: no cover
     xrange_ = range
 else:
     xrange_ = xrange
-    
+
 
 if PY3: # pragma: no cover
     def iteritems_(d):

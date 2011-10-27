@@ -218,15 +218,15 @@ class Traceback(object):
             ))
 
         if self.is_syntax_error:
-            description_wrapper = text_('<pre class=syntaxerror>%s</pre>')
+            description_wrapper = '<pre class=syntaxerror>%s</pre>'
         else:
-            description_wrapper = text_('<blockquote>%s</blockquote>')
+            description_wrapper = '<blockquote>%s</blockquote>'
 
         vars = {
             'classes':      text_(' '.join(classes)),
             'title':        title and text_('<h3>%s</h3>' % title) or text_(''),
             'frames':       text_('\n'.join(frames)),
-            'description':  description_wrapper % escape(self.exception),
+            'description':  text_(description_wrapper % escape(self.exception)),
         }
         return render('pyramid_debugtoolbar:templates/exception_summary.mako',
                       vars, request=request)
@@ -235,7 +235,7 @@ class Traceback(object):
         """Render the Full HTML page with the traceback info."""
         static_path = request.static_url(STATIC_PATH)
         root_path = request.route_url(ROOT_ROUTE_NAME)
-        exc = escape(self.exception)
+        exc = text_(escape(self.exception))
         summary = self.render_summary(include_title=False, request=request)
         qs = {'token':request.exc_history.token, 'tb':str(self.id)}
         url = request.route_url(EXC_ROUTE_NAME, _query=qs)
@@ -269,7 +269,7 @@ class Traceback(object):
                 frame.function_name
             ))
             yield text_('    ' + frame.current_line.strip())
-        yield self.exception
+        yield text_(self.exception)
 
     @reify
     def plaintext(self):

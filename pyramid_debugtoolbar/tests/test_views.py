@@ -50,7 +50,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         request.params['token'] = 'wrong'
         self.assertRaises(HTTPBadRequest, self._makeOne, request)
-        
+
     def test_source(self):
         request = self._makeRequest()
         request.params['frm'] = '0'
@@ -163,6 +163,6 @@ class DummyConsole(object):
 class DummyFrame(object):
     def __init__(self):
         self.console = DummyConsole()
-        
+
     def render_source(self):
         return 'source'
