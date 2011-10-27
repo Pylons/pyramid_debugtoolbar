@@ -1,4 +1,5 @@
-jq(function($) {
+jQuery(function($) {
+
   var sourceView = null;
 
   /**

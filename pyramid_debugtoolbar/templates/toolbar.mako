@@ -5,9 +5,6 @@
     <script type="text/javascript" 
             src="${static_path}js/jquery-1.6.4.min.js"></script>
     <script type="text/javascript" 
-            src="${static_path}js/jquery.tablesorter.min.js"></script>
-    <script type="text/javascript">var jq = jQuery.noConflict(true);</script>
-    <script type="text/javascript" 
             src="${static_path}js/toolbar.js"></script>
 
     <div style="display: none;" id="pDebugToolbar">
