@@ -236,6 +236,90 @@ the link to continue to the target page.
 
 .. image:: redirect.png
 
+Adding custom panels
+--------------------
+
+In some cases it can be desirable to add a custom panel to the toolbar to
+display some application specific data. There are two steps for adding such a
+panel to an application: writing the panel and adding it to your application
+settings.
+
+Writing the panel
+~~~~~~~~~~~~~~~~~
+
+The panel can be created as part of your application or as a standalone
+package. The easiest way to write a panel is to subclass from the
+``pyramid_debugtoolbar.panels.DebugPanel`` class. Here is the code for a
+sample panel:
+
+.. code-block:: python
+
+    from pyramid_debugtoolbar.panels import DebugPanel
+
+    _ = lambda x: x
+
+    class SampleDebugPanel(DebugPanel):
+        """
+        Sample debug panel
+        """
+        name = 'Sample'
+        has_content = True
+
+        def nav_title(self):
+            return _('Sample')
+
+        def url(self):
+            return ''
+
+        def title(self):
+            return _('Sample')
+
+        def content(self):
+            vars = {'somelist':['sample value', 'another value']}
+            return self.render(
+                'samplepanel:templates/sample.mako',
+                vars, self.request)
+
+    def includeme(config):
+        config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
+        if not 'mako.directories' in config.registry.settings:
+            config.registry.settings['mako.directories'] = []
+
+After inheriting from the DebugPanel class, you have to define a few methods on
+your panel:
+
+``nav_title``
+
+    Returns a function that can be called to get the title to be used on the
+    toolbar's navigation bar for this panel.
+
+``url``
+
+    This is not used at the moment, but it has to be provided because the base
+    class will raise NotImplemented if it's not there.
+
+``title``
+
+    Returns a function that can be called to get the title to be used on the
+    panel's display page.
+
+``content``
+
+    Returns the panel's content for display. It can return an HTML response
+    directly, but normally it's better to use a template, like in the example.
+
+Once you define the panel it has to be added to the ``debugtoolbar.panels``
+setting of the configuration. A good way to do this is to use an ``includeme``
+method in the panel's ``__init__.py``.
+
+Configuring an application to use the panel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once your panel is ready, you can simply add its package name to the
+``pyramid.includes`` setting on your application configuration file::
+
+    pyramid.includes = pyramid_debugtoolbar samplepanel
+
 More Information
 ----------------
 
