@@ -19,6 +19,7 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
+    'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
     )
 
 default_hosts = ('127.0.0.1', '::1')
