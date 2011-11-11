@@ -19,7 +19,7 @@ try:
 except ImportError: # pragma: no cover
     pyramid_jinja2 = None
 
-logging.basicConfig()
+logging.basicConfig(level=logging.NOTSET)
 log = logging.getLogger(__file__)
 
 here = os.path.dirname(os.path.abspath(__file__))
