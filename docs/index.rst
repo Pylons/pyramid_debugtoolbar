@@ -206,6 +206,12 @@ Displays the routes currently configured in your application.
 
 .. image:: routes.png
 
+Tweens
+~~~~~~
+
+Displays the tween chain for your application, and whether they were defined
+explicitly or implicitly. 
+
 SQLAlchemy
 ~~~~~~~~~~
 
