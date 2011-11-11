@@ -5,6 +5,10 @@ Next release
 
 - Convert all templates to Mako.
 
+- Don't rely on ``pyramid.compat.json``.
+
+- Add Tweens toolbar panel.
+
 0.9.4 (2011-09-28)
 ------------------
 

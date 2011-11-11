@@ -5,9 +5,9 @@ import threading
 import time
 import weakref
 
-from pyramid.compat import json
 from pyramid.threadlocal import get_current_request
 
+from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql

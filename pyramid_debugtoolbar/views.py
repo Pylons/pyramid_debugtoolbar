@@ -1,11 +1,11 @@
 import hashlib
 
-from pyramid.compat import json
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
 from pyramid.view import view_config
 
+from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
