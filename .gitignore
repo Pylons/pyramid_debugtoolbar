@@ -11,5 +11,4 @@ dist/
 .tox/
 nosetests.xml
 coverage.xml
-env26/
-env32/
+env*/
