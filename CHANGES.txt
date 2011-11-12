@@ -1,5 +1,5 @@
-Next release
-------------
+0.9.5 (2011-11-12)
+------------------
 
 - Adjust tox setup to test older Pyramid and WebOb branches under 2.5.
 
