@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import time
 
 # to run:
 # console 1: java -jar selenium-server.jar
@@ -152,6 +151,14 @@ class PageTest(unittest.TestCase):
         browser.fire_event("css=a#pShowToolBarButton", 'click')
         browser.fire_event("css=a.pDebugRequestVarsPanel", 'click')
         result = browser.is_visible('css=#pDebugRequestVarsPanel-content')
+        self.failUnless(result)
+
+    def test_tweens_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        browser.fire_event("css=a.pDebugTweensPanel", 'click')
+        result = browser.is_visible('css=#pDebugTweensPanel-content')
         self.failUnless(result)
 
 if __name__ == '__main__':
