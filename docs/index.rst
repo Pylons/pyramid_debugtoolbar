@@ -212,6 +212,8 @@ Tweens
 Displays the tween chain for your application, and whether they were defined
 explicitly or implicitly. 
 
+.. image:: tweens.png
+
 SQLAlchemy
 ~~~~~~~~~~
 
