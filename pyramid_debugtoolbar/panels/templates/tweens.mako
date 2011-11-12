@@ -2,7 +2,7 @@
 <table>
 	<thead>
 		<tr>
-			<th>Order (from request to application)</th>
+			<th>Order (from server to application)</th>
 			<th>Tween</th>
 		</tr>
 	</thead>

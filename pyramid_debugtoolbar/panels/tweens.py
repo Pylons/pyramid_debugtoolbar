@@ -1,9 +1,4 @@
-from zope.interface import Interface
-
 from pyramid.interfaces import ITweens
-
-from pyramid.tweens import MAIN
-from pyramid.tweens import INGRESS
 
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import STATIC_PATH
