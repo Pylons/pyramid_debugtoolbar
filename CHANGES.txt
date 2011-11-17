@@ -3,7 +3,8 @@ Next release
 
 - Address heisenbug reported where performance panel template variables cause
   unexpected results.  Can't repeat, but reporter indicates the fix works for
-  him, so hail marying.
+  him, so hail marying.  See
+  https://github.com/Pylons/pyramid_debugtoolbar/commit/5719c97ea2a3a41fc01e261403d0167cc38f3b49
 
 0.9.5 (2011-11-12)
 ------------------
