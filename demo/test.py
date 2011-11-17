@@ -129,6 +129,18 @@ class PageTest(unittest.TestCase):
         result = browser.is_visible('css=#pDebugPerformancePanel-content')
         self.failUnless(result)
 
+    def test_performance_panel_with_profiling(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        browser.fire_event('css=span.switch.inactive', 'click') # turn on
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a.pDebugPerformancePanel", 'click')
+        browser.fire_event('css=span.switch.active', 'click') # turn off
+        result = browser.get_text('css=#pDebugPerformancePanel-content')
+        self.failIf('profiler is not activ' in result, result)
+
     def test_renderings_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
