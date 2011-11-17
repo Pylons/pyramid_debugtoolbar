@@ -1,3 +1,10 @@
+Next release
+------------
+
+- Address heisenbug reported where performance panel template variables cause
+  unexpected results.  Can't repeat, but reporter indicates the fix works for
+  him, so hail marying.
+
 0.9.5 (2011-11-12)
 ------------------
 
