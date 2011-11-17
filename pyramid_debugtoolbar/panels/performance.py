@@ -158,7 +158,7 @@ class PerformanceDebugPanel(DebugPanel):
                                                          name)
 
     def content(self):
-        vars = {}
+        vars = {'timing_rows':None, 'stats':None}
         if self.has_resource:
             utime = 1000 * self._elapsed_ru('ru_utime')
             stime = 1000 * self._elapsed_ru('ru_stime')
@@ -198,8 +198,6 @@ class PerformanceDebugPanel(DebugPanel):
         if self.is_active:
             vars['stats'] = self.stats
             vars['function_calls'] = self.function_calls
-        else:
-            vars['stats'] = None
         return self.render(
             'pyramid_debugtoolbar.panels:templates/performance.mako',
             vars, request=self.request)
