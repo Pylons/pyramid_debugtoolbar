@@ -11,6 +11,7 @@ from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import format_sql
+from pyramid_debugtoolbar.repr import debug_repr
 
 class ExceptionDebugView(object):
     def __init__(self, request):
@@ -161,3 +162,13 @@ class SQLAlchemyViews(object):
             'str': str,
             'duration': float(self.request.params['duration']),
         }
+
+@view_config(route_name='debugtoolbar.introspection_index',
+             renderer='pyramid_debugtoolbar:templates/introspection_index.mako')
+def introspection_index(request):
+    introspector = request.registry.introspector
+    categorized = introspector.categorized()
+    static_path = request.static_url(STATIC_PATH)
+    return {'categorized':categorized, 'debug_repr':debug_repr,
+            'static_path':static_path}
+        

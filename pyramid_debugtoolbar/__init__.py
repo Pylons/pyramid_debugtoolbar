@@ -64,4 +64,6 @@ def includeme(config):
                      '/_debug_toolbar/sqlalchemy/sql_select')
     config.add_route('debugtoolbar.sql_explain',
                      '/_debug_toolbar/sqlalchemy/sql_explain')
+    config.add_route('debugtoolbar.introspection_index',
+                     '/_debug_toolbar/introspection')
     config.scan('pyramid_debugtoolbar.views')
