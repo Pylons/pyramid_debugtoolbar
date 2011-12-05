@@ -173,6 +173,14 @@ class PageTest(unittest.TestCase):
         result = browser.is_visible('css=#pDebugTweensPanel-content')
         self.failUnless(result)
 
+    def test_introspection_panel(self):
+        browser.open('/')
+        browser.wait_for_page_to_load("30000")
+        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        browser.fire_event("css=a.pDebugIntrospectionPanel", 'click')
+        result = browser.is_visible('css=#pDebugIntrospectionPanel-content')
+        self.failUnless(result)
+
 if __name__ == '__main__':
     setUpModule()
     try:

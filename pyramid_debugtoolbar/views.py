@@ -4,7 +4,6 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.util import object_description
 
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
@@ -13,7 +12,6 @@ from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
-from pyramid_debugtoolbar.repr import debug_repr
 
 def valid_host(info, request):
     hosts = get_setting(request.registry.settings, 'hosts')
@@ -189,19 +187,3 @@ class SQLAlchemyViews(object):
             'duration': float(self.request.params['duration']),
         }
 
-def nl2br(s):
-    return s.replace('\n', '<br/>')
-
-@view_config(
-    route_name='debugtoolbar.introspection_index',
-    renderer='pyramid_debugtoolbar:templates/introspection_index.mako',
-    custom_predicates=(valid_host,)
-    )
-def introspection_index(request):
-    introspector = request.registry.introspector
-    categorized = introspector.categorized()
-    static_path = request.static_url(STATIC_PATH)
-    return {'categorized':categorized, 'debug_repr':debug_repr,
-            'static_path':static_path, 'object_description':object_description,
-            'nl2br':nl2br}
-        

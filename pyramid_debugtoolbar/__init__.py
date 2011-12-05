@@ -20,6 +20,7 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
+    'pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel',
     )
 
 default_hosts = ('127.0.0.1', '::1')
@@ -64,6 +65,4 @@ def includeme(config):
                      '/_debug_toolbar/sqlalchemy/sql_select')
     config.add_route('debugtoolbar.sql_explain',
                      '/_debug_toolbar/sqlalchemy/sql_explain')
-    config.add_route('debugtoolbar.introspection_index',
-                     '/_debug_toolbar/introspection')
     config.scan('pyramid_debugtoolbar.views')

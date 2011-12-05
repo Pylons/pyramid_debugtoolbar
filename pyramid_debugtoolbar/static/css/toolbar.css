@@ -237,6 +237,12 @@
 	margin-top:0.8em;
 }
 
+#pDebug h5 {
+	font-size:18px;
+	font-weight:bold;
+	margin-top:0.8em;
+}
+
 #pDebug .panelContent table {
 	border:1px solid #ccc;
 	border-collapse:collapse;

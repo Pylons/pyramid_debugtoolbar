@@ -12,18 +12,19 @@
 	% for category_name, entries in categorized:
 		<th><h2>${category_name.capitalize()}</h2></th>
         % for entry in entries:
+          <% intro = entry['introspectable'] %>
         <tr>
            <td>
-               <h3><a name="${entry['introspectable'].category_name}${entry['introspectable'].discriminator_hash}">${entry['introspectable'].type_name} ${entry['introspectable'].title}</a></h3>
+               <h3><a name="${intro.category_name}${intro.discriminator_hash}">${intro.type_name} ${intro.title}</a></h3>
                <dl>
-               % for k, v in sorted(entry['introspectable'].items()):
+               % for k, v in sorted(intro.items()):
                   % if v:
                     <dt>${k}</dt><dd>${debug_repr(v)|n}</dd>
                   % endif
                % endfor
               </dl>
            <h4>Source</h4>
-           <pre>${nl2br(str(entry['introspectable'].action_info))|n}</pre>
+           <pre>${nl2br(str(intro.action_info))|n}</pre>
            % if entry['related']:
                <h4>References</h4>
                <ul>
