@@ -22,6 +22,8 @@
                   % endif
                % endfor
               </dl>
+           <h4>Source</h4>
+           <pre>${nl2br(str(entry['introspectable'].action_info))|n}</pre>
            % if entry['related']:
                <h4>References</h4>
                <ul>

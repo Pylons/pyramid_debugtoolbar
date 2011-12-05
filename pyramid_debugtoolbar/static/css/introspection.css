@@ -3,9 +3,9 @@ body, input  { font-family: sans-serif; color: #000; text-align: left;
                margin: 1em; padding: 0; 
                font-size: 15px; }
 h1, h2, h3   { font-family: sans-serif; font-weight: normal; }
+h3           { font-size: 22px; }
 
 a:hover      { color: #db7028; }
-pre, code, table.source,
 h1           { font-size: 36px; margin: 0 0 0.3em 0; }
 div.detail p { margin: 0 0 8px 13px; font-size: 14px; }
 div.explanation { margin: 20px 13px; font-size: 15px; color: #555; }
