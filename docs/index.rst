@@ -222,6 +222,12 @@ information.
 
 .. image:: sqla.png
 
+Introspection
+~~~~~~~~~~~~~
+
+Displays a rendering of the data available in Pyramid's configuration
+introspection system (in Pyramid 1.3+).
+
 Exception Handling
 ------------------
 
