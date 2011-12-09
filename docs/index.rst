@@ -226,7 +226,9 @@ Introspection
 ~~~~~~~~~~~~~
 
 Displays a rendering of the data available in Pyramid's configuration
-introspection system (in Pyramid 1.3+).
+introspection system (available in Pyramid 1.3+ only).
+
+.. image:: introspection.png
 
 Exception Handling
 ------------------

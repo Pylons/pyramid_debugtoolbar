@@ -1,5 +1,5 @@
-Next release
-------------
+0.9.6 (2011-12-09)
+------------------
 
 - Added "Introspection" panel; active only under Pyramid 1.3dev+ (requires
   Pyramid introspection subsystem).
