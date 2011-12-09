@@ -115,8 +115,21 @@ file.
     A list of dotted Python global names to panel classes.  Defaults to a
     list of all panel types known by :mod:`pyramid_debugtoolbar`, as
     documented in :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an
-    ``.ini`` file, it should be a space-separated sequence of dotted
-    Python names.
+    ``.ini`` file, it should be a space- or newline-separated sequence of
+    dotted Python names.  For example::
+
+      debugtoolbar.panels = 
+          pyramid_debugtoolbar.panels.versions.VersionDebugPanel
+          pyramid_debugtoolbar.panels.settings.SettingsDebugPanel
+          pyramid_debugtoolbar.panels.headers.HeaderDebugPanel
+          pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel
+          pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel
+          pyramid_debugtoolbar.panels.logger.LoggingPanel
+          pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel
+          pyramid_debugtoolbar.panels.routes.RoutesDebugPanel
+          pyramid_debugtoolbar.panels.sqla.SQLADebugPanel
+          pyramid_debugtoolbar.panels.tweens.TweensDebugPanel
+          pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel
 
 ``debugtoolbar.button_style``
 

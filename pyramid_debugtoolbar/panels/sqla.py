@@ -9,6 +9,7 @@ from pyramid.threadlocal import get_current_request
 
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -83,22 +84,23 @@ class SQLADebugPanel(DebugPanel):
 
         data = []
         for query in self.queries:
-            is_select = query['statement'].strip().lower().startswith('select')
+            stmt = query['statement']
+
+            is_select = stmt.strip().lower().startswith('select')
             params = ''
             try:
-                params = json.dumps(query['parameters'])
+                params = url_quote(json.dumps(query['parameters']))
             except TypeError:
                 pass # object not JSON serializable
 
-            hash = hashlib.sha1(
-                bytes_(self.request.exc_history.token +
-                       query['statement'] + params)).hexdigest()
+            need = self.request.exc_history.token + stmt + params
+            hash = hashlib.sha1(bytes_(need)).hexdigest()
 
             data.append({
                 'engine_id': query['engine_id'],
                 'duration': query['duration'],
-                'sql': format_sql(query['statement']),
-                'raw_sql': query['statement'],
+                'sql': format_sql(stmt),
+                'raw_sql': stmt,
                 'hash': hash,
                 'params': params,
                 'is_select': is_select,

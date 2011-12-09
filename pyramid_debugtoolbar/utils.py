@@ -8,6 +8,7 @@ from pyramid.settings import asbool
 from pyramid_debugtoolbar.compat import binary_type
 from pyramid_debugtoolbar.compat import text_type
 from pyramid_debugtoolbar.compat import string_types
+from pyramid_debugtoolbar.compat import text_
 
 
 try:
@@ -60,12 +61,16 @@ def common_segment_count(path, value):
 
 def format_sql(query):
     if not HAVE_PYGMENTS: # pragma: no cover
-        return query
+        return text_(query)
 
-    return highlight(
-        query,
-        SqlLexer(encoding='utf-8'),
-        HtmlFormatter(encoding='utf-8', noclasses=True, style=PYGMENT_STYLE))
+    return text_(
+        highlight(
+            query,
+            SqlLexer(encoding='utf-8'),
+            HtmlFormatter(encoding='utf-8', noclasses=True,
+                          style=PYGMENT_STYLE)
+            )
+            )
 
 def escape(s, quote=False):
     """Replace special characters "&", "<" and ">" to HTML-safe sequences.  If

@@ -7,6 +7,7 @@ from pyramid.view import view_config
 
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -108,6 +109,18 @@ class SQLAlchemyViews(object):
     def __init__(self, request):
         self.request = request
 
+    def validate(self):
+        stmt = self.request.params['sql']
+        params = self.request.params['params']
+
+        # Validate hash
+        need = self.request.exc_history.token + stmt + url_quote(params)
+
+        hash = hashlib.sha1(bytes_(need)).hexdigest()
+        if hash != self.request.params['hash']:
+            raise HTTPBadRequest('Bad token in request')
+        return stmt, params
+
     @view_config(
         route_name='debugtoolbar.sql_select',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.mako',
@@ -115,16 +128,8 @@ class SQLAlchemyViews(object):
         custom_predicates=(valid_host,)
         )
     def sql_select(self):
-        stmt = self.request.params['sql']
-        params = self.request.params['params']
+        stmt, params = self.validate()
         engine_id = self.request.params['engine_id']
-
-        # Validate hash
-        hash = hashlib.sha1(
-            bytes_(self.request.exc_history.token + stmt + params)).hexdigest()
-        if hash != self.request.params['hash']:
-            raise HTTPBadRequest('Bad token in request')
- 
         # Make sure it is a select statement
         if not stmt.lower().strip().startswith('select'):
             raise HTTPBadRequest('Not a SELECT SQL statement')
@@ -134,7 +139,7 @@ class SQLAlchemyViews(object):
 
         engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
                       [int(engine_id)]()
-        params = json.loads(params)
+        params = [json.loads(params)]
         result = engine.execute(stmt, params)
 
         return {
@@ -151,19 +156,8 @@ class SQLAlchemyViews(object):
         custom_predicates=(valid_host,)
         )
     def sql_explain(self):
-        stmt = self.request.params['sql']
-        params = self.request.params['params']
+        stmt, params = self.validate()
         engine_id = self.request.params['engine_id']
-
-        # Validate hash
-        hash = hashlib.sha1(
-            bytes_(self.request.exc_history.token + stmt + params)).hexdigest()
-        if hash != self.request.params['hash']:
-            raise HTTPBadRequest('Bad token in request')
-
-        # Make sure it is a select statement
-        if not stmt.lower().strip().startswith('select'):
-            raise HTTPBadRequest('Not a SELECT SQL statement')
 
         if not engine_id:
             raise HTTPBadRequest('No valid database engine')
