@@ -158,7 +158,7 @@ class PerformanceDebugPanel(DebugPanel):
                                                          name)
 
     def content(self):
-        vars = {'timing_rows':None, 'stats':None}
+        vars = {'timing_rows':None, 'stats':None, 'function_calls':[]}
         if self.has_resource:
             utime = 1000 * self._elapsed_ru('ru_utime')
             stime = 1000 * self._elapsed_ru('ru_stime')
