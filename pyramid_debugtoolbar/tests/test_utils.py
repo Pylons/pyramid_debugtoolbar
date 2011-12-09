@@ -60,4 +60,4 @@ class Test_format_sql(unittest.TestCase):
 
     def test_it(self):
         result = self._callFUT('SELECT * FROM TBL')
-        self.assertTrue(result.startswith(bytes_('<div')))
+        self.assertTrue(result.startswith('<div'))
