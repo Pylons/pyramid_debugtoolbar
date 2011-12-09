@@ -1,5 +1,5 @@
-Next release
------------
+0.9.7 (2011-12-09)
+------------------
 
 - The performance panel of the debugtoolbar used a variable named
   ``function_calls`` which was not initialised when stats are not
