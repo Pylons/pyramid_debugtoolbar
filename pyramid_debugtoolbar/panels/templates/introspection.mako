@@ -1,33 +1,54 @@
-<h4>
-<table>
-	% for category_name, entries in categorized:
-		<th><h4>${category_name.capitalize()}</h4></th>
-        % for entry in entries:
-          <% intro = entry['introspectable'] %>
-        <tr>
-           <td>
-               <h5><a name="${intro.category_name}${intro.discriminator_hash}">${intro.type_name} ${intro.title}</a></h5>
-               <dl>
-               % for k, v in sorted(intro.items()):
-                  % if v:
-                    <dt>${k}</dt><dd>${debug_repr(v)|n}</dd>
-                  % endif
-               % endfor
-              </dl>
-           <h6>Source</h6>
-           <code>${nl2br(str(intro.action_info))|n}</code>
-           % if entry['related']:
-               <h7>References</h7>
-               <ul>
-               % for ref in entry['related']:
-                   <li>
-                   <a href="#${ref.category_name}${ref.discriminator_hash}">${ref.type_name} ${ref.title}</a>
-                  </li>
-               % endfor
-               </ul>
-           % endif
-           </td>
+% for category_name, entries in categorized:
+<h4>${category_name.capitalize()}</h4>
+
+	% for entry in entries:
+	<% intro = entry['introspectable'] %>
+	<table>
+	<thead>
+		<tr>
+			<th colspan="2"><a name="${intro.category_name}${intro.discriminator_hash}">${intro.type_name} ${intro.title}</a></th>
 		</tr>
-	    % endfor
-     % endfor
-</table>
+	</thead>
+	<tbody>
+		<% i = 0 %>
+		% for k, v in sorted(intro.items()):
+		% if v:
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td>${k}</td>
+			<td>${debug_repr(v)|n}</td>
+		</tr>
+		<% i += 1 %>
+		% endif
+		% endfor
+	</tbody>
+	<thead>
+		<tr>
+			<th colspan="2">Source</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td colspan="2">
+				<code>${nl2br(str(intro.action_info))|n}</code>
+			</td>
+		</tr>
+	</tbody>
+	% if entry['related']:
+	<thead>
+		<tr>
+			<th colspan="2">References</th>
+		</tr>
+	</thead>
+	<tbody>
+		% for i, ref in enumerate(entry['related']):
+		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<td colspan="2">
+				<a href="#${ref.category_name}${ref.discriminator_hash}">${ref.type_name} ${ref.title}</a>
+			</td>
+		</tr>
+		% endfor
+	</tbody>
+	% endif
+	</table>
+	% endfor
+% endfor
