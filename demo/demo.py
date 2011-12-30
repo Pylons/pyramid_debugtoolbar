@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import os
 import logging
+import shutil
 
 from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPFound
@@ -36,7 +39,7 @@ def notfound(request):
 def notfound_view(request):
     return {}
 
-@view_config(route_name='test_page', renderer='__main__:templates/index.mako')
+@view_config(renderer='__main__:templates/index.mako') # found via traversal
 def test_page(request):
     title = 'Pyramid Debugtoolbar'
     log.info(title)
@@ -47,7 +50,7 @@ def test_page(request):
 
 @view_config(route_name='test_redirect')
 def test_redirect(request):
-    return HTTPFound(location=request.route_url('test_page'))
+    return HTTPFound(location='/')
 
 @view_config(route_name='test_predicates',
         renderer='__main__:templates/index.mako')
@@ -63,8 +66,19 @@ def test_predicates(request):
 def test_template_exc(request):
     return {'title':'Test template exceptions'}
 
+class DummyRootFactory(object):
+    def __init__(self, request):
+        self.request = request
+    def __getitem__(self, name):
+        return self
+
 if __name__ == '__main__':
     # configuration settings
+    try:
+        # ease testing py2 and py3 in same directory
+        shutil.rmtree(os.path.join(here, 'mako_modules'))
+    except:
+        pass
     settings = {}
     settings['debug_templates'] = True
     settings['reload_templates'] = True
@@ -75,9 +89,9 @@ if __name__ == '__main__':
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
-    config = Configurator(settings=settings, session_factory=session_factory)
+    config = Configurator(settings=settings, session_factory=session_factory,
+                          root_factory=DummyRootFactory)
     # routes setup
-    config.add_route('test_page', '/')
     config.add_route('test_redirect', '/redirect')
     config.add_route('test_predicates', '/predicates', request_method='GET')
     config.add_route('test_exc', '/exc')

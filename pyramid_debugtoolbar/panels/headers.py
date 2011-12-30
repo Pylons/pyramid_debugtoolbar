@@ -1,4 +1,5 @@
 from pyramid_debugtoolbar.panels import DebugPanel
+from pyramid_debugtoolbar.compat import text_
 
 _ = lambda x: x
 
@@ -9,32 +10,17 @@ class HeaderDebugPanel(DebugPanel):
     """
     name = 'Header'
     has_content = True
-
-    # List of CGI headers to display along with HTTP_ custom headers
-    request_header_filter = (
-        'CONTENT_TYPE',
-        'QUERY_STRING',
-        'REMOTE_ADDR',
-        'REMOTE_HOST',
-        'REQUEST_METHOD',
-        'SCRIPT_NAME',
-        'SERVER_NAME',
-        'SERVER_PORT',
-        'SERVER_PROTOCOL',
-        'SERVER_SOFTWARE',
-        'PATH_INFO',
-    )
+    response_headers = ()
 
     def __init__(self, request):
         self.request = request
         self.request_headers = [
-            (k, request.environ[k]) for k in sorted(request.environ)
-            if k in self.request_header_filter or k.startswith('HTTP_')
+            (text_(k), text_(v)) for k, v in sorted(request.headers.items())
         ]
 
     def process_response(self, response):
         self.response_headers = [
-            (k, v) for k, v in sorted(response.headerlist)
+            (text_(k), text_(v)) for k, v in sorted(response.headerlist)
         ]
 
     def nav_title(self):

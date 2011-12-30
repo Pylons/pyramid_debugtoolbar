@@ -30,6 +30,12 @@ class PageTest(unittest.TestCase):
         self.failUnless(browser.is_text_present("example"))
         self.failUnless(browser.is_element_present('id=pDebugToolbar'))
 
+    def test_home_page_gt_255_in_uri(self):
+        browser.open('/%C3%A9')
+        browser.wait_for_page_to_load("30000")
+        self.failUnless(browser.is_text_present("example"))
+        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+
     def test_redirect(self):
         browser.open('/redirect')
         browser.wait_for_page_to_load("30000")

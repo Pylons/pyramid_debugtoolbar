@@ -1,3 +1,10 @@
+Next release
+------------
+
+- Show request headers instead of mistakenly showing environ values in
+  Headers panel under "Request Headers".  This also fixes a potential
+  UnicodeDecodeError.
+
 0.9.7 (2011-12-09)
 ------------------
 
