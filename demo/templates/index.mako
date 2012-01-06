@@ -14,6 +14,9 @@
         <p>
           <a href="${request.route_url('test_notfound')}">Not found example</a>
         </p>
+        <p>
+          <a href="${request.route_url('test_highorder')}">High-order characters in URL example</a>
+        </p>
 		% if show_sqla_link:
         <p>
           <a href="${request.route_url('test_sqla')}">SQLAlchemy example</a>

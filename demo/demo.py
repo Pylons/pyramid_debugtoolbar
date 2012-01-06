@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import logging
 import shutil
 
@@ -9,7 +10,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.view import view_config
-
+from pyramid.response import Response
 from wsgiref.simple_server import make_server
 
 try:
@@ -21,6 +22,22 @@ try:
     import pyramid_jinja2
 except ImportError: # pragma: no cover
     pyramid_jinja2 = None
+
+
+# True if we are running on Python 3.
+PY3 = sys.version_info[0] == 3
+
+if PY3: # pragma: no cover
+    binary_type = bytes
+else:
+    binary_type = str
+
+def text_(s, encoding='latin-1', errors='strict'):
+    """ If ``s`` is an instance of ``binary_type``, return
+    ``s.decode(encoding, errors)``, otherwise return ``s``"""
+    if isinstance(s, binary_type):
+        return s.decode(encoding, errors)
+    return s # pragma: no cover
 
 logging.basicConfig(level=logging.NOTSET)
 log = logging.getLogger(__file__)
@@ -51,6 +68,10 @@ def test_page(request):
 @view_config(route_name='test_redirect')
 def test_redirect(request):
     return HTTPFound(location='/')
+
+@view_config(route_name='test_highorder')
+def test_highorder(request):
+    return Response(request.upath_info)
 
 @view_config(route_name='test_predicates',
         renderer='__main__:templates/index.mako')
@@ -99,11 +120,15 @@ if __name__ == '__main__':
     config.add_route('test_chameleon_exc', '/chameleon_exc')
     config.add_route('test_mako_exc', '/mako_exc')
     config.add_route('test_jinja2_exc', '/jinja2_exc')
+    config.add_route('test_highorder', text_(b'/La Pe\xc3\xb1a', 'utf-8'))
     config.scan('__main__')
     if pyramid_jinja2:
         config.include('pyramid_jinja2')
     if sqlalchemy:
         config.include('sqla')
     config.include('pyramid_debugtoolbar')
-    httpd = make_server('', 8080, config.make_wsgi_app())
-    httpd.serve_forever()
+    app = config.make_wsgi_app()
+    from waitress import serve
+    serve(app)
+    #httpd = make_server('', 8080, )
+    #httpd.serve_forever()
