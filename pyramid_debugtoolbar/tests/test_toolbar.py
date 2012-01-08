@@ -57,6 +57,7 @@ class DebugToolbarTests(unittest.TestCase):
         toolbar.process_response(response)
         self.assertTrue(response.processed)
         self.assertTrue(bytes_('div id="pDebug"') in response.app_iter[0])
+        self.assertEqual(response.content_length, len(response.app_iter[0]))
 
     def test_passing_of_button_style(self):
         from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME

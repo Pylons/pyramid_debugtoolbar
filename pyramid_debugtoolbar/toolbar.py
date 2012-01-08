@@ -60,6 +60,7 @@ class DebugToolbar(object):
                 toolbar_html + bytes_('</body>')
                 )
             response.app_iter = [body]
+            response.content_length = len(body)
 
 class ExceptionHistory(object):
     def __init__(self):

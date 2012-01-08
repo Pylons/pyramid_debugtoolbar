@@ -5,6 +5,9 @@ Next release
   Headers panel under "Request Headers".  This also fixes a potential
   UnicodeDecodeError.
 
+- Set content_length on response object when we regenerate app_iter while
+  replacing original content.
+
 0.9.7 (2011-12-09)
 ------------------
 
