@@ -69,9 +69,10 @@ def test_page(request):
 def test_redirect(request):
     return HTTPFound(location='/')
 
-@view_config(route_name='test_highorder')
+@view_config(route_name='test_highorder',
+             renderer='__main__:templates/highorder.mako')
 def test_highorder(request):
-    return Response(request.upath_info)
+    return {}
 
 @view_config(route_name='test_predicates',
         renderer='__main__:templates/index.mako')
@@ -128,7 +129,5 @@ if __name__ == '__main__':
         config.include('sqla')
     config.include('pyramid_debugtoolbar')
     app = config.make_wsgi_app()
-    from waitress import serve
-    serve(app)
-    #httpd = make_server('', 8080, )
-    #httpd.serve_forever()
+    httpd = make_server('', 8080, app)
+    httpd.serve_forever()

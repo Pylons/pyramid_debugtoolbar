@@ -187,6 +187,16 @@ class PageTest(unittest.TestCase):
         result = browser.is_visible('css=#pDebugIntrospectionPanel-content')
         self.failUnless(result)
 
+    def test_highorder(self):
+        try:
+            from urllib import quote
+        except ImportError:
+            from urllib.parse import quote
+        browser.open(quote(b'/La Pe\xc3\xb1a'))
+        browser.wait_for_page_to_load("30000")
+        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+        
+
 if __name__ == '__main__':
     setUpModule()
     try:
