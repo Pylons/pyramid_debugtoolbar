@@ -1,5 +1,5 @@
-Next release
-------------
+0.9.8 (2012-01-09)
+------------------
 
 - Show request headers instead of mistakenly showing environ values in
   Headers panel under "Request Headers".  This also fixes a potential
