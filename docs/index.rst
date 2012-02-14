@@ -56,6 +56,9 @@ arbitrary Python expressions within the traceback page.  A URL leading to a
 debugging page for each exception raised by your application will
 additionally be logged to the console.
 
+.. note:: The HTML returned by Pyramid must contain a ``</body>`` end-body
+   tag for the toolbar to be injected into a response.
+
 Settings
 ~~~~~~~~
 
