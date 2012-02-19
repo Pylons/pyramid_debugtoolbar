@@ -45,6 +45,6 @@ class RequestVarsDebugPanel(DebugPanel):
             })
 
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/request_vars.mako',
+            'pyramid_debugtoolbar.panels:templates/request_vars.dbtmako',
             vars,
             request=self.request)

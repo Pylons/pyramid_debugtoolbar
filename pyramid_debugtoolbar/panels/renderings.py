@@ -41,7 +41,7 @@ class RenderingsDebugPanel(DebugPanel):
 
     def content(self):
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/renderings.mako', {
+            'pyramid_debugtoolbar.panels:templates/renderings.dbtmako', {
             'renderings': self.renderings
         }, request=self.request)
 

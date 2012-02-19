@@ -42,5 +42,5 @@ class TweensDebugPanel(DebugPanel):
             'static_path': static_path,
             }
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/tweens.mako',
+            'pyramid_debugtoolbar.panels:templates/tweens.dbtmako',
             vars, self.request)

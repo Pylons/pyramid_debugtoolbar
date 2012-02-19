@@ -51,7 +51,7 @@ class DebugToolbar(object):
             vars = {'panels': self.panels, 'static_path': static_path,
                     'root_path': root_path, 'button_style': button_style}
             toolbar_html = render(
-                    'pyramid_debugtoolbar:templates/toolbar.mako',
+                    'pyramid_debugtoolbar:templates/toolbar.dbtmako',
                     vars, request=request)
             response_html = response.body
             toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
@@ -145,7 +145,7 @@ def toolbar_tween_factory(handler, registry):
                     redirect_code = response.status_int
                     if redirect_to:
                         content = render(
-                            'pyramid_debugtoolbar:templates/redirect.mako',
+                            'pyramid_debugtoolbar:templates/redirect.dbtmako',
                             {'redirect_to': redirect_to,
                             'redirect_code': redirect_code},
                             request=request)

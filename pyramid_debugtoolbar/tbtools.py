@@ -228,8 +228,9 @@ class Traceback(object):
             'frames':       text_('\n'.join(frames)),
             'description':  description_wrapper % escape(self.exception),
         }
-        return render('pyramid_debugtoolbar:templates/exception_summary.mako',
-                      vars, request=request)
+        return render(
+            'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
+            vars, request=request)
 
     def render_full(self, request, lodgeit_url=None):
         """Render the Full HTML page with the traceback info."""
@@ -256,7 +257,7 @@ class Traceback(object):
             'root_path':        root_path,
             'url':              url,
         }
-        return render('pyramid_debugtoolbar:templates/exception.mako',
+        return render('pyramid_debugtoolbar:templates/exception.dbtmako',
                       vars, request=request)
 
     def generate_plaintext_traceback(self):

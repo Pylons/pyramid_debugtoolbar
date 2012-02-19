@@ -36,5 +36,5 @@ class HeaderDebugPanel(DebugPanel):
         vars = {'request_headers': self.request_headers,
                 'response_headers': self.response_headers}
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/headers.mako',
+            'pyramid_debugtoolbar.panels:templates/headers.dbtmako',
             vars, self.request)

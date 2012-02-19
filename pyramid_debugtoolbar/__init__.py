@@ -43,13 +43,25 @@ def parse_settings(settings):
         populate(name, convert, default)
     return parsed
 
+try:
+    # Try to take advantage of MakoRendererFactoryHelper in Pyramid 1.3a8+.
+    # If we can do this, the toolbar templates won't be effected by
+    # normal mako settings.
+    from pyramid.mako_templating import MakoRendererFactoryHelper
+    renderer_factory = MakoRendererFactoryHelper('dbtmako.')
+except ImportError:
+    # Buuut, if not (1.2 probably), just use the normal mako renderer factory
+    from pyramid.mako_templating import renderer_factory
+
 def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
     directly. """
+    config.add_renderer('.dbtmako', renderer_factory)
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
     if not 'mako.directories' in config.registry.settings:
+        # XXX FBO 1.2.X only
         config.registry.settings['mako.directories'] = []
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')

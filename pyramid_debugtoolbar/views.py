@@ -84,7 +84,7 @@ class ExceptionDebugView(object):
         
     @view_config(
         route_name='debugtoolbar.console',
-        renderer='pyramid_debugtoolbar:templates/console.mako',
+        renderer='pyramid_debugtoolbar:templates/console.dbtmako',
         custom_predicates=(valid_host,)
         )
     def console(self):
@@ -123,7 +123,7 @@ class SQLAlchemyViews(object):
 
     @view_config(
         route_name='debugtoolbar.sql_select',
-        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.mako',
+        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako',
         permission=NO_PERMISSION_REQUIRED,
         custom_predicates=(valid_host,)
         )
@@ -151,7 +151,7 @@ class SQLAlchemyViews(object):
 
     @view_config(
         route_name='debugtoolbar.sql_explain',
-        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.mako',
+        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako',
         permission=NO_PERMISSION_REQUIRED,
         custom_predicates=(valid_host,)
         )

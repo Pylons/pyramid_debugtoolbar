@@ -84,7 +84,7 @@ class LoggingPanel(DebugPanel):
         vars = {'records': records}
 
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/logger.mako',
+            'pyramid_debugtoolbar.panels:templates/logger.dbtmako',
             vars,
             request=self.request)
 

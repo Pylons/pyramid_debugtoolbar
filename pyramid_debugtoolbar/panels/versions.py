@@ -40,7 +40,7 @@ class VersionDebugPanel(DebugPanel):
     def content(self):
         vars = {'platform':plat, 'packages':packages}
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/versions.mako',
+            'pyramid_debugtoolbar.panels:templates/versions.dbtmako',
             vars, self.request)
 
 

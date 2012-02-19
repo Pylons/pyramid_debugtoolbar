@@ -53,5 +53,5 @@ class SettingsDebugPanel(DebugPanel):
             'settings': self.settings
         }
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/settings.mako',
+            'pyramid_debugtoolbar.panels:templates/settings.dbtmako',
             vars, self.request)

@@ -1,3 +1,11 @@
+Next release
+------------
+
+- Try to take advantage of MakoRendererFactoryHelper in Pyramid 1.3a8+.  If
+  we can do this, the toolbar templates won't be effected by normal mako
+  settings.  The most visible change is that toolbar mako templates now have
+  a ``dbtmako`` extension.
+
 0.9.8 (2012-01-09)
 ------------------
 

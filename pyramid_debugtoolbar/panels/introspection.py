@@ -43,7 +43,7 @@ class IntrospectionDebugPanel(DebugPanel):
             'static_path':static_path, 'object_description':object_description,
             'nl2br':nl2br}
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/introspection.mako',
+            'pyramid_debugtoolbar.panels:templates/introspection.dbtmako',
             vars, self.request)
 
 def nl2br(s):

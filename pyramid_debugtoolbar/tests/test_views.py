@@ -8,6 +8,8 @@ class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.registry.settings['mako.directories'] = []
+        from pyramid.mako_templating import renderer_factory
+        self.config.add_renderer('.dbtmako', renderer_factory)
 
     def tearDown(self):
         testing.tearDown()
@@ -141,7 +143,7 @@ class TestExceptionDebugView(unittest.TestCase):
             'frames':       text_('<pre>Frame1</pre><pre>Frame2</pre>'),
         }
         html = render(
-            'pyramid_debugtoolbar:templates/exception_summary.mako',
+            'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
             vars, request=request)
         self.assertTrue(
             text_('<div class="classfoo class&amp;bar">') in html,html)

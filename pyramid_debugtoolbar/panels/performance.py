@@ -199,6 +199,6 @@ class PerformanceDebugPanel(DebugPanel):
             vars['stats'] = self.stats
             vars['function_calls'] = self.function_calls
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/performance.mako',
+            'pyramid_debugtoolbar.panels:templates/performance.dbtmako',
             vars, request=self.request)
 

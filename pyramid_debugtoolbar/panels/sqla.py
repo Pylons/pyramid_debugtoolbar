@@ -116,5 +116,5 @@ class SQLADebugPanel(DebugPanel):
         delattr(self.request, 'pdtb_sqla_queries')
 
         return self.render(
-            'pyramid_debugtoolbar.panels:templates/sqlalchemy.mako',
+            'pyramid_debugtoolbar.panels:templates/sqlalchemy.dbtmako',
             vars, self.request)
