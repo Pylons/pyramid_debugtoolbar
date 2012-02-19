@@ -56,13 +56,13 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'pyramid_debugtoolbar'
-copyright = '2011, Agendaless Consulting <chrism@plope.com>'
+copyright = '2012, Agendaless Consulting <chrism@plope.com>'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '0.9.8'
+version = '0.9.9'
 # The full version, including alpha/beta/rc tags.
 release = version
 
