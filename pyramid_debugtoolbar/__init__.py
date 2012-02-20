@@ -57,6 +57,9 @@ def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
     directly. """
+    introspection = getattr(config, 'introspection', True)
+    # dont register any introspectables for Pyramid 1.3a9+
+    config.introspection = False
     config.add_renderer('.dbtmako', renderer_factory)
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
@@ -78,3 +81,5 @@ def includeme(config):
     config.add_route('debugtoolbar.sql_explain',
                      '/_debug_toolbar/sqlalchemy/sql_explain')
     config.scan('pyramid_debugtoolbar.views')
+    config.introspection = introspection
+    
