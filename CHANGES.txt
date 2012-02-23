@@ -1,8 +1,9 @@
-Next release
-------------
+0.9.9.1 (2012-02-22)
+--------------------
 
 - When used with Pyramid 1.3a9+, views, routes, and other registrations made
-  by ``pyramid_debugtoolbar`` will not show up on the introspectables page.
+  by ``pyramid_debugtoolbar`` itself will not show up in the introspectables
+  panel.
 
 0.9.9 (2012-02-19)
 ------------------
