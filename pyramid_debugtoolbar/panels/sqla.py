@@ -102,6 +102,7 @@ class SQLADebugPanel(DebugPanel):
                 'sql': format_sql(stmt),
                 'raw_sql': stmt,
                 'hash': hash,
+                'parameters': query['parameters'],
                 'params': params,
                 'is_select': is_select,
                 'context': query['context'],
