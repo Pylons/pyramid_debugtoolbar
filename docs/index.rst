@@ -70,8 +70,12 @@ file.
 
    If the request's REMOTE_ADDR is not in this list, the toolbar will not be
    displayed and the exception handler will not be active.  Default:
-   ['127.0.0.1', '::1'].  This should be a list or, if defined in a Paste ini
-   file, a single-line list of IP addresses separated by spaces.
+   ['127.0.0.1', '::1'].  Note that each of the values in the list can be a
+   hostmask e.g. (``192.168.1.0/24``).
+
+   This should be a list if setup is done in Python or, if defined in a Paste
+   ini file, a single-line list of IP addresses/hostmasks separated by
+   spaces.
 
 ``debugtoolbar.enabled``
 
