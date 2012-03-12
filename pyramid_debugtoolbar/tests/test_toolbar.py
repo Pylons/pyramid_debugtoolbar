@@ -172,6 +172,21 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
 
+    def test_it_remote_addr_mask(self):
+        self.config.registry.settings['debugtoolbar.hosts'] = ['127.0.0.0/24']
+        request = Request.blank('/')
+        self.config.registry.settings['debugtoolbar.panels'] = [ DummyPanel ]
+        request.registry = self.config.registry
+        request.remote_addr = '127.0.0.254'
+        result = self._callFUT(request)
+        self.assertTrue(getattr(result, 'processed', False))
+        request.remote_addr = '127.0.0.1'
+        result = self._callFUT(request)
+        self.assertTrue(getattr(result, 'processed', False))
+        request.remote_addr = '127.0.1.1'
+        result = self._callFUT(request)
+        self.assertFalse(getattr(result, 'processed', False))
+
     def test_it_calls_wrap_handler(self):
         handler = self._makeHandler()
         request = Request.blank('/')
