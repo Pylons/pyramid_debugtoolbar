@@ -83,10 +83,14 @@ def test_predicates(request):
              renderer='__main__:templates/error.pt')
 @view_config(route_name='test_mako_exc',
         renderer='__main__:templates/error.mako')
-@view_config(route_name='test_jinja2_exc',
-        renderer='__main__:templates/error.jinja2')
 def test_template_exc(request):
     return {'title':'Test template exceptions'}
+if pyramid_jinja2 is not None:
+    test_template_exc = view_config(
+        route_name='test_jinja2_exc',
+        renderer='__main__:templates/error.jinja2')(
+        test_template_exc)
+
 
 class DummyRootFactory(object):
     def __init__(self, request):
@@ -106,7 +110,7 @@ if __name__ == '__main__':
     settings['reload_templates'] = True
     settings['mako.directories'] = '__main__:templates'
     settings['mako.module_directory'] = '__main__:mako_modules'
-    settings['debugtoolbar.hosts'] = ['127.0.0.1', '192.168.1.147']
+    settings['debugtoolbar.hosts'] = ['127.0.0.1']
     settings['debugtoolbar.intercept_redirects'] = True
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
