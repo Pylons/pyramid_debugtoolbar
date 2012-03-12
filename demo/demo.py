@@ -83,10 +83,14 @@ def test_predicates(request):
              renderer='__main__:templates/error.pt')
 @view_config(route_name='test_mako_exc',
         renderer='__main__:templates/error.mako')
-@view_config(route_name='test_jinja2_exc',
-        renderer='__main__:templates/error.jinja2')
 def test_template_exc(request):
     return {'title':'Test template exceptions'}
+if pyramid_jinja2 is not None:
+    test_template_exc = view_config(
+        route_name='test_jinja2_exc',
+        renderer='__main__:templates/error.jinja2')(
+        test_template_exc)
+
 
 class DummyRootFactory(object):
     def __init__(self, request):
