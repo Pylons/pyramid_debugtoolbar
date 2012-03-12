@@ -26,6 +26,13 @@ __version__ = '2.1.10'
 
 import struct
 
+try:
+    long
+    xrange
+except NameError:
+   long = int
+   xrange = range
+
 IPV4LENGTH = 32
 IPV6LENGTH = 128
 
@@ -1462,7 +1469,7 @@ class _BaseV6(object):
 
         try:
             # Now, parse the hextets into a 128-bit integer.
-            ip_int = 0L
+            ip_int = long(0)
             for i in xrange(parts_hi):
                 ip_int <<= 16
                 ip_int |= self._parse_hextet(parts[i])
@@ -1754,7 +1761,7 @@ class IPv6Address(_BaseV6, _BaseIP):
 
               Additionally, an integer can be passed, so
               IPv6Address('2001:4860::') ==
-                IPv6Address(42541956101370907050197289607612071936L).
+                IPv6Address(long(42541956101370907050197289607612071936)).
               or, more generally
               IPv6Address(IPv6Address('2001:4860::')._ip) ==
                 IPv6Address('2001:4860::')
@@ -1820,7 +1827,7 @@ class IPv6Network(_BaseV6, _BaseNet):
 
               Additionally, an integer can be passed, so
               IPv6Network('2001:4860::') ==
-                IPv6Network(42541956101370907050197289607612071936L).
+                IPv6Network(long(42541956101370907050197289607612071936)).
               or, more generally
               IPv6Network(IPv6Network('2001:4860::')._ip) ==
                 IPv6Network('2001:4860::')
