@@ -4,6 +4,7 @@ import hashlib
 import threading
 import time
 import weakref
+from collections import deque
 
 from pyramid.threadlocal import get_current_request
 
@@ -14,6 +15,7 @@ from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+
 
 lock = threading.Lock()
 
@@ -27,14 +29,19 @@ try:
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
+        global qmax
         stop_timer = time.time()
         request = get_current_request()
+        qmax = request.registry.settings.get(
+                        'debugtoolbar.sqla_max_queries')
+        qmax = int(qmax) if qmax else None
+
         if request is not None:
             with lock:
                 engines = getattr(request.registry, 'pdtb_sqla_engines', {})
                 engines[id(conn.engine)] = weakref.ref(conn.engine)
                 setattr(request.registry, 'pdtb_sqla_engines', engines)
-                queries = getattr(request, 'pdtb_sqla_queries', [])
+                queries = getattr(request, 'pdtb_sqla_queries', deque(maxlen=qmax))
                 queries.append({
                     'engine_id': id(conn.engine),
                     'duration': stop_timer - conn.pdtb_start_timer,
@@ -64,13 +71,21 @@ class SQLADebugPanel(DebugPanel):
     def queries(self):
         return getattr(self.request, 'pdtb_sqla_queries', [])
 
+    @property
+    def max_queries(self):
+        return self.request.registry.settings.get(
+                                        'debugtoolbar.sqla_max_queries')
+
     def nav_title(self):
         return _('SQLAlchemy')
 
     def nav_subtitle(self):
-        if self.queries:
-            count = len(self.queries)
-            return "%d %s" % (count, "query" if count == 1 else "queries")
+        count = len(self.queries)      
+        if count:
+            plural_or_not = "query" if count == 1 else "queries"
+            max_or_not = "(%s max)" % self.max_queries \
+                if self.max_queries else ""
+            return "%d %s %s" % (count, plural_or_not, max_or_not)
 
     def title(self):
         return _('SQLAlchemy queries')
