@@ -29,7 +29,6 @@ try:
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
-        global qmax
         stop_timer = time.time()
         request = get_current_request()
         qmax = request.registry.settings.get(
