@@ -3,16 +3,17 @@ import unittest
 from pyramid import testing
 
 class TestSQLAPanel(unittest.TestCase):
+    
     def setUp(self):
-        self.config = testing.setUp()
+        self.request = testing.DummyRequest()
+        self.config = testing.setUp(request=self.request)
 
     def tearDown(self):
         testing.tearDown()
         
     def _makeOne(self):
-        from pyramid_debugtoolbar.panels.sqla import SQLADebugPanel
-        request = testing.DummyRequest()
-        return SQLADebugPanel(request)
+        from pyramid_debugtoolbar.panels.sqla import SQLADebugPanel         
+        return SQLADebugPanel(self.request)
         
     def test_max_queries(self):
         panel = self._makeOne()
@@ -27,3 +28,28 @@ class TestSQLAPanel(unittest.TestCase):
         self.assertEqual(panel.nav_subtitle(), '1 query ')
         self.config.registry.settings['debugtoolbar.sqla_max_queries'] = '10'
         self.assertEqual(panel.nav_subtitle(), '1 query (10 max)')
+        
+
+class Test_after_cursor_execute(unittest.TestCase):
+    
+    def setUp(self):
+        self.request = testing.DummyRequest()
+        self.config = testing.setUp(request=self.request)
+
+    def tearDown(self):
+        testing.tearDown()        
+        
+    def test_it(self):
+        from pyramid_debugtoolbar.panels.sqla import _after_cursor_execute
+        _after_cursor_execute(DummyConnection(), None, None, None, None, None)
+
+
+class DummyConnection(object):
+    """Dummy Database Connection"""
+    
+    def __init__(self):
+        import time
+        self.pdtb_start_timer = time.time()
+
+    def engine(self):
+        pass
