@@ -242,6 +242,13 @@ information.
 
 .. image:: sqla.png
 
+SQLAlchemy Settings
+~~~~~~~~~~~~~~~~~~~
+``debugtoolbar.sqla_max_queries``
+
+  This setting limits the number of queries displayed by the toolbar with
+  precedence given to the most recent queries.
+
 Introspection
 ~~~~~~~~~~~~~
 
