@@ -82,7 +82,7 @@ class SQLADebugPanel(DebugPanel):
     def nav_subtitle(self):
         count = len(self.queries)      
         if count:
-            plural_or_not = "query" if count == 1 else "queries"
+            plural_or_not = self.pluralize("query", "queries", count)            
             max_or_not = "(%s max)" % self.max_queries \
                 if self.max_queries else ""
             return "%d %s %s" % (count, plural_or_not, max_or_not)
