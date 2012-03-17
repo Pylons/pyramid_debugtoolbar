@@ -62,7 +62,7 @@ copyright = '2012, Agendaless Consulting <chrism@plope.com>'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '0.9.9.1'
+version = '1.0'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -78,6 +78,7 @@ today_fmt = '%B %d, %Y'
 # List of directories, relative to source directories, that shouldn't be
 # searched for source files.
 #exclude_dirs = []
+exclude_patterns = ['_themes/README.rst',]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
