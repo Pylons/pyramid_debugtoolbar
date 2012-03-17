@@ -10,12 +10,19 @@ from pyramid.threadlocal import get_current_request
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import url_quote
+from pyramid_debugtoolbar.compat import PY3
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 lock = threading.Lock()
+
+def text(s):
+    if PY3: # pragma: no cover
+        return str(s)
+    else:
+        return unicode(s)
 
 try:
     from sqlalchemy import event
@@ -112,6 +119,7 @@ class SQLADebugPanel(DebugPanel):
             'static_path': self.request.static_url(STATIC_PATH),
             'root_path': self.request.route_url(ROOT_ROUTE_NAME),
             'queries':data,
+            'text':text,
             }
 
         delattr(self.request, 'pdtb_sqla_queries')
