@@ -32,7 +32,7 @@ class Test_format_fname(unittest.TestCase):
         self.assertEqual(self._callFUT(val), val)
 
     def test_unknown(self):
-        val = '..' + os.path.sep + 'foo'
+        val = os.path.join('..', 'foo')
         self.assertEqual(self._callFUT(val), './../foo')
 
     def test_module_file_path(self):
@@ -41,16 +41,18 @@ class Test_format_fname(unittest.TestCase):
             '/foo/bar',
             '/usr/local/python/site-packages/',
         ]
+        normalized_sys_path = map(os.path.normpath, sys_path)
         modpath = self._callFUT(
-            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py', sys_path)
+            os.path.normpath('/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py'), 
+            normalized_sys_path)
         self.assertEqual(modpath, 
-            '<pyramid_debugtoolbar/tests/debugfoo.py>')
+            '<%s>' % os.path.normpath('pyramid_debugtoolbar/tests/debugfoo.py'))
 
     def test_no_matching_sys_path(self):
-        val = '/foo/bar/pyramid_debugtoolbar/foo.py'
-        sys_path = ['/bar/baz']
+        val = os.path.normpath('/foo/bar/pyramid_debugtoolbar/foo.py')
+        sys_path = [os.path.normpath('/bar/baz')]
         self.assertEqual(self._callFUT(val, sys_path),
-            '</foo/bar/pyramid_debugtoolbar/foo.py>')
+            '<%s>' % 'foo/bar/pyramid_debugtoolbar/foo.py')
 
 
 class Test_format_sql(unittest.TestCase):

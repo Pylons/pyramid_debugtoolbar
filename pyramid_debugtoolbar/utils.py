@@ -36,7 +36,7 @@ def format_fname(value, _sys_path=None):
             return value
         if value.startswith('.' + os.path.sep):
             return value
-        return '.' + os.path.sep + value
+        return os.path.join('.', value)
 
     # Loop through sys.path to find the longest match and return
     # the relative path from there.
@@ -46,7 +46,7 @@ def format_fname(value, _sys_path=None):
         count = common_segment_count(path.split(os.path.sep), value_segs)
         if count > prefix_len:
             prefix_len = count
-    return '<%s>' % os.path.sep.join(value_segs[prefix_len:])
+    return '<%s>' % os.path.join(*value_segs[prefix_len:])
 
 def common_segment_count(path, value):
     """Return the number of path segments common to both"""
