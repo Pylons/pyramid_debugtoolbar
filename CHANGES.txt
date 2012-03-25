@@ -1,3 +1,8 @@
+Next release
+------------
+
+- If ``request.remote_addr`` is ``None``, disable the toolbar.
+
 1.0 (2012-03-17)
 ----------------
 

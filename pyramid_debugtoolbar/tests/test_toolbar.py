@@ -151,8 +151,6 @@ class Test_toolbar_handler(unittest.TestCase):
         
     def _callFUT(self, request, handler=None):
         registry = self.config.registry
-        if request.remote_addr is None:
-            request.remote_addr = '127.0.0.1'
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
         if handler is None:
             handler = self._makeHandler()
@@ -161,6 +159,7 @@ class Test_toolbar_handler(unittest.TestCase):
 
     def test_it_startswith_root_path(self):
         request = Request.blank('/_debug_toolbar')
+        request.remote_addr = '127.0.0.1'
         result = self._callFUT(request)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
@@ -168,6 +167,13 @@ class Test_toolbar_handler(unittest.TestCase):
     def test_it_bad_remote_addr(self):
         request = Request.blank('/')
         request.remote_addr = '123.123.123.123'
+        result = self._callFUT(request)
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(result is self.response)
+
+    def test_it_remote_addr_is_None(self):
+        request = Request.blank('/')
+        request.remote_addr = None
         result = self._callFUT(request)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
@@ -192,6 +198,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request = Request.blank('/')
         self.config.registry.settings['debugtoolbar.panels'] = [ DummyPanel ]
         request.registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
         result = self._callFUT(request, handler)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
@@ -200,6 +207,7 @@ class Test_toolbar_handler(unittest.TestCase):
 
     def test_it_raises_exception_no_intercept_exc(self):
         request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
         def handler(request):
             raise NotImplementedError
         request.registry = self.config.registry
@@ -213,6 +221,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
         self.config.add_route('debugtoolbar.exception', '/exception')
         request.registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
@@ -220,6 +229,7 @@ class Test_toolbar_handler(unittest.TestCase):
 
     def test_it_intercept_redirect_nonredirect_code(self):
         request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
         self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
         request.registry = self.config.registry
         result = self._callFUT(request)
@@ -231,6 +241,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             return response
         request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
         request.registry = self.config.registry
         self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
         result = self._callFUT(request, handler)

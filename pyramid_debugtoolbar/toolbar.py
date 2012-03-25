@@ -101,7 +101,7 @@ def toolbar_tween_factory(handler, registry):
         request.exc_history = exc_history
         remote_addr = request.remote_addr
 
-        if request.path.startswith(root_path):
+        if remote_addr is None or request.path.startswith(root_path):
             return handler(request)
         else:
             for host in hosts:
