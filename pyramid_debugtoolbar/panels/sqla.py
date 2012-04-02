@@ -45,7 +45,7 @@ try:
                 queries.append({
                     'engine_id': id(conn.engine),
                     'duration': stop_timer - conn.pdtb_start_timer,
-                    'statement': stmt,
+                    'statement': text(stmt),
                     'parameters': params,
                     'context': context
                 })
