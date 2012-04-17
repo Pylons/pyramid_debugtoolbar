@@ -33,7 +33,7 @@ class Test_format_fname(unittest.TestCase):
 
     def test_unknown(self):
         val = '..' + os.path.sep + 'foo'
-        self.assertEqual(self._callFUT(val), './../foo')
+        self.assertEqual(self._callFUT(val), './../foo'.replace('/', os.path.sep))
 
     def test_module_file_path(self):
         sys_path = [
@@ -41,10 +41,12 @@ class Test_format_fname(unittest.TestCase):
             '/foo/bar',
             '/usr/local/python/site-packages/',
         ]
+
+        sys_path = map(lambda path: path.replace('/', os.path.sep), sys_path)
         modpath = self._callFUT(
-            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py', sys_path)
+            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py'.replace('/', os.path.sep), sys_path)
         self.assertEqual(modpath, 
-            '<pyramid_debugtoolbar/tests/debugfoo.py>')
+            '<pyramid_debugtoolbar/tests/debugfoo.py>'.replace('/', os.path.sep))
 
     def test_no_matching_sys_path(self):
         val = '/foo/bar/pyramid_debugtoolbar/foo.py'
