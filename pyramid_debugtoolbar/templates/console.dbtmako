@@ -11,10 +11,12 @@
           DEBUGGER_TOKEN = "${token}",
           EVALEX = ${evalex};
     </script>
-    <script type="text/javascript" 
-            src="${static_path}js/jquery-1.6.4.min.js"></script>
-    <script type="text/javascript" 
-            src="${static_path}js/debugger.js"></script>
+    ##<script type="text/javascript" 
+    ##        src="${static_path}js/jquery-1.6.4.min.js"></script>
+    ##<script type="text/javascript" 
+    ##        src="${static_path}js/debugger.js"></script>
+    <script data-main="${static_path}js/debugger"
+            src="${static_path}js/require.js"></script>
   </head>
   <body>
 

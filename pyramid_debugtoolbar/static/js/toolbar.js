@@ -202,10 +202,10 @@ var firstAvailCol;if(typeof(matrix[rowIndex])=="undefined"){matrix[rowIndex]=[];
 			}
 		}
     };
-    $(document).ready(function() {
-        pdtb.init();
-        $(".pDebugSortable").tablesorter();
-    });
+    //$(document).ready(function() {
+    //    pdtb.init();
+    //    $(".pDebugSortable").tablesorter();
+    //});
     return pdtb;
 
 }(window, document, jQuery.noConflict(true)));
