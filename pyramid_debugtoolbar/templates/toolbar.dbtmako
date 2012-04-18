@@ -3,7 +3,7 @@
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
     </script>
     
-    <script data-main="${static_path}js/main"
+    <script data-main="${static_path}js/toolbar"
             src="${static_path}js/require.js"></script>
 
     <div style="display: none;" id="pDebugToolbar">
