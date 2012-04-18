@@ -208,4 +208,5 @@ require([
       container.scrollTop(line.offset().top);
     }    
   });
+  $.noConflict(true);
 });

@@ -212,5 +212,6 @@ require([
       pdtb.init();
       $(".pDebugSortable").tablesorter();
     });
-  });
-}); 
+  })
+  $.noConflict(true);
+});
