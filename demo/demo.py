@@ -117,6 +117,8 @@ if __name__ == '__main__':
     # configuration setup
     config = Configurator(settings=settings, session_factory=session_factory,
                           root_factory=DummyRootFactory)
+    # static view
+    config.add_static_view('static', os.path.join(here, 'static'))
     # routes setup
     config.add_route('test_redirect', '/redirect')
     config.add_route('test_predicates', '/predicates', request_method='GET')

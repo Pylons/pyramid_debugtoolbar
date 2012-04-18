@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>${title}</title>
+        <script data-main="/static/main.js"
+            src="/static/require-1.0.6.js"></script>
     </head>
     <body>
         <h1>${title}</h1>
