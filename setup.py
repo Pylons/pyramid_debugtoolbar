@@ -28,6 +28,15 @@ install_requires = [
     'Pygments',
     ]
 
+testing_extras = [
+    'nose',
+    'coverage',
+    ]
+
+docs_extras = [
+    'Sphinx',
+    ]
+
 setup(name='pyramid_debugtoolbar',
       version='1.0.1',
       description=('A package which provides an interactive HTML debugger '
@@ -55,7 +64,10 @@ setup(name='pyramid_debugtoolbar',
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
-      tests_require=install_requires,
+      extras_require = {
+          'testing':testing_extras,
+          'docs':docs_extras,
+          },
       test_suite="pyramid_debugtoolbar",
       entry_points='',
       )
