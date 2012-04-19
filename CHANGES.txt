@@ -5,7 +5,23 @@
   better dependency loading and module isolation to play better with mutiple
   library versions. Recurrent problem was with async loading and application 
   specific jquery library where the expected version was overrided by the
-  toolbar one. 
+  toolbar one.
+
+  If you are already using requirejs and want the toolbar to load, just add it
+  to your path and module:
+
+  require.config({
+    paths: {
+      "jquery": "jquery-1.7.2.min",
+      "toolbar": "/_debug_toolbar/static/js/toolbar"
+    }
+  });
+  
+  require(["jquery", "toolbar"], function($, toolbar) {
+    $(function() {
+      // your module
+    });
+  }); 
 
 1.0.1 (2012-03-27)
 ------------------
