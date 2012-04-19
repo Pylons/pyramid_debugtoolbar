@@ -1,2 +1,3 @@
 - Docs.
 
+- Custom build of toolbar.js and debugger.js using requirejs.

@@ -1,3 +1,10 @@
+1.0.2 (2012-XX-XX)
+------------------
+
+- Moved the toolbar and debugger javascript files to use requirejs for
+  better dependency loading and module isolation to play better with mutiple
+  library versions.
+
 1.0.1 (2012-03-27)
 ------------------
 
