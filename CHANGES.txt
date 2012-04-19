@@ -3,7 +3,9 @@
 
 - Moved the toolbar and debugger javascript files to use requirejs for
   better dependency loading and module isolation to play better with mutiple
-  library versions.
+  library versions. Recurrent problem was with async loading and application 
+  specific jquery library where the expected version was overrided by the
+  toolbar one. 
 
 1.0.1 (2012-03-27)
 ------------------
