@@ -77,6 +77,8 @@ file.
    ini file, a single-line list of IP addresses/hostmasks separated by
    spaces.
 
+   To enable access from any host, use the hostmask ``0.0.0.0/0``.
+
 ``debugtoolbar.enabled``
 
    ``true`` if the toolbar is enabled; ``false`` if the toolbar is disabled.
