@@ -43,7 +43,7 @@ class Test_debug_repr(unittest.TestCase):
             '</span></span>: <span class="value"><span class="number">42' \
             '</span></span></span>}'
         result = debug_repr((1, bytes_('zwei'), text_('drei')))
-        if PY3:
+        if PY3: # pragma: no cover
             expected = (
                 '(<span class="number">1</span>, <span class="string">b\''
                 'zwei\'</span>, <span class="string">\'drei\'</span>)')
@@ -69,7 +69,7 @@ class Test_debug_repr(unittest.TestCase):
         assert result == \
             're.compile(<span class="string regex">r\'foo\\d\'</span>)'
         result = debug_repr(re.compile(text_(r'foo\d')))
-        if PY3:
+        if PY3: # pragma: no cover
             assert result == \
                    're.compile(<span class="string regex">r\'foo\\d\'</span>)'
         else:

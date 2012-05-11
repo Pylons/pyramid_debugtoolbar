@@ -1,3 +1,11 @@
+Next release
+------------
+
+- The ``valid_host`` custom predicate used internally by pyramid_debugtoolbar
+  views didn't use newer "ipaddr"-based logic.  Symptom: some views may have
+  been incorrectly inaccessible if you used a network mask as a
+  "debugtoolbar.hosts" option.
+
 1.0.2 (2012-04-19)
 ------------------
 

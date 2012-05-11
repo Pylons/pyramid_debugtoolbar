@@ -10,6 +10,7 @@ from pyramid_debugtoolbar.compat import text_type
 from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.compat import text_
 
+from pyramid_debugtoolbar import ipaddr
 
 try:
     from pygments import highlight
@@ -151,4 +152,10 @@ def dictrepr(d):
     return sorted(out.items())
 
 logger = getLogger('pyramid_debugtoolbar')
+
+def addr_in(addr, hosts):
+    for host in hosts:
+        if ipaddr.IPAddress(addr) in ipaddr.IPNetwork(host):
+            return True
+    return False
 

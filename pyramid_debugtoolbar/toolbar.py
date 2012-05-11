@@ -5,7 +5,6 @@ import os
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
-from pyramid_debugtoolbar import ipaddr
 from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.compat import url_unquote
 from pyramid_debugtoolbar.compat import bytes_
@@ -16,6 +15,7 @@ from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
+from pyramid_debugtoolbar.utils import addr_in
 from pyramid.httpexceptions import WSGIHTTPException
 
 class DebugToolbar(object):
@@ -101,14 +101,9 @@ def toolbar_tween_factory(handler, registry):
         request.exc_history = exc_history
         remote_addr = request.remote_addr
 
-        if remote_addr is None or request.path.startswith(root_path):
+        if ( (remote_addr is None) or (request.path.startswith(root_path))
+             or (not addr_in(remote_addr, hosts)) ):
             return handler(request)
-        else:
-            for host in hosts:
-                if ipaddr.IPAddress(remote_addr) in ipaddr.IPNetwork(host):
-                    break
-            else:
-                return handler(request)
 
         toolbar = DebugToolbar(request, panel_classes)
         request.debug_toolbar = toolbar

@@ -13,12 +13,14 @@ from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
+from pyramid_debugtoolbar.utils import addr_in
 
 def valid_host(info, request):
     hosts = get_setting(request.registry.settings, 'hosts')
-    if request.remote_addr in hosts:
-        return True
-    return False
+    remote_addr = request.remote_addr
+    if remote_addr is None:
+        return False
+    return addr_in(request.remote_addr, hosts)
 
 class ExceptionDebugView(object):
     def __init__(self, request):

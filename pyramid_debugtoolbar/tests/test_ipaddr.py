@@ -25,12 +25,12 @@ from pyramid_debugtoolbar import ipaddr
 # Compatibility function to cast str to bytes objects
 if issubclass(ipaddr.Bytes, str):
     _cb = ipaddr.Bytes
-else:
+else: # pragma: no cover
     _cb = lambda bytestr: bytes(bytestr, 'charmap')
 
 try:
     long
-except NameError:
+except NameError: # pragma: no cover
    long = int
 
 
@@ -1107,5 +1107,3 @@ class IpaddrUnitTest(unittest.TestCase):
         self.assertFalse(bad_addr.sixtofour)
 
 
-if __name__ == '__main__':
-    unittest.main()

@@ -49,7 +49,7 @@ try:
     # normal mako settings.
     from pyramid.mako_templating import MakoRendererFactoryHelper
     renderer_factory = MakoRendererFactoryHelper('dbtmako.')
-except ImportError:
+except ImportError: # pragma: no cover
     # Buuut, if not (1.2 probably), just use the normal mako renderer factory
     from pyramid.mako_templating import renderer_factory
 
