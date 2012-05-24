@@ -68,6 +68,9 @@ setup(name='pyramid_debugtoolbar',
           'testing':testing_extras,
           'docs':docs_extras,
           },
+      package_data={'pyramid_debugtoolbar': ['static/css/*', 'static/font/*',
+          'static/img/*', 'static/js/*', 'templates/*']
+          },
       test_suite="pyramid_debugtoolbar",
       entry_points='',
       )
