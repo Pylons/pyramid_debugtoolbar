@@ -6,6 +6,11 @@ Next release
   been incorrectly inaccessible if you used a network mask as a
   "debugtoolbar.hosts" option.
 
+- The debug console now works with Google App Engine.
+
+- The debug console now adds a shortcut for accessing the last result through
+  ``_``.
+
 1.0.2 (2012-04-19)
 ------------------
 
