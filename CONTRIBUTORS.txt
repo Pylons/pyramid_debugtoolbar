@@ -102,3 +102,4 @@ Contributors
 - Michael Merickel, 2011/07/22
 - Ben Bangert, 2011/08/26
 - Daniel Haaker, 2011/09/11
+- Nigel Smith, 2012/06/15
