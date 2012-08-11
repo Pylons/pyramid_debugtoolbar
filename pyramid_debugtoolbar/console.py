@@ -88,6 +88,7 @@ class ThreadedStream(object):
         # stream._write bypasses escaping as debug_repr is
         # already generating HTML for us.
         if obj is not None:
+            _local._current_ipy.locals['_'] = obj
             stream._write(debug_repr(obj))
     displayhook = staticmethod(displayhook)
 
@@ -203,7 +204,13 @@ class Console(object):
         self._ipy = _InteractiveConsole(globals, locals)
 
     def eval(self, code):
-        return self._ipy.runsource(code)
+        _local._current_ipy = self._ipy
+        old_sys_stdout = sys.stdout
+        try:
+            return self._ipy.runsource(code)
+        finally:
+            sys.stdout = old_sys_stdout
+
 
 class _ConsoleFrame(object):
     """Helper class so that we can reuse the frame console code for the
