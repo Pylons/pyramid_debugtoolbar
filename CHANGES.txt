@@ -1,5 +1,5 @@
-Next release
-------------
+1.0.3 (2012-09-23)
+------------------
 
 - The ``valid_host`` custom predicate used internally by pyramid_debugtoolbar
   views didn't use newer "ipaddr"-based logic.  Symptom: some views may have
