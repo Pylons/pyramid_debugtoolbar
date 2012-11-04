@@ -59,6 +59,28 @@ console.
 .. note:: The HTML returned by your Pyramid application must contain a
    ``</body>`` end-body tag for the toolbar to be injected into a response.
 
+.. note:: The debug toolbar loads and uses RequireJS_ to load its scripts.
+   This fails if RequireJS is already loaded by your site.
+   To use the toolbar in this case, just add it to RequireJS's path configuration
+   and ask RequireJS to load it:
+
+   .. code-block:: javascript
+
+      require.config({
+        paths: {
+          "jquery": "jquery-1.7.2.min",
+          "toolbar": "/_debug_toolbar/static/js/toolbar"
+        }
+      });
+    
+      require(["jquery", "toolbar"], function($, toolbar) {
+        $(function() {
+          // your module
+        });
+      }); 
+
+.. _RequireJS: http://requirejs.org/
+
 Settings
 ~~~~~~~~
 
