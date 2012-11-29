@@ -29,13 +29,12 @@ class Test_debug_repr(unittest.TestCase):
             '<span class="number">2</span>, <span class="number">3</span>, '
             '<span class="number">4</span>, <span class="number">5</span>, '
             '<span class="number">6</span>, <span class="number">7</span>, '
-            '<span class="extended"><span class="number">8</span>, '
-            '<span class="number">9</span>, <span class="number">10</span>, '
-            '<span class="number">11</span>, <span class="number">12</span>, '
-            '<span class="number">13</span>, <span class="number">14</span>, '
-            '<span class="number">15</span>, <span class="number">16</span>, '
-            '<span class="number">17</span>, <span class="number">18</span>, '
-            '<span class="number">19</span></span>]'
+            '<span class="number">8</span>, <span class="number">9</span>, '
+            '<span class="number">10</span>, <span class="number">11</span>, '
+            '<span class="number">12</span>, <span class="number">13</span>, '
+            '<span class="number">14</span>, <span class="number">15</span>, '
+            '<span class="number">16</span>, <span class="number">17</span>, '
+            '<span class="number">18</span>, <span class="number">19</span>]'
         )
         assert debug_repr({}) == '{}'
         assert debug_repr({'foo': 42}) == \
@@ -75,7 +74,7 @@ class Test_debug_repr(unittest.TestCase):
         else:
             assert result == \
                    're.compile(<span class="string regex">ur\'foo\\d\'</span>)'
-            
+
 
         assert debug_repr(frozenset('x')) == \
             'frozenset([<span class="string">\'x\'</span>])'
