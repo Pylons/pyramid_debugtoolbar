@@ -43,16 +43,15 @@ div.box table.source { white-space: pre-wrap;       /* css-3 should we be so luc
                                                     addition to word-wrap  */ }
 div.traceback pre:hover { background-color: #eeeeee; color: black; cursor: pointer; }
 div.traceback blockquote { margin: 1em 0 0 0; padding: 0; }
-div.traceback img { float: right; padding: 2px; margin: -3px 2px 0 0; display: none; }
-div.traceback img:hover { background-color: #ddd; cursor: pointer;
-                          border-color: #eeeeee; }
+div.traceback img { float: right; padding: 2px; margin: -3px 2px 0 0; cursor: pointer; }
+div.traceback img:hover { background-color: #ddd; border-color: #eeeeee; }
 div.traceback pre:hover img { display: block; }
 div.traceback cite.filename { font-style: normal; color: #666666; }
 
 pre.console { border: 1px solid #ccc; background: white!important;
               color: black; padding: 5px!important;
               margin: 3px 0 0 0!important; cursor: default!important;
-              max-height: 400px; overflow: auto; }
+              overflow: auto; }
 pre.console form { color: #555; }
 pre.console input { background-color: transparent; color: #555;
                     width: 90%; font-family: Consolas, "andale mono", "lucida console", monospace; font-size: 14px;
@@ -62,13 +61,6 @@ span.string { color: #30799B; }
 span.number { color: #9C1A1C; }
 span.help   { color: #3A7734; }
 span.object { color: #485F6E; }
-span.extended { opacity: 0.5; }
-span.extended:hover { opacity: 1; }
-a.toggle { text-decoration: none; background-repeat: no-repeat;
-           background-position: center center;
-           background-image: url(../img/more.png); }
-a.toggle:hover { background-color: #444; }
-a.open { background-image: url(../img/less.png); }
 
 pre.console div.traceback,
 pre.console div.box { margin: 5px; white-space: normal;
@@ -99,4 +91,4 @@ div.box table.source td { border-top: 1px solid #dddddd; padding: 4px 0 4px 10px
 div.box table.source td.lineno { color: #999; padding-right: 10px; width: 1px; }
 div.box table.source tr.in-frame { background-color: white; }
 div.box table.source tr.current { background-color: #dddddd; color: #e5762b; }
-div.sourceview { max-height: 400px; overflow: auto; border: 1px solid #ccc; }
+div.sourceview { overflow: auto; border: 1px solid #ccc; }
