@@ -1,3 +1,20 @@
+Next Release
+------------------
+
+- Show the prompt and little text file icons show all the time, instead of
+  only on hover.
+
+- Do not set max-height on result boxes (which result in nested scroll on
+  the page, which makes it hard to find information quickly).
+
+- When an expression result is long, do not truncate with an ellipsis, which
+  requires one more click to get at the information I need.
+
+- Support ``pip install`` from the github repository by adding all static files
+  required to install in the ``package_data`` ``setup.py``. Setuptools usually
+  uses Subversion or CVS to tell it what static files it needs to package up
+  for egg distribution, but does not support reading git metadata.
+
 1.0.3 (2012-09-23)
 ------------------
 
@@ -11,26 +28,12 @@
 - The debug console now adds a shortcut for accessing the last result through
   ``_``.
 
-- Show the prompt and little text file icons show all the time, instead of only
-  on hover.
-
-- Do not set max-height on result boxes (which result in nested scroll on the
-  page, which makes it hard to find information quickly).
-
-- When an expression result is long, do not truncate with an ellipsis, which
-  requires one more click to get at the information I need.
-
-- Support ``pip install`` from the github repository by adding all static files
-  required to install in the ``package_data`` ``setup.py``. Setuptools usually
-  uses Subversion or CVS to tell it what static files it needs to package up
-  for egg distribution, but does not support reading git metadata.
-
 1.0.2 (2012-04-19)
 ------------------
 
 - Moved the toolbar and debugger javascript files to use requirejs for
   better dependency loading and module isolation to play better with mutiple
-  library versions. Recurrent problem was with async loading and application 
+  library versions. Recurrent problem was with async loading and application
   specific jquery library where the expected version was overrided by the
   toolbar one.
 
@@ -43,12 +46,12 @@
         "toolbar": "/_debug_toolbar/static/js/toolbar"
       }
     });
-    
+
     require(["jquery", "toolbar"], function($, toolbar) {
       $(function() {
         // your module
       });
-    }); 
+    });
 
 1.0.1 (2012-03-27)
 ------------------
