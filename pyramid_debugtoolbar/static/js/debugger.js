@@ -1,24 +1,24 @@
-require.config({
+pyramid_debugtoolbar_require.config({
   paths: {
     "jquery": "jquery-1.7.2.min",
     "toolbar": "toolbar"
   }
 });
 
-require([
+pyramid_debugtoolbar_require([
   "jquery",
   "toolbar"], function($, tablesorter, toolbar) {
 
   $(function() {
     var sourceView = null;
-  
+
     /**
      * if we are in console mode, show the console.
      */
     if (window.CONSOLE_MODE && windoe.EVALEX) {
       openShell(null, $('div.console div.inner').empty(), 0);
     }
-  
+
     $('div.traceback div.frame').each(function() {
       var
         target = $('pre', this)
@@ -27,12 +27,12 @@ require([
           }),
         consoleNode = null, source = null,
         frameID = this.id.substring(6);
-  
+
       /**
        * Add an interactive console to the frames
        */
       if (EVALEX)
-        $('<img class="console-icon" src="' 
+        $('<img class="console-icon" src="'
           + window.DEBUG_TOOLBAR_STATIC_PATH + '/img/console.png">')
           .attr('title', 'Open an interactive python shell in this frame')
           .click(function() {
@@ -40,7 +40,7 @@ require([
             return false;
           })
           .prependTo(target);
-  
+
       /**
        * Show sourcecode
        */
@@ -56,7 +56,7 @@ require([
               .click(function() {
                 sourceView.slideUp('fast');
               });
-         $.get(window.DEBUG_TOOLBAR_ROOT_PATH + '/source', 
+         $.get(window.DEBUG_TOOLBAR_ROOT_PATH + '/source',
                   {frm: frameID, token: window.DEBUGGER_TOKEN}, function(data) {
             $('table', sourceView)
               .replaceWith(data);
@@ -71,7 +71,7 @@ require([
         })
         .prependTo(target);
     });
-  
+
     /**
      * toggle traceback types on click.
      */
@@ -80,7 +80,7 @@ require([
       $('div.plain').slideToggle('fast');
     }).css('cursor', 'pointer');
     $('div.plain').hide();
-  
+
     /**
      * Add extra info (this is here so that only users with JavaScript
      * enabled see it.)
@@ -96,7 +96,7 @@ require([
             'there are some extra helpers available for introspection:' +
             '<ul><li><code>dump()</code> shows all variables in the frame' +
             '<li><code>dump(obj)</code> dumps all that\'s known about the object</ul>'));
-  
+
     /**
      * Add the pastebin feature
      */
@@ -122,12 +122,12 @@ require([
         });
         return false;
       });
-  
+
     // if we have javascript we submit by ajax anyways, so no need for the
     // not scaling textarea.
     var plainTraceback = $('div.plain textarea');
     plainTraceback.replaceWith($('<pre>').text(plainTraceback.text()));
-  
+
     /**
      * Helper function for shell initialization
      */
@@ -176,7 +176,7 @@ require([
             return false;
           }
         });
-        
+
       return consoleNode.slideDown('fast', function() {
         command.focus();
       });
@@ -195,7 +195,7 @@ require([
       }
       var container = $('div.sourceview');
       container.scrollTop(line.offset().top);
-    }    
+    }
   });
   $.noConflict(true);
 });
