@@ -15,6 +15,11 @@ Next Release
   uses Subversion or CVS to tell it what static files it needs to package up
   for egg distribution, but does not support reading git metadata.
 
+- The debug toolbar now use a patched version of require.js with a distinct
+  private name that cannot clash with the dojo loader or other incompatible
+  versions of require that may already be loaded on the page. You no longer
+  need to add the toolbar to your own require.js to make it work.
+
 1.0.3 (2012-09-23)
 ------------------
 

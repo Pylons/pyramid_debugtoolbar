@@ -2,11 +2,10 @@
 require.config({
   paths: {
     "jquery": "jquery-1.7.2.min",
-    "toolbar": "/_debug_toolbar/static/js/toolbar"
   }
 });
 
-require(["jquery", "toolbar"], function($, toolbar) {
+require(["jquery"], function($) {
   $(function() {
     console.log('TEST REQUIREJS');
   });

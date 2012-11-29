@@ -59,32 +59,16 @@ console.
 .. note:: The HTML returned by your Pyramid application must contain a
    ``</body>`` end-body tag for the toolbar to be injected into a response.
 
-.. note:: The debug toolbar loads and uses RequireJS_ to load its scripts.
-   This fails if RequireJS is already loaded by your site.
-   To use the toolbar in this case, just add it to RequireJS's path configuration
-   and ask RequireJS to load it:
-
-   .. code-block:: javascript
-
-      require.config({
-        paths: {
-          "jquery": "jquery-1.7.2.min",
-          "toolbar": "/_debug_toolbar/static/js/toolbar"
-        }
-      });
-    
-      require(["jquery", "toolbar"], function($, toolbar) {
-        $(function() {
-          // your module
-        });
-      }); 
+.. note:: The debug toolbar now loads and uses its own modified version of
+   RequireJS_ to load its scripts. You no longer need to add it to RequireJS's
+   path configuration and ask RequireJS to load it.
 
 .. _RequireJS: http://requirejs.org/
 
 Settings
 ~~~~~~~~
 
-Settings can be used to control the operation of the toolbar. These settings 
+Settings can be used to control the operation of the toolbar. These settings
 are typically specified in the Pyramid "app" section of the Pyramid ``.ini``
 file.
 
@@ -149,7 +133,7 @@ file.
     ``.ini`` file, it should be a space- or newline-separated sequence of
     dotted Python names.  For example::
 
-      debugtoolbar.panels = 
+      debugtoolbar.panels =
           pyramid_debugtoolbar.panels.versions.VersionDebugPanel
           pyramid_debugtoolbar.panels.settings.SettingsDebugPanel
           pyramid_debugtoolbar.panels.headers.HeaderDebugPanel
@@ -254,7 +238,7 @@ Tweens
 ~~~~~~
 
 Displays the tween chain for your application, and whether they were defined
-explicitly or implicitly. 
+explicitly or implicitly.
 
 .. image:: tweens.png
 
