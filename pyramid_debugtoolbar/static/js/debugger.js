@@ -146,17 +146,6 @@ require([
           $.get(window.DEBUG_TOOLBAR_ROOT_PATH + '/execute', {
                   cmd: cmd, frm: frameID, token:window.DEBUGGER_TOKEN}, function(data) {
             var tmp = $('<div>').html(data);
-            $('span.extended', tmp).each(function() {
-              var hidden = $(this).wrap('<span>').hide();
-              hidden
-                .parent()
-                .append($('<a href="#" class="toggle">&nbsp;&nbsp;</a>')
-                  .click(function() {
-                    hidden.toggle();
-                    $(this).toggleClass('open')
-                    return false;
-                  }));
-            });
             output.append(tmp);
             command.focus();
             consoleNode.scrollTop(command.position().top);

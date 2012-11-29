@@ -11,6 +11,20 @@
 - The debug console now adds a shortcut for accessing the last result through
   ``_``.
 
+- Show the prompt and little text file icons show all the time, instead of only
+  on hover.
+
+- Do not set max-height on result boxes (which result in nested scroll on the
+  page, which makes it hard to find information quickly).
+
+- When an expression result is long, do not truncate with an ellipsis, which
+  requires one more click to get at the information I need.
+
+- Support ``pip install`` from the github repository by adding all static files
+  required to install in the ``package_data`` ``setup.py``. Setuptools usually
+  uses Subversion or CVS to tell it what static files it needs to package up
+  for egg distribution, but does not support reading git metadata.
+
 1.0.2 (2012-04-19)
 ------------------
 

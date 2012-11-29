@@ -113,21 +113,15 @@ class DebugReprGenerator(object):
     def __init__(self):
         self._stack = []
 
-    def _sequence_repr_maker(left, right, base=object(), limit=8):
+    def _sequence_repr_maker(left, right, base=object()):
         def proxy(self, obj, recursive):
             if recursive:
                 return _add_subclass_info(left + '...' + right, obj, base)
             buf = [left]
-            have_extended_section = False
             for idx, item in enumerate(obj):
                 if idx:
                     buf.append(', ')
-                if idx == limit:
-                    buf.append('<span class="extended">')
-                    have_extended_section = True
                 buf.append(self.repr(item))
-            if have_extended_section:
-                buf.append('</span>')
             buf.append(right)
             return _add_subclass_info(text_(''.join(buf)), obj, base)
         return proxy
@@ -195,22 +189,16 @@ class DebugReprGenerator(object):
         buf.append('</span>')
         return _add_subclass_info(text_(''.join(buf)), obj, binary_type)
 
-    def dict_repr(self, d, recursive, limit=5):
+    def dict_repr(self, d, recursive):
         if recursive:
             return _add_subclass_info(text_('{...}'), d, dict)
         buf = ['{']
-        have_extended_section = False
         for idx, (key, value) in enumerate(iteritems_(d)):
             if idx:
                 buf.append(', ')
-            if idx == limit - 1:
-                buf.append('<span class="extended">')
-                have_extended_section = True
             buf.append('<span class="pair"><span class="key">%s</span>: '
                        '<span class="value">%s</span></span>' %
                        (self.repr(key), self.repr(value)))
-        if have_extended_section:
-            buf.append('</span>')
         buf.append('}')
         return _add_subclass_info(text_(''.join(buf)), d, dict)
 
