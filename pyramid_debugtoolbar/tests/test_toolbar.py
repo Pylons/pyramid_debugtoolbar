@@ -14,7 +14,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def tearDown(self):
         del self.config
-        
+
     def _makeOne(self, request, panel_classes):
         from pyramid_debugtoolbar.toolbar import DebugToolbar
         return DebugToolbar(request, panel_classes)
@@ -110,7 +110,7 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-        
+
     def _callFUT(self, handler, registry):
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
         return toolbar_tween_factory(handler, registry)
@@ -119,7 +119,7 @@ class Test_toolbar_tween_factory(unittest.TestCase):
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
         self.assertTrue(result is handler)
-        
+
     def test_it_enabled(self):
         self.config.registry.settings['debugtoolbar.enabled'] = True
         def handler(): pass
@@ -148,7 +148,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             return self.response
         return handler
-        
+
     def _callFUT(self, request, handler=None):
         registry = self.config.registry
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
@@ -249,6 +249,28 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertEqual(result.status_int, 200)
         self.assertEqual(result.location, None)
 
+    def test_request_authorization(self):
+        from pyramid_debugtoolbar import set_request_authorization_callback
+
+        def auth_check_disable_toolbar(request):
+            return False
+
+        def auth_check_enable_toolbar(request):
+            return True
+
+        request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
+        self.config.registry.settings['debugtoolbar.panels'] = [DummyPanel]
+        request.registry = self.config.registry
+
+        set_request_authorization_callback(request, auth_check_disable_toolbar)
+        result = self._callFUT(request)
+        self.assertFalse(getattr(result, 'processed', False))
+
+        set_request_authorization_callback(request, auth_check_enable_toolbar)
+        result = self._callFUT(request)
+        self.assertTrue(result.processed)
+
 class DummyPanel(object):
     is_active = False
     has_content = False
@@ -263,7 +285,7 @@ class DummyPanel(object):
     def wrap_handler(self, handler):
         handler.wrapped = True
         return handler
-        
+
     def dom_id(self):
         return 'id'
 
