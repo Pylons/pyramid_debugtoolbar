@@ -6,7 +6,6 @@ from pyramid.interfaces import Interface
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
-from pyramid.security import has_permission
 from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.compat import url_unquote
 from pyramid_debugtoolbar.compat import bytes_
