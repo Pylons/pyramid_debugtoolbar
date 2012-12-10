@@ -20,6 +20,12 @@ Next Release
   versions of require that may already be loaded on the page. You no longer
   need to add the toolbar to your own require.js to make it work.
 
+- Support for per-request authorization of toolbar middleware via
+  config.set_debugtoolbar_request_authorization(callback) where callback
+  accepts request object and returns boolean value whether toolbar is enabled
+  or not.
+
+
 1.0.3 (2012-09-23)
 ------------------
 

@@ -6,8 +6,9 @@ from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
-from pyramid_debugtoolbar.toolbar import toolbar_tween_factory # API
-toolbar_tween_factory = toolbar_tween_factory # pyflakes
+from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
+                                          toolbar_tween_factory)  # API
+toolbar_tween_factory = toolbar_tween_factory  # pyflakes
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
@@ -33,8 +34,10 @@ default_settings = (
     ('hosts', as_list, default_hosts),
     )
 
+
 def parse_settings(settings):
     parsed = {}
+
     def populate(name, convert, default):
         name = '%s%s' % (SETTINGS_PREFIX, name)
         value = convert(settings.get(name, default))
@@ -49,9 +52,17 @@ try:
     # normal mako settings.
     from pyramid.mako_templating import MakoRendererFactoryHelper
     renderer_factory = MakoRendererFactoryHelper('dbtmako.')
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     # Buuut, if not (1.2 probably), just use the normal mako renderer factory
     from pyramid.mako_templating import renderer_factory
+
+
+def set_request_authorization_callback(request, callback):
+    """
+    Register IRequestAuthorization utility to authorize toolbar per request.
+    """
+    request.registry.registerUtility(callback, IRequestAuthorization)
+
 
 def includeme(config):
     """ Activate the debug toolbar; usually called via
@@ -81,5 +92,7 @@ def includeme(config):
     config.add_route('debugtoolbar.sql_explain',
                      '/_debug_toolbar/sqlalchemy/sql_explain')
     config.scan('pyramid_debugtoolbar.views')
+    config.add_directive('set_debugtoolbar_request_authorization',
+                         set_request_authorization_callback)
+
     config.introspection = introspection
-    

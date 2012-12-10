@@ -83,7 +83,7 @@ class ExceptionDebugView(object):
                     result = frame.console.eval(self.cmd)
                     return Response(result, content_type='text/html')
         return HTTPBadRequest()
-        
+
     @view_config(
         route_name='debugtoolbar.console',
         renderer='pyramid_debugtoolbar:templates/console.dbtmako',
