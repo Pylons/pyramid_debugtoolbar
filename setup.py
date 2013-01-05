@@ -38,7 +38,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='1.0.4dev',
+      version='1.0.4',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
@@ -50,6 +50,7 @@ setup(name='pyramid_debugtoolbar',
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
         "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP :: WSGI",
         "License :: Repoze Public License",
