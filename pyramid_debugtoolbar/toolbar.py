@@ -105,7 +105,7 @@ def toolbar_tween_factory(handler, registry):
 
         if (
             (remote_addr is None) or
-            filter(None, map(request.path.startswith, exclude)) or
+            list(filter(None, map(request.path.startswith, exclude))) or
             (not addr_in(remote_addr, hosts))
             ):
             return handler(request)
