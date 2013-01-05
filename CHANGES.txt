@@ -1,6 +1,10 @@
 Next Release
 ------------------
 
+- Add a ``debugtoolbar.excluded_prefixes`` setting.  When a URL path prefix
+  matches one of these prefixes, the toolbar will not be shown on the resulting
+  page.
+
 - Show the prompt and little text file icons show all the time, instead of
   only on hover.
 

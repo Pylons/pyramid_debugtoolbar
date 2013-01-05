@@ -13,13 +13,16 @@ class Test_parse_settings(unittest.TestCase):
                     'debugtoolbar.intercept_exc':'false',
                     'debugtoolbar.intercept_redirects': 'false',
                     'debugtoolbar.panels': panels,
-                    'debugtoolbar.hosts': '127.0.0.1',}
+                    'debugtoolbar.hosts': '127.0.0.1',
+                    'debugtoolbar.exclude_prefixes': '/excluded\n/e2',
+                    }
         result = self._callFUT(settings)
         self.assertEqual(result,
                          {'debugtoolbar.enabled':False,
                           'debugtoolbar.intercept_exc': False,
                           'debugtoolbar.intercept_redirects': False,
                           'debugtoolbar.panels': [DummyPanel, DummyPanel],
+                          'debugtoolbar.exclude_prefixes': ['/excluded', '/e2'],
                           'debugtoolbar.hosts': ['127.0.0.1'],
                           }
                          )

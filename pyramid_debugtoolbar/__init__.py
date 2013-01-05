@@ -1,6 +1,7 @@
 from pyramid.settings import asbool
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
+from pyramid_debugtoolbar.utils import as_cr_separated_list
 from pyramid_debugtoolbar.utils import as_display_debug_or_false
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -31,6 +32,7 @@ default_settings = (
     ('intercept_redirects', asbool, 'false'),
     ('panels', as_globals_list, default_panel_names),
     ('hosts', as_list, default_hosts),
+    ('exclude_prefixes', as_cr_separated_list, []),
     )
 
 def parse_settings(settings):

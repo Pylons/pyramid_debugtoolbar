@@ -131,9 +131,11 @@ class Test_toolbar_handler(unittest.TestCase):
         from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config = testing.setUp()
-        self.config.registry.settings['debugtoolbar.enabled'] = True
-        self.config.registry.settings['debugtoolbar.hosts'] = ['127.0.0.1']
-        self.config.registry.settings['mako.directories'] = []
+        settings = self.config.registry.settings
+        settings['debugtoolbar.enabled'] = True
+        settings['debugtoolbar.hosts'] = ['127.0.0.1']
+        settings['mako.directories'] = []
+        settings['debugtoolbar.exclude_prefixes'] = ['/excluded']
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
@@ -159,6 +161,13 @@ class Test_toolbar_handler(unittest.TestCase):
 
     def test_it_startswith_root_path(self):
         request = Request.blank('/_debug_toolbar')
+        request.remote_addr = '127.0.0.1'
+        result = self._callFUT(request)
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(result is self.response)
+
+    def test_it_startswith_excluded_prefix(self):
+        request = Request.blank('/excluded')
         request.remote_addr = '127.0.0.1'
         result = self._callFUT(request)
         self.assertFalse(hasattr(request, 'debug_toolbar'))

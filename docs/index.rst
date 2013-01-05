@@ -81,7 +81,9 @@ file.
 
    This should be a list if setup is done in Python or, if defined in a Paste
    ini file, a single-line list of IP addresses/hostmasks separated by
-   spaces.
+   spaces.  For example::
+
+      debugtoolbar.hosts = 192.168.1.1 192.168.2.0/24
 
    To enable access from any host, use the hostmask ``0.0.0.0/0``.
 
@@ -154,6 +156,20 @@ file.
     screen, just set ``debugtoolbar.button_style`` to 'top:auto;bottom:30px;'.
     If you're browser support the zoom property, you can even control the
     magnification level of the toolbar button (ie. 'zoom:50%').
+
+``debugtoolbar.exclude_prefixes``
+
+    The debug toolbar won't be shown if the PATH_INFO variable starts with any
+    of the prefixes listed in this setting.  If configuration is done via an
+    .ini file, the prefixes should be separated by carriage returns. For
+    example::
+
+      debugtoolbar.exclude_prefixes =
+          /manage
+          /settings
+
+    If configuration is done via Python, the setting should be a list.  This
+    setting was added in debugtoolbar version 1.0.4.
 
 The Toolbar
 -----------

@@ -89,6 +89,7 @@ def toolbar_tween_factory(handler, registry):
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
     hosts = get_setting(settings, 'hosts')
+    exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
 
     exc_history = None
 
@@ -98,11 +99,15 @@ def toolbar_tween_factory(handler, registry):
 
     def toolbar_tween(request):
         root_path = request.route_path(ROOT_ROUTE_NAME)
+        exclude = [root_path] + exclude_prefixes
         request.exc_history = exc_history
         remote_addr = request.remote_addr
 
-        if ( (remote_addr is None) or (request.path.startswith(root_path))
-             or (not addr_in(remote_addr, hosts)) ):
+        if (
+            (remote_addr is None) or
+            filter(None, map(request.path.startswith, exclude)) or
+            (not addr_in(remote_addr, hosts))
+            ):
             return handler(request)
 
         toolbar = DebugToolbar(request, panel_classes)
