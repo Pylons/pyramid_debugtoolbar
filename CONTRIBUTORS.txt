@@ -105,3 +105,4 @@ Contributors
 - Nigel Smith, 2012/06/15
 - Christopher Brown, 2012/08/11
 - Aaron Spaulding, 2013/01/20
+- Hadrien David, 2013/01/23
