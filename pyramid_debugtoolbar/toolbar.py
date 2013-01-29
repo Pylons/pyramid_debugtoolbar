@@ -101,12 +101,15 @@ def toolbar_tween_factory(handler, registry):
         root_path = request.route_path(ROOT_ROUTE_NAME)
         exclude = [root_path] + exclude_prefixes
         request.exc_history = exc_history
-        remote_addr = request.remote_addr
+        last_proxy_addr = None
+
+        if request.remote_addr:
+            last_proxy_addr = request.remote_addr.split(',').pop().strip()
 
         if (
-            (remote_addr is None) or
+            (last_proxy_addr is None) or
             list(filter(None, map(request.path.startswith, exclude))) or
-            (not addr_in(remote_addr, hosts))
+            (not addr_in(last_proxy_addr, hosts))
             ):
             return handler(request)
 

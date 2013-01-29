@@ -258,6 +258,12 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertEqual(result.status_int, 200)
         self.assertEqual(result.location, None)
 
+    def test_it_remote_addr_proxies_list(self):
+        request = Request.blank('/')
+        request.remote_addr = '172.16.63.156, 64.119.211.105'
+        result = self._callFUT(request)
+
+
 class DummyPanel(object):
     is_active = False
     has_content = False
