@@ -1,5 +1,20 @@
-Next Release
+Next release
+------------
+
+- If you are also using require.js, the debug toolbar's version of jQuery
+  will no longer conflict with your application's version of the library.
+
+- Use the "n" filter to disable default_filters when including the raw
+  SQL in links, leaving only the "u" filter (URL escaping).
+
+- ...
+
+1.0.4 (2013-01-05)
 ------------------
+
+- Add a ``debugtoolbar.excluded_prefixes`` setting.  When a URL path prefix
+  matches one of these prefixes, the toolbar will not be shown on the resulting
+  page.
 
 - Show the prompt and little text file icons show all the time, instead of
   only on hover.

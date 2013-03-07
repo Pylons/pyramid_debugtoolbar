@@ -1,2 +1,1 @@
-#!/bin/bash
-make clean html SPHINXBUILD=../env26/bin/sphinx-build
+make clean html SPHINXBUILD=../env27/bin/sphinx-build

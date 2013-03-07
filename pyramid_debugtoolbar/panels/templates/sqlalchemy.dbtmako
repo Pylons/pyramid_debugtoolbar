@@ -14,8 +14,8 @@
 			<td>
 			% if query['params']:
 				% if query['is_select']:
-				<a class="remoteCall" href="${root_path}/sqlalchemy/sql_select?sql=${query['raw_sql']|u}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}">SELECT</a><br />
-				<a class="remoteCall" href="${root_path}/sqlalchemy/sql_explain?sql=${query['raw_sql']|u}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}">EXPLAIN</a><br />
+				<a class="remoteCall" href="${root_path}/sqlalchemy/sql_select?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}">SELECT</a><br />
+				<a class="remoteCall" href="${root_path}/sqlalchemy/sql_explain?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}">EXPLAIN</a><br />
 				% endif
 			% endif
 			</td>

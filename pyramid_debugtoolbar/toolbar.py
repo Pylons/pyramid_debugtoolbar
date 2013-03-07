@@ -105,7 +105,7 @@ def toolbar_tween_factory(handler, registry):
     intercept_redirects = get_setting(settings, 'intercept_redirects')
     hosts = get_setting(settings, 'hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
-
+    exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
     exc_history = None
 
     if intercept_exc:
@@ -114,13 +114,18 @@ def toolbar_tween_factory(handler, registry):
 
     def toolbar_tween(request):
         root_path = request.route_path(ROOT_ROUTE_NAME)
+        exclude = [root_path] + exclude_prefixes
         request.exc_history = exc_history
-        remote_addr = request.remote_addr
+        last_proxy_addr = None
+        starts_with_excluded = list(filter(None, map(request.path.startswith,
+                                                     exclude)))
 
+        if request.remote_addr:
+            last_proxy_addr = request.remote_addr.split(',').pop().strip()
 
-        if remote_addr is None \
-            or request.path.startswith(root_path) \
-            or not addr_in(remote_addr, hosts) \
+        if last_proxy_addr is None \
+            or starts_with_excluded \
+            or not addr_in(last_proxy_addr, hosts) \
             or auth_check and not auth_check(request):
                 return handler(request)
 

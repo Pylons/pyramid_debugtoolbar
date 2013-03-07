@@ -103,7 +103,7 @@ class Test_object_dumping(unittest.TestCase):
 
         drg = DebugReprGenerator()
         out = drg.dump_object(Foo())
-        assert re.search('Details for pyramid.debugtoolbar.tests.test_debug.Foo object at', out)
+        assert re.search('Details for', out)
         assert re.search('<th>x.*<span class="number">42</span>(?s)', out)
         assert re.search('<th>y.*<span class="number">23</span>(?s)', out)
         assert re.search('<th>z.*<span class="number">15</span>(?s)', out)

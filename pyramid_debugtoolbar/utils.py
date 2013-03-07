@@ -109,7 +109,7 @@ resolver = DottedNameResolver(None)
 
 def as_cr_separated_list(value):
     if isinstance(value, string_types):
-        value = filter(None, [x.strip() for x in value.splitlines()])
+        value = list(filter(None, [x.strip() for x in value.splitlines()]))
     return value
 
 def as_list(value):
