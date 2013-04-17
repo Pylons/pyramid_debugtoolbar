@@ -10,7 +10,7 @@
 	<tbody>
 	% for i, query in enumerate(queries):
 		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${'%.4f' % query['duration']}</td>
+			<td>${'%.2f' % query['duration']}</td>
 			<td>
 			% if query['params']:
 				% if query['is_select']:
