@@ -1,7 +1,7 @@
-Next release
-------------
+1.0.5 (2013-04-17)
+------------------
 
-- Parse IPs correctly when request.remote_addr is a comma separated list 
+- Parse IPs correctly when request.remote_addr is a comma separated list
   of proxies IPs.
 
 - If you are also using require.js, the debug toolbar's version of jQuery
@@ -18,8 +18,6 @@ Next release
 - Short term fix for preventing error when converting binary query params to json.
 
 - Fix sqlalchemy query duration from microseconds to milliseconds.
-
-- ...
 
 1.0.4 (2013-01-05)
 ------------------
