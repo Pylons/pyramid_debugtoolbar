@@ -10,7 +10,7 @@ except ImportError: # pragma: no cover
     has_content = False
 else:
     has_content = True
-    
+
 
 _ = lambda x: x
 

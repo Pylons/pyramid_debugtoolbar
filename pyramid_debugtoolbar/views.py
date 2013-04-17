@@ -14,13 +14,22 @@ from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import addr_in
+from pyramid_debugtoolbar.toolbar import IRequestAuthorization
+
 
 def valid_host(info, request):
     hosts = get_setting(request.registry.settings, 'hosts')
     remote_addr = request.remote_addr
     if remote_addr is None:
         return False
+
     return addr_in(request.remote_addr, hosts)
+
+
+def valid_request(info, request):
+    auth_check = request.registry.queryUtility(IRequestAuthorization)
+    return auth_check(request) if auth_check else True
+
 
 class ExceptionDebugView(object):
     def __init__(self, request):
@@ -48,7 +57,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.exception',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host,)
+        custom_predicates=(valid_host, valid_request)
         )
     def exception(self):
         tb = self.exc_history.tracebacks[self.tb]
@@ -59,7 +68,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.source',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host,)
+        custom_predicates=(valid_host, valid_request)
         )
     def source(self):
         exc_history = self.exc_history
@@ -72,7 +81,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.execute',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host,)
+        custom_predicates=(valid_host, valid_request)
         )
     def execute(self):
         if self.request.exc_history.eval_exc:
@@ -83,11 +92,11 @@ class ExceptionDebugView(object):
                     result = frame.console.eval(self.cmd)
                     return Response(result, content_type='text/html')
         return HTTPBadRequest()
-        
+
     @view_config(
         route_name='debugtoolbar.console',
         renderer='pyramid_debugtoolbar:templates/console.dbtmako',
-        custom_predicates=(valid_host,)
+        custom_predicates=(valid_host, valid_request)
         )
     def console(self):
         static_path = self.request.static_url(STATIC_PATH)
@@ -127,7 +136,7 @@ class SQLAlchemyViews(object):
         route_name='debugtoolbar.sql_select',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host,)
+        custom_predicates=(valid_host, valid_request)
         )
     def sql_select(self):
         stmt, params = self.validate()
@@ -155,7 +164,7 @@ class SQLAlchemyViews(object):
         route_name='debugtoolbar.sql_explain',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host,)
+        custom_predicates=(valid_host, valid_request)
         )
     def sql_explain(self):
         stmt, params = self.validate()
@@ -182,4 +191,3 @@ class SQLAlchemyViews(object):
             'str': str,
             'duration': float(self.request.params['duration']),
         }
-

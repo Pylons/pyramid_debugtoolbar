@@ -171,6 +171,44 @@ file.
     If configuration is done via Python, the setting should be a list.  This
     setting was added in debugtoolbar version 1.0.4.
 
+Custom authorization
+~~~~~~~~~~~~~~~~~~~~
+
+Since version 1.0.5 (*upcoming release*) ``pyramid_debugtoolbar`` offers custom
+authorization mechanism to control toolbar feature on per-request basis.
+Using ``config.set_debugtoolbar_request_authorization(callback)`` directive
+you can specify own function to control whether toolbar functionality is enabled
+or not.
+
+.. note::
+  Custom authorization is performed **after** successful IP address check.
+  If ``debugtoolbar.hosts`` settings option is used.
+
+.. note::
+  Custom authorization does not have effect on ``pyramid_debugtoolbar``
+  static route and /_debug_toolbar/static/* contents will still be accessible.
+
+
+.. code-block:: python
+
+  from pyramid.security import authenticated_userid
+  from pyramid.settings import aslist
+
+  def admin_only_debugtoolbar(request):
+      """
+      Enable toolbar for administrators only.
+      Returns True when it should be enabled.
+      """
+      admins = aslist(request.registry.settings.get('admins', ''))
+      userid = authenticated_userid(request)
+      toolbar_enabled = userid and userid in admins
+      return toolbar_enabled
+
+  config = Configurator(.....)
+  config.include('pyramid_debugtoolbar')
+  config.set_debugtoolbar_request_authorization(admin_only_debugtoolbar)
+
+
 The Toolbar
 -----------
 
@@ -380,6 +418,7 @@ Once your panel is ready, you can simply add its package name to the
 
     pyramid.includes = pyramid_debugtoolbar samplepanel
 
+
 More Information
 ----------------
 
@@ -387,6 +426,7 @@ More Information
    :maxdepth: 1
 
    api.rst
+   changes.rst
    glossary.rst
 
 

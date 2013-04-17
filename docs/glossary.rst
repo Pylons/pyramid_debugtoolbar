@@ -9,4 +9,4 @@ Glossary
    Pyramid
       A `web framework <http://pylonsproject.org/>`_ written in Python.
 
-.
+
