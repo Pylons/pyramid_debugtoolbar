@@ -8,7 +8,7 @@
 			<dt>Executed SQL</dt>
 			<dd>${sql|n}</dd>
 			<dt>Time</dt>
-			<dd>${'%.4f' % (duration)} ms</dd>
+			<dd>${'%.2f' % (duration)} ms</dd>
 		</dl>
 		<table class="djSqlExplain">
 			<thead>

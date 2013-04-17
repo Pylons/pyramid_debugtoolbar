@@ -42,9 +42,10 @@ try:
                 engines[id(conn.engine)] = weakref.ref(conn.engine)
                 setattr(request.registry, 'pdtb_sqla_engines', engines)
                 queries = getattr(request, 'pdtb_sqla_queries', [])
+                duration = (stop_timer - conn.pdtb_start_timer) * 1000
                 queries.append({
                     'engine_id': id(conn.engine),
-                    'duration': stop_timer - conn.pdtb_start_timer,
+                    'duration': duration,
                     'statement': stmt,
                     'parameters': params,
                     'context': context
