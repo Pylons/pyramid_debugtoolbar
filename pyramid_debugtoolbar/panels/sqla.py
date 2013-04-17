@@ -99,6 +99,8 @@ class SQLADebugPanel(DebugPanel):
                 params = url_quote(json.dumps(query['parameters']))
             except TypeError:
                 pass # object not JSON serializable
+            except UnicodeDecodeError:
+                pass # parameters contain non-utf8 (probably binary) data
 
             need = self.request.exc_history.token + stmt + params
             hash = hashlib.sha1(bytes_(need)).hexdigest()
