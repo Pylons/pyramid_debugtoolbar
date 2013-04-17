@@ -1,7 +1,8 @@
-Next release
-------------
+1.0.6 (2013-04-17)
+------------------
 
-- ...
+- Packaging release only, no code changes.  1.0.5 was a brownbag release due to
+  missing directories in the tarball.
 
 1.0.5 (2013-04-17)
 ------------------
