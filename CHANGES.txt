@@ -17,6 +17,8 @@ Next release
 
 - Short term fix for preventing error when converting binary query params to json.
 
+- Fix sqlalchemy query duration from microseconds to milliseconds.
+
 - ...
 
 1.0.4 (2013-01-05)
