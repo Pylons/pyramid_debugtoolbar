@@ -5,6 +5,7 @@ from pyramid import testing
 
 from pyramid_debugtoolbar.compat import bytes_
 
+
 class DebugToolbarTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
@@ -14,7 +15,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def tearDown(self):
         del self.config
-        
+
     def _makeOne(self, request, panel_classes):
         from pyramid_debugtoolbar.toolbar import DebugToolbar
         return DebugToolbar(request, panel_classes)
@@ -78,6 +79,7 @@ class DebugToolbarTests(unittest.TestCase):
         self.assertTrue(response.processed)
         self.assertTrue(bytes_('top:120px;zoom:50%') in response.app_iter[0])
 
+
 class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
         self.request = Request.blank('/')
@@ -104,13 +106,14 @@ class Test_beforerender_subscriber(unittest.TestCase):
         self._callFUT(event)
         self.assertTrue(event['processed'])
 
+
 class Test_toolbar_tween_factory(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
     def tearDown(self):
         testing.tearDown()
-        
+
     def _callFUT(self, handler, registry):
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
         return toolbar_tween_factory(handler, registry)
@@ -119,12 +122,13 @@ class Test_toolbar_tween_factory(unittest.TestCase):
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
         self.assertTrue(result is handler)
-        
+
     def test_it_enabled(self):
         self.config.registry.settings['debugtoolbar.enabled'] = True
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
         self.assertFalse(result is handler)
+
 
 class Test_toolbar_handler(unittest.TestCase):
     def setUp(self):
@@ -150,7 +154,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             return self.response
         return handler
-        
+
     def _callFUT(self, request, handler=None):
         registry = self.config.registry
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
@@ -258,6 +262,28 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertEqual(result.status_int, 200)
         self.assertEqual(result.location, None)
 
+    def test_request_authorization(self):
+        from pyramid_debugtoolbar import set_request_authorization_callback
+
+        def auth_check_disable_toolbar(request):
+            return False
+
+        def auth_check_enable_toolbar(request):
+            return True
+
+        request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
+        self.config.registry.settings['debugtoolbar.panels'] = [DummyPanel]
+        request.registry = self.config.registry
+
+        set_request_authorization_callback(request, auth_check_disable_toolbar)
+        result = self._callFUT(request)
+        self.assertFalse(getattr(result, 'processed', False))
+
+        set_request_authorization_callback(request, auth_check_enable_toolbar)
+        result = self._callFUT(request)
+        self.assertTrue(result.processed)
+
     def test_it_remote_addr_proxies_list(self):
         request = Request.blank('/')
         request.remote_addr = '172.16.63.156, 64.119.211.105'
@@ -278,7 +304,7 @@ class DummyPanel(object):
     def wrap_handler(self, handler):
         handler.wrapped = True
         return handler
-        
+
     def dom_id(self):
         return 'id'
 

@@ -2,6 +2,7 @@ import binascii
 import sys
 import os
 
+from pyramid.interfaces import Interface
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
@@ -17,6 +18,17 @@ from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid.httpexceptions import WSGIHTTPException
+
+
+class IRequestAuthorization(Interface):
+
+    def __call__(request):
+        """
+        Toolbar per-request authorization.
+        Should return bool values whether toolbar is permitted to be shown
+        within provided request.
+        """
+
 
 class DebugToolbar(object):
 
@@ -63,11 +75,13 @@ class DebugToolbar(object):
             response.app_iter = [body]
             response.content_length = len(body)
 
+
 class ExceptionHistory(object):
     def __init__(self):
         self.token = text_(binascii.hexlify(os.urandom(10)))
         self.frames = {}
         self.tracebacks = {}
+
 
 def beforerender_subscriber(event):
     request = event['request']
@@ -76,6 +90,7 @@ def beforerender_subscriber(event):
     if getattr(request, 'debug_toolbar', None) is not None:
         for panel in request.debug_toolbar.panels:
             panel.process_beforerender(event)
+
 
 def toolbar_tween_factory(handler, registry):
     """ Pyramid tween factory for the debug toolbar """
@@ -89,8 +104,8 @@ def toolbar_tween_factory(handler, registry):
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
     hosts = get_setting(settings, 'hosts')
+    auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
-
     exc_history = None
 
     if intercept_exc:
@@ -102,20 +117,21 @@ def toolbar_tween_factory(handler, registry):
         exclude = [root_path] + exclude_prefixes
         request.exc_history = exc_history
         last_proxy_addr = None
+        starts_with_excluded = list(filter(None, map(request.path.startswith,
+                                                     exclude)))
 
         if request.remote_addr:
             last_proxy_addr = request.remote_addr.split(',').pop().strip()
 
-        if (
-            (last_proxy_addr is None) or
-            list(filter(None, map(request.path.startswith, exclude))) or
-            (not addr_in(last_proxy_addr, hosts))
-            ):
-            return handler(request)
+        if last_proxy_addr is None \
+            or starts_with_excluded \
+            or not addr_in(last_proxy_addr, hosts) \
+            or auth_check and not auth_check(request):
+                return handler(request)
 
         toolbar = DebugToolbar(request, panel_classes)
         request.debug_toolbar = toolbar
-        
+
         _handler = handler
 
         for panel in toolbar.panels:
@@ -136,8 +152,8 @@ def toolbar_tween_factory(handler, registry):
                 body = tb.render_full(request).encode('utf-8', 'replace')
                 response = Response(body, status=500)
                 toolbar.process_response(response)
-                qs = {'token':exc_history.token, 'tb':str(tb.id)}
-                msg = 'Exception at %s\ntraceback url: %s' 
+                qs = {'token': exc_history.token, 'tb': str(tb.id)}
+                msg = 'Exception at %s\ntraceback url: %s'
                 exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
                 exc_msg = msg % (request.url, exc_url)
                 logger.exception(exc_msg)

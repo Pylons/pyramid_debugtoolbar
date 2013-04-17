@@ -10,6 +10,11 @@ Next release
 - Use the "n" filter to disable default_filters when including the raw
   SQL in links, leaving only the "u" filter (URL escaping).
 
+- Support for per-request authorization of toolbar middleware via
+  ``config.set_debugtoolbar_request_authorization(callback)`` where callback
+  accepts request object and returns boolean value whether toolbar is enabled
+  or not.
+
 - ...
 
 1.0.4 (2013-01-05)
