@@ -17,6 +17,7 @@ from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
+from pyramid_debugtoolbar.utils import last_proxy
 from pyramid.httpexceptions import WSGIHTTPException
 
 
@@ -121,7 +122,7 @@ def toolbar_tween_factory(handler, registry):
                                                      exclude)))
 
         if request.remote_addr:
-            last_proxy_addr = request.remote_addr.split(',').pop().strip()
+            last_proxy_addr = last_proxy(request.remote_addr)
 
         if last_proxy_addr is None \
             or starts_with_excluded \

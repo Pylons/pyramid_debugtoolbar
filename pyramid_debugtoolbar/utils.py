@@ -159,3 +159,5 @@ def addr_in(addr, hosts):
             return True
     return False
 
+def last_proxy(addr):
+    return addr.split(',').pop().strip()

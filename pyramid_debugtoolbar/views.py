@@ -14,16 +14,18 @@ from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import addr_in
+from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
 
 def valid_host(info, request):
     hosts = get_setting(request.registry.settings, 'hosts')
-    remote_addr = request.remote_addr
-    if remote_addr is None:
+    if request.remote_addr is None:
         return False
 
-    return addr_in(request.remote_addr, hosts)
+    last_proxy_addr = last_proxy(request.remote_addr)
+
+    return addr_in(last_proxy_addr, hosts)
 
 
 def valid_request(info, request):
