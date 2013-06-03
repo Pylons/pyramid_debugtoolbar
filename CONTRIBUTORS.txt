@@ -107,3 +107,4 @@ Contributors
 - Sebastian Hanula 2012/12/17
 - Aaron Spaulding, 2013/01/20
 - Hadrien David, 2013/01/23
+- Daniel Werner, 2013/06/03
