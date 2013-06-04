@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="${static_path}css/debugger.css" 
           type="text/css">
     <script type="text/javascript">
-      var TRACEBACK = ${traceback_id},
+      var TRACEBACK = ${str(traceback_id)},
           DEBUGGER_TOKEN = "${token}",
           CONSOLE_MODE = ${console},
           EVALEX = ${evalex},

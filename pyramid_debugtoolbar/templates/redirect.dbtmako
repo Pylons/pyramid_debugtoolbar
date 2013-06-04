@@ -3,7 +3,7 @@
         <title>Redirect intercepted</title>
     </head>
     <body>
-        <h1>Redirect (${redirect_code})</h1>
+        <h1>Redirect (${str(redirect_code)})</h1>
         <p>Location: <a href="${redirect_to}">${redirect_to}</a></p>
         <p class="notice">
 
