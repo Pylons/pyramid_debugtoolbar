@@ -6,6 +6,9 @@ Next release
 
 - Drop support for Python 2.5.
 
+- Fix computation of proxy addresses.  See
+  https://github.com/Pylons/pyramid_debugtoolbar/pull/100 .
+
 1.0.6 (2013-04-17)
 ------------------
 
