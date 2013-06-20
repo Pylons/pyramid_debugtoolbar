@@ -174,7 +174,7 @@ file.
 Custom authorization
 ~~~~~~~~~~~~~~~~~~~~
 
-Since version 1.0.5 (*upcoming release*) ``pyramid_debugtoolbar`` offers custom
+Since version 1.0.5 ``pyramid_debugtoolbar`` offers custom
 authorization mechanism to control toolbar feature on per-request basis.
 Using ``config.set_debugtoolbar_request_authorization(callback)`` directive
 you can specify own function to control whether toolbar functionality is enabled
