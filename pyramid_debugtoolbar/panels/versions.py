@@ -1,24 +1,22 @@
 import sys
+import platform
 import pkg_resources
 from operator import itemgetter
-import platform
-
 from pyramid_debugtoolbar.panels import DebugPanel
+from pyramid_debugtoolbar.compat import text_
 
 _ = lambda x: x
-
-plat = 'Python %s on %s' % (sys.version, platform.platform())
 
 packages = []
 for distribution in pkg_resources.working_set:
     name = distribution.project_name
-    packages.append({'version':distribution.version,
-                     'lowername':name.lower(),
-                     'name':name})
-    
-packages = sorted(packages, key=itemgetter('lowername'))
+    packages.append({'version': distribution.version,
+                     'lowername': name.lower(),
+                     'name': name})
 
+packages = sorted(packages, key=itemgetter('lowername'))
 pyramid_version = pkg_resources.get_distribution('pyramid').version
+
 
 class VersionDebugPanel(DebugPanel):
     """
@@ -37,10 +35,18 @@ class VersionDebugPanel(DebugPanel):
     def title(self):
         return _('Versions')
 
+    def _get_platform_name(self):
+        return platform.platform()
+
+    def get_platform(self):
+        return 'Python %s on %s' % (sys.version,
+                                    text_(self._get_platform_name(), 'utf8'))
+
+    @property
+    def properties(self):
+        return {'platform': self.get_platform(), 'packages': packages}
+
     def content(self):
-        vars = {'platform':plat, 'packages':packages}
         return self.render(
             'pyramid_debugtoolbar.panels:templates/versions.dbtmako',
-            vars, self.request)
-
-
+            self.properties, self.request)
