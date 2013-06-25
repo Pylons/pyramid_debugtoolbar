@@ -226,7 +226,7 @@ class Traceback(object):
             'classes':      text_(' '.join(classes)),
             'title':        title and text_('<h3>%s</h3>' % title) or text_(''),
             'frames':       text_('\n'.join(frames)),
-            'description':  description_wrapper % escape(self.exception),
+            'description':  description_wrapper % escape(self.exception.decode('utf-8')),
         }
         return render(
             'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
@@ -245,10 +245,10 @@ class Traceback(object):
             'evalex':           evalex and 'true' or 'false',
             'console':          'false',
             'lodgeit_url':      escape(lodgeit_url),
-            'title':            exc,
-            'exception':        exc,
+            'title':            exc.decode('utf-8'),
+            'exception':        exc.decode('utf-8'),
             'exception_type':   escape(self.exception_type),
-            'summary':          summary,
+            'summary':          summary.decode('utf-8'),
             'plaintext':        self.plaintext,
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
             'traceback_id':     self.id,
@@ -269,8 +269,8 @@ class Traceback(object):
                 frame.lineno,
                 frame.function_name
             ))
-            yield text_('    ' + frame.current_line.strip())
-        yield self.exception
+            yield text_('    ' + frame.current_line.strip()).decode('utf-8')
+        yield self.exception.decode('utf-8')
 
     @reify
     def plaintext(self):
