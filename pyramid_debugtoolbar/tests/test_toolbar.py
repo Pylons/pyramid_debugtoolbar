@@ -262,6 +262,23 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertEqual(result.status_int, 200)
         self.assertEqual(result.location, None)
 
+    def test_it_intercept_exc_with_utf8_message(self):
+        request = Request.blank('/')
+        def handler(request):
+            raise NotImplementedError(b'K\xc3\xa4se!\xe2\x98\xa0')
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
+        self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
+        response = self._callFUT(request, handler)
+        self.assertTrue(response.status_int, 500)
+        self.assertTrue(
+            b'NotImplementedError: K\xc3\xa4se!\xe2\x98\xa0' in response.body or
+            # Python 3: the byte exception is escaped
+            b'K\\xc3\\xa4se!\\xe2\\x98\\xa0' in response.body
+        )
+
     def test_request_authorization(self):
         from pyramid_debugtoolbar import set_request_authorization_callback
 
