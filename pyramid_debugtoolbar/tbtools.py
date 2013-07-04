@@ -73,6 +73,7 @@ def get_current_traceback(ignore_system_exceptions=False,
                          ignore_system_exceptions=ignore_system_exceptions,
                          show_hidden_frames=show_hidden_frames, skip=skip)
 
+
 def get_traceback(info, ignore_system_exceptions=False,
                   show_hidden_frames=False, skip=0):
     exc_type, exc_value, tb = info
@@ -238,7 +239,7 @@ class Traceback(object):
         root_path = request.route_url(ROOT_ROUTE_NAME)
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
-        qs = {'token':request.exc_history.token, 'tb':str(self.id)}
+        qs = {'token': request.exc_history.token, 'tb': str(self.id)}
         url = request.route_url(EXC_ROUTE_NAME, _query=qs)
         evalex = request.exc_history.eval_exc
         vars = {
@@ -270,7 +271,7 @@ class Traceback(object):
                 frame.function_name
             ))
             yield text_('    ' + frame.current_line.strip())
-        yield self.exception
+        yield text_(self.exception, 'utf-8')
 
     @reify
     def plaintext(self):

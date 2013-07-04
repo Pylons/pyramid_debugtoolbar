@@ -89,6 +89,11 @@ def escape(s, quote=False):
         return s.__html__()
     if not isinstance(s, (text_type, binary_type)):
         s = text_type(s)
+    if isinstance(s, binary_type):
+        try:
+            s.decode('ascii')
+        except:
+            s = s.decode('utf-8', 'replace')
     s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
     if quote:
         s = s.replace('"', "&quot;")
