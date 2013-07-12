@@ -19,6 +19,7 @@ from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid.httpexceptions import WSGIHTTPException
+from repoze.lru import LRUCache
 
 
 class IRequestAuthorization(Interface):
@@ -46,7 +47,7 @@ class DebugToolbar(object):
                 panel_inst.is_active = True
             self.panels.append(panel_inst)
 
-    def process_response(self, response):
+    def get_html(self, response):
         # If the body is HTML, then we add the toolbar to the response.
         request = self.request
 
@@ -67,14 +68,18 @@ class DebugToolbar(object):
             toolbar_html = render(
                     'pyramid_debugtoolbar:templates/toolbar.dbtmako',
                     vars, request=request)
-            response_html = response.body
             toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
-            body = replace_insensitive(
-                response_html, bytes_('</body>'),
-                toolbar_html + bytes_('</body>')
-                )
-            response.app_iter = [body]
-            response.content_length = len(body)
+            return toolbar_html
+
+    def process_response(self, response):
+        response_html = response.body
+        toolbar_html = '<iframe/>'
+        body = replace_insensitive(
+            response_html, bytes_('</body>'),
+            toolbar_html + bytes_('</body>')
+            )
+        response.app_iter = [body]
+        response.content_length = len(body)
 
 
 class ExceptionHistory(object):
@@ -83,6 +88,11 @@ class ExceptionHistory(object):
         self.frames = {}
         self.tracebacks = {}
 
+
+class RequestEntry(object):
+    def __init__(self, request_info, html):
+        self.request_info = request_info
+        self.html = html
 
 def beforerender_subscriber(event):
     request = event['request']
@@ -100,6 +110,8 @@ def toolbar_tween_factory(handler, registry):
     if not get_setting(settings, 'enabled'):
         return handler
 
+    request_history = LRUCache(100)
+    
     redirect_codes = (301, 302, 303, 304)
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
@@ -116,7 +128,6 @@ def toolbar_tween_factory(handler, registry):
     def toolbar_tween(request):
         root_path = request.route_path(ROOT_ROUTE_NAME)
         exclude = [root_path] + exclude_prefixes
-        request.exc_history = exc_history
         last_proxy_addr = None
         starts_with_excluded = list(filter(None, map(request.path.startswith,
                                                      exclude)))
@@ -130,6 +141,7 @@ def toolbar_tween_factory(handler, registry):
             or auth_check and not auth_check(request):
                 return handler(request)
 
+        request.exc_history = exc_history
         toolbar = DebugToolbar(request, panel_classes)
         request.debug_toolbar = toolbar
 
@@ -182,7 +194,12 @@ def toolbar_tween_factory(handler, registry):
                         response.app_iter = [content]
                         response.status_int = 200
 
+            toolbar_html = toolbar.get_html(response)
+            request_info = get_request_info(request)
+            request_history.put(id, request_info, toolbar_html)
+
             toolbar.process_response(response)
+
             return response
 
         finally:
@@ -190,3 +207,6 @@ def toolbar_tween_factory(handler, registry):
             del request.debug_toolbar
 
     return toolbar_tween
+
+def get_request_info(request):
+    return {}

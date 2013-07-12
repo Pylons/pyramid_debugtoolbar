@@ -26,6 +26,7 @@ except IOError:
 install_requires = [
     'pyramid>=1.2dev',
     'Pygments',
+    'repoze.lru',
     ]
 
 testing_extras = [
