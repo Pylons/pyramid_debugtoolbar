@@ -1,5 +1,6 @@
 import hashlib
 
+from pyramid.exceptions import NotFound
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
@@ -193,3 +194,16 @@ class SQLAlchemyViews(object):
             'str': str,
             'duration': float(self.request.params['duration']),
         }
+
+
+@view_config(
+    route_name='debugtoolbar.request',
+    permission=NO_PERMISSION_REQUIRED,
+    custom_predicates=(valid_host, valid_request)
+)
+def request_view(request):
+    historical = request.history.get(
+        request.matchdict['request_id'], None)
+    if not historical:
+        raise NotFound
+    return Response(historical.html, content_type='text/html')

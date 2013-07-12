@@ -84,6 +84,7 @@ def includeme(config):
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender')
+    config.add_route('debugtoolbar.request', '/_debug_toolbar/{request_id}')
     config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar', static=True)
     config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
     config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
