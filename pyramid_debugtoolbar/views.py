@@ -202,8 +202,7 @@ class SQLAlchemyViews(object):
     custom_predicates=(valid_host, valid_request)
 )
 def request_view(request):
-    historical = request.history.get(
-        request.matchdict['request_id'], None)
-    if not historical:
+    toolbar = request.history.get(request.matchdict['request_id'], None)
+    if not toolbar:
         raise NotFound
-    return Response(historical.html, content_type='text/html')
+    return Response(toolbar.get_html(request), content_type='text/html')

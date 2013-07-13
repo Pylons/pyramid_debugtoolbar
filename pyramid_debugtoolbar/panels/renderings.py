@@ -9,8 +9,12 @@ class RenderingsDebugPanel(DebugPanel):
     as JSON) used during a request.
     """
     name = 'Template'
-    has_content = True
     renderings = ()
+    template = 'pyramid_debugtoolbar.panels:templates/renderings.dbtmako'
+
+    @property
+    def has_content(self):
+        return bool(self.renderings)
 
     def process_beforerender(self, event):
         if not self.renderings:
@@ -39,10 +43,6 @@ class RenderingsDebugPanel(DebugPanel):
     def url(self):
         return ''
 
-    def content(self):
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/renderings.dbtmako', {
-            'renderings': self.renderings
-        }, request=self.request)
-
+    def process_response(self, response):
+        self.data = {'renderings': self.renderings}
 

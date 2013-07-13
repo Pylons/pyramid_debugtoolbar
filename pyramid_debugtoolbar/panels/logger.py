@@ -45,10 +45,24 @@ logging.root.addHandler(handler)
 class LoggingPanel(DebugPanel):
     name = 'Logging'
     has_content = True
+    template = 'pyramid_debugtoolbar.panels:templates/logger.dbtmako'
 
     def __init__(self, request):
-        self.request = request
         handler.clear_records()
+
+    def process_response(self, response):
+        records = []
+        for record in self.get_and_delete():
+            records.append({
+                'message': record.getMessage(),
+                'time': datetime.datetime.fromtimestamp(record.created),
+                'level': record.levelname,
+                'file': format_fname(record.pathname),
+                'file_long': record.pathname,
+                'line': record.lineno,
+            })
+
+        self.data = {'records': records}
 
     def get_and_delete(self):
         records = handler.get_records()
@@ -68,24 +82,3 @@ class LoggingPanel(DebugPanel):
 
     def url(self):
         return ''
-
-    def content(self):
-        records = []
-        for record in self.get_and_delete():
-            records.append({
-                'message': record.getMessage(),
-                'time': datetime.datetime.fromtimestamp(record.created),
-                'level': record.levelname,
-                'file': format_fname(record.pathname),
-                'file_long': record.pathname,
-                'line': record.lineno,
-            })
-
-        vars = {'records': records}
-
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/logger.dbtmako',
-            vars,
-            request=self.request)
-
-

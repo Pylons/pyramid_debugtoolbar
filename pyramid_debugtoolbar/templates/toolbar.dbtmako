@@ -57,7 +57,7 @@
 				</div>
 				<div class="pDebugPanelContent">
 				    <div class="scroll">
-				        ${panel.content()|n}
+				        ${panel.render_content(request)|n}
 				    </div>
 				</div>
 			</div>

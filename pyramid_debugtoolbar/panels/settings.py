@@ -12,6 +12,7 @@ class SettingsDebugPanel(DebugPanel):
     """
     name = 'Settings'
     has_content = True
+    template = 'pyramid_debugtoolbar.panels:templates/settings.dbtmako'
 
     filter_old_settings = [
         'debug_authorization',
@@ -29,7 +30,6 @@ class SettingsDebugPanel(DebugPanel):
         # always repr this stuff before it's sent to the template to appease
         # dumbass stuff like MongoDB's __getattr__ that always returns a
         # Collection, which fails when Jinja tries to look up __html__ on it.
-        self.request = request
         settings = request.registry.settings
         # filter out non-pyramid prefixed settings to avoid duplication
         if 'pyramid.default_locale_name' in settings:
@@ -37,7 +37,7 @@ class SettingsDebugPanel(DebugPanel):
                      if k not in self.filter_old_settings]
         else:
             reprs = [(k, repr(v)) for k, v in settings.items()]
-        self.settings = sorted(reprs, key=itemgetter(0))
+        self.data = {'settings': sorted(reprs, key=itemgetter(0))}
 
     def nav_title(self):
         return _('Settings')
@@ -47,11 +47,3 @@ class SettingsDebugPanel(DebugPanel):
 
     def url(self):
         return ''
-
-    def content(self):
-        vars = {
-            'settings': self.settings
-        }
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/settings.dbtmako',
-            vars, self.request)

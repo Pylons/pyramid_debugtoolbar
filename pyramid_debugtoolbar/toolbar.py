@@ -37,9 +37,8 @@ class IRequestAuthorization(Interface):
 class DebugToolbar(object):
 
     def __init__(self, request, panel_classes):
-        self.request = request
         self.panels = []
-        pdtb_active = url_unquote(self.request.cookies.get('pdtb_active', ''))
+        pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
         activated = pdtb_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
@@ -47,10 +46,7 @@ class DebugToolbar(object):
                 panel_inst.is_active = True
             self.panels.append(panel_inst)
 
-    def get_html(self, response):
-        # If the body is HTML, then we add the toolbar to the response.
-        request = self.request
-
+    def process_response(self, request, response):
         if isinstance(response, WSGIHTTPException):
             # the body of a WSGIHTTPException needs to be "prepared"
             response.prepare(request.environ)
@@ -58,19 +54,12 @@ class DebugToolbar(object):
         for panel in self.panels:
             panel.process_response(response)
 
-        static_path = request.static_url(STATIC_PATH)
-        root_path = request.route_url(ROOT_ROUTE_NAME)
-        button_style = get_setting(request.registry.settings,
-                'button_style', '')
-        vars = {'panels': self.panels, 'static_path': static_path,
-                'root_path': root_path, 'button_style': button_style}
-        toolbar_html = render(
-                'pyramid_debugtoolbar:templates/toolbar.dbtmako',
-                vars, request=request)
-        toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
-        return toolbar_html
+        self.charset = response.charset or 'utf-8'
 
-    def process_response(self, request, response):
+    def inject(self, request, response):
+        """
+        Inject the debug toolbar iframe into an HTML response.
+        """
         response_html = response.body
         toolbar_url = request.route_url(
             'debugtoolbar.request', request_id=request.id)
@@ -82,6 +71,19 @@ class DebugToolbar(object):
         response.app_iter = [body]
         response.content_length = len(body)
 
+    def get_html(self, request):
+        static_path = request.static_url(STATIC_PATH)
+        root_path = request.route_url(ROOT_ROUTE_NAME)
+        button_style = get_setting(request.registry.settings,
+                'button_style', '')
+        vars = {'panels': self.panels, 'static_path': static_path,
+                'root_path': root_path, 'button_style': button_style}
+        toolbar_html = render(
+                'pyramid_debugtoolbar:templates/toolbar.dbtmako',
+                vars, request=request)
+        toolbar_html = toolbar_html.encode(self.charset)
+        return toolbar_html
+
 
 class ExceptionHistory(object):
     def __init__(self):
@@ -89,11 +91,6 @@ class ExceptionHistory(object):
         self.frames = {}
         self.tracebacks = {}
 
-
-class RequestEntry(object):
-    def __init__(self, request_info, html):
-        self.request_info = request_info
-        self.html = html
 
 def beforerender_subscriber(event):
     request = event['request']
@@ -166,12 +163,10 @@ def toolbar_tween_factory(handler, registry):
                 exc_history.tracebacks[tb.id] = tb
                 body = tb.render_full(request).encode('utf-8', 'replace')
                 response = Response(body, status=500)
-                toolbar_html = toolbar.get_html(response)
-                request_info = get_request_info(request)
-                request.id = text_(binascii.hexlify(str(id(request))))
-                entry = RequestEntry(request_info, toolbar_html)
-                request_history.put(request.id, entry)
                 toolbar.process_response(request, response)
+                request.id = text_(binascii.hexlify(str(id(request))))
+                request_history.put(request.id, toolbar)
+                toolbar.inject(request, response)
                 qs = {'token': exc_history.token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
                 exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
@@ -201,14 +196,12 @@ def toolbar_tween_factory(handler, registry):
                         response.app_iter = [content]
                         response.status_int = 200
 
-            toolbar_html = toolbar.get_html(response)
-            request_info = get_request_info(request)
+            toolbar.process_response(request, response)
             request.id = text_(binascii.hexlify(str(id(request))))
-            entry = RequestEntry(request_info, toolbar_html)
-            request_history.put(request.id, entry)
+            request_history.put(request.id, toolbar)
 
             if response.content_type in html_types:
-                toolbar.process_response(request, response)
+                toolbar.inject(request, response)
 
             return response
 
@@ -217,6 +210,3 @@ def toolbar_tween_factory(handler, registry):
             del request.debug_toolbar
 
     return toolbar_tween
-
-def get_request_info(request):
-    return {}
