@@ -63,7 +63,13 @@ class DebugToolbar(object):
         response_html = response.body
         toolbar_url = request.route_url(
             'debugtoolbar.request', request_id=request.id)
-        toolbar_html = '<iframe id="debug_toolbar" src="%s"/>' % toolbar_url
+        button_style = get_setting(request.registry.settings,
+                'button_style', '')
+        css_path = request.static_url(STATIC_PATH + 'css/toolbar.css')
+        toolbar_html = toolbar_html_template % {
+            'button_style': button_style,
+            'css_path': css_path,
+            'toolbar_url': toolbar_url}
         body = replace_insensitive(
             response_html, bytes_('</body>'),
             toolbar_html + bytes_('</body>')
@@ -210,3 +216,12 @@ def toolbar_tween_factory(handler, registry):
             del request.debug_toolbar
 
     return toolbar_tween
+
+toolbar_html_template = """\
+<div id="pDebug">
+    <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
+        <a title="Show Toolbar" id="pShowToolBarButton"
+           href="%(toolbar_url)s" target="pDebugToolbar">&laquo; FIXME: Debug Toolbar</a>
+    </div>
+</div>
+"""
