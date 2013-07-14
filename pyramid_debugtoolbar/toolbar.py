@@ -77,8 +77,7 @@ class DebugToolbar(object):
             response_html, bytes_('</body>'),
             toolbar_html + bytes_('</body>')
             )
-        response.app_iter = [body]
-        response.content_length = len(body)
+        response.text = body
 
     def get_html(self, request):
         # Called by debug toolbar app
