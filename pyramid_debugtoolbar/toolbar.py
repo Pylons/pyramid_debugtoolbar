@@ -12,12 +12,13 @@ from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
+from pyramid_debugtoolbar.utils import APP_VIEW_NAME
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
+from pyramid_debugtoolbar.utils import debug_toolbar_url
 from pyramid.httpexceptions import WSGIHTTPException
 from repoze.lru import LRUCache
 
@@ -37,6 +38,7 @@ class IRequestAuthorization(Interface):
 class DebugToolbar(object):
 
     def __init__(self, request, panel_classes):
+        # constructed in host app
         self.panels = []
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
         activated = pdtb_active.split(';')
@@ -47,6 +49,7 @@ class DebugToolbar(object):
             self.panels.append(panel_inst)
 
     def process_response(self, request, response):
+        # called in host app
         if isinstance(response, WSGIHTTPException):
             # the body of a WSGIHTTPException needs to be "prepared"
             response.prepare(request.environ)
@@ -60,9 +63,9 @@ class DebugToolbar(object):
         """
         Inject the debug toolbar iframe into an HTML response.
         """
+        # called in host app
         response_html = response.body
-        toolbar_url = request.route_url(
-            'debugtoolbar.request', request_id=request.id)
+        toolbar_url = debug_toolbar_url(request, request.id)
         button_style = get_setting(request.registry.settings,
                 'button_style', '')
         css_path = request.static_url(STATIC_PATH + 'css/toolbar.css')
@@ -78,6 +81,7 @@ class DebugToolbar(object):
         response.content_length = len(body)
 
     def get_html(self, request):
+        # Called by debug toolbar app
         static_path = request.static_url(STATIC_PATH)
         root_path = request.route_url(ROOT_ROUTE_NAME)
         button_style = get_setting(request.registry.settings,
@@ -115,6 +119,7 @@ def toolbar_tween_factory(handler, registry):
         return handler
 
     request_history = LRUCache(100)
+    registry.request_history = request_history
 
     redirect_codes = (301, 302, 303, 304)
     panel_classes = get_setting(settings, 'panels', [])
@@ -132,8 +137,7 @@ def toolbar_tween_factory(handler, registry):
     def toolbar_tween(request):
         request.exc_history = exc_history
         request.history = request_history
-        root_path = request.route_path(ROOT_ROUTE_NAME)
-        exclude = [root_path] + exclude_prefixes
+        exclude = [APP_VIEW_NAME] + exclude_prefixes
         last_proxy_addr = None
         starts_with_excluded = list(filter(None, map(request.path.startswith,
                                                      exclude)))
@@ -175,7 +179,7 @@ def toolbar_tween_factory(handler, registry):
                 toolbar.inject(request, response)
                 qs = {'token': exc_history.token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
-                exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
+                exc_url = debug_toolbar_url(request, 'exception', query=qs)
                 exc_msg = msg % (request.url, exc_url)
                 logger.exception(exc_msg)
                 return response

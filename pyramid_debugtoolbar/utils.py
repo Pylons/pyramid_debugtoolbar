@@ -2,6 +2,7 @@ import os.path
 import sys
 from logging import getLogger
 
+from pyramid.encode import urlencode
 from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 
@@ -26,6 +27,7 @@ SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
 ROOT_ROUTE_NAME = 'debugtoolbar.root'
 EXC_ROUTE_NAME = 'debugtoolbar.exception'
+APP_VIEW_NAME = '_debug_toolbar'
 
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
@@ -166,3 +168,16 @@ def addr_in(addr, hosts):
 
 def last_proxy(addr):
     return addr.split(',').pop().strip()
+
+def find_request_history(request):
+    return request.registry.parent_registry.request_history
+
+def debug_toolbar_url(request, *elements, **kw):
+    path = (APP_VIEW_NAME,) + elements
+    base = request.application_url.rstrip('/')
+    query = kw.get('query')
+    if query:
+        qs = '?' + urlencode(query, doseq=True)
+    else:
+        qs = ''
+    return '/'.join((base,) + path) + qs

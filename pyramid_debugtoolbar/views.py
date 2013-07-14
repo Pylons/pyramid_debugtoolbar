@@ -16,6 +16,7 @@ from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
+from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
 
@@ -202,7 +203,8 @@ class SQLAlchemyViews(object):
     custom_predicates=(valid_host, valid_request)
 )
 def request_view(request):
-    toolbar = request.history.get(request.matchdict['request_id'], None)
+    history = find_request_history(request)
+    toolbar = history.get(request.matchdict['request_id'], None)
     if not toolbar:
         raise NotFound
     return Response(toolbar.get_html(request), content_type='text/html')

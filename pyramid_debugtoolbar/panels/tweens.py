@@ -33,7 +33,6 @@ class TweensDebugPanel(DebugPanel):
         return ''
 
     def populate(self, request):
-        static_path = request.static_url(STATIC_PATH)
         definition = 'Explicit'
         tweens = self.tweens.explicit
         if not tweens:
@@ -42,5 +41,8 @@ class TweensDebugPanel(DebugPanel):
         self.data = {
             'tweens': tweens,
             'definition': definition,
-            'static_path': static_path,
             }
+
+    def render_vars(self, request):
+        return {'static_path': request.static_url(STATIC_PATH)}
+

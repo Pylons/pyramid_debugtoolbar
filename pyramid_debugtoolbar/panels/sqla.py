@@ -1,6 +1,8 @@
 from __future__ import with_statement
 
+import binascii
 import hashlib
+import os
 import threading
 import time
 import weakref
@@ -10,6 +12,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import url_quote
+from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.compat import PY3
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import format_sql
@@ -70,9 +73,6 @@ class SQLADebugPanel(DebugPanel):
     def __init__(self, request):
         self.queries = request.pdtb_sqla_queries = []
         self.engines = request.pdtb_sqla_engines = {}
-        self.token = request.exc_history.token
-        self.static_path = request.static_url(STATIC_PATH)
-        self.root_path = request.route_url(ROOT_ROUTE_NAME)
 
     def nav_title(self):
         return _('SQLAlchemy')
@@ -105,7 +105,8 @@ class SQLADebugPanel(DebugPanel):
             except UnicodeDecodeError:
                 pass # parameters contain non-utf8 (probably binary) data
 
-            need = self.token + stmt + params
+            token = text_(binascii.hexlify(os.urandom(10)))
+            need = token + stmt + params
             hash = hashlib.sha1(bytes_(need)).hexdigest()
 
             data.append({
@@ -121,8 +122,12 @@ class SQLADebugPanel(DebugPanel):
             })
 
         self.data = {
-            'static_path': self.static_path,
-            'root_path': self.root_path,
             'queries':data,
             'text':text,
             }
+
+    def render_vars(self, request):
+        return {
+            'static_path': request.static_url(STATIC_PATH),
+            'root_path': request.route_url(ROOT_ROUTE_NAME)
+        }

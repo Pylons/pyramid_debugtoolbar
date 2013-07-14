@@ -26,6 +26,8 @@ class DebugPanel(object):
         pass
 
     def render_content(self, request):
+        data = self.data.copy()
+        data.update(self.render_vars(request))
         return render(self.template, self.data, request=request)
 
     def dom_id(self):
@@ -61,3 +63,6 @@ class DebugPanel(object):
 
     def wrap_handler(self, handler):
         return handler
+
+    def render_vars(self, request):
+        return {}

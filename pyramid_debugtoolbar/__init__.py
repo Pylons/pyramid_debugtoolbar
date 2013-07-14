@@ -1,8 +1,11 @@
+from pyramid.config import Configurator
 from pyramid.settings import asbool
+from pyramid.wsgi import wsgiapp2
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import as_cr_separated_list
 from pyramid_debugtoolbar.utils import as_display_debug_or_false
+from pyramid_debugtoolbar.utils import APP_VIEW_NAME
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -73,29 +76,43 @@ def includeme(config):
     introspection = getattr(config, 'introspection', True)
     # dont register any introspectables for Pyramid 1.3a9+
     config.introspection = False
-    config.add_renderer('.dbtmako', renderer_factory)
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
     if not 'mako.directories' in config.registry.settings:
         # XXX FBO 1.2.X only
         config.registry.settings['mako.directories'] = []
-    config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender')
-    config.add_route('debugtoolbar.request', '/_debug_toolbar/{request_id}')
-    config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar', static=True)
-    config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
-    config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
-    config.add_route('debugtoolbar.console', '/_debug_toolbar/console')
-    config.add_route(EXC_ROUTE_NAME, '/_debug_toolbar/exception')
-    config.add_route('debugtoolbar.sql_select',
-                     '/_debug_toolbar/sqlalchemy/sql_select')
-    config.add_route('debugtoolbar.sql_explain',
-                     '/_debug_toolbar/sqlalchemy/sql_explain')
-    config.scan('pyramid_debugtoolbar.views')
     config.add_directive('set_debugtoolbar_request_authorization',
                          set_request_authorization_callback)
 
+    application = make_application(settings, config.registry)
+    config.add_view(wsgiapp2(application), name=APP_VIEW_NAME)
+    config.add_static_view(APP_VIEW_NAME + '/static', STATIC_PATH)
     config.introspection = introspection
+
+
+def make_application(settings, parent_registry):
+    """ Activate the debug toolbar; usually called via
+    ``config.include('pyramid_debugtoolbar')`` instead of being invoked
+    directly. """
+    config = Configurator(settings=settings)
+    config.registry.parent_registry = parent_registry
+    config.add_renderer('.dbtmako', renderer_factory)
+    if not 'mako.directories' in config.registry.settings:
+        # XXX FBO 1.2.X only
+        config.registry.settings['mako.directories'] = []
+    config.add_static_view('static', STATIC_PATH)
+    config.add_route('debugtoolbar.request', '/{request_id}')
+    config.add_route(ROOT_ROUTE_NAME, '/', static=True)
+    config.add_route('debugtoolbar.source', '/source')
+    config.add_route('debugtoolbar.execute', '/execute')
+    config.add_route('debugtoolbar.console', '/console')
+    config.add_route(EXC_ROUTE_NAME, '/exception')
+    config.add_route('debugtoolbar.sql_select', '/sqlalchemy/sql_select')
+    config.add_route('debugtoolbar.sql_explain', '/sqlalchemy/sql_explain')
+    config.scan('pyramid_debugtoolbar.views')
+
+    return config.make_wsgi_app()

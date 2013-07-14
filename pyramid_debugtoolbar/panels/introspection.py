@@ -26,11 +26,9 @@ class IntrospectionDebugPanel(DebugPanel):
     def __init__(self, request):
         introspector = request.registry.introspector
         categorized = introspector.categorized()
-        static_path = request.static_url(STATIC_PATH)
         self.data = {
             'categorized': categorized,
             'debug_repr': debug_repr,
-            'static_path': static_path,
             'object_description':object_description,
             'nl2br': nl2br}
 
@@ -42,6 +40,9 @@ class IntrospectionDebugPanel(DebugPanel):
 
     def url(self):
         return ''
+
+    def render_vars(self, request):
+        return {'static_path': request.static_url(STATIC_PATH)}
 
 
 def nl2br(s):
