@@ -72,12 +72,11 @@ class DebugToolbar(object):
             'button_style': button_style,
             'css_path': css_path,
             'toolbar_url': toolbar_url}
-        body = replace_insensitive(
+        toolbar_html = toolbar_html.encode(self.charset)
+        response.body = replace_insensitive(
             response_html, bytes_('</body>'),
             toolbar_html + bytes_('</body>')
             )
-        print "huh?", type(body)
-        response.text = body
 
     def get_html(self, request):
         # Called by debug toolbar app
