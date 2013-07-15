@@ -1,11 +1,10 @@
 from pyramid.config import Configurator
 from pyramid.settings import asbool
-from pyramid.wsgi import wsgiapp2
+from pyramid.wsgi import wsgiapp
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import as_cr_separated_list
 from pyramid_debugtoolbar.utils import as_display_debug_or_false
-from pyramid_debugtoolbar.utils import APP_VIEW_NAME
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -89,8 +88,13 @@ def includeme(config):
                          set_request_authorization_callback)
 
     application = make_application(settings, config.registry)
-    config.add_view(wsgiapp2(application), name=APP_VIEW_NAME)
-    config.add_static_view(APP_VIEW_NAME + '/static', STATIC_PATH)
+    config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
+    config.add_view(wsgiapp(application), route_name='debugtoolbar')
+    config.add_static_view('_debug_toolbar/static', STATIC_PATH)
+    config.add_renderer('.dbtmako', renderer_factory)
+    if not 'mako.directories' in config.registry.settings:
+        # XXX FBO 1.2.X only
+        config.registry.settings['mako.directories'] = []
     config.introspection = introspection
 
 
@@ -104,15 +108,15 @@ def make_application(settings, parent_registry):
     if not 'mako.directories' in config.registry.settings:
         # XXX FBO 1.2.X only
         config.registry.settings['mako.directories'] = []
-    config.add_static_view('static', STATIC_PATH)
-    config.add_route('debugtoolbar.request', '/{request_id}')
-    config.add_route(ROOT_ROUTE_NAME, '/', static=True)
-    config.add_route('debugtoolbar.source', '/source')
-    config.add_route('debugtoolbar.execute', '/execute')
-    config.add_route('debugtoolbar.console', '/console')
-    config.add_route(EXC_ROUTE_NAME, '/exception')
-    config.add_route('debugtoolbar.sql_select', '/sqlalchemy/sql_select')
-    config.add_route('debugtoolbar.sql_explain', '/sqlalchemy/sql_explain')
+    config.add_static_view('_debug_toolbar/static', STATIC_PATH)
+    config.add_route('debugtoolbar.request', '/_debug_toolbar/{request_id}')
+    config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar', static=True)
+    config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
+    config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
+    config.add_route('debugtoolbar.console', '/_debug_toolbar/console')
+    config.add_route(EXC_ROUTE_NAME, '/_debug_toolbar/exception')
+    config.add_route('debugtoolbar.sql_select', '/_debug_toolbar/sqlalchemy/sql_select')
+    config.add_route('debugtoolbar.sql_explain', '/_debug_toolbar/sqlalchemy/sql_explain')
     config.scan('pyramid_debugtoolbar.views')
 
     return config.make_wsgi_app()

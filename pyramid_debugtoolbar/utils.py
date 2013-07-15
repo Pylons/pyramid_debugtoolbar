@@ -27,7 +27,6 @@ SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
 ROOT_ROUTE_NAME = 'debugtoolbar.root'
 EXC_ROUTE_NAME = 'debugtoolbar.exception'
-APP_VIEW_NAME = '_debug_toolbar'
 
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
@@ -173,7 +172,7 @@ def find_request_history(request):
     return request.registry.parent_registry.request_history
 
 def debug_toolbar_url(request, *elements, **kw):
-    path = (APP_VIEW_NAME,) + elements
+    path = ('_debug_toolbar',) + elements
     base = request.application_url.rstrip('/')
     query = kw.get('query')
     if query:

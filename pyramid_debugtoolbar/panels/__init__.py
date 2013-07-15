@@ -28,7 +28,7 @@ class DebugPanel(object):
     def render_content(self, request):
         data = self.data.copy()
         data.update(self.render_vars(request))
-        return render(self.template, self.data, request=request)
+        return render(self.template, data, request=request)
 
     def dom_id(self):
         return 'pDebug%sPanel' % (self.name.replace(' ', ''))

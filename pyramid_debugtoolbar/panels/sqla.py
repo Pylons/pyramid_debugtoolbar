@@ -41,7 +41,7 @@ try:
         request = get_current_request()
         if request is not None and hasattr(request, 'pdtb_sqla_queries'):
             with lock:
-                engines = request.registry.pdtb_sqla_engines
+                engines = request.pdtb_sqla_engines
                 engines[id(conn.engine)] = weakref.ref(conn.engine)
                 queries = request.pdtb_sqla_queries
                 duration = (stop_timer - conn.pdtb_start_timer) * 1000
@@ -89,9 +89,6 @@ class SQLADebugPanel(DebugPanel):
         return ''
 
     def process_response(self, response):
-        if not self.queries:
-            return 'No queries in executed in request.'
-
         data = []
         for query in self.queries:
             stmt = query['statement']
@@ -125,6 +122,11 @@ class SQLADebugPanel(DebugPanel):
             'queries':data,
             'text':text,
             }
+
+    def render_content(self, request):
+        if not self.queries:
+            return 'No queries in executed in request.'
+        return super(SQLADebugPanel, self).render_content(request)
 
     def render_vars(self, request):
         return {

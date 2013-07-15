@@ -12,7 +12,6 @@ from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
-from pyramid_debugtoolbar.utils import APP_VIEW_NAME
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
@@ -77,6 +76,7 @@ class DebugToolbar(object):
             response_html, bytes_('</body>'),
             toolbar_html + bytes_('</body>')
             )
+        print "huh?", type(body)
         response.text = body
 
     def get_html(self, request):
@@ -136,7 +136,8 @@ def toolbar_tween_factory(handler, registry):
     def toolbar_tween(request):
         request.exc_history = exc_history
         request.history = request_history
-        exclude = [APP_VIEW_NAME] + exclude_prefixes
+        root_url = request.route_path('debugtoolbar', subpath='')
+        exclude = [root_url] + exclude_prefixes
         last_proxy_addr = None
         starts_with_excluded = list(filter(None, map(request.path.startswith,
                                                      exclude)))
