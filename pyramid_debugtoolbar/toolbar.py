@@ -56,8 +56,6 @@ class DebugToolbar(object):
         for panel in self.panels:
             panel.process_response(response)
 
-        self.charset = response.charset or 'utf-8'
-
     def inject(self, request, response):
         """
         Inject the debug toolbar iframe into an HTML response.
@@ -72,25 +70,11 @@ class DebugToolbar(object):
             'button_style': button_style,
             'css_path': css_path,
             'toolbar_url': toolbar_url}
-        toolbar_html = toolbar_html.encode(self.charset)
+        toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
         response.body = replace_insensitive(
             response_html, bytes_('</body>'),
             toolbar_html + bytes_('</body>')
             )
-
-    def get_html(self, request):
-        # Called by debug toolbar app
-        static_path = request.static_url(STATIC_PATH)
-        root_path = request.route_url(ROOT_ROUTE_NAME)
-        button_style = get_setting(request.registry.settings,
-                'button_style', '')
-        vars = {'panels': self.panels, 'static_path': static_path,
-                'root_path': root_path, 'button_style': button_style}
-        toolbar_html = render(
-                'pyramid_debugtoolbar:templates/toolbar.dbtmako',
-                vars, request=request)
-        toolbar_html = toolbar_html.encode(self.charset)
-        return toolbar_html
 
 
 class ExceptionHistory(object):

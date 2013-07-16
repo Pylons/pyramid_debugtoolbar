@@ -200,11 +200,17 @@ class SQLAlchemyViews(object):
 @view_config(
     route_name='debugtoolbar.request',
     permission=NO_PERMISSION_REQUIRED,
-    custom_predicates=(valid_host, valid_request)
+    custom_predicates=(valid_host, valid_request),
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
 )
 def request_view(request):
     history = find_request_history(request)
     toolbar = history.get(request.matchdict['request_id'], None)
     if not toolbar:
         raise NotFound
-    return Response(toolbar.get_html(request), content_type='text/html')
+    static_path = request.static_url(STATIC_PATH)
+    root_path = request.route_url(ROOT_ROUTE_NAME)
+    button_style = get_setting(request.registry.settings,
+            'button_style', '')
+    return {'panels': toolbar.panels, 'static_path': static_path,
+            'root_path': root_path, 'button_style': button_style}
