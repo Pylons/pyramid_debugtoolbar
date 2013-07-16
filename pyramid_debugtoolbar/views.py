@@ -1,5 +1,7 @@
 import hashlib
 
+from pyramid.events import subscriber
+from pyramid.events import NewRequest
 from pyramid.exceptions import NotFound
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -214,3 +216,10 @@ def request_view(request):
             'button_style', '')
     return {'panels': toolbar.panels, 'static_path': static_path,
             'root_path': root_path, 'button_style': button_style}
+
+@subscriber(NewRequest)
+def find_exc_history(event):
+    # Move the chickens to a new hen house
+    request = event.request
+    exc_history = request.registry.parent_registry.exc_history
+    request.exc_history = exc_history

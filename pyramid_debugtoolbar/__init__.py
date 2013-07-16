@@ -109,7 +109,6 @@ def make_application(settings, parent_registry):
         # XXX FBO 1.2.X only
         config.registry.settings['mako.directories'] = []
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-    config.add_route('debugtoolbar.request', '/_debug_toolbar/{request_id}')
     config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar', static=True)
     config.add_route('debugtoolbar.source', '/_debug_toolbar/source')
     config.add_route('debugtoolbar.execute', '/_debug_toolbar/execute')
@@ -117,6 +116,7 @@ def make_application(settings, parent_registry):
     config.add_route(EXC_ROUTE_NAME, '/_debug_toolbar/exception')
     config.add_route('debugtoolbar.sql_select', '/_debug_toolbar/sqlalchemy/sql_select')
     config.add_route('debugtoolbar.sql_explain', '/_debug_toolbar/sqlalchemy/sql_explain')
+    config.add_route('debugtoolbar.request', '/_debug_toolbar/{request_id}')
     config.scan('pyramid_debugtoolbar.views')
 
     return config.make_wsgi_app()

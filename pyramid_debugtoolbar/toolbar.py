@@ -110,10 +110,10 @@ def toolbar_tween_factory(handler, registry):
     hosts = get_setting(settings, 'hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
-    exc_history = None
+    registry.exc_history = exc_history = None
 
     if intercept_exc:
-        exc_history = ExceptionHistory()
+        registry.exc_history = exc_history = ExceptionHistory()
         exc_history.eval_exc = intercept_exc == 'debug'
 
     def toolbar_tween(request):
@@ -152,19 +152,24 @@ def toolbar_tween_factory(handler, registry):
                                    ignore_system_exceptions=True)
                 for frame in tb.frames:
                     exc_history.frames[frame.id] = frame
-
                 exc_history.tracebacks[tb.id] = tb
-                body = tb.render_full(request).encode('utf-8', 'replace')
-                response = Response(body, status=500)
-                toolbar.process_response(request, response)
-                request.id = text_(binascii.hexlify(str(id(request))))
-                request_history.put(request.id, toolbar)
-                toolbar.inject(request, response)
+
                 qs = {'token': exc_history.token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
                 exc_url = debug_toolbar_url(request, 'exception', query=qs)
                 exc_msg = msg % (request.url, exc_url)
                 logger.exception(exc_msg)
+
+                subenviron = request.environ.copy()
+                del subenviron['PATH_INFO']
+                del subenviron['QUERY_STRING']
+                subrequest = type(request).blank(exc_url, subenviron)
+                response = request.invoke_subrequest(subrequest)
+
+                toolbar.process_response(request, response)
+                request.id = text_(binascii.hexlify(str(id(request))))
+                request_history.put(request.id, toolbar)
+                toolbar.inject(request, response)
                 return response
             else:
                 logger.exception('Exception at %s' % request.url)
