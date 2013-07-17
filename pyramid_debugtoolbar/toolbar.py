@@ -5,7 +5,6 @@ import os
 from pyramid.interfaces import Interface
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
-from pyramid.response import Response
 from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.compat import url_unquote
 from pyramid_debugtoolbar.compat import bytes_
@@ -13,7 +12,6 @@ from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
@@ -156,7 +154,7 @@ def toolbar_tween_factory(handler, registry):
 
                 qs = {'token': exc_history.token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
-                exc_url = debug_toolbar_url(request, 'exception', query=qs)
+                exc_url = debug_toolbar_url(request, 'exception', _query=qs)
                 exc_msg = msg % (request.url, exc_url)
                 logger.exception(exc_msg)
 

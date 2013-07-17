@@ -172,11 +172,4 @@ def find_request_history(request):
     return request.registry.parent_registry.request_history
 
 def debug_toolbar_url(request, *elements, **kw):
-    path = ('_debug_toolbar',) + elements
-    base = request.application_url.rstrip('/')
-    query = kw.get('query')
-    if query:
-        qs = '?' + urlencode(query, doseq=True)
-    else:
-        qs = ''
-    return '/'.join((base,) + path) + qs
+    return request.route_url('debugtoolbar', subpath=elements, **kw)
