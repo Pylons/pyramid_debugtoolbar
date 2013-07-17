@@ -210,6 +210,14 @@ def toolbar_tween_factory(handler, registry):
     return toolbar_tween
 
 toolbar_html_template = """\
+<script type="text/javascript">
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", "%(css_path)s")
+    document.getElementsByTagName("head")[0].appendChild(fileref)
+</script>
+
 <div id="pDebug">
     <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
