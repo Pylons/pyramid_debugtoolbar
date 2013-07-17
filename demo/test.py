@@ -28,32 +28,32 @@ class PageTest(unittest.TestCase):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("example"))
-        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebug'))
 
     def test_home_page_gt_255_in_uri(self):
         browser.open('/%C3%A9')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("example"))
-        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebug'))
 
     def test_redirect(self):
         browser.open('/redirect')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("Redirect"))
-        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebug'))
 
     def test_exception(self):
         browser.open('/exc')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("NotImplementedError"))
-        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebug'))
         self.failUnless(browser.is_element_present('css=.debugger'))
 
     def test_notfound(self):
         browser.open('/notfound')
         browser.wait_for_page_to_load("30000")
         self.failUnless(browser.is_text_present("Not Found"))
-        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
+        self.failUnless(browser.is_element_present('id=pDebug'))
 
     def test_exception_console(self):
         browser.open('/exc')
@@ -199,8 +199,8 @@ class PageTest(unittest.TestCase):
             from urllib.parse import quote
         browser.open(quote(b'/La Pe\xc3\xb1a'))
         browser.wait_for_page_to_load("30000")
-        self.failUnless(browser.is_element_present('id=pDebugToolbar'))
-        
+        self.failUnless(browser.is_element_present('id=pDebug'))
+
 
 if __name__ == '__main__':
     setUpModule()
