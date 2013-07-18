@@ -1,7 +1,7 @@
 pyramid_debugtoolbar_require.config({
   paths: {
     "jquery": "jquery-1.7.2.min",
-"tablesorter": "jquery.tablesorter.min.js",
+    "tablesorter": "jquery.tablesorter.min",
   }
 });
 
