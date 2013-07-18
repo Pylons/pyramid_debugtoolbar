@@ -104,11 +104,6 @@ pyramid_debugtoolbar_require([
           return false;
         });
 
-        $('#pHideToolBarButton').click(function() {
-          pdtb.hide_toolbar(true);
-          return false;
-        });
-
         $('#pShowToolBarButton').click(function() {
           pdtb.show_toolbar();
           return false;

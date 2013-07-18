@@ -8,11 +8,7 @@
 
     <div style="display: none;" id="pDebugToolbar">
         <ol id="pDebugPanelList">
-            % if panels:
-			<li>
-              <a id="pHideToolBarButton" href="#" 
-                 title="Hide Toolbar">Hide &raquo;</a></li>
-			% else:
+            % if not panels:
 			<li id="pDebugButton">DEBUG</li>
 			% endif
 			% for panel in panels:
