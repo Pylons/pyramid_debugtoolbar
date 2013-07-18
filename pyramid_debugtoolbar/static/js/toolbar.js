@@ -185,7 +185,7 @@ pyramid_debugtoolbar_require([
       },
 
       show_toolbar: function(animate, auto_hide) {
-        auto_hide = auto_hide || false
+        auto_hide = auto_hide || false;
           // Set up keybindings
           $(document).bind('keydown.pDebug', function(e) {
             if (e.keyCode == 27) {
@@ -224,7 +224,7 @@ pyramid_debugtoolbar_require([
           pdtb.init();
           $(".pDebugSortable").tablesorter();
         });
-      })
+      });
 
       $.noConflict(true);
     });
