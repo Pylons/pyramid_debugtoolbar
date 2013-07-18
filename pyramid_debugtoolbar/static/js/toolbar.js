@@ -141,11 +141,8 @@ pyramid_debugtoolbar_require([
           }
         });
 
-        if ($.cookie(COOKIE_NAME)) {
-          pdtb.hide_toolbar(false);
-        } else {
-          pdtb.show_toolbar(false);
-        }
+        // always show toolbar
+        pdtb.show_toolbar(false);
 
         $('#pDebug .pDebugHoverable').hover(function(){
           $(this).addClass('pDebugHover');
