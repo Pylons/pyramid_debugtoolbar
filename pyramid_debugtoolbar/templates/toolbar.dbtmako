@@ -1,3 +1,10 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="${static_path}/css/toolbar.css">
+
+</head>
+<body>
 <div id="pDebug" style="display:none;">
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
@@ -61,3 +68,4 @@
 	% endfor
     <div id="pDebugWindow" class="panelContent"></div>
 </div>
+</body>
