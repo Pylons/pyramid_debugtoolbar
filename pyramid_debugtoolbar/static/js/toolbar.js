@@ -214,6 +214,10 @@ pyramid_debugtoolbar_require([
         $(document).ready(function() {
           pdtb.init();
           $(".pDebugSortable").tablesorter();
+
+          current = $('#pDebug #' + 'pDebugVersionPanel' + '-content');
+          current.show();
+
         });
       });
 
