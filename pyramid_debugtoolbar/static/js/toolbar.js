@@ -34,15 +34,10 @@ pyramid_debugtoolbar_require([
             return false;
           }
           current = $('#pDebug #' + this.className + '-content');
-          if (current.is(':visible')) {
-            $(document).trigger('close.pDebug');
-            $(this).parent().removeClass('active');
-          } else {
             $('.panelContent').hide(); // Hide any that are already open
             current.show();
             $('#pDebugToolbar li').removeClass('active');
             $(this).parent().addClass('active');
-          }
           return false;
         });
 
@@ -217,6 +212,7 @@ pyramid_debugtoolbar_require([
 
           current = $('#pDebug #' + 'pDebugVersionPanel' + '-content');
           current.show();
+          $('li#pDebugVersionPanel').addClass('active');
 
         });
       });
