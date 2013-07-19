@@ -173,8 +173,6 @@ pyramid_debugtoolbar_require([
         // finally close toolbar
         $('#pDebugToolbar').hide('fast');
         $('#pDebugToolbarHandle').show();
-        // Unbind keydown
-        $(document).unbind('keydown.pDebug');
         if (setCookie) {
           $.cookie(COOKIE_NAME, 'hide', {
             path: '/',
@@ -185,12 +183,6 @@ pyramid_debugtoolbar_require([
 
       show_toolbar: function(animate, auto_hide) {
         auto_hide = auto_hide || false;
-          // Set up keybindings
-          $(document).bind('keydown.pDebug', function(e) {
-            if (e.keyCode == 27) {
-              pdtb.close();
-            }
-          });
         $('#pDebugToolbarHandle').hide();
         if (animate) {
           $('#pDebugToolbar').show('fast');

@@ -55,7 +55,6 @@
 		% if panel.has_content:
 			<div id="${panel.dom_id()}-content" class="panelContent">
 				<div class="pDebugPanelTitle">
-					<a href="" class="pDebugClose">Close</a>
 					<h3>${panel.title()}</h3>
 				</div>
 				<div class="pDebugPanelContent">
