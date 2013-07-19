@@ -1,3 +1,10 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="${static_path}/css/toolbar.css">
+
+</head>
+<body>
 <div id="pDebug" style="display:none;">
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
@@ -8,11 +15,7 @@
 
     <div style="display: none;" id="pDebugToolbar">
         <ol id="pDebugPanelList">
-            % if panels:
-			<li>
-              <a id="pHideToolBarButton" href="#" 
-                 title="Hide Toolbar">Hide &raquo;</a></li>
-			% else:
+            % if not panels:
 			<li id="pDebugButton">DEBUG</li>
 			% endif
 			% for panel in panels:
@@ -52,12 +55,11 @@
 		% if panel.has_content:
 			<div id="${panel.dom_id()}-content" class="panelContent">
 				<div class="pDebugPanelTitle">
-					<a href="" class="pDebugClose">Close</a>
 					<h3>${panel.title()}</h3>
 				</div>
 				<div class="pDebugPanelContent">
 				    <div class="scroll">
-				        ${panel.content()|n}
+				        ${panel.render_content(request)|n}
 				    </div>
 				</div>
 			</div>
@@ -65,3 +67,4 @@
 	% endfor
     <div id="pDebugWindow" class="panelContent"></div>
 </div>
+</body>

@@ -25,6 +25,10 @@ class VersionDebugPanel(DebugPanel):
     """
     name = 'Version'
     has_content = True
+    template = 'pyramid_debugtoolbar.panels:templates/versions.dbtmako'
+
+    def __init__(self, request):
+        self.data = {'platform': self.get_platform(), 'packages': packages}
 
     def nav_title(self):
         return _('Versions')
@@ -41,12 +45,3 @@ class VersionDebugPanel(DebugPanel):
     def get_platform(self):
         return 'Python %s on %s' % (sys.version,
                                     text_(self._get_platform_name(), 'utf8'))
-
-    @property
-    def properties(self):
-        return {'platform': self.get_platform(), 'packages': packages}
-
-    def content(self):
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/versions.dbtmako',
-            self.properties, self.request)

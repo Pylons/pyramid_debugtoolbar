@@ -1,5 +1,8 @@
 import hashlib
 
+from pyramid.events import subscriber
+from pyramid.events import NewRequest
+from pyramid.exceptions import NotFound
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
@@ -15,6 +18,7 @@ from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
+from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
 
@@ -193,3 +197,29 @@ class SQLAlchemyViews(object):
             'str': str,
             'duration': float(self.request.params['duration']),
         }
+
+
+@view_config(
+    route_name='debugtoolbar.request',
+    permission=NO_PERMISSION_REQUIRED,
+    custom_predicates=(valid_host, valid_request),
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
+)
+def request_view(request):
+    history = find_request_history(request)
+    toolbar = history.get(request.matchdict['request_id'], None)
+    if not toolbar:
+        raise NotFound
+    static_path = request.static_url(STATIC_PATH)
+    root_path = request.route_url(ROOT_ROUTE_NAME)
+    button_style = get_setting(request.registry.settings,
+            'button_style', '')
+    return {'panels': toolbar.panels, 'static_path': static_path,
+            'root_path': root_path, 'button_style': button_style}
+
+@subscriber(NewRequest)
+def find_exc_history(event):
+    # Move the chickens to a new hen house
+    request = event.request
+    exc_history = request.registry.parent_registry.exc_history
+    request.exc_history = exc_history

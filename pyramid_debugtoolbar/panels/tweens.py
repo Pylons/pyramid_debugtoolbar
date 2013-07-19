@@ -12,6 +12,7 @@ class TweensDebugPanel(DebugPanel):
     """
     name = 'Tweens'
     has_content = True
+    template = 'pyramid_debugtoolbar.panels:templates/tweens.dbtmako'
 
     def __init__(self, request):
         self.request = request
@@ -19,6 +20,8 @@ class TweensDebugPanel(DebugPanel):
         if self.tweens is None:
             self.has_content = False
             self.is_active = False
+        else:
+            self.populate(request)
 
     def nav_title(self):
         return _('Tweens')
@@ -29,18 +32,17 @@ class TweensDebugPanel(DebugPanel):
     def url(self):
         return ''
 
-    def content(self):
-        static_path = self.request.static_url(STATIC_PATH)
+    def populate(self, request):
         definition = 'Explicit'
         tweens = self.tweens.explicit
         if not tweens:
             tweens = self.tweens.implicit()
             definition = 'Implicit'
-        vars = {
+        self.data = {
             'tweens': tweens,
             'definition': definition,
-            'static_path': static_path,
             }
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/tweens.dbtmako',
-            vars, self.request)
+
+    def render_vars(self, request):
+        return {'static_path': request.static_url(STATIC_PATH)}
+

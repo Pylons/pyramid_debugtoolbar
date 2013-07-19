@@ -14,11 +14,14 @@ from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
+from pyramid_debugtoolbar.utils import debug_toolbar_url
 from pyramid.httpexceptions import WSGIHTTPException
+from repoze.lru import LRUCache
+
+html_types = ('text/html', 'application/xml+html')
 
 
 class IRequestAuthorization(Interface):
@@ -33,12 +36,10 @@ class IRequestAuthorization(Interface):
 
 class DebugToolbar(object):
 
-    html_types = ('text/html', 'application/xml+html')
-
     def __init__(self, request, panel_classes):
-        self.request = request
+        # constructed in host app
         self.panels = []
-        pdtb_active = url_unquote(self.request.cookies.get('pdtb_active', ''))
+        pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
         activated = pdtb_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
@@ -46,10 +47,8 @@ class DebugToolbar(object):
                 panel_inst.is_active = True
             self.panels.append(panel_inst)
 
-    def process_response(self, response):
-        # If the body is HTML, then we add the toolbar to the response.
-        request = self.request
-
+    def process_response(self, request, response):
+        # called in host app
         if isinstance(response, WSGIHTTPException):
             # the body of a WSGIHTTPException needs to be "prepared"
             response.prepare(request.environ)
@@ -57,24 +56,25 @@ class DebugToolbar(object):
         for panel in self.panels:
             panel.process_response(response)
 
-        if response.content_type in self.html_types:
-            static_path = request.static_url(STATIC_PATH)
-            root_path = request.route_url(ROOT_ROUTE_NAME)
-            button_style = get_setting(request.registry.settings,
-                    'button_style', '')
-            vars = {'panels': self.panels, 'static_path': static_path,
-                    'root_path': root_path, 'button_style': button_style}
-            toolbar_html = render(
-                    'pyramid_debugtoolbar:templates/toolbar.dbtmako',
-                    vars, request=request)
-            response_html = response.body
-            toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
-            body = replace_insensitive(
-                response_html, bytes_('</body>'),
-                toolbar_html + bytes_('</body>')
-                )
-            response.app_iter = [body]
-            response.content_length = len(body)
+    def inject(self, request, response):
+        """
+        Inject the debug toolbar iframe into an HTML response.
+        """
+        # called in host app
+        response_html = response.body
+        toolbar_url = debug_toolbar_url(request, request.id)
+        button_style = get_setting(request.registry.settings,
+                'button_style', '')
+        css_path = request.static_url(STATIC_PATH + 'css/toolbar.css')
+        toolbar_html = toolbar_html_template % {
+            'button_style': button_style,
+            'css_path': css_path,
+            'toolbar_url': toolbar_url}
+        toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
+        response.body = replace_insensitive(
+            response_html, bytes_('</body>'),
+            toolbar_html + bytes_('</body>')
+            )
 
 
 class ExceptionHistory(object):
@@ -100,6 +100,9 @@ def toolbar_tween_factory(handler, registry):
     if not get_setting(settings, 'enabled'):
         return handler
 
+    request_history = LRUCache(100)
+    registry.request_history = request_history
+
     redirect_codes = (301, 302, 303, 304)
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
@@ -107,16 +110,17 @@ def toolbar_tween_factory(handler, registry):
     hosts = get_setting(settings, 'hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
-    exc_history = None
+    registry.exc_history = exc_history = None
 
     if intercept_exc:
-        exc_history = ExceptionHistory()
+        registry.exc_history = exc_history = ExceptionHistory()
         exc_history.eval_exc = intercept_exc == 'debug'
 
     def toolbar_tween(request):
-        root_path = request.route_path(ROOT_ROUTE_NAME)
-        exclude = [root_path] + exclude_prefixes
         request.exc_history = exc_history
+        request.history = request_history
+        root_url = request.route_path('debugtoolbar', subpath='')
+        exclude = [root_url] + exclude_prefixes
         last_proxy_addr = None
         starts_with_excluded = list(filter(None, map(request.path.startswith,
                                                      exclude)))
@@ -148,16 +152,24 @@ def toolbar_tween_factory(handler, registry):
                                    ignore_system_exceptions=True)
                 for frame in tb.frames:
                     exc_history.frames[frame.id] = frame
-
                 exc_history.tracebacks[tb.id] = tb
-                body = tb.render_full(request).encode('utf-8', 'replace')
-                response = Response(body, status=500)
-                toolbar.process_response(response)
+
                 qs = {'token': exc_history.token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
-                exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
+                exc_url = debug_toolbar_url(request, 'exception', query=qs)
                 exc_msg = msg % (request.url, exc_url)
                 logger.exception(exc_msg)
+
+                subenviron = request.environ.copy()
+                del subenviron['PATH_INFO']
+                del subenviron['QUERY_STRING']
+                subrequest = type(request).blank(exc_url, subenviron)
+                response = request.invoke_subrequest(subrequest)
+
+                toolbar.process_response(request, response)
+                request.id = text_(binascii.hexlify(str(id(request))))
+                request_history.put(request.id, toolbar)
+                toolbar.inject(request, response)
                 return response
             else:
                 logger.exception('Exception at %s' % request.url)
@@ -182,7 +194,13 @@ def toolbar_tween_factory(handler, registry):
                         response.app_iter = [content]
                         response.status_int = 200
 
-            toolbar.process_response(response)
+            toolbar.process_response(request, response)
+            request.id = text_(binascii.hexlify(str(id(request))))
+            request_history.put(request.id, toolbar)
+
+            if response.content_type in html_types:
+                toolbar.inject(request, response)
+
             return response
 
         finally:
@@ -190,3 +208,12 @@ def toolbar_tween_factory(handler, registry):
             del request.debug_toolbar
 
     return toolbar_tween
+
+toolbar_html_template = """\
+<div id="pDebug">
+    <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
+        <a title="Show Toolbar" id="pShowToolBarButton"
+           href="%(toolbar_url)s" target="pDebugToolbar">&laquo; FIXME: Debug Toolbar</a>
+    </div>
+</div>
+"""

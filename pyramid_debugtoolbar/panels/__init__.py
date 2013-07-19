@@ -1,7 +1,9 @@
 """Base DebugPanel class"""
 
-from pyramid.renderers import render
 from pyramid.i18n import get_localizer
+from pyramid.renderers import render
+from pyramid.threadlocal import get_current_request
+
 
 class DebugPanel(object):
     """
@@ -16,12 +18,17 @@ class DebugPanel(object):
     # Default to is_active = False
     is_active = False
 
+    # Must be overridden
+    template = NotImplemented
+
     # Panel methods
     def __init__(self, request):
-        self.request = request
+        pass
 
-    def render(self, template_name, vars, request=None):
-        return render(template_name, vars, request=request)
+    def render_content(self, request):
+        data = self.data.copy()
+        data.update(self.render_vars(request))
+        return render(self.template, data, request=request)
 
     def dom_id(self):
         return 'pDebug%sPanel' % (self.name.replace(' ', ''))
@@ -41,11 +48,9 @@ class DebugPanel(object):
     def url(self):
         raise NotImplementedError
 
-    def content(self):
-        raise NotImplementedError
-
     def pluralize(self, singular, plural, n, domain=None, mapping=None):
-        localizer = get_localizer(self.request)
+        request = get_current_request()
+        localizer = get_localizer(request)
         return localizer.pluralize(singular, plural, n, domain=domain,
                                    mapping=mapping)
 
@@ -58,6 +63,6 @@ class DebugPanel(object):
 
     def wrap_handler(self, handler):
         return handler
-    
 
-
+    def render_vars(self, request):
+        return {}
