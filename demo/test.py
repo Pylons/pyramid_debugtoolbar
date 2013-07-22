@@ -24,6 +24,18 @@ def tearDownModule():
     browser.stop()
 
 class PageTest(unittest.TestCase):
+    def visit_dbtb(self):
+        # Selenium doesn't detect new window that opens when debug toolbar
+        # link is clicked.  Workaround hack is to suck URL from HTML source
+        # and go there directly.
+        html = browser.get_html_source()
+        i = html.index('id="pShowToolBarButton"')
+        start = html.index('href="', i) + 6
+        end = html.index('"', start)
+        url = html[start:end]
+        browser.open(url)
+        browser.wait_for_page_to_load("30000")
+
     def test_home_page(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
@@ -66,7 +78,7 @@ class PageTest(unittest.TestCase):
     def test_settings_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugSettingsPanel", 'click')
         result = browser.is_visible('css=#pDebugSettingsPanel-content')
         self.failUnless(result)
@@ -74,7 +86,7 @@ class PageTest(unittest.TestCase):
     def test_logging_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugLoggingPanel", 'click')
         result = browser.is_visible('css=#pDebugLoggingPanel-content')
         self.failUnless(result)
@@ -82,7 +94,7 @@ class PageTest(unittest.TestCase):
     def test_routes_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugRoutesPanel", 'click')
         result = browser.is_visible('css=#pDebugRoutesPanel-content')
         self.failUnless(result)
@@ -90,7 +102,7 @@ class PageTest(unittest.TestCase):
     def test_headers_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugHeaderPanel", 'click')
         result = browser.is_visible('css=#pDebugHeaderPanel-content')
         self.failUnless(result)
@@ -98,7 +110,7 @@ class PageTest(unittest.TestCase):
     def test_sqla_panel(self):
         browser.open('/test_sqla')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         result = browser.is_visible('css=#pDebugSQLAlchemyPanel-content')
         self.failUnless(result)
@@ -106,7 +118,7 @@ class PageTest(unittest.TestCase):
     def test_sqla_select_panel(self):
         browser.open('/test_sqla')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=SELECT", 'click')
         browser.wait_for_condition(
@@ -118,7 +130,7 @@ class PageTest(unittest.TestCase):
     def test_sqla_explain_panel(self):
         browser.open('/test_sqla')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugSQLAlchemyPanel", 'click')
         browser.fire_event("link=EXPLAIN", 'click')
         browser.wait_for_condition(
@@ -130,7 +142,7 @@ class PageTest(unittest.TestCase):
     def test_performance_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugPerformancePanel", 'click')
         result = browser.is_visible('css=#pDebugPerformancePanel-content')
         self.failUnless(result)
@@ -138,7 +150,7 @@ class PageTest(unittest.TestCase):
     def test_performance_panel_with_profiling(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event('css=span.switch.inactive', 'click') # turn on
         browser.open('/')
         browser.wait_for_page_to_load("30000")
@@ -150,7 +162,7 @@ class PageTest(unittest.TestCase):
     def test_renderings_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugTemplatePanel", 'click')
         result = browser.is_visible('css=#pDebugTemplatePanel-content')
         self.failUnless(result)
@@ -158,7 +170,7 @@ class PageTest(unittest.TestCase):
     def test_version_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugVersionPanel", 'click')
         result = browser.is_visible('css=#pDebugVersionPanel-content')
         self.failUnless(result)
@@ -166,7 +178,7 @@ class PageTest(unittest.TestCase):
     def test_requestvars_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugRequestVarsPanel", 'click')
         result = browser.is_visible('css=#pDebugRequestVarsPanel-content')
         self.failUnless(result)
@@ -174,7 +186,7 @@ class PageTest(unittest.TestCase):
     def test_tweens_panel(self):
         browser.open('/')
         browser.wait_for_page_to_load("30000")
-        browser.fire_event("css=a#pShowToolBarButton", 'click')
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugTweensPanel", 'click')
         result = browser.is_visible('css=#pDebugTweensPanel-content')
         self.failUnless(result)
@@ -185,7 +197,7 @@ class PageTest(unittest.TestCase):
             Introspectable
             browser.open('/')
             browser.wait_for_page_to_load("30000")
-            browser.fire_event("css=a#pShowToolBarButton", 'click')
+            self.visit_dbtb()
             browser.fire_event("css=a.pDebugIntrospectionPanel", 'click')
             result = browser.is_visible('css=#pDebugIntrospectionPanel-content')
             self.failUnless(result)
