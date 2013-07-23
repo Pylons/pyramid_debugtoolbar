@@ -8,6 +8,8 @@ class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.registry.settings['mako.directories'] = []
+        self.config.registry.parent_registry = self.config.registry
+        self.config.registry.pdtb_token = 'token'
         from pyramid.mako_templating import renderer_factory
         self.config.add_renderer('.dbtmako', renderer_factory)
 
@@ -52,7 +54,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         request.params['token'] = 'wrong'
         self.assertRaises(HTTPBadRequest, self._makeOne, request)
-        
+
     def test_source(self):
         request = self._makeRequest()
         request.params['frm'] = '0'
@@ -165,6 +167,6 @@ class DummyConsole(object):
 class DummyFrame(object):
     def __init__(self):
         self.console = DummyConsole()
-        
+
     def render_source(self):
         return 'source'
