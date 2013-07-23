@@ -132,7 +132,6 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
 class Test_toolbar_handler(unittest.TestCase):
     def setUp(self):
-        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config = testing.setUp()
         settings = self.config.registry.settings
@@ -140,7 +139,7 @@ class Test_toolbar_handler(unittest.TestCase):
         settings['debugtoolbar.hosts'] = ['127.0.0.1']
         settings['mako.directories'] = []
         settings['debugtoolbar.exclude_prefixes'] = ['/excluded']
-        self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
+        self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
         from pyramid.mako_templating import renderer_factory
@@ -166,6 +165,7 @@ class Test_toolbar_handler(unittest.TestCase):
     def test_it_startswith_root_path(self):
         request = Request.blank('/_debug_toolbar')
         request.remote_addr = '127.0.0.1'
+        request.registry = self.config.registry
         result = self._callFUT(request)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(result is self.response)
@@ -227,7 +227,11 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertRaises(NotImplementedError, self._callFUT, request, handler)
 
     def test_it_raises_exception_intercept_exc(self):
+        from pyramid_debugtoolbar.views import ExceptionDebugView
+        def invoke_subrequest(request):
+            return ExceptionDebugView(request).exception()
         request = Request.blank('/')
+        request.invoke_subrequest = invoke_subrequest
         def handler(request):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
