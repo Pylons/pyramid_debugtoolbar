@@ -47,8 +47,9 @@ class ExceptionDebugView(object):
         token = self.request.params.get('token')
         if not token:
             raise HTTPBadRequest('No token in request')
-        if not token == self.exc_history.token:
+        if not token == request.registry.parent_registry.pdtb_token:
             raise HTTPBadRequest('Bad token in request')
+        self.token = token
         frm = self.request.params.get('frm')
         if frm is not None:
             frm = int(frm)
@@ -115,7 +116,7 @@ class ExceptionDebugView(object):
             'traceback_id':     self.tb or -1,
             'root_path':        toolbar_root_path,
             'static_path':      static_path,
-            'token':            exc_history.token,
+            'token':            self.token,
             }
         if 0 not in exc_history.frames:
             exc_history.frames[0] = _ConsoleFrame({})
@@ -125,13 +126,14 @@ class ExceptionDebugView(object):
 class SQLAlchemyViews(object):
     def __init__(self, request):
         self.request = request
+        self.token = request.registry.parent_registry.pdtb_token
 
     def validate(self):
         stmt = self.request.params['sql']
         params = self.request.params['params']
 
         # Validate hash
-        need = self.request.exc_history.token + stmt + url_quote(params)
+        need = self.token + stmt + url_quote(params)
 
         hash = hashlib.sha1(bytes_(need)).hexdigest()
         if hash != self.request.params['hash']:

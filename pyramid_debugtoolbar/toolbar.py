@@ -77,7 +77,6 @@ class DebugToolbar(object):
 
 class ExceptionHistory(object):
     def __init__(self):
-        self.token = text_(binascii.hexlify(os.urandom(10)))
         self.frames = {}
         self.tracebacks = {}
 
@@ -109,6 +108,7 @@ def toolbar_tween_factory(handler, registry):
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
     registry.exc_history = exc_history = None
+    registry.pdtb_token = text_(binascii.hexlify(os.urandom(10)))
 
     if intercept_exc:
         registry.exc_history = exc_history = ExceptionHistory()
@@ -152,7 +152,7 @@ def toolbar_tween_factory(handler, registry):
                     exc_history.frames[frame.id] = frame
                 exc_history.tracebacks[tb.id] = tb
 
-                qs = {'token': exc_history.token, 'tb': str(tb.id)}
+                qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
                 exc_url = debug_toolbar_url(request, 'exception', _query=qs)
                 exc_msg = msg % (request.url, exc_url)

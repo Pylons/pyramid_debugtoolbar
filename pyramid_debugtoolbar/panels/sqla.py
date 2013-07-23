@@ -73,7 +73,7 @@ class SQLADebugPanel(DebugPanel):
             self.engines = request.registry.pdtb_sqla_engines
         else:
             self.engines = request.registry.pdtb_sqla_engines = {}
-        self.token = request.exc_history.token
+        self.token = request.registry.pdtb_token
 
     def nav_title(self):
         return _('SQLAlchemy')
