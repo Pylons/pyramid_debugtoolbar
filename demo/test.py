@@ -154,6 +154,7 @@ class PageTest(unittest.TestCase):
         browser.fire_event('css=span.switch.inactive', 'click') # turn on
         browser.open('/')
         browser.wait_for_page_to_load("30000")
+        self.visit_dbtb()
         browser.fire_event("css=a.pDebugPerformancePanel", 'click')
         browser.fire_event('css=span.switch.active', 'click') # turn off
         result = browser.get_text('css=#pDebugPerformancePanel-content')
