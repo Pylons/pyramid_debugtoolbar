@@ -88,4 +88,5 @@ It is wise to run these tests before submitting a patch.  Here's how:
 - Fix any errors by modifying your code or by modifying the tests to
   expect the changes you've made.
 
-
+- Note that as of this writing, Firefox 22 is broken for Selenium and can't be 
+  used.  Firefox 21 seems to work fine.
