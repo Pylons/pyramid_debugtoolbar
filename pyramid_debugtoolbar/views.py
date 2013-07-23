@@ -154,8 +154,8 @@ class SQLAlchemyViews(object):
         if not engine_id:
             raise HTTPBadRequest('No valid database engine')
 
-        engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
-                      [int(engine_id)]()
+        engines = self.request.registry.parent_registry.pdtb_sqla_engines
+        engine = engines[int(engine_id)]()
         params = [json.loads(params)]
         result = engine.execute(stmt, params)
 
@@ -179,8 +179,8 @@ class SQLAlchemyViews(object):
         if not engine_id:
             raise HTTPBadRequest('No valid database engine')
 
-        engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
-                      [int(engine_id)]()
+        engines = self.request.registry.parent_registry.pdtb_sqla_engines
+        engine = engines[int(engine_id)]()
         params = json.loads(params)
 
         if engine.name.startswith('sqlite'):
