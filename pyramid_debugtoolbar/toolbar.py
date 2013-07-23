@@ -35,7 +35,6 @@ class IRequestAuthorization(Interface):
 class DebugToolbar(object):
 
     def __init__(self, request, panel_classes):
-        # constructed in host app
         self.panels = []
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
         activated = pdtb_active.split(';')
@@ -46,7 +45,6 @@ class DebugToolbar(object):
             self.panels.append(panel_inst)
 
     def process_response(self, request, response):
-        # called in host app
         if isinstance(response, WSGIHTTPException):
             # the body of a WSGIHTTPException needs to be "prepared"
             response.prepare(request.environ)

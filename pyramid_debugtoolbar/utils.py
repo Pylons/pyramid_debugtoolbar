@@ -2,7 +2,6 @@ import os.path
 import sys
 from logging import getLogger
 
-from pyramid.encode import urlencode
 from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 

@@ -43,40 +43,38 @@ class DebugToolbarTests(unittest.TestCase):
         response.content_type = 'text/plain'
         request = Request.blank('/')
         toolbar = self._makeOne(request, [DummyPanel])
-        toolbar.process_response(response)
+        toolbar.process_response(request, response)
         self.assertTrue(response.processed)
 
-    def test_process_response_html(self):
-        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+    def test_inject_html(self):
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
-        self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
+        self.config.add_route('debugtoolbar', '/_debugtoolbar/*subpath')
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
+        request.id = 'abc'
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel])
-        toolbar.process_response(response)
-        self.assertTrue(response.processed)
+        toolbar.inject(request, response)
         self.assertTrue(bytes_('div id="pDebug"') in response.app_iter[0])
         self.assertEqual(response.content_length, len(response.app_iter[0]))
 
     def test_passing_of_button_style(self):
-        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
-        self.config.add_route(ROOT_ROUTE_NAME, '/_debugtoolbar')
+        self.config.add_route('debugtoolbar', '/_debugtoolbar/*subpath')
         self.config.registry.settings['debugtoolbar.button_style'] = \
             'top:120px;zoom:50%'
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
+        request.id = 'abc'
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel])
-        toolbar.process_response(response)
-        self.assertTrue(response.processed)
+        toolbar.inject(request, response)
         self.assertTrue(bytes_('top:120px;zoom:50%') in response.app_iter[0])
 
 
@@ -132,6 +130,7 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
 class Test_toolbar_handler(unittest.TestCase):
     def setUp(self):
+        from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config = testing.setUp()
         settings = self.config.registry.settings
@@ -139,6 +138,7 @@ class Test_toolbar_handler(unittest.TestCase):
         settings['debugtoolbar.hosts'] = ['127.0.0.1']
         settings['mako.directories'] = []
         settings['debugtoolbar.exclude_prefixes'] = ['/excluded']
+        self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
@@ -155,11 +155,17 @@ class Test_toolbar_handler(unittest.TestCase):
         return handler
 
     def _callFUT(self, request, handler=None):
-        registry = self.config.registry
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
+        from pyramid_debugtoolbar.views import ExceptionDebugView
+        registry = self.config.registry
         if handler is None:
             handler = self._makeHandler()
+        def invoke_subrequest(request):
+            request.registry = registry.parent_registry = registry
+            request.exc_history = registry.exc_history
+            return ExceptionDebugView(request).exception()
         handler = toolbar_tween_factory(handler, registry)
+        request.invoke_subrequest = invoke_subrequest
         return handler(request)
 
     def test_it_startswith_root_path(self):
@@ -227,11 +233,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.assertRaises(NotImplementedError, self._callFUT, request, handler)
 
     def test_it_raises_exception_intercept_exc(self):
-        from pyramid_debugtoolbar.views import ExceptionDebugView
-        def invoke_subrequest(request):
-            return ExceptionDebugView(request).exception()
         request = Request.blank('/')
-        request.invoke_subrequest = invoke_subrequest
         def handler(request):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
