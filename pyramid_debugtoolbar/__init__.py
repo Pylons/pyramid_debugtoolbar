@@ -77,9 +77,6 @@ def includeme(config):
     config.introspection = False
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    if not 'mako.directories' in config.registry.settings:
-        # XXX FBO 1.2.X only
-        config.registry.settings['mako.directories'] = []
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
@@ -91,7 +88,6 @@ def includeme(config):
     config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
     config.add_view(wsgiapp2(application), route_name='debugtoolbar')
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-    config.add_renderer('.dbtmako', renderer_factory)
     if not 'mako.directories' in config.registry.settings:
         # XXX FBO 1.2.X only
         config.registry.settings['mako.directories'] = []
