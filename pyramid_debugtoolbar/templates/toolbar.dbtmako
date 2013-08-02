@@ -1,70 +1,101 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="${static_path}/css/toolbar.css">
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <style>
+      ._200 {
+	background-color: LightGreen ;
+      }
+      ._500 {
+	background-color: LightSalmon;
+      }
+      ._404{
+	background-color: LightBlue ;
+      }
 
-</head>
-<body>
-<div id="pDebug" style="display:none;">
+    </style>
+  </head>
+  <body>
+
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
     </script>
-    
     <script data-main="${static_path}js/toolbar"
             src="${static_path}js/require.js"></script>
 
-    <div style="display: none;" id="pDebugToolbar">
-        <ol id="pDebugPanelList">
+  <div class="row-fluid">
+    <div id="pDebugSideBar" class="span4">
+    <div class="row-fluid">
+      <div class="span6" id="pDebugRequests">
+        <ul class="nav nav-tabs nav-stacked">
+          <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
+	  % for id, toolbar_ in history:
+	  <li><a href="/_debug_toolbar/${id}" class="_${toolbar_.response.status_code}">${toolbar_.request.method} ${toolbar_.request.path} ${toolbar_.response.status_code}</a></li>
+	  % endfor
+        </ul>
+      </div>
+      <div class="span6" id="pDebugPanels">
+        <ul class="nav nav-tabs nav-stacked">
+          <li class="disabled"><a href="#"><strong>Panels</strong></a></li>
+
             % if not panels:
-			<li id="pDebugButton">DEBUG</li>
-			% endif
-			% for panel in panels:
-				<li id="${panel.dom_id()}">
-					% if panel.has_content:
-						<a href="${panel.url() or '#'}" 
+		<li id="pDebugButton">DEBUG</li>
+	    % endif
+	    % for panel in panels:
+		<li id="${panel.dom_id()}">
+		% if panel.has_content:
+		    <a href="${panel.url() or '#'}" 
                            title="${panel.title()}" 
                            class="${panel.dom_id()}">
-					% else:
-					    <div class="contentless">
-					% endif
+		% else:
+		    <div class="contentless">
+		% endif
 
-					${panel.nav_title()}
-					
-					% if panel.nav_subtitle():
-                        <br /><small>${panel.nav_subtitle()}</small>
-                    % endif
+		${panel.nav_title()}
+				    
+		% if panel.nav_subtitle():
+		    <br /><small>${panel.nav_subtitle()}</small>
+		% endif
 
-					% if panel.has_content:
-						</a>
-					% else:
-					    </div>
-					% endif
+		% if panel.has_content:
+			</a>
+		% else:
+		    </div>
+		% endif
 					
-                    % if panel.user_activate:
+		% if panel.user_activate:
                     <span class="switch ${'active' if panel.is_active else 'inactive'}" 
                           title="Enable or disable the panel"></span>
-                    % endif
-				</li>
-			% endfor
-        </ol>
-    </div>
-    <div style="display:none; ${button_style}" id="pDebugToolbarHandle">
-		<a title="Show Toolbar" id="pShowToolBarButton" href="#">&laquo;</a>
-	</div>
-	% for panel in panels:
-		% if panel.has_content:
-			<div id="${panel.dom_id()}-content" class="panelContent">
-				<div class="pDebugPanelTitle">
-					<h3>${panel.title()}</h3>
-				</div>
-				<div class="pDebugPanelContent">
-				    <div class="scroll">
-				        ${panel.render_content(request)|n}
-				    </div>
-				</div>
-			</div>
 		% endif
-	% endfor
-    <div id="pDebugWindow" class="panelContent"></div>
-</div>
-</body>
+		</li>
+	    % endfor
+
+         </ul>
+      </div>
+    </div>
+    </div>
+    <div class="span8" id="pDebugPanelsContent" >
+	<div id="pDebugWindow" class="panelContent">
+	    % for panel in panels:
+		    % if panel.has_content:
+		    <div id="${panel.dom_id()}-content" class="panelContent" style="display: none;">
+				    <div class="pDebugPanelTitle">
+					    <h3>${panel.title()}</h3>
+				    </div>
+				    <div class="pDebugPanelContent">
+					<div class="scroll">
+					    ${panel.render_content(request)|n}
+					</div>
+				    </div>
+			    </div>
+		    % endif
+	    % endfor
+	
+	</div>
+    </div>
+  </div>
+    
+  </body>
+  </html>  
