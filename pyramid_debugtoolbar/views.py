@@ -209,15 +209,18 @@ class SQLAlchemyViews(object):
 )
 def request_view(request):
     history = find_request_history(request)
-    toolbar = history.get(request.matchdict['request_id'], None)
+    request_id = request.matchdict['request_id']
+    toolbar = history.get(request_id, None)
     if not toolbar:
         raise NotFound
     static_path = request.static_url(STATIC_PATH)
     root_path = request.route_url(ROOT_ROUTE_NAME)
     button_style = get_setting(request.registry.settings,
             'button_style', '')
+    hist_toolbars = history.last(10)
     return {'panels': toolbar.panels, 'static_path': static_path,
-            'root_path': root_path, 'button_style': button_style}
+            'root_path': root_path, 'button_style': button_style,
+            'history': hist_toolbars}
 
 @subscriber(NewRequest)
 def find_exc_history(event):

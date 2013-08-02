@@ -17,7 +17,7 @@ from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import debug_toolbar_url
 from pyramid.httpexceptions import WSGIHTTPException
-from repoze.lru import LRUCache
+from pyramid_debugtoolbar.utils import ToolbarStorage
 
 html_types = ('text/html', 'application/xml+html')
 
@@ -95,7 +95,7 @@ def toolbar_tween_factory(handler, registry):
     if not get_setting(settings, 'enabled'):
         return handler
 
-    request_history = LRUCache(100)
+    request_history = ToolbarStorage(100)
     registry.request_history = request_history
 
     redirect_codes = (301, 302, 303, 304)
@@ -192,7 +192,10 @@ def toolbar_tween_factory(handler, registry):
 
             toolbar.process_response(request, response)
             request.id = text_(binascii.hexlify(str(id(request))))
-            request_history.put(request.id, toolbar)
+            # Don't store the favicon.ico request
+            # it's requested by the browser automatically 
+            if not "/favicon.ico" == request.path:
+                request_history.put(request.id, toolbar)
 
             if response.content_type in html_types:
                 toolbar.inject(request, response)
