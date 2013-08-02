@@ -36,6 +36,7 @@ class DebugToolbar(object):
 
     def __init__(self, request, panel_classes):
         self.panels = []
+        self.request = request
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
         activated = pdtb_active.split(';')
         for panel_class in panel_classes:
@@ -164,6 +165,7 @@ def toolbar_tween_factory(handler, registry):
 
                 toolbar.process_response(request, response)
                 request.id = text_(binascii.hexlify(str(id(request))))
+                toolbar.response = response
                 request_history.put(request.id, toolbar)
                 toolbar.inject(request, response)
                 return response
@@ -195,6 +197,7 @@ def toolbar_tween_factory(handler, registry):
             # Don't store the favicon.ico request
             # it's requested by the browser automatically 
             if not "/favicon.ico" == request.path:
+                toolbar.response = response
                 request_history.put(request.id, toolbar)
 
             if response.content_type in html_types:
