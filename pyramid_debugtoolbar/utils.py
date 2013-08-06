@@ -30,7 +30,7 @@ ROOT_ROUTE_NAME = 'debugtoolbar.root'
 EXC_ROUTE_NAME = 'debugtoolbar.exception'
 
 class ToolbarStorage(deque):
-    """Deque for storing Toolbar objects.""
+    """Deque for storing Toolbar objects."""
 
     def __init__(self, max_elem):
         super(ToolbarStorage, self ).__init__([], max_elem)
