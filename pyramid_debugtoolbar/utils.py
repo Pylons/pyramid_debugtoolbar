@@ -1,3 +1,4 @@
+import binascii
 import os.path
 import sys
 from logging import getLogger
@@ -6,9 +7,10 @@ from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 
 from pyramid_debugtoolbar.compat import binary_type
-from pyramid_debugtoolbar.compat import text_type
+from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import text_type
 
 from pyramid_debugtoolbar import ipaddr
 
@@ -170,5 +172,14 @@ def last_proxy(addr):
 def find_request_history(request):
     return request.registry.parent_registry.request_history
 
+
 def debug_toolbar_url(request, *elements, **kw):
     return request.route_url('debugtoolbar', subpath=elements, **kw)
+
+
+def hexlify(value):
+    """Hexlify int, str then returns native str type."""
+    # If integer
+    str_ = str(value)
+    hexified = text_(binascii.hexlify(bytes_(str_)))
+    return hexified
