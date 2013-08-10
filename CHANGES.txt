@@ -15,6 +15,10 @@ Next release
   characters in platform (e.g. Fedora's Schrodinger's Cat).  See
   https://github.com/Pylons/pyramid_debugtoolbar/pull/98
 
+- Raise a ``pyramid.exceptions.URLDecodeError`` instead of a raw
+  UnicodeDecodeError when the request path cannot be decoded.  See
+  https://github.com/Pylons/pyramid/issues/1057.
+
 1.0.6 (2013-04-17)
 ------------------
 

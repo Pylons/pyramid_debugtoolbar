@@ -163,6 +163,12 @@ class Test_toolbar_handler(unittest.TestCase):
         handler = toolbar_tween_factory(handler, registry)
         return handler(request)
 
+    def test_it_path_cannot_be_decoded(self):
+        from pyramid.exceptions import URLDecodeError
+        request = Request.blank('/%c5')
+        request.remote_addr = '127.0.0.1'
+        self.assertRaises(URLDecodeError, self._callFUT, request)
+    
     def test_it_startswith_root_path(self):
         request = Request.blank('/_debug_toolbar')
         request.remote_addr = '127.0.0.1'

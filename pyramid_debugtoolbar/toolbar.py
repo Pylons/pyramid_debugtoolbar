@@ -6,6 +6,7 @@ from pyramid.interfaces import Interface
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.response import Response
+from pyramid.exceptions import URLDecodeError
 from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.compat import url_unquote
 from pyramid_debugtoolbar.compat import bytes_
@@ -118,8 +119,13 @@ def toolbar_tween_factory(handler, registry):
         exclude = [root_path] + exclude_prefixes
         request.exc_history = exc_history
         last_proxy_addr = None
-        starts_with_excluded = list(filter(None, map(request.path.startswith,
-                                                     exclude)))
+
+        try:
+            p = request.path
+        except UnicodeDecodeError as e:
+            raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
+        
+        starts_with_excluded = list(filter(None, map(p.startswith, exclude)))
 
         if request.remote_addr:
             last_proxy_addr = last_proxy(request.remote_addr)
