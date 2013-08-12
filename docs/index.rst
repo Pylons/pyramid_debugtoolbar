@@ -1,7 +1,7 @@
 pyramid_debugtoolbar
 ====================
 
-.. overview:
+.. _overview:
 
 Overview
 --------
