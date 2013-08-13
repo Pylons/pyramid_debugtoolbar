@@ -202,6 +202,12 @@ class SQLAlchemyViews(object):
 
 
 @view_config(
+    route_name='debugtoolbar.main',
+    permission=NO_PERMISSION_REQUIRED,
+    custom_predicates=(valid_host, valid_request),
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
+)
+@view_config(
     route_name='debugtoolbar.request',
     permission=NO_PERMISSION_REQUIRED,
     custom_predicates=(valid_host, valid_request),
@@ -209,7 +215,16 @@ class SQLAlchemyViews(object):
 )
 def request_view(request):
     history = find_request_history(request)
-    request_id = request.matchdict['request_id']
+
+    try:
+        last_request_pair = history.last(1)[0]
+    except IndexError:
+        last_request_pair = None
+        last_request_id = None
+    else:
+        last_request_id = last_request_pair[0]
+
+    request_id = request.matchdict.get('request_id', last_request_id)
     toolbar = history.get(request_id, None)
     if not toolbar:
         raise NotFound

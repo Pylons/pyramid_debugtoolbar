@@ -113,6 +113,7 @@ def make_application(settings, parent_registry):
     config.add_route('debugtoolbar.sql_select', '/sqlalchemy/sql_select')
     config.add_route('debugtoolbar.sql_explain', '/sqlalchemy/sql_explain')
     config.add_route('debugtoolbar.request', '/{request_id}')
+    config.add_route('debugtoolbar.main', '/')
     config.scan('pyramid_debugtoolbar.views')
 
     return config.make_wsgi_app()
