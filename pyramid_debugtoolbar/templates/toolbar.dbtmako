@@ -50,7 +50,9 @@
                            title="${panel.title()}" 
                            class="${panel.dom_id()}">
 		% else:
-		    <div class="contentless">
+		    <a href="${panel.url() or '#'}"
+                           title="${panel.title()}"
+                           class="${panel.dom_id()} contentless">
 		% endif
 
 		${panel.nav_title()}
@@ -59,11 +61,7 @@
 		    <br /><small>${panel.nav_subtitle()}</small>
 		% endif
 
-		% if panel.has_content:
-			</a>
-		% else:
-		    </div>
-		% endif
+		    </a>
 					
 		% if panel.user_activate:
                     <span class="switch ${'active' if panel.is_active else 'inactive'}" 
