@@ -1,3 +1,10 @@
 - Docs.
 
-- Custom build of toolbar.js and debugger.js using requirejs.
+- Clean up the static/img dir
+
+- Solve the js content/deps managment
+
+- Clean up the toolbar.css
+
+- The activation of panels should be different. Because it usually effects the
+  requests that are going to be added to the toolbar.
