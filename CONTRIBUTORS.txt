@@ -108,3 +108,5 @@ Contributors
 - Aaron Spaulding, 2013/01/20
 - Hadrien David, 2013/01/23
 - Daniel Werner, 2013/06/03
+- Arndt Droullier, 2013/08/16
+
