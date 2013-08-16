@@ -3,27 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <style>
-      ._200 {
-	background-color: LightGreen ;
-      }
-      ._500 {
-	background-color: LightSalmon;
-      }
-      ._404{
-	background-color: LightBlue ;
-      }
-
-    </style>
+    <!--bootstrap version 2.3.2-->
+    <link rel="stylesheet" type="text/css" href="${static_path}css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="${static_path}css/toolbar.css">
   </head>
   <body>
 
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
     </script>
-    <script data-main="${static_path}js/toolbar"
-            src="${static_path}js/require.js"></script>
+    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
+    <script src="${static_path}js/jquery.cookie.js"></script>
+    <script src="${static_path}js/jquery.tablesorter.min.js"></script>
+    <script src="${static_path}js/toolbar.js"></script>
 
   <div class="row-fluid">
     <div id="pDebugSideBar" class="span4">
@@ -48,11 +40,12 @@
 		% if panel.has_content:
 		    <a href="${panel.url() or '#'}" 
                            title="${panel.title()}" 
-                           class="${panel.dom_id()}">
+                           id="${panel.dom_id()}">
 		% else:
 		    <a href="${panel.url() or '#'}"
                            title="${panel.title()}"
-                           class="${panel.dom_id()} contentless">
+                           id="${panel.dom_id()}"
+                           class="contentless">
 		% endif
 
 		${panel.nav_title()}
@@ -61,12 +54,12 @@
 		    <br /><small>${panel.nav_subtitle()}</small>
 		% endif
 
-		    </a>
 					
 		% if panel.user_activate:
                     <span class="switch ${'active' if panel.is_active else 'inactive'}" 
-                          title="Enable or disable the panel"></span>
+		      title="Enable or disable the panel">
 		% endif
+		    </a>
 		</li>
 	    % endfor
 
