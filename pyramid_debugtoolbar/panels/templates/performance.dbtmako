@@ -41,10 +41,10 @@
         <tbody>
             % for i, row in enumerate(function_calls):
                 <tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-                    <td>${row['ncalls']}</td>
-                    <td>${row['tottime']}</td>
+                    <td>${str(row['ncalls'])}</td>
+                    <td>${str(row['tottime'])}</td>
                     <td>${'%.4f' % row['percall']}</td>
-                    <td>${row['cumtime']}</td>
+                    <td>${str(row['cumtime'])}</td>
                     <td>${'%.4f' % row['percall_cum']}</td>
                     <td title="${row['filename_long']}">${row['filename']|h}</td>
                 </tr>
