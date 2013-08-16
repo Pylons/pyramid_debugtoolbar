@@ -1,6 +1,7 @@
 Next release
 ------------
 
+
 1.1 (unreleased)
 ----------------
 
@@ -18,6 +19,13 @@ Next release
 - Raise a ``pyramid.exceptions.URLDecodeError`` instead of a raw
   UnicodeDecodeError when the request path cannot be decoded.  See
   https://github.com/Pylons/pyramid/issues/1057.
+
+- Added new configuration option: `debugtoolbar.show_on_exc_only` (default=false).
+  If set to true (`debugtoolbar.show_on_exc_only = true`) the debugtoolbar will only be
+  injected into the response in case a exception is raised. If the response is 
+  processed without exception the returned html code is not changed at all. 
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/54
+
 
 1.0.6 (2013-04-17)
 ------------------

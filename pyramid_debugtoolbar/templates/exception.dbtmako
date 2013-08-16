@@ -35,6 +35,10 @@
                   readonly>${plaintext}</textarea>
       </div>
       
+    <div class="detail">
+      <pre class= "errormsg">${exception|n}</pre>
+    </div>
+
     <div class="explanation">
       <p>
         <b>Warning: this feature should not be enabled on production
