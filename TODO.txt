@@ -8,3 +8,7 @@
 
 - The activation of panels should be different. Because it usually effects the
   requests that are going to be added to the toolbar.
+
+- There are a lot of global settings like (Versions, Settings, Tweens and Introspection)
+
+- Therefore we need a navbar at the top and have tabs ( History, Globals and Settings ) 
