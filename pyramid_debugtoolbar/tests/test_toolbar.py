@@ -285,6 +285,54 @@ class Test_toolbar_handler(unittest.TestCase):
             b'K\\xc3\\xa4se!\\xe2\\x98\\xa0' in response.body
         )
 
+    def test_show_on_exc_with_exc_raised(self):
+        request = Request.blank('/')
+        def handler(request):
+            raise NotImplementedError
+        self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
+        self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
+        response = self._callFUT(request, handler)
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(response.status_int, 500)
+
+    def test_show_on_exc_without_exc_raised(self):
+        request = Request.blank('/')
+        def handler(request):
+            response = request.response
+            response.body = "<html><body>OK!</body></html>"
+            return response
+        self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
+        self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
+        response = self._callFUT(request, handler)
+        self.assertTrue(response.status_int, 200)
+        self.assertEqual(response.body, "<html><body>OK!</body></html>")
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+
+    def test_show_on_exc_disabled_without_exc_raised(self):
+        request = Request.blank('/')
+        def handler(request):
+            response = request.response
+            response.body = "<html><body>OK!</body></html>"
+            return response
+        self.config.registry.settings['debugtoolbar.show_on_exc_only'] = False
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
+        self.config.add_route('debugtoolbar.exception', '/exception')
+        request.registry = self.config.registry
+        request.remote_addr = '127.0.0.1'
+        response = self._callFUT(request, handler)
+        self.assertTrue(response.status_int, 200)
+        self.assertNotEqual(response.body, "<html><body>OK!</body></html>")
+        self.assertFalse(hasattr(request, 'debug_toolbar'))
+
     def test_request_authorization(self):
         from pyramid_debugtoolbar import set_request_authorization_callback
 
