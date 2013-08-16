@@ -105,6 +105,7 @@ def toolbar_tween_factory(handler, registry):
     panel_classes = get_setting(settings, 'panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
+    show_on_exc_only = get_setting(settings, 'show_on_exc_only')
     hosts = get_setting(settings, 'hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
@@ -188,7 +189,8 @@ def toolbar_tween_factory(handler, registry):
                         response.app_iter = [content]
                         response.status_int = 200
 
-            toolbar.process_response(response)
+            if not show_on_exc_only:
+                toolbar.process_response(response)
             return response
 
         finally:
