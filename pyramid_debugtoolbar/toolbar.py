@@ -37,7 +37,9 @@ class DebugToolbar(object):
     def __init__(self, request, panel_classes):
         self.panels = []
         self.request = request
+        # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
+
         activated = pdtb_active.split(';')
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
