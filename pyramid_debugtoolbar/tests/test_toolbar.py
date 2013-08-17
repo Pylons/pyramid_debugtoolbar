@@ -303,7 +303,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request = Request.blank('/')
         def handler(request):
             response = request.response
-            response.body = "<html><body>OK!</body></html>"
+            response.body = b"<html><body>OK!</body></html>"
             return response
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
@@ -320,7 +320,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request = Request.blank('/')
         def handler(request):
             response = request.response
-            response.body = "<html><body>OK!</body></html>"
+            response.body = b"<html><body>OK!</body></html>"
             return response
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = False
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
