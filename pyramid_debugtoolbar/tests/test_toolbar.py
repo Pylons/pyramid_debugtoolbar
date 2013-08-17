@@ -313,7 +313,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
         self.assertTrue(response.status_int, 200)
-        self.assertEqual(response.body, "<html><body>OK!</body></html>")
+        self.assertEqual(response.body, b"<html><body>OK!</body></html>")
         self.assertFalse(hasattr(request, 'debug_toolbar'))
 
     def test_show_on_exc_disabled_without_exc_raised(self):
@@ -330,7 +330,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
         self.assertTrue(response.status_int, 200)
-        self.assertNotEqual(response.body, "<html><body>OK!</body></html>")
+        self.assertNotEqual(response.body, b"<html><body>OK!</body></html>")
         self.assertFalse(hasattr(request, 'debug_toolbar'))
 
     def test_request_authorization(self):
