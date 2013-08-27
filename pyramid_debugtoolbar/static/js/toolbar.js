@@ -16,21 +16,21 @@ function toggle_active(elem) {
 $(document).ready(function() {
 
 
-$("#pDebugPanels li a").click( function(event_) {
+// When clicked on the panels menu
+$(".pDebugPanels li a").click( function(event_) {
     event_.stopPropagation();
-    $("#pDebugPanels li ").removeClass("active");
+    $(".pDebugPanels li ").removeClass("active");
     parent_ = $(this).parent();
     toggle_active(parent_);
 
     $(".panelContent").hide();
-    $("#pDebugWindow").show();
-    current = $('#pDebugWindow #' + parent_.attr('id') + '-content');
+    $(".pDebugWindow").show();
+    current = $('.pDebugWindow #' + parent_.attr('id') + '-content');
     current.show();
 });
 
 
-$('#pDebugPanels li a .switch').click(function() {
-  console.log("borg click");
+$('.pDebugPanels li a .switch').click(function() {
   var $panel = $(this).parent();
   var $this = $(this);
   var dom_id = $panel.attr('id');
@@ -61,9 +61,9 @@ $('#pDebugPanels li a .switch').click(function() {
 
 $(".pDebugSortable").tablesorter();
 
-current = $('#pDebugWindow #' + 'pDebugVersionPanel' + '-content');
+current = $('.pDebugWindow #' + 'pDebugVersionPanel' + '-content');
 current.show();
-$('li#pDebugVersionPanel').addClass('active');
+$('li.pDebugVersionPanel').addClass('active');
 
 });
 
