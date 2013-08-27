@@ -34,18 +34,25 @@ class IRequestAuthorization(Interface):
 
 class DebugToolbar(object):
 
-    def __init__(self, request, panel_classes):
+    def __init__(self, request, panel_classes, global_panel_classes):
         self.panels = []
+        self.global_panels = []
         self.request = request
         # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
 
         activated = pdtb_active.split(';')
+        # XXX
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
             if panel_inst.dom_id() in activated and panel_inst.has_content:
                 panel_inst.is_active = True
             self.panels.append(panel_inst)
+        for panel_class in global_panel_classes:
+            panel_inst = panel_class(request)
+            if panel_inst.dom_id() in activated and panel_inst.has_content:
+                panel_inst.is_active = True
+            self.global_panels.append(panel_inst)
 
     def process_response(self, request, response):
         if isinstance(response, WSGIHTTPException):
@@ -53,6 +60,8 @@ class DebugToolbar(object):
             response.prepare(request.environ)
 
         for panel in self.panels:
+            panel.process_response(response)
+        for panel in self.global_panels:
             panel.process_response(response)
 
     def inject(self, request, response):
@@ -103,6 +112,7 @@ def toolbar_tween_factory(handler, registry):
 
     redirect_codes = (301, 302, 303, 304)
     panel_classes = get_setting(settings, 'panels', [])
+    global_panel_classes = get_setting(settings, 'global_panels', [])
     intercept_exc = get_setting(settings, 'intercept_exc')
     intercept_redirects = get_setting(settings, 'intercept_redirects')
     hosts = get_setting(settings, 'hosts')
@@ -133,11 +143,12 @@ def toolbar_tween_factory(handler, registry):
             or auth_check and not auth_check(request):
                 return handler(request)
 
-        toolbar = DebugToolbar(request, panel_classes)
+        toolbar = DebugToolbar(request, panel_classes, global_panel_classes)
         request.debug_toolbar = toolbar
 
         _handler = handler
 
+        # XXX
         for panel in toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 

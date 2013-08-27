@@ -14,8 +14,6 @@ from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
 toolbar_tween_factory = toolbar_tween_factory  # pyflakes
 
 default_panel_names = (
-    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
-    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
     'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
     'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
     'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
@@ -23,9 +21,14 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
     'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
+)
+
+default_global_panel_names = (
+    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
+    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
     'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
     'pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel',
-    )
+)
 
 default_hosts = ('127.0.0.1', '::1')
 
@@ -34,9 +37,10 @@ default_settings = (
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
     ('panels', as_globals_list, default_panel_names),
+    ('global_panels', as_globals_list, default_global_panel_names),
     ('hosts', as_list, default_hosts),
     ('exclude_prefixes', as_cr_separated_list, []),
-    )
+)
 
 
 def parse_settings(settings):
