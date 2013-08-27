@@ -1,5 +1,5 @@
-  <!doctype html>
-  <html lang="en">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
@@ -16,77 +16,107 @@
     <script src="${static_path}js/jquery.cookie.js"></script>
     <script src="${static_path}js/jquery.tablesorter.min.js"></script>
     <script src="${static_path}js/toolbar.js"></script>
+    <script src="${static_path}js/bootstrap.min.js"></script>
 
-  <div class="row-fluid">
-    <div id="pDebugSideBar" class="span4">
-    <div class="row-fluid">
-      <div class="span6" id="pDebugRequests">
-        <ul class="nav nav-tabs nav-stacked">
-          <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
-	  % for id, toolbar_ in history:
-	  <li><a href="/_debug_toolbar/${id}" class="_${toolbar_.response.status_code}">${toolbar_.request.method} ${toolbar_.request.path} ${toolbar_.response.status_code}</a></li>
-	  % endfor
-        </ul>
-      </div>
-      <div class="span6" id="pDebugPanels">
-        <ul class="nav nav-tabs nav-stacked">
-          <li class="disabled"><a href="#"><strong>Panels</strong></a></li>
+    <!--Navbar top menu-->
+    <ul class="nav nav-tabs" id="myTab">
+      <li class="active"><a href="#history">History</a></li>
+      <li><a href="#global">Global</a></li>
+      <li><a href="#settings">Settings</a></li>
+    </ul>
+    <!--Navbar top menu end-->
 
-            % if not panels:
-		<li id="pDebugButton">DEBUG</li>
-	    % endif
-	    % for panel in panels:
-		<li id="${panel.dom_id()}">
-		% if panel.has_content:
-		    <a href="${panel.url() or '#'}" 
-                           title="${panel.title()}" 
-                           id="${panel.dom_id()}">
-		% else:
-		    <a href="${panel.url() or '#'}"
-                           title="${panel.title()}"
-                           id="${panel.dom_id()}"
-                           class="contentless">
-		% endif
+    <!--Start of tab content-->
+    <div class="tab-content">
 
-		${panel.nav_title()}
-				    
-		% if panel.nav_subtitle():
-		    <br /><small>${panel.nav_subtitle()}</small>
-		% endif
+      <!--Start of history tab-->
+      <div class="tab-pane active" id="history">
 
-					
-		% if panel.user_activate:
-                    <span class="switch ${'active' if panel.is_active else 'inactive'}" 
-		      title="Enable or disable the panel">
-		% endif
-		    </a>
-		</li>
-	    % endfor
+	<div class="row-fluid">
+	  <div id="pDebugSideBar" class="span4">
+	    <div class="row-fluid">
+	      <div class="span6" id="pDebugRequests">
+		<ul class="nav nav-tabs nav-stacked">
+		  <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
+		  % for id, toolbar_ in history:
+		  <li><a href="/_debug_toolbar/${id}" class="_${toolbar_.response.status_code}">${toolbar_.request.method} ${toolbar_.request.path} ${toolbar_.response.status_code}</a></li>
+		  % endfor
+		</ul>
+	      </div>
+	      <div class="span6" id="pDebugPanels">
+		<ul class="nav nav-tabs nav-stacked">
+		  <li class="disabled"><a href="#"><strong>Panels</strong></a></li>
 
-         </ul>
-      </div>
-    </div>
-    </div>
-    <div class="span8" id="pDebugPanelsContent" >
-	<div id="pDebugWindow" class="panelContent">
-	    % for panel in panels:
+		  % if not panels:
+		  <li id="pDebugButton">DEBUG</li>
+		  % endif
+		  % for panel in panels:
+		  <li id="${panel.dom_id()}">
 		    % if panel.has_content:
-		    <div id="${panel.dom_id()}-content" class="panelContent" style="display: none;">
-				    <div class="pDebugPanelTitle">
-					    <h3>${panel.title()}</h3>
-				    </div>
-				    <div class="pDebugPanelContent">
-					<div class="scroll">
-					    ${panel.render_content(request)|n}
-					</div>
-				    </div>
-			    </div>
-		    % endif
-	    % endfor
-	
+		    <a href="${panel.url() or '#'}" 
+		      title="${panel.title()}" 
+		      id="${panel.dom_id()}">
+		      % else:
+		      <a href="${panel.url() or '#'}"
+			title="${panel.title()}"
+			id="${panel.dom_id()}"
+			class="contentless">
+			% endif
+
+			${panel.nav_title()}
+
+			% if panel.nav_subtitle():
+			<br /><small>${panel.nav_subtitle()}</small>
+			% endif
+
+
+			% if panel.user_activate:
+			<span class="switch ${'active' if panel.is_active else 'inactive'}" 
+			  title="Enable or disable the panel">
+			  % endif
+			</a>
+		      </li>
+		      % endfor
+
+		    </ul>
+		  </div>
+		</div>
+	      </div>
+	      <div class="span8" id="pDebugPanelsContent" >
+		<div id="pDebugWindow" class="panelContent">
+		  % for panel in panels:
+		  % if panel.has_content:
+		  <div id="${panel.dom_id()}-content" class="panelContent" style="display: none;">
+		    <div class="pDebugPanelTitle">
+		      <h3>${panel.title()}</h3>
+		    </div>
+		    <div class="pDebugPanelContent">
+		      <div class="scroll">
+			${panel.render_content(request)|n}
+		      </div>
+		    </div>
+		  </div>
+		  % endif
+		  % endfor
+
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	  <!--End of history tab-->
+	  <div class="tab-pane" id="global">...</div>
+	  <div class="tab-pane" id="settings">...</div>
 	</div>
-    </div>
-  </div>
-    
-  </body>
-  </html>  
+	<!--End of tab content-->
+	<script>
+	  $(function () {
+	    $('#myTab a:last').tab('show');
+	    $('#myTab a').click(function (e) {
+	      e.preventDefault();
+	      $(this).tab('show');
+	    });
+	  });
+	</script>
+
+      </body>
+    </html>  
