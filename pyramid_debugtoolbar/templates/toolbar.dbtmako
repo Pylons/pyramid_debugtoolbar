@@ -1,5 +1,5 @@
-<%namespace file="history_tab.html" import="history_tab"/>
-<%namespace file="global_tab.html" import="global_tab"/>
+<%namespace file="history_tab.dbtmako" import="history_tab"/>
+<%namespace file="global_tab.dbtmako" import="global_tab"/>
 <!doctype html>
 <html lang="en">
   <head>
