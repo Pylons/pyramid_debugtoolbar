@@ -155,12 +155,12 @@ class Test_toolbar_handler(unittest.TestCase):
             return self.response
         return handler
 
-    def _callFUT(self, request, handler=None):
+    def _callFUT(self, request, handler=None, _logger=None):
         registry = self.config.registry
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
         if handler is None:
             handler = self._makeHandler()
-        handler = toolbar_tween_factory(handler, registry)
+        handler = toolbar_tween_factory(handler, registry, _logger=_logger)
         return handler(request)
 
     def test_it_path_cannot_be_decoded(self):
@@ -230,7 +230,9 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             raise NotImplementedError
         request.registry = self.config.registry
-        self.assertRaises(NotImplementedError, self._callFUT, request, handler)
+        logger = DummyLogger()
+        self.assertRaises(NotImplementedError, self._callFUT, request, handler,
+                          _logger=logger)
 
     def test_it_raises_exception_intercept_exc(self):
         request = Request.blank('/')
@@ -241,7 +243,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route('debugtoolbar.exception', '/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
-        response = self._callFUT(request, handler)
+        logger = DummyLogger()
+        response = self._callFUT(request, handler, _logger=logger)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(response.status_int, 500)
@@ -277,7 +280,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route('debugtoolbar.exception', '/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
-        response = self._callFUT(request, handler)
+        logger = DummyLogger()
+        response = self._callFUT(request, handler, _logger=logger)
         self.assertTrue(response.status_int, 500)
         self.assertTrue(
             b'NotImplementedError: K\xc3\xa4se!\xe2\x98\xa0' in response.body or
@@ -295,7 +299,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route('debugtoolbar.exception', '/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
-        response = self._callFUT(request, handler)
+        logger = DummyLogger()
+        response = self._callFUT(request, handler, _logger=logger)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertTrue(response.status_int, 500)
 
@@ -394,3 +399,8 @@ class DummyPanelWithContent(DummyPanel):
 class DummyToolbar(object):
     def __init__(self, panels):
         self.panels = panels
+
+class DummyLogger(object):
+    def exception(self, msg):
+        self.msg = msg
+

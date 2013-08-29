@@ -94,8 +94,11 @@ def beforerender_subscriber(event):
             panel.process_beforerender(event)
 
 
-def toolbar_tween_factory(handler, registry):
+def toolbar_tween_factory(handler, registry, _logger=None):
     """ Pyramid tween factory for the debug toolbar """
+    # _logger passed for testing purposes only
+    if _logger is None:
+        _logger = logger
     settings = registry.settings
 
     if not get_setting(settings, 'enabled'):
@@ -164,10 +167,10 @@ def toolbar_tween_factory(handler, registry):
                 msg = 'Exception at %s\ntraceback url: %s'
                 exc_url = request.route_url(EXC_ROUTE_NAME, _query=qs)
                 exc_msg = msg % (request.url, exc_url)
-                logger.exception(exc_msg)
+                _logger.exception(exc_msg)
                 return response
             else:
-                logger.exception('Exception at %s' % request.url)
+                _logger.exception('Exception at %s' % request.url)
             raise
 
         else:
