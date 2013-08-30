@@ -18,7 +18,7 @@ For a demonstration:
 
 - Create a virtualenv::
 
-  $ virtualenv2.6 --no-site-packages env26
+  $ virtualenv --python=python2.7 env27
 
 - Clone the Pyramid trunk::
 

@@ -1,5 +1,5 @@
-Next release
-------------
+1.0.7 (2013-08-29)
+------------------
 
 - Drop support for Python 2.5.
 
@@ -23,6 +23,7 @@ Next release
   returned html code is not changed at all. 
   See https://github.com/Pylons/pyramid_debugtoolbar/issues/54
 
+- Fix various UnicodeDecodeError exceptions.
 
 1.0.6 (2013-04-17)
 ------------------
