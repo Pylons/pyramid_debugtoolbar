@@ -1,5 +1,6 @@
 <%namespace file="history_tab.dbtmako" import="history_tab"/>
 <%namespace file="global_tab.dbtmako" import="global_tab"/>
+<%namespace file="settings_tab.dbtmako" import="settings_tab"/>
 <!doctype html>
 <html lang="en">
   <head>
@@ -43,7 +44,9 @@
 	  </div>
 	  <!--End of global tab-->
 
-	  <div class="tab-pane" id="settings">...</div>
+	<div class="tab-pane" id="settings">
+	${settings_tab()}
+	</div>
 	</div>
 	<!--End of tab content-->
 	<script>
