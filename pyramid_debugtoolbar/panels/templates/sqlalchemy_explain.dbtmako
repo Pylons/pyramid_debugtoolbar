@@ -1,5 +1,4 @@
 <div class="pDebugPanelTitle">
-	<a class="pDebugClose pDebugBack" href="">Back</a>
 	<h3>SQL Explained</h3>
 </div>
 <div class="pDebugPanelContent">
