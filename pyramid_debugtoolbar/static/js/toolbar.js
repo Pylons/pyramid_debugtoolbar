@@ -30,10 +30,10 @@ $(".pDebugPanels li a").click( function(event_) {
 });
 
 
-$('.pDebugPanels li a .switch').click(function() {
+$('#settings .switch').click(function() {
   var $panel = $(this).parent();
   var $this = $(this);
-  var dom_id = $panel.attr('id');
+  var dom_id = $this.attr('id').replace("-switch", "");
   // Turn cookie content into an array of active panels
   var active_str = $.cookie(COOKIE_NAME_ACTIVE);
   var active = (active_str) ? active_str.split(';') : [];
