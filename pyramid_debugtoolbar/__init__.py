@@ -1,4 +1,5 @@
 from pyramid.settings import asbool
+from pyramid_mako import MakoRendererFactoryHelper
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import as_cr_separated_list
@@ -48,23 +49,13 @@ def parse_settings(settings):
         populate(name, convert, default)
     return parsed
 
-try:
-    # Try to take advantage of MakoRendererFactoryHelper in Pyramid 1.3a8+.
-    # If we can do this, the toolbar templates won't be effected by
-    # normal mako settings.
-    from pyramid.mako_templating import MakoRendererFactoryHelper
-    renderer_factory = MakoRendererFactoryHelper('dbtmako.')
-except ImportError:  # pragma: no cover
-    # Buuut, if not (1.2 probably), just use the normal mako renderer factory
-    from pyramid.mako_templating import renderer_factory
-
-
 def set_request_authorization_callback(request, callback):
     """
     Register IRequestAuthorization utility to authorize toolbar per request.
     """
     request.registry.registerUtility(callback, IRequestAuthorization)
 
+renderer_factory = MakoRendererFactoryHelper('dbtmako.')
 
 def includeme(config):
     """ Activate the debug toolbar; usually called via

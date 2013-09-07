@@ -25,6 +25,7 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.2dev',
+    'pyramid_mako',
     'Pygments',
     ]
 

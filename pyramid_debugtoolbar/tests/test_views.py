@@ -8,7 +8,7 @@ class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.registry.settings['mako.directories'] = []
-        from pyramid.mako_templating import renderer_factory
+        from .. import renderer_factory
         self.config.add_renderer('.dbtmako', renderer_factory)
 
     def tearDown(self):
