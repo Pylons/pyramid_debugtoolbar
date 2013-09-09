@@ -10,19 +10,12 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.view import view_config
-from pyramid.response import Response
 from wsgiref.simple_server import make_server
 
 try:
     import sqlalchemy
 except ImportError: # pragma: no cover
     sqlalchemy = None
-
-try:
-    import pyramid_jinja2
-except ImportError: # pragma: no cover
-    pyramid_jinja2 = None
-
 
 # True if we are running on Python 3.
 PY3 = sys.version_info[0] == 3
@@ -62,7 +55,7 @@ def test_page(request):
     log.info(title)
     return {
         'title': title,
-        'show_jinja2_link': bool(pyramid_jinja2),
+        'show_jinja2_link': True,
         'show_sqla_link': bool(sqlalchemy)}
 
 @view_config(route_name='test_redirect')
@@ -79,18 +72,14 @@ def test_highorder(request):
 def test_predicates(request):
     return {'title':'Test route predicates'}
 
-@view_config(route_name='test_chameleon_exc',
-             renderer='__main__:templates/error.pt')
 @view_config(route_name='test_mako_exc',
         renderer='__main__:templates/error.mako')
+@view_config(route_name='test_chameleon_exc',
+        renderer='__main__:templates/error.pt')
+@view_config(route_name='test_jinja2_exc',
+        renderer='__main__:templates/error.jinja2')
 def test_template_exc(request):
     return {'title':'Test template exceptions'}
-if pyramid_jinja2 is not None:
-    test_template_exc = view_config(
-        route_name='test_jinja2_exc',
-        renderer='__main__:templates/error.jinja2')(
-        test_template_exc)
-
 
 class DummyRootFactory(object):
     def __init__(self, request):
@@ -129,8 +118,9 @@ if __name__ == '__main__':
     config.add_route('test_jinja2_exc', '/jinja2_exc')
     config.add_route('test_highorder', text_(b'/La Pe\xc3\xb1a', 'utf-8'))
     config.scan('__main__')
-    if pyramid_jinja2:
-        config.include('pyramid_jinja2')
+    config.include('pyramid_chameleon')
+    config.include('pyramid_jinja2')
+    config.include('pyramid_mako')
     if sqlalchemy:
         config.include('sqla')
     config.include('pyramid_debugtoolbar')

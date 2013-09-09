@@ -1,7 +1,8 @@
-Next release
-------------
+1.0.8 (2013-09-09)
+------------------
 
-- Depend on ``pyramid_mako`` (Mako support split out of Pyramid in 1.5+).
+- Depend on ``pyramid_mako`` (Mako support will be split out of Pyramid in
+  1.5+).
 
 1.0.7 (2013-08-29)
 ------------------

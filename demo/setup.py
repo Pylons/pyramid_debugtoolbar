@@ -26,7 +26,10 @@ except IOError:
 install_requires=[
     'pyramid>=1.1.1dev',
     'pyramid_debugtoolbar',
-    'SQLAlchemy'
+    'SQLAlchemy',
+    'pyramid_mako',
+    'pyramid_jinja2',
+    'pyramid_chameleon',
     ]
 
 setup(name='debugtoolbar_demo',
