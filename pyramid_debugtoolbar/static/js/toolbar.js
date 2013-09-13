@@ -17,9 +17,9 @@ $(document).ready(function() {
 
 
 // When clicked on the panels menu
-$(".pDebugPanels li a").click( function(event_) {
+$(".pDebugPanels li:not(.disabled) a").click( function(event_) {
     event_.stopPropagation();
-    $(".pDebugPanels li ").removeClass("active");
+    $(".pDebugPanels li").removeClass("active");
     parent_ = $(this).parent();
     toggle_active(parent_);
 
