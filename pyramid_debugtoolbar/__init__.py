@@ -19,13 +19,13 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
-    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
 )
 
 default_global_panel_names = (
     'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
     'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
+    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
     'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
     'pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel',
 )
