@@ -1,8 +1,8 @@
 <%def name="history_tab()">
-<div class="row-fluid">
-  <div class="pDebugSideBar span4">
-    <div class="row-fluid">
-      <div class="span6 pDebugRequests">
+<div class="row">
+  <div class="pDebugSideBar col-md-4">
+    <div class="row">
+      <div class="col-md-6 pDebugRequests">
         <ul class="nav nav-tabs nav-stacked">
           <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
           % for id, toolbar_ in history:
@@ -10,8 +10,8 @@
           % endfor
         </ul>
       </div>
-      <div class="span6 pDebugPanels">
-        <ul class="nav nav-tabs nav-stacked">
+      <div class="col-md-6 pDebugPanels">
+        <ul class="nav nav-pills nav-stacked">
           <li class="disabled"><a href="#"><strong>Panels</strong></a></li>
 
           % if not panels:
@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-      <div class="span8 pDebugPanelsContent" >
+      <div class="col-md-8 pDebugPanelsContent" >
         <div class="pDebugWindow" class="panelContent">
           % for panel in panels:
           % if panel.has_content:

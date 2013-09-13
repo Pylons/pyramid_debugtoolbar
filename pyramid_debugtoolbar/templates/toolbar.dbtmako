@@ -23,9 +23,9 @@
 
     <!--Navbar top menu-->
     <ul class="nav nav-tabs" id="myTab">
-      <li class="active"><a href="#history">History</a></li>
-      <li><a href="#global">Global</a></li>
-      <li><a href="#settings">Settings</a></li>
+      <li class="active"><a href="#history" data-toggle="tab">History</a></li>
+      <li><a href="#global" data-toggle="tab">Global</a></li>
+      <li><a href="#settings" data-toggle="tab">Settings</a></li>
     </ul>
     <!--Navbar top menu end-->
 
