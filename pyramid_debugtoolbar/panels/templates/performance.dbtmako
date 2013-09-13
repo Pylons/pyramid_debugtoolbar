@@ -1,5 +1,5 @@
 % if timing_rows:
-<table>
+<table class="table table-striped">
 	<colgroup>
 		<col style="width:20%"/>
 		<col/>
@@ -27,7 +27,7 @@
 <h4>Profile</h4>
 % if stats:
     <p>Times in milliseconds</p>
-    <table class="pDebugSortable">
+    <table class="pDebugSortable table table-striped">
         <thead>
             <tr>
                 <th>Calls</th>

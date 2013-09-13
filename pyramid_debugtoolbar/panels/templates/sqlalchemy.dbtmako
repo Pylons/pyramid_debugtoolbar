@@ -1,4 +1,5 @@
-<table id="pSqlaTable" class="pDebugSortable">
+<table id="pSqlaTable" class="pDebugSortable table table-striped"
+>
 	<thead>
 		<tr>
 			<th>Time&nbsp;(ms)</th>

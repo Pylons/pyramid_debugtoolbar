@@ -1,5 +1,5 @@
 % if records:
-	<table>
+	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th>Level</th>

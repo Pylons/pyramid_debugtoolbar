@@ -1,5 +1,5 @@
 <h4>${definition} definition</h4>
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Order (from server to application)</th>

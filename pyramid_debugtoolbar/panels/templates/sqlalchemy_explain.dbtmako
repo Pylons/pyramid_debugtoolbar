@@ -17,7 +17,8 @@
 			<dt>Time</dt>
 			<dd>${'%.2f' % (duration)} ms</dd>
 		</dl>
-		<table class="djSqlExplain">
+		<table class="djSqlExplain table table-striped"
+>
 			<thead>
 				<tr>
 					% for h in headers:
