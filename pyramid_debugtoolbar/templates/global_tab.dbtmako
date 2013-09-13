@@ -1,7 +1,7 @@
 <%def name="global_tab()">
 	<div class="row">
-	  <div class="pDebugSideBar col-md-4">
-	      <div class="pDebugPanels col-md-6">
+	  <div class="pDebugSideBar col-md-2">
+	      <div class="pDebugPanels">
 		<ul class="nav nav-pills nav-stacked">
 		  <li class="disabled"><a href="#"><strong>Panels</strong></a></li>
 
@@ -39,7 +39,7 @@
 		    </ul>
 		  </div>
 	      </div>
-	      <div class="col-md-8 pDebugPanelsContent" >
+	      <div class="col-md-10 pDebugPanelsContent" >
 		<div class="pDebugWindow" class="panelContent">
 		  % for panel in global_panels:
 		  % if panel.has_content:

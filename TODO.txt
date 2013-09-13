@@ -16,6 +16,3 @@
 
 - If cell values are left-justified, the headers for those columns should also be left-justified. A lot of times the "Value" header is floating way far away from the actual column data horizontally.
 
-- In the "Global" panel there is dead space where the "Panels" section is currently located in the "History" section, even though there is no panel there.
-
-
