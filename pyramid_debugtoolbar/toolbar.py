@@ -211,9 +211,7 @@ def toolbar_tween_factory(handler, registry):
             request.id = hexlify(id(request))
             # Don't store the favicon.ico request
             # it's requested by the browser automatically 
-            # For now ignore the static requests
-            if not "/favicon.ico" == request.path or \
-                    not '__static' in request.matched_route.name:
+            if not "/favicon.ico" == request.path:
                 toolbar.response = response
                 request_history.put(request.id, toolbar)
 
