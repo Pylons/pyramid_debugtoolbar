@@ -19,31 +19,12 @@
 					<a href="${root_path}/sqlalchemy/sql_explain?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}" data-target="#ExplainModal" data-toggle="modal">EXPLAIN</a>
 
 
-					<!-- Modal -->
-					<div id="SelectModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="SelectModalLabel" aria-hidden="true">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3 id="SelectModalLabel">SELECT</h3>
-					</div>
-					<div class="modal-body">
-						<p>One fine body…</p>
-					</div>
-					<div class="modal-footer">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-					</div>
+					<!-- Select Modal -->
+					<div id="SelectModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="SelectModalLabel" aria-hidden="true">
 					</div>
 
-					<div id="ExplainModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ExplainModalLabel" aria-hidden="true">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3 id="ExplainModalLabel">EXPLAIN</h3>
-					</div>
-					<div class="modal-body">
-						<p>One fine body…</p>
-					</div>
-					<div class="modal-footer">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-					</div>
+					<!-- Explain Modal -->
+					<div id="ExplainModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ExplainModalLabel" aria-hidden="true">
 					</div>
 
 				% endif

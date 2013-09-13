@@ -1,7 +1,15 @@
-<div class="pDebugPanelTitle">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h3 id="SelectModalLabel">SELECT</h3>
+</div>
+<div class="modal-body">
+
+<div class="piDebugPanelTitle">
 	<h3>SQL Select</h3>
 </div>
-<div class="pDebugPanelContent">
+<div class="piDebugPanelContent">
 	<div class="scroll">
 		<dl>
 			<dt>Executed SQL</dt>
@@ -32,4 +40,11 @@
 		<p>Empty set</p>
 		% endif
 	</div>
+</div>
+
+</div>
+<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+</div>
+</div>
 </div>
