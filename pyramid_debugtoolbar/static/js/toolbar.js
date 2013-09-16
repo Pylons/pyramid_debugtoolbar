@@ -61,9 +61,12 @@ $('#settings .switch').click(function() {
 
 $(".pDebugSortable").tablesorter();
 
-current = $('.pDebugWindow #' + 'pDebugVersionPanel' + '-content');
-current.show();
-$('li.pDebugVersionPanel').addClass('active');
+bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
+
+for (var i = 0; i < bootstrap_panels.length; i++) {
+    $('.pDebugWindow #' + bootstrap_panels[i] + '-content').show();
+    $('li#' + bootstrap_panels[i]).addClass('active');
+}
 
 });
 
