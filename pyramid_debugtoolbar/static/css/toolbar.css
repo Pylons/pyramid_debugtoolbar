@@ -25,10 +25,14 @@
   background-image: url(/_debug_toolbar/static/img/tick-red.png);
 }
 
-.nav-label {
+li.nav-label {
   position: relative;
 	display: block;
-	padding: 10px 15px;
+	padding: 10px 15px 10px 0px;
+}
+
+li.nav-label strong {
+  font-size: 150%;
 }
 
 #pDebug #pDebugToolbarHandle {
