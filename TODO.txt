@@ -1,5 +1,7 @@
 - Docs.
 
+- Fix selenium tests.
+
 - Clean up the static/img dir
 
 - Solve the js content/deps managment
@@ -10,12 +12,4 @@
 
 - There is no indicator of what request I am currently looking at. I have to remember which one I clicked on right now.
 
-- Tables have no styling.
-
-- Too much horizontal screen real-estate is occupied by drilling down into the data. I strongly urge you to make the "Panels" section of "History" into horizontal tabs across the top.
-
 - If cell values are left-justified, the headers for those columns should also be left-justified. A lot of times the "Value" header is floating way far away from the actual column data horizontally.
-
-- Version panel should  be active
-
-- HTTP Headers panel should be active and content should be shown
