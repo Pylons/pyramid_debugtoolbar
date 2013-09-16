@@ -16,3 +16,6 @@
 
 - If cell values are left-justified, the headers for those columns should also be left-justified. A lot of times the "Value" header is floating way far away from the actual column data horizontally.
 
+- Version panel should  be active
+
+- HTTP Headers panel should be active and content should be shown
