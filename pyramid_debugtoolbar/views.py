@@ -235,7 +235,9 @@ def request_view(request):
     hist_toolbars = history.last(10)
     return {'panels': toolbar.panels, 'static_path': static_path,
             'root_path': root_path, 'button_style': button_style,
-            'history': hist_toolbars, 'global_panels': toolbar.global_panels}
+            'history': hist_toolbars, 'global_panels': toolbar.global_panels,
+            'request_id': request_id
+            }
 
 @subscriber(NewRequest)
 def find_exc_history(event):
