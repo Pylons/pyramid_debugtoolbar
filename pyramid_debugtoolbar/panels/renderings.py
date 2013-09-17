@@ -24,6 +24,11 @@ class RenderingsDebugPanel(DebugPanel):
         except:
             # crazyass code raises an exception during __repr__ (formish)
             val = '<unknown>'
+
+        import sys
+        if sys.version < '3':
+            val = unicode(val, 'utf-8')
+
         self.renderings.append(dict(name=name, system=dictrepr(event), val=val))
 
     def nav_title(self):
