@@ -26,7 +26,8 @@ except IOError:
 install_requires=[
     'pyramid>=1.1.1dev',
     'pyramid_debugtoolbar',
-    'SQLAlchemy'
+    'SQLAlchemy',
+    'selenium'
     ]
 
 setup(name='debugtoolbar_demo',
@@ -49,7 +50,7 @@ setup(name='debugtoolbar_demo',
       include_package_data=True,
       zip_safe=False,
       install_requires = install_requires,
-      py_modules=['demo', 'selenium', 'sqla'],
+      py_modules=['demo', 'sqla'],
       package_data = {'debugtoolbar_demo':
                       ['templates/*.mako',
                        'templates/*.jinja2]',
