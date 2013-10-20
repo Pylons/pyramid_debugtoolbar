@@ -1,5 +1,4 @@
 from pyramid.settings import asbool
-from pyramid_mako import MakoRendererFactoryHelper
 from pyramid_debugtoolbar.utils import as_globals_list
 from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import as_cr_separated_list
@@ -55,8 +54,6 @@ def set_request_authorization_callback(request, callback):
     """
     request.registry.registerUtility(callback, IRequestAuthorization)
 
-renderer_factory = MakoRendererFactoryHelper('dbtmako.')
-
 def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
@@ -64,12 +61,10 @@ def includeme(config):
     introspection = getattr(config, 'introspection', True)
     # dont register any introspectables for Pyramid 1.3a9+
     config.introspection = False
-    config.add_renderer('.dbtmako', renderer_factory)
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    if not 'mako.directories' in config.registry.settings:
-        # XXX FBO 1.2.X only
-        config.registry.settings['mako.directories'] = []
+    config.include('pyramid_mako')
+    config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(
