@@ -1,3 +1,8 @@
+1.0.9 (2013-10-20)
+------------------
+
+- Use new ``pyramid_mako`` configuration directive add_mako_renderer.
+
 1.0.8 (2013-09-09)
 ------------------
 
@@ -23,10 +28,10 @@
   https://github.com/Pylons/pyramid/issues/1057.
 
 - Added new configuration option: `debugtoolbar.show_on_exc_only` (
-  default=false).  If set to true (`debugtoolbar.show_on_exc_only = true`) 
-  the debugtoolbar will only be injected into the response in case a 
-  exception is raised. If the response is processed without exception the 
-  returned html code is not changed at all. 
+  default=false).  If set to true (`debugtoolbar.show_on_exc_only = true`)
+  the debugtoolbar will only be injected into the response in case a
+  exception is raised. If the response is processed without exception the
+  returned html code is not changed at all.
   See https://github.com/Pylons/pyramid_debugtoolbar/issues/54
 
 - Fix various UnicodeDecodeError exceptions.

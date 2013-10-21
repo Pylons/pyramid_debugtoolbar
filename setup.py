@@ -25,7 +25,7 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.2dev',
-    'pyramid_mako',
+    'pyramid_mako>=0.3',
     'Pygments',
     ]
 
@@ -39,7 +39,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='1.0.8',
+      version='1.0.9',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
