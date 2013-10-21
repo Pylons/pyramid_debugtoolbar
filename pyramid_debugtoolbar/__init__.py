@@ -54,6 +54,17 @@ def set_request_authorization_callback(request, callback):
     """
     request.registry.registerUtility(callback, IRequestAuthorization)
 
+def setup_mako(config):
+    config.include('pyramid_mako')
+    try:
+        # bw-compat for pyramid_mako < 0.3
+        from pyramid_mako import MakoRendererFactoryHelper
+    except ImportError:
+        config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
+    else:
+        renderer_factory = MakoRendererFactoryHelper('dbtmako.')
+        config.add_renderer('.dbtmako', renderer_factory)
+
 def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
@@ -63,8 +74,7 @@ def includeme(config):
     config.introspection = False
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    config.include('pyramid_mako')
-    config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
+    setup_mako(config)
     config.add_static_view('_debug_toolbar/static', STATIC_PATH)
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(
