@@ -10,8 +10,8 @@ class DebugToolbarTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.registry.settings['mako.directories'] = []
-        from .. import renderer_factory
-        self.config.add_renderer('.dbtmako', renderer_factory)
+        self.config.include('pyramid_mako')
+        self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 
     def tearDown(self):
         del self.config
@@ -143,8 +143,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
-        from .. import renderer_factory
-        self.config.add_renderer('.dbtmako', renderer_factory)
+        self.config.include('pyramid_mako')
+        self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 
     def tearDown(self):
         testing.tearDown()
@@ -168,7 +168,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request = Request.blank('/%c5')
         request.remote_addr = '127.0.0.1'
         self.assertRaises(URLDecodeError, self._callFUT, request)
-    
+
     def test_it_startswith_root_path(self):
         request = Request.blank('/_debug_toolbar')
         request.remote_addr = '127.0.0.1'
