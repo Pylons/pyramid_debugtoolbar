@@ -1,4 +1,3 @@
-import binascii
 import sys
 import os
 
@@ -16,6 +15,7 @@ from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import debug_toolbar_url
+from pyramid_debugtoolbar.utils import hexlify
 from pyramid.httpexceptions import WSGIHTTPException
 from repoze.lru import LRUCache
 
@@ -106,7 +106,7 @@ def toolbar_tween_factory(handler, registry):
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
     registry.exc_history = exc_history = None
-    registry.pdtb_token = text_(binascii.hexlify(os.urandom(10)))
+    registry.pdtb_token = hexlify(os.urandom(10))
 
     if intercept_exc:
         registry.exc_history = exc_history = ExceptionHistory()
@@ -163,7 +163,7 @@ def toolbar_tween_factory(handler, registry):
                 response = request.invoke_subrequest(subrequest)
 
                 toolbar.process_response(request, response)
-                request.id = text_(binascii.hexlify(str(id(request))))
+                request.id = hexlify(id(request))
                 request_history.put(request.id, toolbar)
                 toolbar.inject(request, response)
                 return response
@@ -191,7 +191,7 @@ def toolbar_tween_factory(handler, registry):
                         response.status_int = 200
 
             toolbar.process_response(request, response)
-            request.id = text_(binascii.hexlify(str(id(request))))
+            request.id = hexlify(id(request))
             request_history.put(request.id, toolbar)
 
             if response.content_type in html_types:
