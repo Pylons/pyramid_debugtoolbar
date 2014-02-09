@@ -239,6 +239,24 @@ def request_view(request):
             'request_id': request_id
             }
 
+@view_config(route_name='debugtoolbar.sse',
+             permission=NO_PERMISSION_REQUIRED)
+def sse(request):
+    response = request.response
+    response.content_type = 'text/event-stream'
+    history = find_request_history(request)
+    response.text = u""
+
+    if history:
+        last_request_pair = history.last(1)[0]
+        last_request_id = last_request_pair[0]
+        if not last_request_id == request.session.get('last_request_id'):
+            request.session['last_request_id'] = last_request_id
+            data = [[_id, toolbar.json] for _id,toolbar in history.last(10)]
+            if data:
+                response.text = u"event: new_request\ndata:{}\n\n".format(json.dumps(data))
+    return response
+
 @subscriber(NewRequest)
 def find_exc_history(event):
     # Move the chickens to a new hen house

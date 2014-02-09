@@ -3,7 +3,7 @@
   <div class="pDebugSideBar col-md-2">
 
       <div class="pDebugRequests">
-        <ul class="nav nav-tabs nav-stacked">
+        <ul id="requests" class="nav nav-tabs nav-stacked">
           <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
           % for id, toolbar_ in history:
           <li>

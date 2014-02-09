@@ -54,6 +54,12 @@ class DebugToolbar(object):
                 panel_inst.is_active = True
             self.global_panels.append(panel_inst)
 
+    @property
+    def json(self):
+        return {'method': self.request.method,
+                'path': self.request.path,
+                'status_code': self.response.status_code}
+
     def process_response(self, request, response):
         if isinstance(response, WSGIHTTPException):
             # the body of a WSGIHTTPException needs to be "prepared"
@@ -210,7 +216,7 @@ def toolbar_tween_factory(handler, registry):
             toolbar.process_response(request, response)
             request.id = hexlify(id(request))
             # Don't store the favicon.ico request
-            # it's requested by the browser automatically 
+            # it's requested by the browser automatically
             if not "/favicon.ico" == request.path:
                 toolbar.response = response
                 request_history.put(request.id, toolbar)

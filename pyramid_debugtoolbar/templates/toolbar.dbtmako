@@ -19,6 +19,7 @@
     <script src="${static_path}js/jquery.cookie.js"></script>
     <script src="${static_path}js/jquery.tablesorter.min.js"></script>
     <script src="${static_path}js/toolbar.js"></script>
+    <script src="${static_path}js/sse.js"></script>
     <script src="${static_path}js/bootstrap.min.js"></script>
 
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
