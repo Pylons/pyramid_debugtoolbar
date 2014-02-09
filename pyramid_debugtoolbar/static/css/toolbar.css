@@ -35,6 +35,10 @@ li.nav-label strong {
   font-size: 150%;
 }
 
+#content {
+    margin-top: 50px;
+}
+
 #pDebug #pDebugToolbarHandle {
 	position:fixed;
 	background:#fff;
