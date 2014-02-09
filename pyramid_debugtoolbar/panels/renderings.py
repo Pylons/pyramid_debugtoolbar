@@ -35,7 +35,7 @@ class RenderingsDebugPanel(DebugPanel):
 
     def nav_subtitle(self):
         num = len(self.renderings)
-        return '%d %s' % (num, self.pluralize("rendering", "renderings", num))
+        return '%d' % (num)
 
     def title(self):
         return _('Renderings')

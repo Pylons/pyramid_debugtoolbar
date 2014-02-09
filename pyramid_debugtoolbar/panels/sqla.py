@@ -81,7 +81,7 @@ class SQLADebugPanel(DebugPanel):
     def nav_subtitle(self):
         if self.queries:
             count = len(self.queries)
-            return "%d %s" % (count, "query" if count == 1 else "queries")
+            return "%d" % (count)
 
     def title(self):
         return _('SQLAlchemy queries')

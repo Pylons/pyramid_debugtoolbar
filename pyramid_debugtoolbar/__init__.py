@@ -54,23 +54,11 @@ def parse_settings(settings):
         populate(name, convert, default)
     return parsed
 
-try:
-    # Try to take advantage of MakoRendererFactoryHelper in Pyramid 1.3a8+.
-    # If we can do this, the toolbar templates won't be effected by
-    # normal mako settings.
-    from pyramid.mako_templating import MakoRendererFactoryHelper
-    renderer_factory = MakoRendererFactoryHelper('dbtmako.')
-except ImportError:  # pragma: no cover
-    # Buuut, if not (1.2 probably), just use the normal mako renderer factory
-    from pyramid.mako_templating import renderer_factory
-
-
 def set_request_authorization_callback(request, callback):
     """
     Register IRequestAuthorization utility to authorize toolbar per request.
     """
     request.registry.registerUtility(callback, IRequestAuthorization)
-
 
 def includeme(config):
     """ Activate the debug toolbar; usually called via
@@ -81,9 +69,8 @@ def includeme(config):
     config.introspection = False
     settings = parse_settings(config.registry.settings)
     config.registry.settings.update(settings)
-    if not 'mako.directories' in config.registry.settings:
-        # XXX FBO 1.2.X only
-        config.registry.settings['mako.directories'] = []
+    config.include('pyramid_mako')
+    config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
     config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
@@ -94,11 +81,7 @@ def includeme(config):
     application = make_application(settings, config.registry)
     config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
     config.add_view(wsgiapp2(application), route_name='debugtoolbar')
-    config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-    config.add_renderer('.dbtmako', renderer_factory)
-    if not 'mako.directories' in config.registry.settings:
-        # XXX FBO 1.2.X only
-        config.registry.settings['mako.directories'] = []
+    config.add_static_view('/_debug_toolbar/static', STATIC_PATH)
     config.introspection = introspection
 
 
@@ -108,7 +91,8 @@ def make_application(settings, parent_registry):
     directly. """
     config = Configurator(settings=settings)
     config.registry.parent_registry = parent_registry
-    config.add_renderer('.dbtmako', renderer_factory)
+    config.include('pyramid_mako')
+    config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
     if not 'mako.directories' in config.registry.settings:
         # XXX FBO 1.2.X only
         config.registry.settings['mako.directories'] = []

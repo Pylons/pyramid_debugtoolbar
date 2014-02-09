@@ -23,9 +23,7 @@
 
     <div class="col-md-10">
     <div class="pDebugPanels">
-        <ul class="nav nav-pills">
-          <li class="disabled nav-label"><strong>Panels</strong></li>
-
+        <ul class="nav nav-tabs">
           % if not panels:
           <li class="pDebugButton">DEBUG</li>
           % endif
@@ -45,7 +43,7 @@
                 ${panel.nav_title()}
 
                 % if panel.nav_subtitle():
-                <br /><small>${panel.nav_subtitle()}</small>
+                <span class="badge">${panel.nav_subtitle()}</span>
                 % endif
 
                 </a>

@@ -73,9 +73,8 @@ class LoggingPanel(DebugPanel):
         return _("Logging")
 
     def nav_subtitle(self):
-        records = handler.get_records()
-        num = len(records)
-        return '%d %s' % (num, self.pluralize("message", "messages", num))
+        num = len(self.data.get('records'))
+        return '%d' % (num)
 
     def title(self):
         return _('Log Messages')

@@ -21,34 +21,47 @@
     <script src="${static_path}js/toolbar.js"></script>
     <script src="${static_path}js/bootstrap.min.js"></script>
 
-    <!--Navbar top menu-->
-    <ul class="nav nav-tabs" id="myTab">
-      <li class="active"><a href="#history" data-toggle="tab">History</a></li>
-      <li><a href="#global" data-toggle="tab">Global</a></li>
-      <li><a href="#settings" data-toggle="tab">Settings</a></li>
-    </ul>
-    <!--Navbar top menu end-->
-
-    <!--Start of tab content-->
-    <div class="tab-content">
-
-      <!--Start of history tab-->
-      <div class="tab-pane active" id="history">
-	${history_tab()}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">DT <img width="16px" height="16px" src="https://raw2.github.com/Pylons/pyramid-scaffold-theme/master/src/pst/static/pyramid.png"/></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#history" data-toggle="tab">History</a></li>
+            <li><a href="#global" data-toggle="tab">Global</a></li>
+            <li><a href="#settings" data-toggle="tab">Settings</a></li>
+          </ul>
+        </div>
       </div>
-      <!--End of history tab-->
+    </div>
 
-	  <!--Start of global tab-->
-	  <div class="tab-pane" id="global">
-	${global_tab()}
-	  </div>
-	  <!--End of global tab-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tab-content">
+                <div class="tab-pane active" id="history">
+                    ${history_tab()}
+                </div>
 
-	<div class="tab-pane" id="settings">
-	${settings_tab()}
-	</div>
-	</div>
-	<!--End of tab content-->
+                <div class="tab-pane" id="global">
+                    ${global_tab()}
+                </div>
+
+                <div class="tab-pane" id="settings">
+                    ${settings_tab()}
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 	<script>
 	  $(function () {
 	    $('#myTab a:first').tab('show');

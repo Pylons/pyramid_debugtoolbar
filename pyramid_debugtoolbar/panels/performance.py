@@ -143,12 +143,7 @@ class PerformanceDebugPanel(DebugPanel):
         return _('Performance')
 
     def nav_subtitle(self):
-        if self.has_resource:
-            utime = self._end_rusage.ru_utime - self._start_rusage.ru_utime
-            stime = self._end_rusage.ru_stime - self._start_rusage.ru_stime
-            return 'CPU: %0.2fms (%0.2fms)' % ((utime + stime) * 1000.0,
-                                               self.total_time)
-        return 'TOTAL: %0.2fms' % (self.total_time)
+        return '%0.2fms' % (self.total_time)
 
     def url(self):
         return ''
