@@ -3,11 +3,6 @@ $(document).ready(function() {
 
     function new_request(e) {
         var requests = $('ul#requests');
-        var items = new Array();
-        e.data.forEach(function (li) {
-            console.log(li);
-        });
-
         console.log(e);
     }
 

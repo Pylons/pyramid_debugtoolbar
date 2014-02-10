@@ -13,21 +13,12 @@
 		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
 			<td>${'%.2f' % query['duration']}</td>
 			<td>
+
 			% if query['params']:
 				% if query['is_select']:
 					<!-- Button to trigger modal -->
 					<a href="${root_path}/sqlalchemy/sql_select?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}" data-target="#SelectModal" data-toggle="modal">SELECT</a>
 					<a href="${root_path}/sqlalchemy/sql_explain?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}" data-target="#ExplainModal" data-toggle="modal">EXPLAIN</a>
-
-
-					<!-- Select Modal -->
-					<div id="SelectModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="SelectModalLabel" aria-hidden="true">
-					</div>
-
-					<!-- Explain Modal -->
-					<div id="ExplainModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ExplainModalLabel" aria-hidden="true">
-					</div>
-
 				% endif
 			% endif
 			</td>
@@ -38,3 +29,22 @@
 	</tbody>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="SelectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="ExplainModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- /.modal -->

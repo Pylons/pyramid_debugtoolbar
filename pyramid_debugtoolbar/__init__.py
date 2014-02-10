@@ -20,6 +20,7 @@ default_panel_names = (
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
+    'pyramid_debugtoolbar.panels.traceback.TracebackPanel',
 )
 
 default_global_panel_names = (

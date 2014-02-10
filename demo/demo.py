@@ -54,6 +54,7 @@ def notfound(request):
 
 @view_config(context=HTTPNotFound, renderer='__main__:templates/notfound.mako')
 def notfound_view(request):
+    request.response.status_code = 404
     return {}
 
 @view_config(renderer='__main__:templates/index.mako') # found via traversal

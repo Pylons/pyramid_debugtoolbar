@@ -169,6 +169,7 @@ def toolbar_tween_factory(handler, registry):
                 for frame in tb.frames:
                     exc_history.frames[frame.id] = frame
                 exc_history.tracebacks[tb.id] = tb
+                request.pdbt_tb = tb
 
                 qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'

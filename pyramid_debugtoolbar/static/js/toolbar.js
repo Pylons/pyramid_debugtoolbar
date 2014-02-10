@@ -13,7 +13,7 @@ function toggle_active(elem) {
     elem.toggleClass('active');
 }
 
-$(document).ready(function() {
+jQuery(document).ready(function($) {
 
 
 // When clicked on the panels menu
@@ -59,7 +59,7 @@ $('#settings .switch').click(function() {
   }
 });
 
-$(".pDebugSortable").tablesorter();
+// $(".pDebugSortable").tablesorter();
 
 bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
 

@@ -1,17 +1,16 @@
 <%def name="history_tab()">
 <div class="row">
-  <div class="pDebugSideBar col-md-2">
+  <div class="col-sm-3 col-md-2 sidebar">
 
       <div class="pDebugRequests">
-        <ul id="requests" class="nav nav-tabs nav-stacked">
+        <ul id="requests" class="nav nav-sidebar">
           <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
           % for id, toolbar_ in history:
-          <li>
-          <a href="/_debug_toolbar/${id}" class="_${toolbar_.response.status_code}">
-          % if id == request_id:
-          <span class="glyphicon glyphicon-chevron-right"></span>
-          % endif
-          ${toolbar_.request.method} ${toolbar_.request.path} ${toolbar_.response.status_code}
+          <% _css_class = 'active' if id == request_id else '' %>
+          <li class="${_css_class}">
+          <a href="/_debug_toolbar/${id}">
+          ${toolbar_.request.method} ${toolbar_.request.path}
+          <span class="badge _${toolbar_.response.status_code}">${toolbar_.response.status_code}</span>
           </a>
           </li>
           % endfor
@@ -21,14 +20,15 @@
 
       </div> <!-- col-md-2 -->
 
-    <div class="col-md-10">
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <div class="pDebugPanels">
         <ul class="nav nav-tabs">
           % if not panels:
           <li class="pDebugButton">DEBUG</li>
           % endif
           % for panel in panels:
-          <li id="${panel.dom_id()}">
+          <% _css_class = 'disabled' if not panel.has_content else '' %>
+          <li class="${_css_class}" id="${panel.dom_id()}">
             % if panel.has_content:
             <a href="${panel.url() or '#'}" 
               title="${panel.title()}" 
@@ -42,7 +42,7 @@
 
                 ${panel.nav_title()}
 
-                % if panel.nav_subtitle():
+                % if panel.nav_subtitle() and panel.has_content:
                 <span class="badge">${panel.nav_subtitle()}</span>
                 % endif
 

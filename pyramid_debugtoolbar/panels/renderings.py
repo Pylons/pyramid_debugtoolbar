@@ -31,14 +31,14 @@ class RenderingsDebugPanel(DebugPanel):
         self.renderings.append(dict(name=name, system=dictrepr(event), val=val))
 
     def nav_title(self):
-        return _('Renderings')
+        return _('Renderers')
 
     def nav_subtitle(self):
         num = len(self.renderings)
         return '%d' % (num)
 
     def title(self):
-        return _('Renderings')
+        return _('Renderers')
 
     def url(self):
         return ''

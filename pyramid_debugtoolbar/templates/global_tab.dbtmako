@@ -2,9 +2,7 @@
 	<div class="container">
 	  <div class="pDebugSideBar">
 	      <div class="pDebugPanels">
-		<ul class="nav nav-pills">
-		  <li class="disabled nav-label"><strong>Panels</strong></li>
-
+		<ul class="nav nav-tabs">
 		  % if not global_panels:
 		  <li class="pDebugButton">DEBUG</li>
 		  % endif

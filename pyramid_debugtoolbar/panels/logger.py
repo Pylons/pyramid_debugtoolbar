@@ -44,7 +44,6 @@ logging.root.addHandler(handler)
 
 class LoggingPanel(DebugPanel):
     name = 'Logging'
-    has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/logger.dbtmako'
 
     def __init__(self, request):
@@ -64,6 +63,13 @@ class LoggingPanel(DebugPanel):
 
         self.data = {'records': records}
 
+    @property
+    def has_content(self):
+        if self.data.get('records'):
+            return True
+        else:
+            return False
+
     def get_and_delete(self):
         records = handler.get_records()
         handler.clear_records()
@@ -73,8 +79,8 @@ class LoggingPanel(DebugPanel):
         return _("Logging")
 
     def nav_subtitle(self):
-        num = len(self.data.get('records'))
-        return '%d' % (num)
+        if self.data:
+            return '%d' % len(self.data.get('records'))
 
     def title(self):
         return _('Log Messages')

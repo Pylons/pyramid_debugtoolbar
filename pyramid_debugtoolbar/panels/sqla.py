@@ -64,7 +64,6 @@ class SQLADebugPanel(DebugPanel):
     SQL statement took in milliseconds.
     """
     name = 'SQLAlchemy'
-    has_content = has_sqla
     template = 'pyramid_debugtoolbar.panels:templates/sqlalchemy.dbtmako'
 
     def __init__(self, request):
@@ -75,13 +74,19 @@ class SQLADebugPanel(DebugPanel):
             self.engines = request.registry.pdtb_sqla_engines = {}
         self.token = request.registry.pdtb_token
 
+    @property
+    def has_content(self):
+        if self.queries:
+            return True
+        else:
+            return False
+
     def nav_title(self):
         return _('SQLAlchemy')
 
     def nav_subtitle(self):
         if self.queries:
-            count = len(self.queries)
-            return "%d" % (count)
+            return "%d" % (len(self.queries))
 
     def title(self):
         return _('SQLAlchemy queries')

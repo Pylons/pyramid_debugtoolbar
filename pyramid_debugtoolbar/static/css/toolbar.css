@@ -1,11 +1,11 @@
 ._200 {
-  background-color: LightGreen ;
+  background-color: #468847;
 }
 ._500 {
-  background-color: LightSalmon;
+  background-color: #b94a48;
 }
 ._404{
-  background-color: LightBlue ;
+  background-color: #3a87ad;
 }
 
 .switch {
@@ -33,10 +33,6 @@ li.nav-label {
 
 li.nav-label strong {
   font-size: 150%;
-}
-
-#content {
-    margin-top: 50px;
 }
 
 #pDebug #pDebugToolbarHandle {
