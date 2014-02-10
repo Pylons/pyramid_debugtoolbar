@@ -36,12 +36,11 @@ try:
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
         stop_timer = time.time()
         request = get_current_request()
-        if request is not None:
+        if request is not None and hasattr(request, 'pdtb_sqla_queries'):
             with lock:
-                engines = getattr(request.registry, 'pdtb_sqla_engines', {})
+                engines = request.registry.pdtb_sqla_engines
                 engines[id(conn.engine)] = weakref.ref(conn.engine)
-                setattr(request.registry, 'pdtb_sqla_engines', engines)
-                queries = getattr(request, 'pdtb_sqla_queries', [])
+                queries = request.pdtb_sqla_queries
                 duration = (stop_timer - conn.pdtb_start_timer) * 1000
                 queries.append({
                     'engine_id': id(conn.engine),
@@ -50,9 +49,8 @@ try:
                     'parameters': params,
                     'context': context
                 })
-                setattr(request, 'pdtb_sqla_queries', queries)
         delattr(conn, 'pdtb_start_timer')
-                
+
     has_sqla = True
 except ImportError:
     has_sqla = False
@@ -66,19 +64,29 @@ class SQLADebugPanel(DebugPanel):
     SQL statement took in milliseconds.
     """
     name = 'SQLAlchemy'
-    has_content = has_sqla
+    template = 'pyramid_debugtoolbar.panels:templates/sqlalchemy.dbtmako'
+
+    def __init__(self, request):
+        self.queries = request.pdtb_sqla_queries = []
+        if hasattr(request.registry, 'pdtb_sqla_engines'):
+            self.engines = request.registry.pdtb_sqla_engines
+        else:
+            self.engines = request.registry.pdtb_sqla_engines = {}
+        self.token = request.registry.pdtb_token
 
     @property
-    def queries(self):
-        return getattr(self.request, 'pdtb_sqla_queries', [])
+    def has_content(self):
+        if self.queries:
+            return True
+        else:
+            return False
 
     def nav_title(self):
         return _('SQLAlchemy')
 
     def nav_subtitle(self):
         if self.queries:
-            count = len(self.queries)
-            return "%d %s" % (count, "query" if count == 1 else "queries")
+            return "%d" % (len(self.queries))
 
     def title(self):
         return _('SQLAlchemy queries')
@@ -86,10 +94,7 @@ class SQLADebugPanel(DebugPanel):
     def url(self):
         return ''
 
-    def content(self):
-        if not self.queries:
-            return 'No queries in executed in request.'
-
+    def process_response(self, response):
         data = []
         for query in self.queries:
             stmt = query['statement']
@@ -103,7 +108,7 @@ class SQLADebugPanel(DebugPanel):
             except UnicodeDecodeError:
                 pass # parameters contain non-utf8 (probably binary) data
 
-            need = self.request.exc_history.token + stmt + params
+            need = self.token + stmt + params
             hash = hashlib.sha1(bytes_(need)).hexdigest()
 
             data.append({
@@ -118,15 +123,18 @@ class SQLADebugPanel(DebugPanel):
                 'context': query['context'],
             })
 
-        vars = {
-            'static_path': self.request.static_url(STATIC_PATH),
-            'root_path': self.request.route_url(ROOT_ROUTE_NAME),
+        self.data = {
             'queries':data,
             'text':text,
             }
 
-        delattr(self.request, 'pdtb_sqla_queries')
+    def render_content(self, request):
+        if not self.queries:
+            return 'No queries in executed in request.'
+        return super(SQLADebugPanel, self).render_content(request)
 
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/sqlalchemy.dbtmako',
-            vars, self.request)
+    def render_vars(self, request):
+        return {
+            'static_path': request.static_url(STATIC_PATH),
+            'root_path': request.route_url(ROOT_ROUTE_NAME)
+        }

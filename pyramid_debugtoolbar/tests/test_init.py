@@ -9,10 +9,13 @@ class Test_parse_settings(unittest.TestCase):
     def test_it(self):
         panels = ('pyramid_debugtoolbar.tests.test_init.DummyPanel\n'
                   'pyramid_debugtoolbar.tests.test_init.DummyPanel')
+        global_panels = ('pyramid_debugtoolbar.tests.test_init.DummyPanel\n'
+                  'pyramid_debugtoolbar.tests.test_init.DummyPanel')
         settings = {'debugtoolbar.enabled':'false',
                     'debugtoolbar.intercept_exc':'false',
                     'debugtoolbar.intercept_redirects': 'false',
                     'debugtoolbar.panels': panels,
+                    'debugtoolbar.global_panels': global_panels,
                     'debugtoolbar.hosts': '127.0.0.1',
                     'debugtoolbar.exclude_prefixes': '/excluded\n/e2',
                     }
@@ -22,6 +25,7 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.intercept_exc': False,
                           'debugtoolbar.intercept_redirects': False,
                           'debugtoolbar.panels': [DummyPanel, DummyPanel],
+                          'debugtoolbar.global_panels': [DummyPanel, DummyPanel],
                           'debugtoolbar.exclude_prefixes': ['/excluded', '/e2'],
                           'debugtoolbar.hosts': ['127.0.0.1'],
                           }

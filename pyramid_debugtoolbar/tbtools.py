@@ -239,7 +239,8 @@ class Traceback(object):
         root_path = request.route_url(ROOT_ROUTE_NAME)
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
-        qs = {'token': request.exc_history.token, 'tb': str(self.id)}
+        token = request.registry.parent_registry.pdtb_token
+        qs = {'token': token, 'tb': str(self.id)}
         url = request.route_url(EXC_ROUTE_NAME, _query=qs)
         evalex = request.exc_history.eval_exc
         vars = {
@@ -254,7 +255,7 @@ class Traceback(object):
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
             'traceback_id':     self.id,
             'static_path':      static_path,
-            'token':            request.exc_history.token,
+            'token':            token,
             'root_path':        root_path,
             'url':              url,
         }

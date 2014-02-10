@@ -40,9 +40,9 @@ class PerformanceDebugPanel(DebugPanel):
     function_calls = None
     has_resource = bool(resource)
     has_content = bool(pstats and profile)
+    template = 'pyramid_debugtoolbar.panels:templates/performance.dbtmako'
 
     def __init__(self, request):
-        self.request = request
         if profile is not None:
             self.profiler = profile.Profile()
 
@@ -143,12 +143,7 @@ class PerformanceDebugPanel(DebugPanel):
         return _('Performance')
 
     def nav_subtitle(self):
-        if self.has_resource:
-            utime = self._end_rusage.ru_utime - self._start_rusage.ru_utime
-            stime = self._end_rusage.ru_stime - self._start_rusage.ru_stime
-            return 'CPU: %0.2fms (%0.2fms)' % ((utime + stime) * 1000.0,
-                                               self.total_time)
-        return 'TOTAL: %0.2fms' % (self.total_time)
+        return '%0.2fms' % (self.total_time)
 
     def url(self):
         return ''
@@ -157,7 +152,7 @@ class PerformanceDebugPanel(DebugPanel):
         return getattr(self._end_rusage, name) - getattr(self._start_rusage,
                                                          name)
 
-    def content(self):
+    def process_response(self, response):
         vars = {'timing_rows':None, 'stats':None, 'function_calls':[]}
         if self.has_resource:
             utime = 1000 * self._elapsed_ru('ru_utime')
@@ -198,7 +193,4 @@ class PerformanceDebugPanel(DebugPanel):
         if self.is_active:
             vars['stats'] = self.stats
             vars['function_calls'] = self.function_calls
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/performance.dbtmako',
-            vars, request=self.request)
-
+        self.data = vars

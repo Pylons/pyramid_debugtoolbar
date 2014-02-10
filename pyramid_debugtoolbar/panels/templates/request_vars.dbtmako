@@ -1,6 +1,6 @@
 <h4>Cookie Variables</h4>
 % if cookies:
-<table>
+<table class="table table-striped">
 	<colgroup>
 		<col style="width:20%"/>
 		<col/>
@@ -26,7 +26,7 @@
 
 <h4>Session Variables</h4>
 % if session:
-<table>
+<table class="table table-striped">
 	<colgroup>
 		<col style="width:20%"/>
 		<col/>
@@ -52,7 +52,7 @@
 
 <h4>GET Variables</h4>
 % if get:
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Variable</th>
@@ -74,7 +74,7 @@
 
 <h4>POST Variables</h4>
 % if post:
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Variable</th>
@@ -96,7 +96,7 @@
 
 <h4>Request attributes</h4>
 % if attrs:
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Attribute</th>
@@ -118,7 +118,7 @@
 
 <h4>Request environ</h4>
 % if environ:
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Attribute</th>

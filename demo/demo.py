@@ -47,6 +47,7 @@ def notfound(request):
 
 @view_config(context=HTTPNotFound, renderer='__main__:templates/notfound.mako')
 def notfound_view(request):
+    request.response.status_code = 404
     return {}
 
 @view_config(renderer='__main__:templates/index.mako') # found via traversal
@@ -68,18 +69,18 @@ def test_highorder(request):
     return {}
 
 @view_config(route_name='test_predicates',
-        renderer='__main__:templates/index.mako')
+             renderer='__main__:templates/index.mako')
 def test_predicates(request):
-    return {'title':'Test route predicates'}
+    return {'title': 'Test route predicates'}
 
-@view_config(route_name='test_mako_exc',
-        renderer='__main__:templates/error.mako')
 @view_config(route_name='test_chameleon_exc',
-        renderer='__main__:templates/error.pt')
+             renderer='__main__:templates/error.pt')
+@view_config(route_name='test_mako_exc',
+             renderer='__main__:templates/error.mako')
 @view_config(route_name='test_jinja2_exc',
-        renderer='__main__:templates/error.jinja2')
+             renderer='__main__:templates/error.jinja2')
 def test_template_exc(request):
-    return {'title':'Test template exceptions'}
+    return {'title': 'Test template exceptions'}
 
 class DummyRootFactory(object):
     def __init__(self, request):
@@ -121,6 +122,7 @@ if __name__ == '__main__':
     config.include('pyramid_chameleon')
     config.include('pyramid_jinja2')
     config.include('pyramid_mako')
+
     if sqlalchemy:
         config.include('sqla')
     config.include('pyramid_debugtoolbar')

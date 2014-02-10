@@ -1,14 +1,18 @@
+import binascii
 import os.path
 import sys
 from logging import getLogger
+from collections import deque
+from itertools import islice
 
 from pyramid.util import DottedNameResolver
 from pyramid.settings import asbool
 
 from pyramid_debugtoolbar.compat import binary_type
-from pyramid_debugtoolbar.compat import text_type
+from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.compat import text_
+from pyramid_debugtoolbar.compat import text_type
 
 from pyramid_debugtoolbar import ipaddr
 
@@ -26,6 +30,23 @@ SETTINGS_PREFIX = 'debugtoolbar.'
 STATIC_PATH = 'pyramid_debugtoolbar:static/'
 ROOT_ROUTE_NAME = 'debugtoolbar.root'
 EXC_ROUTE_NAME = 'debugtoolbar.exception'
+
+class ToolbarStorage(deque):
+    """Deque for storing Toolbar objects."""
+
+    def __init__(self, max_elem):
+        super(ToolbarStorage, self ).__init__([], max_elem)
+
+    def get(self, request_id, default=None):
+        dict_ = dict(self)
+        return dict_.get(request_id, default)
+
+    def put(self, request_id, request):
+        self.appendleft((request_id, request))
+
+    def last(self, num=10):
+        """Returns the last `num` Toolbar objects"""
+        return list(islice(self, 0, num))
 
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
@@ -166,3 +187,18 @@ def addr_in(addr, hosts):
 
 def last_proxy(addr):
     return addr.split(',').pop().strip()
+
+def find_request_history(request):
+    return request.registry.parent_registry.request_history
+
+
+def debug_toolbar_url(request, *elements, **kw):
+    return request.route_url('debugtoolbar', subpath=elements, **kw)
+
+
+def hexlify(value):
+    """Hexlify int, str then returns native str type."""
+    # If integer
+    str_ = str(value)
+    hexified = text_(binascii.hexlify(bytes_(str_)))
+    return hexified
