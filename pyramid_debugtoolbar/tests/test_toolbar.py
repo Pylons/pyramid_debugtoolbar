@@ -10,8 +10,9 @@ class DebugToolbarTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.registry.settings['mako.directories'] = []
-        from pyramid.mako_templating import renderer_factory
-        self.config.add_renderer('.dbtmako', renderer_factory)
+        self.config.include('pyramid_mako')
+        self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
+
 
     def tearDown(self):
         del self.config
@@ -142,8 +143,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
         self.config.add_static_view('_debugtoolbar/static',
                                     STATIC_PATH)
-        from pyramid.mako_templating import renderer_factory
-        self.config.add_renderer('.dbtmako', renderer_factory)
+        self.config.include('pyramid_mako')
+        self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 
     def tearDown(self):
         testing.tearDown()

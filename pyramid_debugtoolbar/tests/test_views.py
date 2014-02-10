@@ -10,8 +10,8 @@ class TestExceptionDebugView(unittest.TestCase):
         self.config.registry.settings['mako.directories'] = []
         self.config.registry.parent_registry = self.config.registry
         self.config.registry.pdtb_token = 'token'
-        from pyramid.mako_templating import renderer_factory
-        self.config.add_renderer('.dbtmako', renderer_factory)
+        self.config.include('pyramid_mako')
+        self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 
     def tearDown(self):
         testing.tearDown()
