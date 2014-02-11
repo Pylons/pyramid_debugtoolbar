@@ -4,16 +4,6 @@
 
       <div class="pDebugRequests">
         <ul id="requests" class="nav nav-sidebar">
-          <li class="disabled"><a href="#"><strong>Requests</strong></a></li>
-          % for id, toolbar_ in history:
-          <% _css_class = 'active' if id == request_id else '' %>
-          <li class="${_css_class}">
-          <a href="/_debug_toolbar/${id}">
-          ${toolbar_.request.method} ${toolbar_.request.path}
-          <span class="badge _${toolbar_.response.status_code}">${toolbar_.response.status_code}</span>
-          </a>
-          </li>
-          % endfor
         </ul>
       </div>
 
