@@ -30,11 +30,11 @@
                 class="contentless">
                 % endif
 
-                ${panel.nav_title()}
-
                 % if panel.nav_subtitle() and panel.has_content:
-                <span class="badge">${panel.nav_subtitle()}</span>
+                <span class="badge pull-right">${panel.nav_subtitle()}</span>
                 % endif
+
+                ${panel.nav_title()}
 
                 </a>
               </li>
