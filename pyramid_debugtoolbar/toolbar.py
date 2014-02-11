@@ -38,6 +38,8 @@ class DebugToolbar(object):
         self.panels = []
         self.global_panels = []
         self.request = request
+        self.status_int = 200
+
         # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
 
@@ -58,7 +60,7 @@ class DebugToolbar(object):
     def json(self):
         return {'method': self.request.method,
                 'path': self.request.path,
-                'status_code': self.response.status_code}
+                'status_code': self.status_int}
 
     def process_response(self, request, response):
         if isinstance(response, WSGIHTTPException):
@@ -168,6 +170,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
 
         try:
             response = _handler(request)
+            toolbar.status_int = response.status_int
         except Exception:
             if exc_history is not None:
                 tb = get_traceback(info=sys.exc_info(),
@@ -195,6 +198,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
 
                 request.id = hexlify(id(request))
                 toolbar.response = response
+                toolbar.status_int = response.status_int
 
                 request_history.put(request.id, toolbar)
                 toolbar.inject(request, response)

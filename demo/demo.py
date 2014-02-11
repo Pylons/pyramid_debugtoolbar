@@ -45,6 +45,14 @@ def exc(request):
 def notfound(request):
     raise HTTPNotFound()
 
+@view_config(route_name='test_ajax', renderer='__main__:templates/ajax.mako')
+def test_ajax(request):
+    return {}
+
+@view_config(route_name='call_ajax', renderer='json')
+def call_ajax(request):
+    return {'ajax':'success'}
+
 @view_config(context=HTTPNotFound, renderer='__main__:templates/notfound.mako')
 def notfound_view(request):
     request.response.status_code = 404
@@ -118,6 +126,8 @@ if __name__ == '__main__':
     config.add_route('test_mako_exc', '/mako_exc')
     config.add_route('test_jinja2_exc', '/jinja2_exc')
     config.add_route('test_highorder', text_(b'/La Pe\xc3\xb1a', 'utf-8'))
+    config.add_route('test_ajax', '/ajax')
+    config.add_route('call_ajax', '/call_ajax')
     config.scan('__main__')
     config.include('pyramid_chameleon')
     config.include('pyramid_jinja2')
