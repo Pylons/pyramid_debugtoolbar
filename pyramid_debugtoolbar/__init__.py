@@ -82,6 +82,7 @@ def includeme(config):
     application = make_application(settings, config.registry)
     config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
     config.add_view(wsgiapp2(application), route_name='debugtoolbar')
+    config.add_static_view('/_debug_toolbar/static', STATIC_PATH, static=True)
     config.introspection = introspection
 
 
