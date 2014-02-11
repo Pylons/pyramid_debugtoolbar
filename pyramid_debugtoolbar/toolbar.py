@@ -146,7 +146,6 @@ def toolbar_tween_factory(handler, registry, _logger=None):
             p = request.path
         except UnicodeDecodeError as e:
             raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
-        
         starts_with_excluded = list(filter(None, map(p.startswith, exclude)))
 
         if request.remote_addr:
