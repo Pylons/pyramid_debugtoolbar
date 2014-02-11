@@ -249,14 +249,17 @@ def sse(request):
     history = find_request_history(request)
     response.text = u""
 
+    active_request_id = unicode(request.GET.get('request_id'))
+    client_last_request_id = unicode(request.headers.get('Last-Event-Id', 0))
+
     if history:
         last_request_pair = history.last(1)[0]
         last_request_id = last_request_pair[0]
-        if not last_request_id == request.session.get('last_request_id'):
-            request.session['last_request_id'] = last_request_id
-            data = [[_id, toolbar.json] for _id,toolbar in history.last(10)]
+        if not last_request_id == client_last_request_id:
+            data = [[_id, toolbar.json, 'active' if active_request_id == _id else ''] for _id,toolbar in history.last(10)]
             if data:
-                response.text = u"event: new_request\ndata:{}\n\n".format(json.dumps(data))
+                print data[0][0],active_request_id
+                response.text = u"id:{}\nevent: new_request\ndata:{}\n\n".format(last_request_id,json.dumps(data))
     return response
 
 @subscriber(NewRequest)
