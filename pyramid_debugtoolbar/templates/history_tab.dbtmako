@@ -9,8 +9,8 @@
           <% _css_class = 'active' if id == request_id else '' %>
           <li class="${_css_class}">
           <a href="/_debug_toolbar/${id}">
+          <span class="badge pull-right _${toolbar_.response.status_code}">${toolbar_.response.status_code}</span>
           ${toolbar_.request.method} ${toolbar_.request.path}
-          <span class="badge _${toolbar_.response.status_code}">${toolbar_.response.status_code}</span>
           </a>
           </li>
           % endfor

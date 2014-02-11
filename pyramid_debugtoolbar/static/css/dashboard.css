@@ -50,6 +50,7 @@ body {
 .nav-sidebar > li > a {
   padding-left: 20px;
   padding-right: 20px;
+  width: 100%;
 }
 .nav-sidebar > .active > a {
   color: #fff;
@@ -91,4 +92,11 @@ body {
 }
 .placeholder img {
   border-radius: 50%;
+}
+ul#requests li a {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 300px;
 }
