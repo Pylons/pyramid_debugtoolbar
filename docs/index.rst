@@ -240,7 +240,8 @@ will appear over your application's HTML:
 
 .. image:: toolbar-closed.png
 
-If you click on the "Pyramid DT" logo, the toolbar will expand:
+If you click on the "Pyramid DT" logo, a new target window will open
+with your current request highlighted and all of your configured panels loaded.
 
 .. image:: toolbar-open.png
 
@@ -326,6 +327,14 @@ Displays SQL queries made by SQLAlchemy by the current page along with timing
 information.
 
 .. image:: sqla.png
+
+Provides the ability to re-run the query using the SELECT link.
+
+.. image:: sqla-select.png
+
+Provides the ability to get more detail about the query using the EXPLAIN link.
+
+.. image:: sqla-explain.png
 
 Introspection
 ~~~~~~~~~~~~~
