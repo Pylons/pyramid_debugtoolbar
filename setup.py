@@ -25,8 +25,7 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.2dev',
-    'pyramid_mako>=0.3',
-    'pyramid_mako',
+    'pyramid_mako>=0.3.1', # lazy configuration loading works
     'pyramid_beaker',
     'Pygments',
     'repoze.lru',
