@@ -67,7 +67,9 @@ class PageTest(unittest.TestCase):
     def test_exception_console(self):
         browser.get('http://127.0.0.1:8080/exc')
         browser.find_element_by_css_selector('.console-icon')
-        self.assertRaises(browser.find_element_by_css_selector('.console'))
+        self.assertRaises(Exception,
+                          browser.find_element_by_css_selector,
+                          ('.console',))
         browser.find_element_by_css_selector('.console-icon').click()
         browser.find_element_by_css_selector('.console')
 
@@ -76,7 +78,7 @@ class ToolbarTest(unittest.TestCase):
     """docstring for ToolbarTest"""
 
     def setUp(self):
-        browser.get('http://127.0.0.1:8080')
+        browser.get('http://127.0.0.1:8080/test_sqla')
         browser.find_element_by_id('pShowToolBarButton') .click()
         browser.switch_to_window(browser.window_handles[-1])
 
@@ -128,7 +130,7 @@ class ToolbarTest(unittest.TestCase):
         import time
         time.sleep(0.2)
         browser.find_element_by_css_selector('a#pDebugTemplatePanel').click()
-        browser.find_element_by_css_selector('#pDebugTemplatesPanel-content')
+        browser.find_element_by_css_selector('#pDebugTemplatePanel-content')
 
     def test_logging_panel(self):
         import time
