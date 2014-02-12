@@ -37,41 +37,38 @@ li.nav-label strong {
 
 #pDebug #pDebugToolbarHandle {
 	position:fixed;
-	background:#fff;
-	border:1px solid #111;
-	top:30px;
+	border:1px solid #bc2131;
+	top: 25%;
 	right:0;
 	z-index:100000000;
-	opacity:0.75;
-	filter:alpha(opacity=75);
 }
 
 
 #pDebug a#pShowToolBarButton {
 	display:block;
-	height:75px;
-	width:30px;
+	height:40px;
+	width:40px;
 	border-right:none;
-	border-bottom:4px solid #fff;
-	border-top:4px solid #fff;
-	border-left:4px solid #fff;
+	border-bottom:1px solid #fff;
+	border-top:1px solid #fff;
+	border-left:1px solid #fff;
 	color:#fff;
 	font-size:10px;
 	font-weight:bold;
 	text-decoration:none;
 	text-align:center;
 	text-indent:-999999px;
-	background:#000 url(../img/djdt_vertical.png) no-repeat left center;
-	opacity:0.5;
-	filter:alpha(opacity=50);
+	background:#bc2131 url(../img/pdtb.png) no-repeat left center;
+	opacity:0.8;
+	filter:alpha(opacity=80);
 }
 
 #pDebug a#pShowToolBarButton:hover {
-	background-color:#111;
-	padding-right:6px;
-	border-top-color:#FFE761;
-	border-left-color:#FFE761;
-	border-bottom-color:#FFE761;
+	background-color:#bc2131;
+	padding-right:2px;
+	border-top-color:#fff;
+	border-left-color:#fff;
+	border-bottom-color:#fff;
 	opacity:1.0;
 }
 
