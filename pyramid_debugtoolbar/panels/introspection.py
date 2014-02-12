@@ -21,9 +21,16 @@ class IntrospectionDebugPanel(DebugPanel):
     name = 'Introspection'
     has_content = has_content
     is_active = not has_content
+    template = 'pyramid_debugtoolbar.panels:templates/introspection.dbtmako'
 
     def __init__(self, request):
-        self.request = request
+        introspector = request.registry.introspector
+        categorized = introspector.categorized()
+        self.data = {
+            'categorized': categorized,
+            'debug_repr': debug_repr,
+            'object_description':object_description,
+            'nl2br': nl2br}
 
     def nav_title(self):
         return _('Introspection')
@@ -34,17 +41,9 @@ class IntrospectionDebugPanel(DebugPanel):
     def url(self):
         return ''
 
-    def content(self):
-        introspector = self.request.registry.introspector
-        categorized = introspector.categorized()
-        static_path = self.request.static_url(STATIC_PATH)
-        vars = {
-            'categorized':categorized, 'debug_repr':debug_repr,
-            'static_path':static_path, 'object_description':object_description,
-            'nl2br':nl2br}
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/introspection.dbtmako',
-            vars, self.request)
+    def render_vars(self, request):
+        return {'static_path': request.static_url(STATIC_PATH)}
+
 
 def nl2br(s):
     return s.replace('\n', '<br/>')

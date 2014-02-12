@@ -1,6 +1,6 @@
 pyramid_debugtoolbar_require.config({
   paths: {
-    "jquery": "jquery-1.7.2.min",
+    "jquery": "jquery-1.10.2.min",
     "toolbar": "toolbar"
   }
 });

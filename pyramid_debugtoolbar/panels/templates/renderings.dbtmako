@@ -1,6 +1,6 @@
 % if renderings:
 % for rendering in renderings:
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th colspan="2">Renderer Name</th>

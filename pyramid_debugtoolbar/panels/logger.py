@@ -44,32 +44,12 @@ logging.root.addHandler(handler)
 
 class LoggingPanel(DebugPanel):
     name = 'Logging'
-    has_content = True
+    template = 'pyramid_debugtoolbar.panels:templates/logger.dbtmako'
 
     def __init__(self, request):
-        self.request = request
         handler.clear_records()
 
-    def get_and_delete(self):
-        records = handler.get_records()
-        handler.clear_records()
-        return records
-
-    def nav_title(self):
-        return _("Logging")
-
-    def nav_subtitle(self):
-        records = handler.get_records()
-        num = len(records)
-        return '%d %s' % (num, self.pluralize("message", "messages", num))
-
-    def title(self):
-        return _('Log Messages')
-
-    def url(self):
-        return ''
-
-    def content(self):
+    def process_response(self, response):
         records = []
         for record in self.get_and_delete():
             records.append({
@@ -81,11 +61,29 @@ class LoggingPanel(DebugPanel):
                 'line': record.lineno,
             })
 
-        vars = {'records': records}
+        self.data = {'records': records}
 
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/logger.dbtmako',
-            vars,
-            request=self.request)
+    @property
+    def has_content(self):
+        if self.data.get('records'):
+            return True
+        else:
+            return False
 
+    def get_and_delete(self):
+        records = handler.get_records()
+        handler.clear_records()
+        return records
 
+    def nav_title(self):
+        return _("Logging")
+
+    def nav_subtitle(self):
+        if self.data:
+            return '%d' % len(self.data.get('records'))
+
+    def title(self):
+        return _('Log Messages')
+
+    def url(self):
+        return ''

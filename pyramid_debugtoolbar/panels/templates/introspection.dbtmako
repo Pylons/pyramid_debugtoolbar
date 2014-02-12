@@ -3,7 +3,7 @@
 
 	% for entry in entries:
 	<% intro = entry['introspectable'] %>
-	<table>
+	<table class="table table-bordered table-striped">
 	<thead>
 		<tr>
 			<th colspan="2"><a name="${intro.category_name}${str(intro.discriminator_hash)}">${intro.type_name} ${intro.title}</a></th>
