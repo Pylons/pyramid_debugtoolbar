@@ -14,7 +14,9 @@ The toolbar is a blatant rip-off of Michael van Tellingen's
 ``django-debugtoolbar``).  It also includes a lightly sanded down version of
 the Werkzeug debugger code by Armin Ronacher and team.
 
-.. warning:: This package only works with Pyramid 1.2a1 and better.
+.. warning::
+
+   This package only works with Pyramid 1.2a1 and better.
 
 Installation
 ------------
@@ -81,51 +83,51 @@ file.
 
 ``debugtoolbar.hosts``
 
-   If the request's REMOTE_ADDR is not in this list, the toolbar will not be
-   displayed and the exception handler will not be active.  Default:
-   ['127.0.0.1', '::1'].  Note that each of the values in the list can be a
-   hostmask e.g. (``192.168.1.0/24``).
+  If the request's REMOTE_ADDR is not in this list, the toolbar will not be
+  displayed and the exception handler will not be active.  Default:
+  ['127.0.0.1', '::1'].  Note that each of the values in the list can be a
+  hostmask e.g. (``192.168.1.0/24``).
 
-   This should be a list if setup is done in Python or, if defined in a Paste
-   ini file, a single-line list of IP addresses/hostmasks separated by
-   spaces.  For example::
+  This should be a list if setup is done in Python or, if defined in a Paste
+  ini file, a single-line list of IP addresses/hostmasks separated by
+  spaces.  For example::
 
-      debugtoolbar.hosts = 192.168.1.1 192.168.2.0/24
+     debugtoolbar.hosts = 192.168.1.1 192.168.2.0/24
 
-   To enable access from any host, use the hostmask ``0.0.0.0/0``.
+  To enable access from any host, use the hostmask ``0.0.0.0/0``.
 
 ``debugtoolbar.enabled``
 
-   ``true`` if the toolbar is enabled; ``false`` if the toolbar is disabled.
-   Default: ``true``.  This disables both the exception handler and the
-   toolbar overlay.
+  ``true`` if the toolbar is enabled; ``false`` if the toolbar is disabled.
+  Default: ``true``.  This disables both the exception handler and the
+  toolbar overlay.
 
 ``debugtoolbar.intercept_exc``
 
-   This setting can have one of three values: ``display``, ``debug`` or
-   ``false``.  Default: ``debug``.  If this value is ``display``, the toolbar
-   will display a "pretty" traceback page which allows source viewing and
-   when an exception happens.  If this value is ``debug``, the "pretty"
-   traceback page will be shown, but it will also contain interactive
-   debugging controls which allow you to evaluate arbitrary Python
-   expressions in the context of a portion of the traceback, which is useful
-   when attempting to track down the cause of the exception. If this value is
-   ``false``, the "pretty" traceback will be disabled and all exceptions will
-   be raised to the caller of the Pyramid application (usually a WSGI
-   server).  Default: ``debug``.  This setting differs from
-   ``debugtoolbar.enabled``: it only enables or disables the exception
-   handler.  Note that, for backwards compatibility purposes, the value
-   ``true`` provided to this setting is interpreted as ``debug``.
+  This setting can have one of three values: ``display``, ``debug`` or
+  ``false``.  Default: ``debug``.  If this value is ``display``, the toolbar
+  will display a "pretty" traceback page which allows source viewing and
+  when an exception happens.  If this value is ``debug``, the "pretty"
+  traceback page will be shown, but it will also contain interactive
+  debugging controls which allow you to evaluate arbitrary Python
+  expressions in the context of a portion of the traceback, which is useful
+  when attempting to track down the cause of the exception. If this value is
+  ``false``, the "pretty" traceback will be disabled and all exceptions will
+  be raised to the caller of the Pyramid application (usually a WSGI
+  server).  Default: ``debug``.  This setting differs from
+  ``debugtoolbar.enabled``: it only enables or disables the exception
+  handler.  Note that, for backwards compatibility purposes, the value
+  ``true`` provided to this setting is interpreted as ``debug``.
 
 ``debugtoolbar.eval_exc``
 
-   ``true`` if real-time exception debugging is enabled when
-   ``intercept_exc`` is true; ``false`` if real-time exception debugging is
-   disabled.  Default: ``true``.  This differs from
-   ``debugtoolbar.intercept_exc``: it only controls whether the pretty
-   exception rendering displays real-time in-browser debugging controls.  The
-   real-time in-browser debugging controls allow you to evaluate arbitrary
-   Python expresssions in the context of a stack frame via a browser control.
+  ``true`` if real-time exception debugging is enabled when
+  ``intercept_exc`` is true; ``false`` if real-time exception debugging is
+  disabled.  Default: ``true``.  This differs from
+  ``debugtoolbar.intercept_exc``: it only controls whether the pretty
+  exception rendering displays real-time in-browser debugging controls.  The
+  real-time in-browser debugging controls allow you to evaluate arbitrary
+  Python expresssions in the context of a stack frame via a browser control.
 
 ``debugtoolbar.show_on_exc_only``
 
@@ -142,54 +144,54 @@ file.
 
 ``debugtoolbar.intercept_redirects``
 
-   ``true`` if the redirection handler is enabled; ``false`` if the handler
-   is disabled.  Default: ``false``.  This differs from
-   ``debugtoolbar.enabled``: it only enables or disables the redirection
-   handler.
+  ``true`` if the redirection handler is enabled; ``false`` if the handler
+  is disabled.  Default: ``false``.  This differs from
+  ``debugtoolbar.enabled``: it only enables or disables the redirection
+  handler.
 
 ``debugtoolbar.panels``
 
-    A list of dotted Python global names to panel classes.  Defaults to a
-    list of all panel types known by :mod:`pyramid_debugtoolbar`, as
-    documented in :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an
-    ``.ini`` file, it should be a space- or newline-separated sequence of
-    dotted Python names.  For example::
+  A list of dotted Python global names to panel classes.  Defaults to a
+  list of all panel types known by :mod:`pyramid_debugtoolbar`, as
+  documented in :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an
+  ``.ini`` file, it should be a space- or newline-separated sequence of
+  dotted Python names.  For example::
 
-      debugtoolbar.panels =
-          pyramid_debugtoolbar.panels.versions.VersionDebugPanel
-          pyramid_debugtoolbar.panels.settings.SettingsDebugPanel
-          pyramid_debugtoolbar.panels.headers.HeaderDebugPanel
-          pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel
-          pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel
-          pyramid_debugtoolbar.panels.logger.LoggingPanel
-          pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel
-          pyramid_debugtoolbar.panels.routes.RoutesDebugPanel
-          pyramid_debugtoolbar.panels.sqla.SQLADebugPanel
-          pyramid_debugtoolbar.panels.tweens.TweensDebugPanel
-          pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel
+    debugtoolbar.panels =
+        pyramid_debugtoolbar.panels.versions.VersionDebugPanel
+        pyramid_debugtoolbar.panels.settings.SettingsDebugPanel
+        pyramid_debugtoolbar.panels.headers.HeaderDebugPanel
+        pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel
+        pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel
+        pyramid_debugtoolbar.panels.logger.LoggingPanel
+        pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel
+        pyramid_debugtoolbar.panels.routes.RoutesDebugPanel
+        pyramid_debugtoolbar.panels.sqla.SQLADebugPanel
+        pyramid_debugtoolbar.panels.tweens.TweensDebugPanel
+        pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel
 
 ``debugtoolbar.button_style``
 
-    Any inline css styles you want to apply to the toolbar button. This
-    will override the default style (top:30px) set by ``toolbar.css``. If,
-    for example, you want the toolbar button to show up at the bottom off the
-    screen, just set ``debugtoolbar.button_style`` to 'top:auto;bottom:30px;'.
-    If you're browser support the zoom property, you can even control the
-    magnification level of the toolbar button (ie. 'zoom:50%').
+  Any inline css styles you want to apply to the toolbar button. This
+  will override the default style (top:30px) set by ``toolbar.css``. If,
+  for example, you want the toolbar button to show up at the bottom off the
+  screen, just set ``debugtoolbar.button_style`` to 'top:auto;bottom:30px;'.
+  If you're browser support the zoom property, you can even control the
+  magnification level of the toolbar button (ie. 'zoom:50%').
 
 ``debugtoolbar.exclude_prefixes``
 
-    The debug toolbar won't be shown if the PATH_INFO variable starts with any
-    of the prefixes listed in this setting.  If configuration is done via an
-    .ini file, the prefixes should be separated by carriage returns. For
-    example::
+  The debug toolbar won't be shown if the PATH_INFO variable starts with any
+  of the prefixes listed in this setting.  If configuration is done via an
+  .ini file, the prefixes should be separated by carriage returns. For
+  example::
 
-      debugtoolbar.exclude_prefixes =
-          /manage
-          /settings
+    debugtoolbar.exclude_prefixes =
+        /manage
+        /settings
 
-    If configuration is done via Python, the setting should be a list.  This
-    setting was added in debugtoolbar version 1.0.4.
+  If configuration is done via Python, the setting should be a list.  This
+  setting was added in debugtoolbar version 1.0.4.
 
 Custom authorization
 ~~~~~~~~~~~~~~~~~~~~
@@ -214,22 +216,22 @@ or not.
 
 .. code-block:: python
 
-  from pyramid.security import authenticated_userid
-  from pyramid.settings import aslist
+   from pyramid.security import authenticated_userid
+   from pyramid.settings import aslist
 
-  def admin_only_debugtoolbar(request):
-      """
-      Enable toolbar for administrators only.
-      Returns True when it should be enabled.
-      """
-      admins = aslist(request.registry.settings.get('admins', ''))
-      userid = authenticated_userid(request)
-      toolbar_enabled = userid and userid in admins
-      return toolbar_enabled
+   def admin_only_debugtoolbar(request):
+       """
+       Enable toolbar for administrators only.
+       Returns True when it should be enabled.
+       """
+       admins = aslist(request.registry.settings.get('admins', ''))
+       userid = authenticated_userid(request)
+       toolbar_enabled = userid and userid in admins
+       return toolbar_enabled
 
-  config = Configurator(.....)
-  config.include('pyramid_debugtoolbar')
-  config.set_debugtoolbar_request_authorization(admin_only_debugtoolbar)
+   config = Configurator(.....)
+   config.include('pyramid_debugtoolbar')
+   config.set_debugtoolbar_request_authorization(admin_only_debugtoolbar)
 
 
 The Toolbar
@@ -389,57 +391,57 @@ sample panel:
 
 .. code-block:: python
 
-    from pyramid_debugtoolbar.panels import DebugPanel
+   from pyramid_debugtoolbar.panels import DebugPanel
 
-    _ = lambda x: x
+   _ = lambda x: x
 
-    class SampleDebugPanel(DebugPanel):
-        """
-        Sample debug panel
-        """
-        name = 'Sample'
-        has_content = True
+   class SampleDebugPanel(DebugPanel):
+       """
+       Sample debug panel
+       """
+       name = 'Sample'
+       has_content = True
 
-        def nav_title(self):
-            return _('Sample')
+       def nav_title(self):
+           return _('Sample')
 
-        def url(self):
-            return ''
+       def url(self):
+           return ''
 
-        def title(self):
-            return _('Sample')
+       def title(self):
+           return _('Sample')
 
-        def content(self):
-            vars = {'somelist':['sample value', 'another value']}
-            return self.render(
-                'samplepanel:templates/sample.mako',
-                vars, self.request)
+       def content(self):
+           vars = {'somelist':['sample value', 'another value']}
+           return self.render(
+               'samplepanel:templates/sample.mako',
+               vars, self.request)
 
-    def includeme(config):
-        config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
+   def includeme(config):
+       config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
 
 After inheriting from the DebugPanel class, you have to define a few methods on
 your panel:
 
 ``nav_title``
 
-    Returns a function that can be called to get the title to be used on the
-    toolbar's navigation bar for this panel.
+  Returns a function that can be called to get the title to be used on the
+  toolbar's navigation bar for this panel.
 
 ``url``
 
-    This is not used at the moment, but it has to be provided because the base
-    class will raise NotImplemented if it's not there.
+  This is not used at the moment, but it has to be provided because the base
+  class will raise NotImplemented if it's not there.
 
 ``title``
 
-    Returns a function that can be called to get the title to be used on the
-    panel's display page.
+  Returns a function that can be called to get the title to be used on the
+  panel's display page.
 
 ``content``
 
-    Returns the panel's content for display. It can return an HTML response
-    directly, but normally it's better to use a template, like in the example.
+  Returns the panel's content for display. It can return an HTML response
+  directly, but normally it's better to use a template, like in the example.
 
 Once you define the panel it has to be added to the ``debugtoolbar.panels``
 setting of the configuration. A good way to do this is to use an ``includeme``
@@ -451,7 +453,9 @@ Configuring an application to use the panel
 Once your panel is ready, you can simply add its package name to the
 ``pyramid.includes`` setting on your application configuration file::
 
-    pyramid.includes = pyramid_debugtoolbar samplepanel
+  pyramid.includes =
+      pyramid_debugtoolbar
+      samplepanel
 
 
 More Information
