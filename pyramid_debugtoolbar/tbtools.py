@@ -208,7 +208,7 @@ class Traceback(object):
             if self.is_syntax_error:
                 title = text_('Syntax Error')
             else:
-                title = text_('Traceback <em>(most recent call last)</em>:')
+                title = text_('Traceback <small>(most recent call last)</small>')
 
         for frame in self.frames:
             frames.append(
@@ -225,7 +225,7 @@ class Traceback(object):
 
         vars = {
             'classes':      text_(' '.join(classes)),
-            'title':        title and text_('<h3>%s</h3>' % title) or text_(''),
+            'title':        title and text_('<h3 class="traceback">%s</h3>' % title) or text_(''),
             'frames':       text_('\n'.join(frames)),
             'description':  description_wrapper % escape(self.exception),
         }

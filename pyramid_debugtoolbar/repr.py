@@ -37,13 +37,13 @@ RegexType = type(_paragraph_re)
 
 
 HELP_HTML = '''\
-<div class=box>
+<div class="box">
   <h3>%(title)s</h3>
-  <pre class=help>%(text)s</pre>
+  <pre class="help">%(text)s</pre>
 </div>\
 '''
 OBJECT_DUMP_HTML = '''\
-<div class=box>
+<div class="box">
   <h3>%(title)s</h3>
   %(repr)s
   <table>%(items)s</table>
@@ -78,7 +78,7 @@ class _Helper(object):
 
     def __call__(self, topic=None):
         if topic is None:
-            sys.stdout._write('<span class=help>%s</span>' % repr(self))
+            sys.stdout._write('<span class="help">%s</span>' % repr(self))
             return
         import pydoc
         pydoc.help(topic)
@@ -203,7 +203,7 @@ class DebugReprGenerator(object):
         return _add_subclass_info(text_(''.join(buf)), d, dict)
 
     def object_repr(self, obj):
-        return text_('<span class="object">%s</span>' % 
+        return text_('<span class="object">%s</span>' %
                      escape(text_(repr(obj), 'utf-8', 'replace')))
 
     def dispatch_repr(self, obj, recursive):
@@ -289,12 +289,12 @@ class DebugReprGenerator(object):
     def render_object_dump(self, items, title, repr=None):
         html_items = []
         for key, value in items:
-            html_items.append('<tr><th>%s<td><pre class=repr>%s</pre>' %
+            html_items.append('<tr><th>%s<td><pre class="repr">%s</pre>' %
                               (escape(key), value))
         if not html_items:
             html_items.append('<tr><td><em>Nothing</em>')
         return OBJECT_DUMP_HTML % {
             'title':    escape(title),
-            'repr':     repr and '<pre class=repr>%s</pre>' % repr or '',
+            'repr':     repr and '<pre class="repr">%s</pre>' % repr or '',
             'items':    '\n'.join(html_items)
         }
