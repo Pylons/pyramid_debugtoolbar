@@ -9,7 +9,7 @@ Overview
 :mod:`pyramid_debugtoolbar` provides a debug toolbar useful while you're
 developing a :term:`Pyramid` application.
 
-:mod:`pyramid_debugtoolbar` is a blatant rip-off of Michael van Tellingen's
+The toolbar is a blatant rip-off of Michael van Tellingen's
 ``flask-debugtoolbar`` (which itself was derived from Rob Hudson's
 ``django-debugtoolbar``).  It also includes a lightly sanded down version of
 the Werkzeug debugger code by Armin Ronacher and team.
@@ -298,10 +298,15 @@ Performance
 ~~~~~~~~~~~
 
 Displays timing information, and, if enabled, Python profiling information
-for the current page.  When the checkbox on the performance panel is green,
-the request will be profiled and profiling information will be gathered and
-displayed on the panel output.  When it is red, only timing will be done and
-no profiling information will be captured.
+for the current page.  When it is red, only timing will be done and
+no profiling information.
+
+.. note::
+
+   An internal profiler can be enabled through the `performance` checkmark
+   in the `Settings` tab in the navigation bar. When the checkbox is green,
+   the request will be profiled and profiling information will be gathered and
+   displayed on the `Performance` panel output.
 
 .. image:: performance.png
 
