@@ -23,7 +23,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">DT <img width="16px" height="16px" src="https://raw2.github.com/Pylons/pyramid-scaffold-theme/master/src/pst/static/pyramid.png"/></a>
+          <a class="navbar-brand" href="#">
+            <!-- <img src="${static_path}img/pyramid.png"/> -->
+            Pyramid DebugToolbar</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -74,7 +76,7 @@
 
         var source;
         function new_request(e) {
-            var html = '<li class="disabled"><a href="#"><strong>Requests</strong></a></li>';
+            var html = '<li><h4>Requests</strong></h4></li>';
             var requests = $('ul#requests');
             var data = JSON.parse(e.data);
             data.forEach(function (item) {
@@ -108,4 +110,4 @@
 	</script>
 
       </body>
-    </html>  
+    </html>
