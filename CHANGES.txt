@@ -1,7 +1,7 @@
 Unreleased
 ----------
 
-...
+- Fix breaking bugs when run under Py3k.
 
 2.0.1 (2014-02-12)
 ------------------
