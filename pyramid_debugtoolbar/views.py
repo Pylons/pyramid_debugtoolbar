@@ -10,6 +10,7 @@ from pyramid.view import view_config
 
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -21,6 +22,7 @@ from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
+U_BLANK = text_("")
 
 def valid_host(info, request):
     hosts = get_setting(request.registry.settings, 'hosts')
@@ -241,13 +243,14 @@ def request_view(request):
             'request_id': request_id
             }
 
+U_SSE_PAYLOAD = text_("id:{}\nevent: new_request\ndata:{}\n\n")
 @view_config(route_name='debugtoolbar.sse',
              permission=NO_PERMISSION_REQUIRED)
 def sse(request):
     response = request.response
     response.content_type = 'text/event-stream'
     history = find_request_history(request)
-    response.text = u""
+    response.text = U_BLANK
 
     active_request_id = unicode(request.GET.get('request_id'))
     client_last_request_id = unicode(request.headers.get('Last-Event-Id', 0))
@@ -256,10 +259,12 @@ def sse(request):
         last_request_pair = history.last(1)[0]
         last_request_id = last_request_pair[0]
         if not last_request_id == client_last_request_id:
-            data = [[_id, toolbar.json, 'active' if active_request_id == _id else ''] for _id,toolbar in history.last(10)]
+            data = [[_id, toolbar.json, 'active'
+                        if active_request_id == _id else '']
+                            for _id,toolbar in history.last(10)]
             if data:
-                print data[0][0],active_request_id
-                response.text = u"id:{}\nevent: new_request\ndata:{}\n\n".format(last_request_id,json.dumps(data))
+                response.text = U_SSE_PAYLOAD.format(last_request_id,
+                                                     json.dumps(data))
     return response
 
 @subscriber(NewRequest)
