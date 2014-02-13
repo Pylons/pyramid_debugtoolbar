@@ -62,7 +62,7 @@ copyright = '2012, Agendaless Consulting <chrism@plope.com>'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '2.0.2dev'
+version = '2.0.2'
 # The full version, including alpha/beta/rc tags.
 release = version
 
