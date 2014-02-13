@@ -1,4 +1,4 @@
-2.0 (unreleased)
+2.0 (2014-02-12)
 ----------------
 
 - The toolbar has undergone a major refactoring to mitigate the effects of
@@ -7,9 +7,9 @@
   ``/_debug_toolbar`` and can be used to monitor any and all requests serviced
   by the Pyramid application that it is wrapping, including non-html responses.
 
-  The toolbar will live-update (on conforming browsers) when requests come
-  into the Pyramid application, and can be used to debug and inspect multiple
-  requests simultaneously.
+  The toolbar will live-update (on conforming browsers via Server Sent Events)
+  when requests come into the Pyramid application, and can be used to debug and
+  inspect multiple requests simultaneously.
 
 1.0.9 (2013-10-20)
 ------------------
