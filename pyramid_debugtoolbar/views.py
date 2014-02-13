@@ -252,8 +252,8 @@ def sse(request):
     history = find_request_history(request)
     response.text = U_BLANK
 
-    active_request_id = unicode(request.GET.get('request_id'))
-    client_last_request_id = unicode(request.headers.get('Last-Event-Id', 0))
+    active_request_id = text_(request.GET.get('request_id'))
+    client_last_request_id = text_(request.headers.get('Last-Event-Id', 0))
 
     if history:
         last_request_pair = history.last(1)[0]
