@@ -28,18 +28,17 @@ Install using setuptools, e.g. (within a virtualenv)::
 Setup
 -----
 
-Once :mod:`pyramid_debugtoolbar` is installed, you must use the
+Once the :mod:`pyramid_debugtoolbar` is installed, you must use the
 ``config.include`` mechanism to include it into your Pyramid project's
-configuration.  In your Pyramid project's ``__init__.py``:
+configuration:
 
 .. code-block:: python
 
    config = Configurator(.....)
    config.include('pyramid_debugtoolbar')
 
-Alternately, instead of using the Configurator's ``include`` method, you can
-activate Pyramid by changing your application's ``.ini`` file, use the
-following line:
+Alternately, you may activate the toolbar by changing your application's
+``.ini`` file by adding it to the ``pyramid.includes`` list:
 
 .. code-block:: ini
 
