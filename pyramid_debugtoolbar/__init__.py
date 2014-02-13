@@ -91,8 +91,6 @@ def make_application(settings, parent_registry):
     config = Configurator(settings=settings)
     config.registry.parent_registry = parent_registry
     config.include('pyramid_mako')
-    config.include('pyramid_beaker')
-    config.registry.settings['session.type'] = 'memory'
     config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
     config.add_static_view('static', STATIC_PATH)
     config.add_route(ROOT_ROUTE_NAME, '/', static=True)
