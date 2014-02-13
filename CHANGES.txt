@@ -1,3 +1,8 @@
+2.0.1 (2014-02-12)
+------------------
+
+- Fixes a bug in 2.0 expecting pyramid_beaker to be around.
+
 2.0 (2014-02-12)
 ----------------
 
