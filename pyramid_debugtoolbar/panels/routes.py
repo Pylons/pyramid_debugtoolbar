@@ -16,13 +16,15 @@ class RoutesDebugPanel(DebugPanel):
     """
     name = 'Routes'
     has_content = True
+    template = 'pyramid_debugtoolbar.panels:templates/routes.dbtmako'
 
     def __init__(self, request):
-        self.request = request
         self.mapper = request.registry.queryUtility(IRoutesMapper)
         if self.mapper is None:
             self.has_content = False
             self.is_active = False
+        else:
+            self.populate(request)
 
     def nav_title(self):
         return _('Routes')
@@ -33,11 +35,11 @@ class RoutesDebugPanel(DebugPanel):
     def url(self):
         return ''
 
-    def content(self):
+    def populate(self, request):
         info = []
         mapper = self.mapper
         if mapper is not None:
-            registry = self.request.registry
+            registry = request.registry
             routeinfo = getattr(registry, 'debugtoolbar_routeinfo', None)
             if routeinfo is None:
                 routes = mapper.get_routes()
@@ -60,11 +62,7 @@ class RoutesDebugPanel(DebugPanel):
                                  'view_callable':view_callable,
                                  'predicates':', '.join(predicates)})
                 registry.debugtoolbar_routeinfo = info
-                
-            vars = {
+
+            self.data = {
                 'routes': registry.debugtoolbar_routeinfo,
                 }
-            return self.render(
-                'pyramid_debugtoolbar.panels:templates/routes.dbtmako',
-                vars, self.request)
-        return ''

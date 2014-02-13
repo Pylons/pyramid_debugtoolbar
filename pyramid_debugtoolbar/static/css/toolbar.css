@@ -1,462 +1,74 @@
-/* Debug Toolbar CSS Reset, adapted from Eric Meyer's CSS Reset */
-#pDebug {color:#000;background:#FFF;}
-#pDebug, #pDebug div, #pDebug span, #pDebug applet, #pDebug object, #pDebug iframe,
-#pDebug h1, #pDebug h2, #pDebug h3, #pDebug h4, #pDebug h5, #pDebug h6, #pDebug p, #pDebug blockquote, #pDebug pre,
-#pDebug a, #pDebug abbr, #pDebug acronym, #pDebug address, #pDebug big, #pDebug cite, #pDebug code,
-#pDebug del, #pDebug dfn, #pDebug em, #pDebug font, #pDebug img, #pDebug ins, #pDebug kbd, #pDebug q, #pDebug s, #pDebug samp,
-#pDebug small, #pDebug strike, #pDebug strong, #pDebug sub, #pDebug sup, #pDebug tt, #pDebug var,
-#pDebug b, #pDebug u, #pDebug i, #pDebug center,
-#pDebug dl, #pDebug dt, #pDebug dd, #pDebug ol, #pDebug ul, #pDebug li,
-#pDebug fieldset, #pDebug form, #pDebug label, #pDebug legend,
-#pDebug table, #pDebug caption, #pDebug tbody, #pDebug tfoot, #pDebug thead, #pDebug tr, #pDebug th, #pDebug td {
-	margin:0;
-	padding:0;
-	border:0;
-	outline:0;
-	font-size:12px;
-	line-height:1.5em;
-	color:#000;
-	vertical-align:baseline;
-	background:transparent;
-	font-family:sans-serif;
-	text-align:left;
+._200 {
+  background-color: #468847;
+}
+._500 {
+  background-color: #b94a48;
+}
+._404{
+  background-color: #3a87ad;
 }
 
-#pDebug #pDebugToolbar {
-	background:#111;
-	width:200px;
-	z-index:100000000;
-	position:fixed;
-	top:0;
-	bottom:0;
-	right:0;
-	opacity:0.9;
+.switch {
+  font-size: 10px;
+  display: block;
+  color: white;
+  height: 16px;
+  width: 16px;
+  cursor: pointer;
+  }
+
+.switch.active {
+  background-image: url(/_debug_toolbar/static/img/tick.png);
 }
 
-#pDebug #pDebugToolbar small {
-	color:#999;
+.switch.inactive{
+  background-image: url(/_debug_toolbar/static/img/tick-red.png);
 }
 
-#pDebug #pDebugToolbar ul {
-	margin:0;
-	padding:0;
-	list-style:none;
+li.nav-label {
+  position: relative;
+	display: block;
+	padding: 10px 15px 10px 0px;
 }
 
-#pDebug #pDebugToolbar li {
-	border-bottom:1px solid #222;
-	color:#fff;
-	display:block;
-	font-weight:bold;
-	float:none;
-	margin:0;
-	padding:0;
-	position:relative;
-	width:auto;
+li.nav-label strong {
+  font-size: 150%;
 }
-
-#pDebug #pDebugToolbar li a,
-#pDebug #pDebugToolbar li div.contentless  {
-	font-weight:normal;
-	font-style:normal;
-	text-decoration:none;
-	display:block;
-	font-size:16px;
-	padding:10px 10px 5px 25px;
-	color:#fff;
-}
-
-#pDebug #pDebugToolbar li>div.contentless  {
-	color: #383838;
-}
-
-#pDebug #pDebugToolbar li,
-#pDebug #pDebugToolbar a {
-	display: inline-block;
-	width: 100%;
-}
-
-#pDebug #pDebugToolbar li a:hover {
-	background: #333;
-}
-
-#pDebug #pDebugToolbar li.active {
-	background-image:url(../img/indicator.png);
-	background-repeat:no-repeat;
-	background-position:left center;
-	background-color:#333;
-}
-
-#pDebug #pDebugToolbar li.active a {
-	color: #da7028;	
-}
-
-#pDebug #pDebugToolbar li.active a:hover {
-	/*color: #e8772c;*/
-	background-color:transparent;
-}
-
-#pDebug #pDebugToolbar li small {
-	font-size:12px;
-	color:#999;
-	font-style:normal;
-	text-decoration:none;
-	font-variant:small-caps;
-}
-
-#pDebug #pDebugToolbar li .switch {
-    font-size: 10px;
-    position: absolute;
-    display: block;
-    color: white;
-    height: 16px;
-    width: 16px;
-    cursor: pointer;
-    top: 15px;
-    right: 2px;
-}
-
-#pDebug #pDebugToolbar li .switch.active {
-    background-image: url(../img/tick.png);
-}
-
-#pDebug #pDebugToolbar li .switch.inactive {
-    background-image: url(../img/tick-red.png);
-}
-
 
 #pDebug #pDebugToolbarHandle {
 	position:fixed;
-	background:#fff;
-	border:1px solid #111;
-	top:30px;
+	border:1px solid #bc2131;
+	top: 25%;
 	right:0;
 	z-index:100000000;
-	opacity:0.75;
-	filter:alpha(opacity=75);
 }
+
 
 #pDebug a#pShowToolBarButton {
 	display:block;
-	height:75px;
-	width:30px;
+	height:40px;
+	width:40px;
 	border-right:none;
-	border-bottom:4px solid #fff;
-	border-top:4px solid #fff;
-	border-left:4px solid #fff;
+	border-bottom:1px solid #fff;
+	border-top:1px solid #fff;
+	border-left:1px solid #fff;
 	color:#fff;
 	font-size:10px;
 	font-weight:bold;
 	text-decoration:none;
 	text-align:center;
 	text-indent:-999999px;
-	background:#000 url(../img/djdt_vertical.png) no-repeat left center;
-	opacity:0.5;
-	filter:alpha(opacity=50);
+	background:#bc2131 url(../img/pdtb.png) no-repeat left center;
+	opacity:0.8;
+	filter:alpha(opacity=80);
 }
 
 #pDebug a#pShowToolBarButton:hover {
-	background-color:#111;
-	padding-right:6px;
-	border-top-color:#FFE761;
-	border-left-color:#FFE761;
-	border-bottom-color:#FFE761;
+	background-color:#bc2131;
+	padding-right:2px;
+	border-top-color:#fff;
+	border-left-color:#fff;
+	border-bottom-color:#fff;
 	opacity:1.0;
 }
 
-#pDebug code {
-	display:block;
-	font-family: "Consolas", "Monaco", "Bitstream Vera Sans Mono", "Lucida Console", monospace;
-	white-space:pre;
-	overflow:auto;
-}
-
-#pDebug tr.pDebugEven {
-	background-color:#f5f5f5;
-}
-
-#pDebug .panelContent {
-	display:none;
-	position:fixed;
-	margin:0;
-	top:0;
-	right:200px;
-	bottom:0;
-	left:0px;
-	background-color:#eee;
-	color:#666;
-	z-index:100000000;
-}
-
-#pDebug .panelContent > div {
-	border-bottom:1px solid #ddd;
-}
-
-#pDebug .pDebugPanelTitle {
-	position:absolute;
-	color:#666;
-	padding-left:20px;
-	top:0;
-	right:0;
-	left:0;
-	height:50px;
-	background: #F98131 url(../img/headerbg.png) repeat-x 0 0;
-}
-
-#pDebug .pDebugPanelTitle code {
-	display:inline;
-	font-size:inherit;
-}
-
-#pDebug .pDebugPanelContent {
-	position:absolute;
-	top:50px;
-	right:0;
-	bottom:0;
-	left:0;
-	height:auto;
-	padding:0 0 0 20px;
-}
-
-#pDebug .pDebugPanelContent .scroll {
-	height:100%;
-	overflow:auto;
-	display:block;
-	padding:0 10px 0 0;
-}
-
-#pDebug h3 {
-	font-size:24px;
-	font-weight:normal;
-	line-height:50px;
-}
-
-#pDebug h4 {
-	font-size:20px;
-	font-weight:bold;
-	margin-top:0.8em;
-}
-
-#pDebug h5 {
-	font-size:18px;
-	font-weight:bold;
-	margin-top:0.8em;
-}
-
-#pDebug .panelContent table {
-	border:1px solid #ccc;
-	border-collapse:collapse;
-	width:100%;
-	background-color:#fff;
-	margin-top:0.8em;
-	overflow: auto;
-}
-#pDebug .panelContent tr {
-    width:100%;
-}
-#pDebug .panelContent tbody td,
-#pDebug .panelContent tbody th {
-	vertical-align:top;
-	padding:2px 3px;
-	width:auto;
-}
-#pDebug .panelContent thead th {
-	padding:1px 6px 1px 3px;
-	text-align:left;
-	font-weight:bold;
-	font-size:14px;
-	background-color: #e5e5e5;
-}
-#pDebug .panelContent thead th a {
-    font-size: 14px;
-}
-#pDebug .panelContent tbody th {
-	width:12em;
-	text-align:right;
-	color:#666;
-	padding-right:.5em;
-}
-
-#pDebug .pTemplateHideContextDiv {
-	background-color:#fff;
-}
-
-/*
-#pDebug .panelContent p a:hover, #pDebug .panelContent dd a:hover {
-	color:#111;
-	background-color:#ffc;
-}
-
-#pDebug .panelContent p {
-	padding:0 5px;
-}
-
-#pDebug .panelContent p, #pDebug .panelContent table, #pDebug .panelContent ol, #pDebug .panelContent ul, #pDebug .panelContent dl {
-	margin:5px 0 15px;
-	background-color:#fff;
-}
-#pDebug .panelContent table {
-	clear:both;
-	border:0;
-	padding:0;
-	margin:0;
-	border-collapse:collapse;
-	border-spacing:0;
-}
-
-#pDebug .panelContent table a {
-	color:#000;
-	padding:2px 4px;
-}
-#pDebug .panelContent table a:hover {
-	background-color:#ffc;
-}
-
-#pDebug .panelContent table th {
-	background-color:#333;
-	font-weight:bold;
-	color:#fff;
-	padding:3px 7px 3px;
-	text-align:left;
-	cursor:pointer;
-}
-#pDebug .panelContent table td {
-	padding:5px 10px;
-	font-size:14px;
-	background:#fff;
-	color:#000;
-	vertical-align:top;
-	border:0;
-}
-#pDebug .panelContent table tr.pDebugOdd td {
-  background:#eee;
-}
-*/
-
-#pDebug .panelContent .pDebugClose {
-	text-indent:-9999999px;
-	display:block;
-	position:absolute;
-	top:4px;
-	right:15px;
-	height:40px;
-	width:40px;
-	background:url(../img/close.png) no-repeat center center;
-}
-
-#pDebug .panelContent .pDebugClose:hover {
-	background-image:url(../img/close_hover.png);
-}
-
-#pDebug .panelContent .pDebugClose.pDebugBack {
-	background-image:url(../img/back.png);
-}
-
-#pDebug .panelContent .pDebugClose.pDebugBack:hover  {
-	background-image:url(../img/back_hover.png);
-}
-
-#pDebug .panelContent dt, #pDebug .panelContent dd {
-	display:block;
-}
-
-#pDebug .panelContent dt {
-	margin-top:0.75em;
-}
-
-#pDebug .panelContent dd {
-	margin-left:10px;
-}
-
-#pDebug a.toggleTemplate {
-	padding:4px;
-	background-color:#bbb;
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-}
-
-#pDebug a.toggleTemplate:hover {
-	padding:4px;
-	background-color:#444;
-	color: #F98131;
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-}
-
-
-#pDebug a.pTemplateShowContext, #pDebug a.pTemplateShowContext span.toggleArrow {
-	color:#999;
-}
-
-#pDebug a.pTemplateShowContext:hover,  #pDebug a.pTemplateShowContext:hover span.toggleArrow {
-	color:#000;
-	cursor:pointer;
-}
-
-#pDebug .pDebugSqlWrap {
-	position:relative;
-}
-
-#pDebug .pDebugSql {
-	z-index:100000002;
-}
-
-#pDebug .pSQLHideStacktraceDiv tbody th {
-	text-align: left;
-}
-
-#pDebug .pSqlExplain td {
-	white-space: pre;
-}
-
-#pDebug span.pDebugLineChart {
-	background-color:#777;
-	height:3px;
-	position:absolute;
-	bottom:0;
-	top:0;
-	left:0;
-	display:block;
-	z-index:1000000001;
-}
-#pDebug span.pDebugLineChartWarning {
-	background-color:#900;
-}
-
-#pDebug .highlight  { color:#000; }
-#pDebug .highlight .err { color:#000; } /* Error */
-#pDebug .highlight .g { color:#000; } /* Generic */
-#pDebug .highlight .k { color:#000; font-weight:bold } /* Keyword */
-#pDebug .highlight .o { color:#000; } /* Operator */
-#pDebug .highlight .n { color:#000; } /* Name */
-#pDebug .highlight .mi { color:#000; font-weight:bold } /* Literal.Number.Integer */
-#pDebug .highlight .l { color:#000; } /* Literal */
-#pDebug .highlight .x { color:#000; } /* Other */
-#pDebug .highlight .p { color:#000; } /* Punctuation */
-#pDebug .highlight .m { color:#000; font-weight:bold } /* Literal.Number */
-#pDebug .highlight .s { color:#333 } /* Literal.String */
-#pDebug .highlight .w { color:#888888 } /* Text.Whitespace */
-#pDebug .highlight .il { color:#000; font-weight:bold } /* Literal.Number.Integer.Long */
-#pDebug .highlight .na { color:#333 } /* Name.Attribute */
-#pDebug .highlight .nt { color:#000; font-weight:bold } /* Name.Tag */
-#pDebug .highlight .nv { color:#333 } /* Name.Variable */
-#pDebug .highlight .s2 { color:#333 } /* Literal.String.Double */
-#pDebug .highlight .cp { color:#333 } /* Comment.Preproc */
-
-#pDebug table.pDebugSortable .header { 
-    background-image: url(../img/bg.gif);     
-    cursor: pointer; 
-    font-weight: bold; 
-    background-repeat: no-repeat; 
-    background-position: center left; 
-    padding-left: 20px; 
-    margin-left: -1px; 
-} 
-
-#pDebug table.pDebugSortable .headerSortUp { 
-    background-image: url(../img/asc.gif); 
-} 
-
-#pDebug table.pDebugSortable .headerSortDown { 
-    background-image: url(../img/desc.gif); 
-} 
