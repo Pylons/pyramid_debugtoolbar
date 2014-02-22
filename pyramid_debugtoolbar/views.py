@@ -243,7 +243,7 @@ def request_view(request):
             'request_id': request_id
             }
 
-U_SSE_PAYLOAD = text_("id:{}\nevent: new_request\ndata:{}\n\n")
+U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
 @view_config(route_name='debugtoolbar.sse',
              permission=NO_PERMISSION_REQUIRED)
 def sse(request):
