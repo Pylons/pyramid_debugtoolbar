@@ -1,7 +1,9 @@
 Unreleased
 ----------
 
-...
+- Allow the toolbar to display always, even when the parent application
+  is using a default permission.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/147
 
 2.0.2 (2014-02-13)
 ------------------
