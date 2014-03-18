@@ -6,6 +6,7 @@
 			<th>Action</th>
 			<th>Query</th>
 			<th>Params</th>
+			<th>Callstack</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -24,6 +25,7 @@
 			</td>
 			<td>${query['sql']|n}</td>
 			<td>${text(query['parameters'])|n}</td>
+			<td><pre class="slider">${ query['callstack'] }</pre></td>
 		</tr>
 	% endfor
 	</tbody>
