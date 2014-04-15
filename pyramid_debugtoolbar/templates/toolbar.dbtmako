@@ -86,7 +86,7 @@
 
                 html += '<li class="'+active+'"><a href="/_debug_toolbar/'+request_id+'" title="'+details.path+'">';
                 html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
-                html += details.method+' '+details.path;
+                html += details.method+'<br>'+details.path;
                 html += '</a></li>';
             });
 
