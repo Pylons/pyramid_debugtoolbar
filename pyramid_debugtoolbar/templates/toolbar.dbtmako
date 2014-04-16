@@ -89,7 +89,8 @@
             });
 
             requests.html(html);
-            $('ul#requests li a').tooltip({placement: 'right',
+            $('ul#requests li a').tooltip({
+                placement: 'right',
                 container: 'body'
             });
         }
