@@ -74,6 +74,7 @@
 	    });
         var source;
         function new_request(e) {
+            $('ul#requests li a').tooltip('hide')
             var html = '<li><h4>Requests</strong></h4></li>';
             var requests = $('ul#requests');
             var data = JSON.parse(e.data);
