@@ -142,3 +142,11 @@ ul#requests li a {
     display: inline-block;
     max-width: 300px;
 }
+/* override twitter bootstrap's tooltip styles */
+.tooltip, .tooltip-inner {
+    max-width: 100%;
+}
+.tooltip {
+    word-wrap: break-word;
+    word-break: break-all;
+}
