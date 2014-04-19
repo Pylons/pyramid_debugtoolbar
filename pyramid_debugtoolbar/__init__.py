@@ -1,4 +1,8 @@
 from pyramid.config import Configurator
+try:
+    from pyramid.security import NO_PERMISSION_REQUIRED
+except ImportError: # pragma: no cover
+    from pyramid.interfaces import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.wsgi import wsgiapp2
 from pyramid_debugtoolbar.utils import as_globals_list
@@ -81,7 +85,8 @@ def includeme(config):
 
     application = make_application(settings, config.registry)
     config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
-    config.add_view(wsgiapp2(application), route_name='debugtoolbar')
+    config.add_view(wsgiapp2(application), route_name='debugtoolbar',
+                    permission=NO_PERMISSION_REQUIRED)
     config.add_static_view('/_debug_toolbar/static', STATIC_PATH, static=True)
     config.introspection = introspection
 
