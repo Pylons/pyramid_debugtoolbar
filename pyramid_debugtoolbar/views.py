@@ -1,5 +1,8 @@
 import hashlib
 
+from pyramid.events import subscriber
+from pyramid.events import NewRequest
+from pyramid.exceptions import NotFound
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
@@ -7,6 +10,7 @@ from pyramid.view import view_config
 
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -15,8 +19,10 @@ from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
+from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
+U_BLANK = text_("")
 
 def valid_host(info, request):
     hosts = get_setting(request.registry.settings, 'hosts')
@@ -43,8 +49,9 @@ class ExceptionDebugView(object):
         token = self.request.params.get('token')
         if not token:
             raise HTTPBadRequest('No token in request')
-        if not token == self.exc_history.token:
+        if not token == request.registry.parent_registry.pdtb_token:
             raise HTTPBadRequest('Bad token in request')
+        self.token = token
         frm = self.request.params.get('frm')
         if frm is not None:
             frm = int(frm)
@@ -111,7 +118,7 @@ class ExceptionDebugView(object):
             'traceback_id':     self.tb or -1,
             'root_path':        toolbar_root_path,
             'static_path':      static_path,
-            'token':            exc_history.token,
+            'token':            self.token,
             }
         if 0 not in exc_history.frames:
             exc_history.frames[0] = _ConsoleFrame({})
@@ -121,13 +128,14 @@ class ExceptionDebugView(object):
 class SQLAlchemyViews(object):
     def __init__(self, request):
         self.request = request
+        self.token = request.registry.parent_registry.pdtb_token
 
     def validate(self):
         stmt = self.request.params['sql']
         params = self.request.params['params']
 
         # Validate hash
-        need = self.request.exc_history.token + stmt + url_quote(params)
+        need = self.token + stmt + url_quote(params)
 
         hash = hashlib.sha1(bytes_(need)).hexdigest()
         if hash != self.request.params['hash']:
@@ -150,8 +158,8 @@ class SQLAlchemyViews(object):
         if not engine_id:
             raise HTTPBadRequest('No valid database engine')
 
-        engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
-                      [int(engine_id)]()
+        engines = self.request.registry.parent_registry.pdtb_sqla_engines
+        engine = engines[int(engine_id)]()
         params = [json.loads(params)]
         result = engine.execute(stmt, params)
 
@@ -175,8 +183,8 @@ class SQLAlchemyViews(object):
         if not engine_id:
             raise HTTPBadRequest('No valid database engine')
 
-        engine = getattr(self.request.registry, 'pdtb_sqla_engines')\
-                      [int(engine_id)]()
+        engines = self.request.registry.parent_registry.pdtb_sqla_engines
+        engine = engines[int(engine_id)]()
         params = json.loads(params)
 
         if engine.name.startswith('sqlite'):
@@ -193,3 +201,75 @@ class SQLAlchemyViews(object):
             'str': str,
             'duration': float(self.request.params['duration']),
         }
+
+
+@view_config(
+    route_name='debugtoolbar.main',
+    permission=NO_PERMISSION_REQUIRED,
+    custom_predicates=(valid_host, valid_request),
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
+)
+@view_config(
+    route_name='debugtoolbar.request',
+    permission=NO_PERMISSION_REQUIRED,
+    custom_predicates=(valid_host, valid_request),
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
+)
+def request_view(request):
+    history = find_request_history(request)
+
+    try:
+        last_request_pair = history.last(1)[0]
+    except IndexError:
+        last_request_pair = None
+        last_request_id = None
+    else:
+        last_request_id = last_request_pair[0]
+
+    request_id = request.matchdict.get('request_id', last_request_id)
+    toolbar = history.get(request_id, None)
+
+    if not toolbar:
+        raise NotFound
+
+    static_path = request.static_url(STATIC_PATH)
+    root_path = request.route_url(ROOT_ROUTE_NAME)
+    button_style = get_setting(request.registry.settings,
+            'button_style', '')
+    hist_toolbars = history.last(10)
+    return {'panels': toolbar.panels, 'static_path': static_path,
+            'root_path': root_path, 'button_style': button_style,
+            'history': hist_toolbars, 'global_panels': toolbar.global_panels,
+            'request_id': request_id
+            }
+
+U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
+@view_config(route_name='debugtoolbar.sse',
+             permission=NO_PERMISSION_REQUIRED)
+def sse(request):
+    response = request.response
+    response.content_type = 'text/event-stream'
+    history = find_request_history(request)
+    response.text = U_BLANK
+
+    active_request_id = text_(request.GET.get('request_id'))
+    client_last_request_id = text_(request.headers.get('Last-Event-Id', 0))
+
+    if history:
+        last_request_pair = history.last(1)[0]
+        last_request_id = last_request_pair[0]
+        if not last_request_id == client_last_request_id:
+            data = [[_id, toolbar.json, 'active'
+                        if active_request_id == _id else '']
+                            for _id,toolbar in history.last(10)]
+            if data:
+                response.text = U_SSE_PAYLOAD.format(last_request_id,
+                                                     json.dumps(data))
+    return response
+
+@subscriber(NewRequest)
+def find_exc_history(event):
+    # Move the chickens to a new hen house
+    request = event.request
+    exc_history = request.registry.parent_registry.exc_history
+    request.exc_history = exc_history

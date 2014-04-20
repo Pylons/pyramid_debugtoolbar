@@ -1,5 +1,10 @@
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="ExplainModalLabel">EXPLAIN</h3>
+</div>
+<div class="modal-body">
+
 <div class="pDebugPanelTitle">
-	<a class="pDebugClose pDebugBack" href="">Back</a>
 	<h3>SQL Explained</h3>
 </div>
 <div class="pDebugPanelContent">
@@ -10,7 +15,8 @@
 			<dt>Time</dt>
 			<dd>${'%.2f' % (duration)} ms</dd>
 		</dl>
-		<table class="djSqlExplain">
+		<table class="djSqlExplain table table-striped"
+>
 			<thead>
 				<tr>
 					% for h in headers:
@@ -29,4 +35,9 @@
 			</tbody>
 		</table>
 	</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 </div>

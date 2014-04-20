@@ -1,37 +1,40 @@
 
-body, input  { font-family: sans-serif; color: #000; text-align: center; line-height: 1.2em;
-               margin: 1em; padding: 0; font-size: 15px; }
-h1, h2, h3   { font-family: sans-serif; font-weight: normal; }
-
 input        { background-color: #fff; margin: 0; text-align: left;
                outline: none !important; }
-a            { color: #F98131; }
-a:hover      { color: #db7028; }
 pre, code, table.source,
 textarea     { font-family: Consolas, "andale mono", "lucida console", monospace; font-size: 14px; }
 
 div.debugger { text-align: left; padding: 12px; margin: auto;
                background-color: white; }
-h1           { font-size: 36px; margin: 0 0 0.3em 0; }
+h1           { margin: 0 0 0.3em 0; }
 div.detail p { margin: 0 0 8px 13px; font-size: 14px; }
 div.detail pre.errormsg { word-wrap: break-word; }
 div.explanation { margin: 20px 13px; font-size: 15px; color: #555; }
 div.footer   { font-size: 13px; text-align: right; margin: 30px 0;
                color: #999999; }
 
-h2           { font-size: 16px; margin: 1.3em 0 0.0 0; padding: 9px;
-               background: #F98131 url(../img/headerbg.png) repeat-x 0 0; color: #000000; }
-h2 em, h3 em { font-style: normal; color: #ffffff; font-weight: normal; }
+h2           { margin: 1.3em 0 0.0 0; padding: 9px;
+               background: #bc2131; color: #000000; }
+h2.traceback, h3.traceback {
+    color: #ffffff;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+h2 small, h3 small { font-style: normal; color: #ffffff; font-weight: normal; }
 
+div.traceback {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 1px;
+}
 div.traceback, div.plain { border: 1px solid #ddd; margin: 0 0 1em 0; padding: 10px; }
 div.plain p      { margin: 0; }
 div.plain textarea,
 div.plain pre { margin: 10px 0 0 0; padding: 4px;
                 background-color: #eeeeee; border: 1px solid #dddddd; }
 div.plain textarea { width: 99%; height: 300px; }
-div.traceback h3 { font-size: 1em; margin: 0; }
+div.traceback h3 { margin: 0; }
 div.traceback ul { list-style: none; margin: 0; padding: 0; }
-div.traceback h4 { font-size: 13px; font-weight: normal; margin: 0; }
+div.traceback h4 { font-size: 13px; font-weight: normal; margin: 5px 0; }
 div.traceback pre { margin: 0; padding: 5px 0 3px 5px;
                     background-color: #f5f5f5;}
 div.traceback pre,
@@ -42,6 +45,7 @@ div.box table.source { white-space: pre-wrap;       /* css-3 should we be so luc
                        word-wrap: break-word;       /* Internet Explorer 5.5+ */
                        _white-space: pre;           /* IE only hack to re-specify in
                                                     addition to word-wrap  */ }
+div.box h2 { color: #ffffff; }
 div.traceback pre:hover { background-color: #eeeeee; color: black; cursor: pointer; }
 div.traceback blockquote { margin: 1em 0 0 0; padding: 0; }
 div.traceback img { float: right; padding: 2px; margin: -3px 2px 0 0; cursor: pointer; }
@@ -69,7 +73,7 @@ pre.console div.box { margin: 5px; white-space: normal;
                       font-family: sans-serif;  }
 pre.console div.box h3,
 pre.console div.traceback h3 { margin: -5px -5px 5px -5px; padding: 5px;
-                               background: #F98131 url(../img/headerbg.png) repeat-x 0 0; color: #000000; }
+                               background: #bc2131; color: #ffffff; }
 
 pre.console div.traceback pre:hover { cursor: default; background: #eeeeee; }
 pre.console div.traceback pre.syntaxerror { background: #eeeeee; border: none;

@@ -1,3 +1,13 @@
 - Docs.
 
-- Custom build of toolbar.js and debugger.js using requirejs.
+- Fix selenium tests.
+
+- Clean up the static/img dir
+
+- Solve the js content/deps managment
+
+- Clean up the toolbar.css
+
+- The "EXPLAIN" and "SELECT" pages seem too small and require me to scroll horizontally.
+
+- If cell values are left-justified, the headers for those columns should also be left-justified. A lot of times the "Value" header is floating way far away from the actual column data horizontally.

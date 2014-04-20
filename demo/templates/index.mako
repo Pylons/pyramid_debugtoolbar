@@ -25,6 +25,9 @@
         </p>
 		% endif
         <p>
+          <a href="${request.route_url('test_ajax')}">AJAX example</a>
+        </p>
+        <p>
           <a href="${request.route_url('test_chameleon_exc')}">Chameleon Exception example</a>
         </p>
         <p>

@@ -18,11 +18,12 @@ For a demonstration:
 
 - Create a virtualenv::
 
-  $ virtualenv --python=python2.7 env27
+  $ VENV=$(pwd)/venv # just set the path to our virtualenv
+  $ virtualenv --python=python2.7 $VENV
 
 - Clone the Pyramid trunk::
 
-  $ git clone git@github.com:Pylons/pyramid.git
+  $ git clone https://github.com/Pylons/pyramid.git
 
 - Install the Pyramid trunk into the virtualenv::
 
@@ -31,7 +32,7 @@ For a demonstration:
 
 - Clone the ``pyramid_debugtoolbar`` trunk::
 
-  $ git clone git@github.com:Pylons/pyramid_debugtoolbar.git
+  $ git clone https://github.com/Pylons/pyramid_debugtoolbar.git
 
 - Install the ``pyramid_debugtoolbar`` trunk into the virtualenv::
 

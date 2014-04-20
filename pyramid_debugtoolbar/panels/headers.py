@@ -10,17 +10,11 @@ class HeaderDebugPanel(DebugPanel):
     """
     name = 'Header'
     has_content = True
-    response_headers = ()
+    template = 'pyramid_debugtoolbar.panels:templates/headers.dbtmako'
 
     def __init__(self, request):
-        self.request = request
         self.request_headers = [
             (text_(k), text_(v)) for k, v in sorted(request.headers.items())
-        ]
-
-    def process_response(self, response):
-        self.response_headers = [
-            (text_(k), text_(v)) for k, v in sorted(response.headerlist)
         ]
 
     def nav_title(self):
@@ -32,9 +26,9 @@ class HeaderDebugPanel(DebugPanel):
     def url(self):
         return ''
 
-    def content(self):
-        vars = {'request_headers': self.request_headers,
-                'response_headers': self.response_headers}
-        return self.render(
-            'pyramid_debugtoolbar.panels:templates/headers.dbtmako',
-            vars, self.request)
+    def process_response(self, response):
+        response_headers = [
+            (text_(k), text_(v)) for k, v in sorted(response.headerlist)
+        ]
+        self.data = {'request_headers': self.request_headers,
+                     'response_headers': response_headers}
