@@ -1,8 +1,11 @@
 from __future__ import with_statement
+from __future__ import absolute_import
 
 import hashlib
 import threading
 import time
+import traceback
+import sys
 import weakref
 
 from pyramid.threadlocal import get_current_request
@@ -24,6 +27,17 @@ def text(s):
     else:
         return unicode(s)
 
+def get_current_callstack():
+    exc = sys.exc_info()[0]
+    stack = traceback.extract_stack()[:-1]  # last one would be full_stack()
+    if not exc is None:  # i.e. if an exception is present
+        del stack[-1]       # remove call of full_stack, the printed exception
+                            # will contain the caught exception caller instead
+    trc = 'Traceback (most recent call last):\n'
+    stackstr = trc + ''.join(traceback.format_list(stack))
+    return stackstr
+
+
 try:
     from sqlalchemy import event
     from sqlalchemy.engine.base import Engine
@@ -42,12 +56,14 @@ try:
                 engines[id(conn.engine)] = weakref.ref(conn.engine)
                 queries = request.pdtb_sqla_queries
                 duration = (stop_timer - conn.pdtb_start_timer) * 1000
+                callstack = get_current_callstack()
                 queries.append({
                     'engine_id': id(conn.engine),
                     'duration': duration,
                     'statement': stmt,
                     'parameters': params,
-                    'context': context
+                    'context': context, 
+                    'callstack': callstack, 
                 })
         delattr(conn, 'pdtb_start_timer')
 
@@ -121,6 +137,7 @@ class SQLADebugPanel(DebugPanel):
                 'params': params,
                 'is_select': is_select,
                 'context': query['context'],
+                'callstack': query['callstack'], 
             })
 
         self.data = {
