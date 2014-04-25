@@ -11,6 +11,11 @@ Tellingen's ``flask-debugtoolbar`` (which itself was derived from Rob
 Hudson's ``django-debugtoolbar``).  It also includes a lightly sanded down
 version of the Werkzeug debugger code by Armin Ronacher and team.
 
+Documentation
+-------------
+The documentation of the current stable release of ``pyramid_debugtoolbar``
+is available at http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/.
+
 Demonstration
 -------------
 
