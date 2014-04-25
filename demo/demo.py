@@ -108,6 +108,7 @@ if __name__ == '__main__':
     settings['reload_templates'] = True
     settings['mako.directories'] = '__main__:templates'
     settings['mako.module_directory'] = '__main__:mako_modules'
+    settings['debugtoolbar.reload_templates'] = True
     settings['debugtoolbar.hosts'] = ['127.0.0.1']
     settings['debugtoolbar.intercept_redirects'] = True
     # session factory
