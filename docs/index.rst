@@ -201,7 +201,7 @@ logs.
   Print view-related ``NotFound`` debug messages to ``stderr`` when this
   value is ``true``.
 
-``debugtoolbar.debug_routematch'``
+``debugtoolbar.debug_routematch``
 
   Print debugging messages related to URL dispatch route matching when this
   value is ``true``.
