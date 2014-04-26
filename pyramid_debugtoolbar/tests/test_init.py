@@ -18,6 +18,12 @@ class Test_parse_settings(unittest.TestCase):
                     'debugtoolbar.global_panels': global_panels,
                     'debugtoolbar.hosts': '127.0.0.1',
                     'debugtoolbar.exclude_prefixes': '/excluded\n/e2',
+                    'debugtoolbar.debug_notfound': 'false',
+                    'debugtoolbar.debug_routematch': 'false',
+                    'debugtoolbar.reload_templates': 'false',
+                    'debugtoolbar.reload_resources': 'false',
+                    'debugtoolbar.reload_assets': 'false',
+                    'debugtoolbar.prevent_http_cache': 'false',
                     }
         result = self._callFUT(settings)
         self.assertEqual(result,
@@ -28,13 +34,19 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.global_panels': [DummyPanel, DummyPanel],
                           'debugtoolbar.exclude_prefixes': ['/excluded', '/e2'],
                           'debugtoolbar.hosts': ['127.0.0.1'],
+                          'debugtoolbar.debug_notfound': False,
+                          'debugtoolbar.debug_routematch': False,
+                          'debugtoolbar.reload_templates': False,
+                          'debugtoolbar.reload_resources': False,
+                          'debugtoolbar.reload_assets': False,
+                          'debugtoolbar.prevent_http_cache': False,
                           }
                          )
 
 class Test_includeme(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        
+
     def _callFUT(self, config):
         from pyramid_debugtoolbar import includeme
         return includeme(config)

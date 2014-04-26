@@ -1,6 +1,10 @@
 Unreleased
 ----------
 
+- Add new "debugtoolbar." configuration settings that allow enabling or
+  disabling various Pyramid knobs in a users .ini file. This for instance
+  allows easy enabling/disabling of template reloading for the debugtoolbar.
+
 - Allow the toolbar to display always, even when the parent application
   is using a default permission.
   See https://github.com/Pylons/pyramid_debugtoolbar/issues/147

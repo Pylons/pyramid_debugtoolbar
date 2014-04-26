@@ -192,6 +192,47 @@ file.
   If configuration is done via Python, the setting should be a list.  This
   setting was added in debugtoolbar version 1.0.4.
 
+Useful settings for debugging panels/debugtoolbar
+`````````````````````````````````````````````````
+
+When developing custom panels for an application the following settings may can
+be used to influence how debugtoolbar itself behaves, and what information it
+logs.
+
+``debugtoolbar.debug_notfound``
+
+  Print view-related NotFound debug messages to stderr when this value is true.
+
+``debugtoolbar.debug_routematch'``
+
+  Print debugging messages related to url dispatch route matching when this
+  value is true.
+
+``debugtoolbar.reload_templates``
+
+  When this value is true, templates are automatically reloaded whenever they
+  are modified without restarting the application, so you can see changes to
+  templates take effect immediately during development. This flag is meaningful
+  to Chameleon and Mako templates, as well as most third-party template
+  rendering extensions.
+
+``debugtoolbar.reload_resources``
+
+  Alias for ``debugtoolbar.reload_assets``.
+
+
+``debugtoolbar.reload_assets``
+
+  Don't cache any asset file data when this value is true.
+
+``debugtoolbar.prevent_http_cache``
+
+  Prevent the `http_cache` view configuration argument from having any effect
+  globally in this process when this value is true. No http caching-related
+  response headers will be set by the Pyramid `http_cache` view configuration
+  feature when this is true.
+
+
 Custom authorization
 ~~~~~~~~~~~~~~~~~~~~
 
