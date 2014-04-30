@@ -133,7 +133,7 @@ file.
   Default is ``false``. If set to ``true`` the debugtoolbar will only be
   injected into the response in case a exception is raised. If the response is
   processed without exception, the returned html code is not changed by the
-  debugtoolbar at all. This option allows the developer to use the toolbar for 
+  debugtoolbar at all. This option allows the developer to use the toolbar for
   debugging purposes without interfering with successful responses.
 
   Inspection of requests is still possible by visiting the toolbar manually.
@@ -439,51 +439,60 @@ sample panel:
        """
        name = 'Sample'
        has_content = True
+       template = 'myapp.lib.debugtoolbar_custom.panels:templates/sample.dbtmako'
+
+	   def __init__(self, request):
+		   self.data = data = { 'request' : request }
 
        def nav_title(self):
+           return _('Sample')
+
+       def title(self):
            return _('Sample')
 
        def url(self):
            return ''
 
-       def title(self):
-           return _('Sample')
-
-       def content(self):
-           vars = {'somelist':['sample value', 'another value']}
-           return self.render(
-               'samplepanel:templates/sample.mako',
-               vars, self.request)
 
    def includeme(config):
        config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
 
-After inheriting from the DebugPanel class, you have to define a few methods on
-your panel:
+After inheriting from the DebugPanel class, you have to define a few methods and
+attributes on your panel:
+
+``has_content``
+  Attribute.  Boolean value.  Set to `True`
+
+``user_activate``
+ Attribute.  Boolean value.  If the client is able to activate/de-activate the
+ panel.
+
+``template``
+  Attribute.  String value.  Must be overridden.  A mako template location.
+  The base class will raise ``NotImplemented`` if it's not there.
 
 ``nav_title``
-
-  Returns a function that can be called to get the title to be used on the
-  toolbar's navigation bar for this panel.
+  Method.  Returns a function that can be called to get the title to be used on
+  the toolbar's navigation bar for this panel.
 
 ``url``
-
-  This is not used at the moment, but it has to be provided because the base
-  class will raise ``NotImplemented`` if it's not there.
+  Method. This is not used at the moment, but it has to be provided because the
+  base class will raise ``NotImplemented`` if it's not there.
 
 ``title``
+  Method.  Returns a function that can be called to get the title to be used on
+  the panel's display page.
 
-  Returns a function that can be called to get the title to be used on the
-  panel's display page.
-
-``content``
-
-  Returns the panel's content for display. It can return an HTML response
-  directly, but normally it's better to use a template, like in the example.
+``__init__``
+  Method.  This defines self.data, which is used in the template.  This
+  typically contains or triggers the bulk of the panel's logic.
 
 Once you define the panel it has to be added to the ``debugtoolbar.panels``
 setting of the configuration. A good way to do this is to use an ``includeme``
 method in the panel's ``__init__.py``.
+
+The source code for the standard debugpanel `request_vars.py` is a good starting
+point for inspiration.
 
 Configuring an application to use the panel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
