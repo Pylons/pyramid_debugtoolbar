@@ -419,6 +419,41 @@ display some application specific data. There are two steps for adding such a
 panel to an application: writing the panel, and adding it to your application
 settings.
 
+Understanding how debugtoolbar works
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Before writing the panel, you should understand how pyramid_debugtoolbar
+interacts with your application in it's two phase process.
+
+Phase 1 - The original request
+
+When pyramid_debugtoolbar is enabled, it starts tracking data on the original
+request.  The involves calling the following panel methods in-band with the
+original request:
+
+    * __init__
+    * process_response
+    * process_beforerender
+    * wrap_handler
+
+The `self.data` variable on a panel is generated within `__init__`, which occurs
+during the original request.  The `request` variable in these methods refers
+to the orignal request.
+
+Phase 2 - The debugtoolbar request
+
+When the "/_debug_toolbar/{request_id}" is accessed, the history of the original
+request_id and it's associated panels are accessed.  Variables such as `data` that
+were generated during the orignal request are made available for display.
+
+The following panel methods are called with the debugtoolbar request :
+
+    * render_content
+    * has_content
+    * render_vars
+    * title
+
+
 Writing the panel
 ~~~~~~~~~~~~~~~~~
 
@@ -441,8 +476,8 @@ sample panel:
        has_content = True
        template = 'myapp.lib.debugtoolbar_custom.panels:templates/sample.dbtmako'
 
-	   def __init__(self, request):
-		   self.data = data = { 'request' : request }
+       def __init__(self, request):
+           self.data = data = { 'request' : request }
 
        def nav_title(self):
            return _('Sample')
@@ -464,27 +499,29 @@ attributes on your panel:
   Attribute.  Boolean value.  Set to `True`
 
 ``user_activate``
- Attribute.  Boolean value.  If the client is able to activate/de-activate the
- panel.
+  Attribute.  Boolean value.  If the client is able to activate/de-activate the
+  panel.
 
 ``template``
   Attribute.  String value.  Must be overridden.  A mako template location.
   The base class will raise ``NotImplemented`` if it's not there.
 
 ``nav_title``
-  Method.  Returns a function that can be called to get the title to be used on
-  the toolbar's navigation bar for this panel.
+  Method.  Returns a string.  Called to get the title to be used on
+  the toolbar's navigation bar for this panel. This is enabled as a method for
+  use with `gettext` or if the title requires a computed value.
 
 ``url``
   Method. This is not used at the moment, but it has to be provided because the
   base class will raise ``NotImplemented`` if it's not there.
 
 ``title``
-  Method.  Returns a function that can be called to get the title to be used on
-  the panel's display page.
+  Method.  Returns a string.  Called to get the title to be used on
+  the panel's display page. This is enabled as a method for use with `gettext`
+  or if the title requires a computed value.
 
 ``__init__``
-  Method.  This defines self.data, which is used in the template.  This
+  Method.  This defines `self.data`, which is used in the template.  This
   typically contains or triggers the bulk of the panel's logic.
 
 Once you define the panel it has to be added to the ``debugtoolbar.panels``
