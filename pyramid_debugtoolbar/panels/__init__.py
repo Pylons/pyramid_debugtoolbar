@@ -8,7 +8,11 @@ from pyramid.threadlocal import get_current_request
 
 class DebugPanel(object):
     """
-    Base class for debug panels.
+    Base class for debug panels. A new instance of this class is created
+    for every request.
+
+    :param request: The instance of :class:`pyramid.request.Request` that
+                    this object is wrapping.
     """
     #: A unique identifier for the name of the panel. This **must** be
     #: defined by a subclass.
