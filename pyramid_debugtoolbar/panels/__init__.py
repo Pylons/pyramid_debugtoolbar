@@ -1,5 +1,3 @@
-"""Base DebugPanel class"""
-
 from pyramid.decorator import reify
 from pyramid.i18n import get_localizer
 from pyramid.renderers import render
@@ -19,13 +17,12 @@ class DebugPanel(object):
     name = NotImplemented
 
     #: If ``False`` then the panel's tab will be disabled and
-    #: :meth:`pyramid_debugtoolbar.panels.DebugPanel.render_content` will
-    #: not be invoked. Most subclasses will want to set this to ``True``.
-    #: Default: ``False``.
+    #: :meth:`.render_content` will not be invoked. Most subclasses will
+    #: want to set this to ``True``.
     has_content = False
 
     #: If the client is able to activate/de-activate the panel then this
-    #: should be ``True``. Default: ``False``.
+    #: should be ``True``.
     user_activate = False
 
     #: This property will be set by the toolbar, indicating the user's
@@ -53,9 +50,10 @@ class DebugPanel(object):
     def render_content(self, request):
         """Return a string containing the HTML to be rendered for the panel.
 
-        By default this will use render the ``self.template`` template
-        with a rendering context defined by ``self.data`` combined with
-        ``self.render_vars``.
+        By default this will render the template defined by the
+        :attr:`.template` attribute with a rendering context defined by
+        :attr:`.data` combined with the ``dict`` returned from
+        :meth:`.render_vars`.
         """
         data = self.data.copy()
         data.update(self.render_vars(request))
@@ -98,7 +96,7 @@ class DebugPanel(object):
         pass
 
     def process_beforerender(self, event):
-        """Receives every :interface:`pyramid.interfaces.IBeforeRender`
+        """Receives every :class:`pyramid.interfaces.IBeforeRender`
         event invoked during the request/response lifecycle of the request.
 
         Override this method to track properties of the rendering events.
@@ -125,9 +123,8 @@ class DebugPanel(object):
         return handler
 
     def render_vars(self, request):
-        """Invoked by the default implementation of
-        :meth:`pyramid_debugtoolbar.panels.DebugPanel.render_content` and
-        should return a ``dict`` of values to use when rendering the
+        """Invoked by the default implementation of :meth:`.render_content`
+        and should return a ``dict`` of values to use when rendering the
         panel's HTML content. This value is usually injected into templates
         as the rendering context.
         """

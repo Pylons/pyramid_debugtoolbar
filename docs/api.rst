@@ -12,6 +12,8 @@
 .. automodule:: pyramid_debugtoolbar.panels
 
 .. autoclass:: DebugPanel
+   :members:
+   :exclude-members: pluralize
 
 .. automodule:: pyramid_debugtoolbar.panels.sqla
 
