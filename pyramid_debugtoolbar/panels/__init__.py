@@ -54,6 +54,9 @@ class DebugPanel(object):
         :attr:`.template` attribute with a rendering context defined by
         :attr:`.data` combined with the ``dict`` returned from
         :meth:`.render_vars`.
+
+        The ``request`` here is the active request in the toolbar. Not the
+        original request that this panel represents.
         """
         data = self.data.copy()
         data.update(self.render_vars(request))
@@ -127,5 +130,8 @@ class DebugPanel(object):
         and should return a ``dict`` of values to use when rendering the
         panel's HTML content. This value is usually injected into templates
         as the rendering context.
+
+        The ``request`` here is the active request in the toolbar. Not the
+        original request that this panel represents.
         """
         return {}
