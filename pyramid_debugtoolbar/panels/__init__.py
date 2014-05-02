@@ -112,7 +112,7 @@ class DebugPanel(object):
         A handler receives a request and returns a response. An example
         implementation may be:
 
-        .. code-block: python
+        .. code-block:: python
 
            def wrap_handler(self, handler):
                def wrapper(request):
