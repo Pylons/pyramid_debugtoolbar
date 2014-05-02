@@ -9,6 +9,25 @@ class DebugPanel(object):
     Base class for debug panels. A new instance of this class is created
     for every request.
 
+    A panel is given notified of events throughout the request lifecycle. It
+    is then persisted and used later by the toolbar to render its results
+    as a tab on the interface. The lifecycle hooks are available in the
+    following order:
+
+    - ``__init__``
+    - :meth:`.wrap_handler`
+    - :meth:`.process_beforerender`
+    - :meth:`.process_response`
+
+    Each of these hooks is overridable by a subclass to gleen information
+    from the request and other events for later display.
+
+    The panel is later used to render its results. This is done on-demand
+    and in the lifecycle of a request to the debug toolbar by invoking
+    :meth:`.render_content`. Any data stored within :attr:`.data` is
+    injected into the template prior to rendering and is thus a common
+    location to store the contents of previous events.
+
     :param request: The instance of :class:`pyramid.request.Request` that
                     this object is wrapping.
     """
