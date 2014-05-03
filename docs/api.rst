@@ -9,6 +9,12 @@
 
 .. autofunction:: toolbar_tween_factory
 
+.. automodule:: pyramid_debugtoolbar.panels
+
+.. autoclass:: DebugPanel
+   :members:
+   :exclude-members: pluralize
+
 .. automodule:: pyramid_debugtoolbar.panels.sqla
 
 .. autoclass:: SQLADebugPanel
