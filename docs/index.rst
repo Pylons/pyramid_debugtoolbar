@@ -425,14 +425,15 @@ Understanding how debugtoolbar works
 Before writing the panel, you should understand how pyramid_debugtoolbar
 interacts with your application in it's two phase process.
 
-pyramid_debugtoolbar wraps every request within a pyramid "tween" via
+pyramid_debugtoolbar wraps every request within a Pyramid "tween" via
 `toolbar_tween_factory`.  This tween allows the toolbar to record data during
 the original request (Phase 1) and 'injects' a link to the toolbar interface
-into the rendered Pyramid web pages.
+into the rendered Pyramid web pages.  The data is displayed during a secondary
+request to the toolbar (Phase 2).
 
 Phase 1 - The original request
 
-When pyramid_debugtoolbar is enabled, it starts tracking data on the original
+When pyramid_debugtoolbar is enabled, it can start tracking data on the original
 request.  This involves calling the following panel methods in-band with the
 original request:
 
@@ -441,26 +442,29 @@ original request:
     * process_beforerender
     * process_response
 
-The `self.data` variable on a panel is generated within `__init__`, which occurs
-during the original request.  The `request` variable in these methods refers
-to the original request.
+These methods are used to store and manipulate a `self.data` variable on each
+panel during this original request.  Typically `self.data` is first generated on
+the `__init__` method.  It is important to note that the `request` and event
+variables available to these methods refer to the original request.
 
 Phase 2 - The debugtoolbar request
 
 When the "/_debug_toolbar/{request_id}" is accessed, the history of the original
 request_id and it's associated panels are accessed.  Variables such as `data`
-that were generated during the original request are made available for display.
+that were generated during the original request are made available for further
+processing.  The `self.data` variable is injected into the template for display.
 
 The following panel methods are called or accessed on the debugtoolbar request:
 
+    * name
+    * template
+    * user_activate
+    * is_active
     * has_content
     * render_content
     * render_vars
     * title
     * nav_title
-    * template
-    * has_content
-    * user_activate
 
 
 Writing the panel
@@ -497,28 +501,39 @@ sample panel:
        def url(self):
            return ''
 
-
    def includeme(config):
        config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
 
 After inheriting from the DebugPanel class, you have to define a few methods and
 attributes on your panel:
 
+``name``
+  Attribute.  String value.  A unique identifier for the name of the panel. This
+  **must** be defined by a subclass
+
 ``has_content``
   Attribute.  Boolean value.  Default is `True`  This attribute determines if
-  the tab is enabled or not.  For example: in the case of the SQLA panel, if no
-  SqlAlchemy statements were executed in the request, this value is set to
-  `False` and the tab is simply disabled.
+  the tab is enabled or not.  If `False` then the panel's tab will be disabled
+  and `.render_content` will not be invoked. Most subclasses will want to set
+  this to `True` by default.  An example of this panel's dynamica utility is
+  the SQLA panel; if no SqlAlchemy statements were executed in the request, this
+  value is set to`False` and the tab is simply disabled.
 
 ``user_activate``
-  Attribute.  Boolean value.  Determines if the client is able to activate or
-  de-activate the panel.
+  Attribute.  Boolean value.  If the client is able to activate/de-activate the
+  panel then this should be `True`
+
+``is_active``
+  Attribute.  Boolean value.  This property will be set by the toolbar,
+  indicating the user's  decision to activate or deactivate the panel. If
+  `user_activate` is `False` then `is_active` will always be set to
+  `True`.
 
 ``template``
-  Attribute.  String value.  Must be overridden.  A mako template location.
+  Attribute.  String value.  Must be overridden.  A mako asset specification.
   The default implementation of `render_content` in the base class
   (`DebugToolbar`) will attempt to render `self.template`.  If `template` is not
-  defined, and `render_content` is not overridden, a ``NotImplemented``
+  defined, and `render_content` is not overridden, a `NotImplemented`
   exception will be raised.
 
 ``nav_title``
@@ -528,7 +543,7 @@ attributes on your panel:
 
 ``url``
   Method. This is not used at the moment, but it has to be provided because the
-  base class will raise ``NotImplemented`` if it's not there.
+  base class will raise `NotImplemented` if it's not there.
 
 ``title``
   Method.  Returns a string.  Called to get the title to be used on
@@ -541,36 +556,50 @@ attributes on your panel:
   opportunity to initialize `self.data` with values that can be derived from the
   request object itself.
 
+``render_content``
+  Method.  Return a string containing the HTML to be rendered for the panel.  By
+  default this will render the template defined by the`.template` attribute with
+  a rendering context defined by `.data` combined with the `dict` returned from
+  `.render_vars`.  The `request` here is the active request in the toolbar. Not
+  the original request that this panel represents.
+
 ``render_vars``
-  Method.  This method is used by `render_content` as an opportunity to enhance
-  the rendering context (the dict of globals in your template) with anything you
-  may need that wasn't already added into the panel's.`data`.  The default
-  SQLA panel is a good example of this functionality.
+  Method.  Invoked by the default implementation of `render_content` as an
+  opportunity to enhance the rendering context.  This method is expected to
+  return a `dict` of values to use when rendering the panel's HTML content.
+  This value is usually injected into templates as the rendering context.  This
+  is a useful hook for adding any data you need in the templates, which was not
+  already added into the panel's.`data`.  The default SQLA panel is a good
+  example of this functionality in use.  The `request` here is the active
+  request in the toolbar. Not the original request that this panel represents.
 
 ``wrap_handler``
   Method.  Arguments: `self`, `handler`. This method is a hook available to the
-  panel in order to track the lifecycle of a request.  This can be used to update
-  the `data` dict with values that are wanted for rendering.  The main toolbar
-  routine works by wrapping each request in a tween.  Before generating a
-  response, the main toolbar routine will call the`wrap_handler` method of each
-  panel.  This functionality is used for decorating the handlers with timing and
-  performance metrics by the "performance" panel.
+  panel in order to track the lifecycle of the original request.  A handler
+  accepts a request and returns a response; it is essentially the same as a
+  Pyramid `tween`.  This can be used to update the `data` dict with values that
+  are wanted for rendering.  The main toolbar routine works by wrapping each
+  request in a handler (tween).  Before generating a response, the main toolbar
+  routine will call the`wrap_handler` method of each panel.  This functionality
+  is often used for decorating the handlers with timing or performance metrics.
 
 ``process_beforerender``
   Method.  Arguments: `self`, `event`.  This method is a hook available to the
-  panel in order to track the lifecycle of a request.  This can be used to
-  update the `data` dict with  values that are wanted for rendering. The
+  panel in order to track the lifecycle of the original request.  The
   debugtoolbar uses a subscriber event (`pyramid.events.BeforeRender`) to call
-  the `process_beforerender` method of each enabled panel.
+  the `process_beforerender` method of each enabled panel.  This can be used to
+  update the `data` dict with  values that are wanted for rendering or track
+  properties of the rendering events.
 
 ``process_response``
   Method.  Arguments: `self`, `response`. This method is a hook available to the
-  panel in order to track the lifecycle of a request.  This can be used to
-  update the `data` dict with values that are wanted for rendering.  The main
+  panel in order to track the lifecycle of the original request. The main
   toolbar routine works by wrapping each request in a tween.  The
   `process_response` method of each panel is called within the tween, after the
   original request has generated a response.
 
+When creating a new panel, some of these methods *must* be subclassed, while
+others can rely on the base class.
 
 Once you define the panel it has to be added to the ``debugtoolbar.panels``
 setting of the configuration. A good way to do this is to use an ``includeme``
