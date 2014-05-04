@@ -18,23 +18,23 @@
           % endif
           % for panel in panels:
           <% _css_class = 'disabled' if not panel.has_content else '' %>
-          <li class="${_css_class}" id="${panel.dom_id()}">
+          <li class="${_css_class}" id="${panel.dom_id}">
             % if panel.has_content:
-            <a href="${panel.url() or '#'}" 
-              title="${panel.title()}" 
-              id="${panel.dom_id()}">
+            <a href="${panel.url or '#'}" 
+              title="${panel.title}" 
+              id="${panel.dom_id}">
               % else:
-              <a href="${panel.url() or '#'}"
-                title="${panel.title()}"
-                id="${panel.dom_id()}"
+              <a href="${panel.url or '#'}"
+                title="${panel.title}"
+                id="${panel.dom_id}"
                 class="contentless">
                 % endif
 
-                % if panel.nav_subtitle() and panel.has_content:
-                <span class="badge pull-right">${panel.nav_subtitle()}</span>
+                % if panel.nav_subtitle and panel.has_content:
+                <span class="badge pull-right">${panel.nav_subtitle}</span>
                 % endif
 
-                ${panel.nav_title()}
+                ${panel.nav_title}
 
                 </a>
               </li>
@@ -46,9 +46,9 @@
         <div class="pDebugWindow" class="panelContent">
           % for panel in panels:
           % if panel.has_content:
-          <div id="${panel.dom_id()}-content" class="panelContent" style="display: none;">
+          <div id="${panel.dom_id}-content" class="panelContent" style="display: none;">
             <div class="pDebugPanelTitle">
-              <h3>${panel.title()}</h3>
+              <h3>${panel.title}</h3>
             </div>
             <div class="pDebugPanelContent">
               <div class="scroll">

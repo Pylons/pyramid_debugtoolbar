@@ -47,12 +47,12 @@ class DebugToolbar(object):
         # XXX
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
-            if panel_inst.dom_id() in activated and panel_inst.has_content:
+            if panel_inst.dom_id in activated and panel_inst.has_content:
                 panel_inst.is_active = True
             self.panels.append(panel_inst)
         for panel_class in global_panel_classes:
             panel_inst = panel_class(request)
-            if panel_inst.dom_id() in activated and panel_inst.has_content:
+            if panel_inst.dom_id in activated and panel_inst.has_content:
                 panel_inst.is_active = True
             self.global_panels.append(panel_inst)
 

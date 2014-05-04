@@ -12,7 +12,7 @@
 		<h4>
 		${panel.name}
 		</h4>
-		<span>Enable: </span>	<span id="${panel.dom_id()}-switch" class="switch ${'active' if panel.is_active else 'inactive'}"
+		<span>Enable: </span>	<span id="${panel.dom_id}-switch" class="switch ${'active' if panel.is_active else 'inactive'}"
 		title="Enable or disable the panel"> </span>
 	% endif
 % endfor

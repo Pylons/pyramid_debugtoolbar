@@ -376,6 +376,9 @@ class DummyPanel(object):
     is_active = False
     has_content = False
     user_activate = False
+    dom_id = 'id'
+    nav_title = 'title'
+    nav_subtitle = 'subtitle'
 
     def __init__(self, request):
         self.request = request
@@ -386,15 +389,6 @@ class DummyPanel(object):
     def wrap_handler(self, handler):
         handler.wrapped = True
         return handler
-
-    def dom_id(self):
-        return 'id'
-
-    def nav_title(self):
-        return 'title'
-
-    def nav_subtitle(self):
-        return 'subtitle'
 
     def process_beforerender(self, event):
         event['processed'] = True

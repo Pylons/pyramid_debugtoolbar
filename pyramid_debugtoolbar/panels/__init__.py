@@ -14,7 +14,7 @@ class DebugPanel(object):
     as a tab on the interface. The lifecycle hooks are available in the
     following order:
 
-    - ``__init__``
+    - :meth:`.__init__`
     - :meth:`.wrap_handler`
     - :meth:`.process_beforerender`
     - :meth:`.process_response`
@@ -27,9 +27,6 @@ class DebugPanel(object):
     :meth:`.render_content`. Any data stored within :attr:`.data` is
     injected into the template prior to rendering and is thus a common
     location to store the contents of previous events.
-
-    :param request: The instance of :class:`pyramid.request.Request` that
-                    this object is wrapping.
     """
     #: A unique identifier for the name of the panel. This **must** be
     #: defined by a subclass.
@@ -56,6 +53,20 @@ class DebugPanel(object):
     #: ``'mylib:templates/panel.dbtmako'``.
     template = NotImplemented
 
+    #: Title showing in toolbar. Must be overridden.
+    nav_title = NotImplemented
+
+    #: Subtitle showing until title in toolbar.
+    nav_subtitle = ''
+
+    #: Title showing in panel. Must be overridden.
+    title = NotImplemented
+
+    #: The URL invoked when the panel's tab is cliked. May be overridden to
+    #: define an arbitrary URL for the panel or do some other custom action
+    #: when the user clicks on the panel's tab in the toolbar.
+    url = ''
+
     @reify
     def data(self):
         """A dictionary of data, updated during the request lifecycle, and
@@ -64,6 +75,11 @@ class DebugPanel(object):
 
     # Panel methods
     def __init__(self, request):
+        """Configure the panel for a request.
+
+        :param request: The instance of :class:`pyramid.request.Request` that
+                        this object is wrapping.
+        """
         pass
 
     def render_content(self, request):
@@ -81,28 +97,11 @@ class DebugPanel(object):
         data.update(self.render_vars(request))
         return render(self.template, data, request=request)
 
+    @property
     def dom_id(self):
         """The ``id`` tag of the panel's tab. May be used by CSS and
         Javascript to implement custom styles and actions."""
         return 'pDebug%sPanel' % (self.name.replace(' ', ''))
-
-    def nav_title(self):
-        """Title showing in toolbar. Must be overridden."""
-        raise NotImplementedError
-
-    def nav_subtitle(self):
-        """Subtitle showing until title in toolbar"""
-        return ''
-
-    def title(self):
-        """Title showing in panel. Must be overridden."""
-        raise NotImplementedError
-
-    def url(self):
-        """May be overridden by subclasses to define an external URL for
-        the panel or do some other custom action when the user clicks
-        on the panel's tab in the toolbar."""
-        return ''
 
     def pluralize(self, singular, plural, n, domain=None, mapping=None):
         request = get_current_request()
