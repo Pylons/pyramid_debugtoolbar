@@ -423,11 +423,11 @@ Understanding how debugtoolbar works
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Before writing the panel, you should understand how pyramid_debugtoolbar
-interacts with your application in it's two phase process.
+interacts with your application in its two phase process.
 
 pyramid_debugtoolbar wraps every request within a Pyramid "tween" via
-`toolbar_tween_factory`.  This tween allows the toolbar to record data during
-the original request (Phase 1) and 'injects' a link to the toolbar interface
+``toolbar_tween_factory``.  This tween allows the toolbar to record data during
+the original request (Phase 1) and injects a link to the toolbar interface
 into the rendered Pyramid web pages.  The data is displayed during a secondary
 request to the toolbar (Phase 2).
 
@@ -437,34 +437,34 @@ When pyramid_debugtoolbar is enabled, it can start tracking data on the original
 request.  This involves calling the following panel methods in-band with the
 original request:
 
-    * __init__
-    * wrap_handler
-    * process_beforerender
-    * process_response
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.__init__`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.wrap_handler`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.process_beforerender`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.process_response`
 
-These methods are used to store and manipulate a `self.data` variable on each
-panel during this original request.  Typically `self.data` is first generated on
-the `__init__` method.  It is important to note that the `request` and event
-variables available to these methods refer to the original request.
+These methods are used to store and manipulate a ``self.data`` variable on each
+panel during this original request.  Typically ``self.data`` is first generated
+on the ``__init__`` method.  It is important to note that the ``request`` and
+event variables available to these methods refer to the original request.
 
 Phase 2 - The debugtoolbar request
 
 When the "/_debug_toolbar/{request_id}" is accessed, the history of the original
-request_id and it's associated panels are accessed.  Variables such as `data`
+request_id and its associated panels are accessed.  Variables such as ``data``
 that were generated during the original request are made available for further
-processing.  The `self.data` variable is injected into the template for display.
+processing.  The ``data`` variable is injected into the template for display.
 
 The following panel methods are called or accessed on the debugtoolbar request:
 
-    * name
-    * template
-    * user_activate
-    * is_active
-    * has_content
-    * render_content
-    * render_vars
-    * title
-    * nav_title
+    * :attr:`pyramid_debugtoolbar.panels.DebugPanel.name`
+    * :attr:`pyramid_debugtoolbar.panels.DebugPanel.template`
+    * :attr:`pyramid_debugtoolbar.panels.DebugPanel.user_activate`
+    * :attr:`pyramid_debugtoolbar.panels.DebugPanel.is_active`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.has_content`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.render_content`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.render_vars`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.title`
+    * :meth:`pyramid_debugtoolbar.panels.DebugPanel.nav_title`
 
 
 Writing the panel
@@ -472,7 +472,7 @@ Writing the panel
 
 The panel can be created as part of your application or as a standalone
 package. The easiest way to write a panel is to subclass from the
-``pyramid_debugtoolbar.panels.DebugPanel`` class. Here is the code for a
+:class:`pyramid_debugtoolbar.panels.DebugPanel` class. Here is the code for a
 sample panel:
 
 .. code-block:: python
@@ -490,16 +490,13 @@ sample panel:
        template = 'myapp.lib.debugtoolbar_custom.panels:templates/sample.dbtmako'
 
        def __init__(self, request):
-           self.data = data = { 'request' : request }
+           self.data = { 'request_path' : request.path_info }
 
        def nav_title(self):
            return _('Sample')
 
        def title(self):
            return _('Sample')
-
-       def url(self):
-           return ''
 
    def includeme(config):
        config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
@@ -509,93 +506,93 @@ attributes on your panel:
 
 ``name``
   Attribute.  String value.  A unique identifier for the name of the panel. This
-  **must** be defined by a subclass
+  **must** be defined by a subclass.
 
 ``has_content``
-  Attribute.  Boolean value.  Default is `True`  This attribute determines if
-  the tab is enabled or not.  If `False` then the panel's tab will be disabled
-  and `.render_content` will not be invoked. Most subclasses will want to set
-  this to `True` by default.  An example of this panel's dynamica utility is
+  Attribute.  Boolean value.  Default is ``True``  This attribute determines if
+  the tab is enabled or not.  If ``False`` then the panel's tab will be disabled
+  and ``.render_content`` will not be invoked. Most subclasses will want to set
+  this to ``True`` by default.  An example of this panel's dynamic utility is
   the SQLA panel; if no SqlAlchemy statements were executed in the request, this
-  value is set to`False` and the tab is simply disabled.
+  value is set to ``False`` and the tab is simply disabled.
 
 ``user_activate``
   Attribute.  Boolean value.  If the client is able to activate/de-activate the
-  panel then this should be `True`
+  panel then this should be ``True``.
 
 ``is_active``
   Attribute.  Boolean value.  This property will be set by the toolbar,
   indicating the user's  decision to activate or deactivate the panel. If
-  `user_activate` is `False` then `is_active` will always be set to
-  `True`.
+  ``user_activate`` is ``False`` then ``is_active`` will always be set to
+  ``True``.
 
 ``template``
   Attribute.  String value.  Must be overridden.  A mako asset specification.
-  The default implementation of `render_content` in the base class
-  (`DebugToolbar`) will attempt to render `self.template`.  If `template` is not
-  defined, and `render_content` is not overridden, a `NotImplemented`
+  The default implementation of ``render_content`` in the base class
+  (``DebugPanel``) will attempt to render ``template``.  If ``template`` is not
+  defined, and ``render_content`` is not overridden, a ``NotImplemented``
   exception will be raised.
 
 ``nav_title``
   Method.  Returns a string.  Called to get the title to be used on
-  the toolbar's navigation bar for this panel. This is enabled as a method for
-  use with `gettext` or if the title requires a computed value.
+  the toolbar's navigation bar for this panel.
 
 ``url``
-  Method. This is not used at the moment, but it has to be provided because the
-  base class will raise `NotImplemented` if it's not there.
+  Method. Returns a string.  Can be overridden to point the panel at any
+  arbitrary URL when the tab is clicked.
 
 ``title``
   Method.  Returns a string.  Called to get the title to be used on
-  the panel's display page. This is enabled as a method for use with `gettext`
-  or if the title requires a computed value.
+  the panel's display page.
 
 ``__init__``
-  Method.  This method typically defines `self.data`, which is used when
+  Method.  This method should defines a ``data`` attribute, which is used when
   rendering the template.  This is the first (and often most appropriate)
-  opportunity to initialize `self.data` with values that can be derived from the
+  opportunity to initialize ``data`` with values that can be derived from the
   request object itself.
 
 ``render_content``
   Method.  Return a string containing the HTML to be rendered for the panel.  By
-  default this will render the template defined by the`.template` attribute with
-  a rendering context defined by `.data` combined with the `dict` returned from
-  `.render_vars`.  The `request` here is the active request in the toolbar. Not
-  the original request that this panel represents.
+  default this will render the template defined by the ``template`` attribute
+  with a rendering context defined by the ``data`` attribute combined with the
+  ``dict`` returned from ``render_vars``.  The ``request`` here is the active
+  request in the toolbar. Not the original request that this panel represents.
 
 ``render_vars``
-  Method.  Invoked by the default implementation of `render_content` as an
+  Method.  Invoked by the default implementation of ``render_content`` as an
   opportunity to enhance the rendering context.  This method is expected to
-  return a `dict` of values to use when rendering the panel's HTML content.
+  return a ``dict`` of values to use when rendering the panel's HTML content.
   This value is usually injected into templates as the rendering context.  This
   is a useful hook for adding any data you need in the templates, which was not
   already added into the panel's.`data`.  The default SQLA panel is a good
-  example of this functionality in use.  The `request` here is the active
+  example of this functionality in use.  The ``request`` here is the active
   request in the toolbar. Not the original request that this panel represents.
 
 ``wrap_handler``
-  Method.  Arguments: `self`, `handler`. This method is a hook available to the
+  Method.  This method is a hook available to the
   panel in order to track the lifecycle of the original request.  A handler
   accepts a request and returns a response; it is essentially the same as a
-  Pyramid `tween`.  This can be used to update the `data` dict with values that
-  are wanted for rendering.  The main toolbar routine works by wrapping each
-  request in a handler (tween).  Before generating a response, the main toolbar
-  routine will call the`wrap_handler` method of each panel.  This functionality
-  is often used for decorating the handlers with timing or performance metrics.
+  Pyramid ``tween``.  This can be used to update the ``data`` dict with values
+  that are wanted for rendering.  The main toolbar routine works by wrapping
+  each request in a handler (tween).  Before generating a response, the main
+  toolbar routine will call the`wrap_handler` method of each panel.  This
+  functionality is often used for decorating the handlers with timing or
+  performance metrics.
 
 ``process_beforerender``
-  Method.  Arguments: `self`, `event`.  This method is a hook available to the
-  panel in order to track the lifecycle of the original request.  The
-  debugtoolbar uses a subscriber event (`pyramid.events.BeforeRender`) to call
-  the `process_beforerender` method of each enabled panel.  This can be used to
-  update the `data` dict with  values that are wanted for rendering or track
-  properties of the rendering events.
+  Method.  Arguments: ``self``, ``event``.  This method is a hook available to
+  the panel in order to track the lifecycle of the original request.  The
+  debugtoolbar uses a subscriber event (:class:`pyramid.events.BeforeRender`) to
+  call the ``process_beforerender`` method of each enabled panel.  This can be
+  used to update the ``data`` dict with  values that are wanted for rendering or
+  track properties of the rendering events.
 
 ``process_response``
-  Method.  Arguments: `self`, `response`. This method is a hook available to the
-  panel in order to track the lifecycle of the original request. The main
+  Method.  Arguments: ``self``, ``response``. This method is a hook available
+  to the panel in order to track the lifecycle of the original request. The main
   toolbar routine works by wrapping each request in a tween.  The
-  `process_response` method of each panel is called within the tween, after the
+  ``process_response`` method of each panel is called within the tween, after
+  the
   original request has generated a response.
 
 When creating a new panel, some of these methods *must* be subclassed, while
@@ -605,8 +602,8 @@ Once you define the panel it has to be added to the ``debugtoolbar.panels``
 setting of the configuration. A good way to do this is to use an ``includeme``
 method in the panel's ``__init__.py``.
 
-The source code for the standard debugpanel `request_vars.py` is a good starting
-point for inspiration.
+The source code for the standard debugpanel ``request_vars.py`` is a good
+starting point for inspiration.
 
 Configuring an application to use the panel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
