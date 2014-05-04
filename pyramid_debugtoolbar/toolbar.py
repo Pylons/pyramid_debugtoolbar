@@ -115,21 +115,24 @@ def toolbar_tween_factory(handler, registry, _logger=None):
         _logger = logger
     settings = registry.settings
 
-    if not get_setting(settings, 'enabled'):
+    def sget(opt, default=None):
+        return get_setting(settings, opt, default)
+
+    if not sget('enabled'):
         return handler
 
     request_history = ToolbarStorage(100)
     registry.request_history = request_history
 
     redirect_codes = (301, 302, 303, 304)
-    panel_classes = get_setting(settings, 'panels', [])
-    global_panel_classes = get_setting(settings, 'global_panels', [])
-    intercept_exc = get_setting(settings, 'intercept_exc')
-    intercept_redirects = get_setting(settings, 'intercept_redirects')
-    show_on_exc_only = get_setting(settings, 'show_on_exc_only')
-    hosts = get_setting(settings, 'hosts')
+    panel_classes = sget('panels', [])
+    global_panel_classes = sget('global_panels', [])
+    intercept_exc = sget('intercept_exc')
+    intercept_redirects = sget('intercept_redirects')
+    show_on_exc_only = sget('show_on_exc_only')
+    hosts = sget('hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
-    exclude_prefixes = get_setting(settings, 'exclude_prefixes', [])
+    exclude_prefixes = sget('exclude_prefixes', [])
     registry.exc_history = exc_history = None
     registry.pdtb_token = hexlify(os.urandom(10))
 
