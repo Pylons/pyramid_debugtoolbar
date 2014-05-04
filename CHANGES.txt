@@ -12,6 +12,10 @@ Unreleased
 - Stabilize and document the :class:`pyramid_debugtoolbar.panels.DebugPanel`
   API to allow developers to create their own panels.
 
+- Add new ``debugtoolbar.extra_panels`` and
+  ``debugtoolbar.extra_global_panels`` configuration settings to make it
+  simpler to support custom panels without overwriting the default panels.
+
 2.0.2 (2014-02-13)
 ------------------
 

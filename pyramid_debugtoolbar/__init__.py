@@ -42,7 +42,9 @@ default_settings = [
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
     ('panels', as_globals_list, default_panel_names),
+    ('extra_panels', as_globals_list, ()),
     ('global_panels', as_globals_list, default_global_panel_names),
+    ('extra_global_panels', as_globals_list, ()),
     ('hosts', as_list, default_hosts),
     ('exclude_prefixes', as_cr_separated_list, []),
 ]

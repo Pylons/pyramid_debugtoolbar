@@ -166,6 +166,15 @@ file.
         pyramid_debugtoolbar.panels.tweens.TweensDebugPanel
         pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel
 
+``debugtoolbar.extra_panels``
+
+  A list of dotted Python global names to panel classes. This list of panels
+  is appended to the panels defined in ``debugtoolbar.panels``. If you'd like
+  to maintain the default panels and add on some extra ones, this should help::
+
+    debugtoolbar.extra_panels =
+        myapp.debugtoolbar.panels.MyCustomPanel
+
 ``debugtoolbar.button_style``
 
   Any inline css styles you want to apply to the toolbar button. This

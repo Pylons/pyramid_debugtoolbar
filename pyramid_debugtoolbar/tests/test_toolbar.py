@@ -48,8 +48,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def test_inject_html(self):
         from pyramid_debugtoolbar.utils import STATIC_PATH
-        self.config.add_static_view('_debugtoolbar/static',
-                                    STATIC_PATH)
+        self.config.add_static_view('_debugtoolbar/static', STATIC_PATH)
         self.config.add_route('debugtoolbar', '/_debugtoolbar/*subpath')
         response = Response('<body></body>')
         response.content_type = 'text/html'
@@ -63,8 +62,7 @@ class DebugToolbarTests(unittest.TestCase):
 
     def test_passing_of_button_style(self):
         from pyramid_debugtoolbar.utils import STATIC_PATH
-        self.config.add_static_view('_debugtoolbar/static',
-                                    STATIC_PATH)
+        self.config.add_static_view('_debugtoolbar/static', STATIC_PATH)
         self.config.add_route('debugtoolbar', '/_debugtoolbar/*subpath')
         self.config.registry.settings['debugtoolbar.button_style'] = \
             'top:120px;zoom:50%'
@@ -140,8 +138,7 @@ class Test_toolbar_handler(unittest.TestCase):
         settings['debugtoolbar.exclude_prefixes'] = ['/excluded']
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
-        self.config.add_static_view('_debugtoolbar/static',
-                                    STATIC_PATH)
+        self.config.add_static_view('_debugtoolbar/static', STATIC_PATH)
         self.config.include('pyramid_mako')
         self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 

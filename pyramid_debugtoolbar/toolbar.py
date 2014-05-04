@@ -126,7 +126,9 @@ def toolbar_tween_factory(handler, registry, _logger=None):
 
     redirect_codes = (301, 302, 303, 304)
     panel_classes = sget('panels', [])
+    panel_classes.extend(sget('extra_panels', []))
     global_panel_classes = sget('global_panels', [])
+    global_panel_classes.extend(sget('extra_global_panels', []))
     intercept_exc = sget('intercept_exc')
     intercept_redirects = sget('intercept_redirects')
     show_on_exc_only = sget('show_on_exc_only')
