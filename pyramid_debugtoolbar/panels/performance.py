@@ -136,15 +136,19 @@ class PerformanceDebugPanel(DebugPanel):
         handler = self._wrap_timer_handler(handler)
         return handler
 
+    @property
     def title(self):
         return _('Performance')
 
+    @property
     def nav_title(self):
         return _('Performance')
 
+    @property
     def nav_subtitle(self):
         return '%0.2fms' % (self.total_time)
 
+    @property
     def url(self):
         return ''
 

@@ -35,11 +35,14 @@ class RequestVarsDebugPanel(DebugPanel):
                 'session': dictrepr(request.session),
             })
 
+    @property
     def nav_title(self):
         return _('Request Vars')
 
+    @property
     def title(self):
         return _('Request Vars')
 
+    @property
     def url(self):
         return ''

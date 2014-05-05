@@ -23,12 +23,15 @@ class TweensDebugPanel(DebugPanel):
         else:
             self.populate(request)
 
+    @property
     def nav_title(self):
         return _('Tweens')
 
+    @property
     def title(self):
         return _('Tweens')
 
+    @property
     def url(self):
         return ''
 

@@ -33,16 +33,20 @@ class RenderingsDebugPanel(DebugPanel):
             dict(name=name, system=dictrepr(event), val=text_(val, 'utf-8'))
             )
 
+    @property
     def nav_title(self):
         return _('Renderers')
 
+    @property
     def nav_subtitle(self):
         num = len(self.renderings)
         return '%d' % (num)
 
+    @property
     def title(self):
         return _('Renderers')
 
+    @property
     def url(self):
         return ''
 

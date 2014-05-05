@@ -26,12 +26,15 @@ class RoutesDebugPanel(DebugPanel):
         else:
             self.populate(request)
 
+    @property
     def nav_title(self):
         return _('Routes')
 
+    @property
     def title(self):
         return _('Routes')
 
+    @property
     def url(self):
         return ''
 

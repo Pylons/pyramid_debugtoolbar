@@ -17,12 +17,15 @@ class HeaderDebugPanel(DebugPanel):
             (text_(k), text_(v)) for k, v in sorted(request.headers.items())
         ]
 
+    @property
     def nav_title(self):
         return _('HTTP Headers')
 
+    @property
     def title(self):
         return _('HTTP Headers')
 
+    @property
     def url(self):
         return ''
 
