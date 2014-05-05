@@ -26,18 +26,11 @@ class VersionDebugPanel(DebugPanel):
     name = 'Version'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/versions.dbtmako'
+    title = _('Versions')
+    nav_title = title
 
     def __init__(self, request):
         self.data = {'platform': self.get_platform(), 'packages': packages}
-
-    def nav_title(self):
-        return _('Versions')
-
-    def url(self):
-        return ''
-
-    def title(self):
-        return _('Versions')
 
     def _get_platform_name(self):
         return platform.platform()

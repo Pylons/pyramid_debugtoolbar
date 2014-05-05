@@ -12,22 +12,12 @@ _ = lambda x: x
 class TracebackPanel(DebugPanel):
     name = 'Traceback'
     template = 'pyramid_debugtoolbar.panels:templates/traceback.dbtmako'
+    title = _('Traceback')
+    nav_title = title
 
     def __init__(self, request):
         self.request = request
         self.exc_history = request.exc_history
-
-    def nav_title(self):
-        return _("Traceback")
-
-    def nav_subtitle(self):
-        return ""
-
-    def title(self):
-        return _("Traceback")
-
-    def url(self):
-        return ""
 
     @property
     def has_content(self):

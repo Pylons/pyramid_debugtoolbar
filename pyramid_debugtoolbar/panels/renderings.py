@@ -12,6 +12,8 @@ class RenderingsDebugPanel(DebugPanel):
     name = 'Template'
     renderings = ()
     template = 'pyramid_debugtoolbar.panels:templates/renderings.dbtmako'
+    title = _('Renderers')
+    nav_title = title
 
     @property
     def has_content(self):
@@ -33,18 +35,10 @@ class RenderingsDebugPanel(DebugPanel):
             dict(name=name, system=dictrepr(event), val=text_(val, 'utf-8'))
             )
 
-    def nav_title(self):
-        return _('Renderers')
-
+    @property
     def nav_subtitle(self):
         num = len(self.renderings)
         return '%d' % (num)
-
-    def title(self):
-        return _('Renderers')
-
-    def url(self):
-        return ''
 
     def process_response(self, response):
         self.data = {'renderings': self.renderings}

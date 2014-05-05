@@ -22,6 +22,8 @@ class IntrospectionDebugPanel(DebugPanel):
     has_content = has_content
     is_active = not has_content
     template = 'pyramid_debugtoolbar.panels:templates/introspection.dbtmako'
+    title = _('Introspection')
+    nav_title = title
 
     def __init__(self, request):
         introspector = request.registry.introspector
@@ -31,15 +33,6 @@ class IntrospectionDebugPanel(DebugPanel):
             'debug_repr': debug_repr,
             'object_description':object_description,
             'nl2br': nl2br}
-
-    def nav_title(self):
-        return _('Introspection')
-
-    def title(self):
-        return _('Introspection')
-
-    def url(self):
-        return ''
 
     def render_vars(self, request):
         return {'static_path': request.static_url(STATIC_PATH)}

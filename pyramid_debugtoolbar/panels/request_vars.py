@@ -14,6 +14,8 @@ class RequestVarsDebugPanel(DebugPanel):
     name = 'RequestVars'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/request_vars.dbtmako'
+    title = _('Request Vars')
+    nav_title = title
 
     def __init__(self, request):
         self.data = data = {}
@@ -34,12 +36,3 @@ class RequestVarsDebugPanel(DebugPanel):
             data.update({
                 'session': dictrepr(request.session),
             })
-
-    def nav_title(self):
-        return _('Request Vars')
-
-    def title(self):
-        return _('Request Vars')
-
-    def url(self):
-        return ''

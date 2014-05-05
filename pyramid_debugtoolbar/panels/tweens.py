@@ -13,6 +13,8 @@ class TweensDebugPanel(DebugPanel):
     name = 'Tweens'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/tweens.dbtmako'
+    title = _('Tweens')
+    nav_title = title
 
     def __init__(self, request):
         self.request = request
@@ -22,15 +24,6 @@ class TweensDebugPanel(DebugPanel):
             self.is_active = False
         else:
             self.populate(request)
-
-    def nav_title(self):
-        return _('Tweens')
-
-    def title(self):
-        return _('Tweens')
-
-    def url(self):
-        return ''
 
     def populate(self, request):
         definition = 'Explicit'

@@ -13,6 +13,8 @@ class SettingsDebugPanel(DebugPanel):
     name = 'Settings'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/settings.dbtmako'
+    title = _('Settings')
+    nav_title = title
 
     filter_old_settings = [
         'debug_authorization',
@@ -38,12 +40,3 @@ class SettingsDebugPanel(DebugPanel):
         else:
             reprs = [(k, repr(v)) for k, v in settings.items()]
         self.data = {'settings': sorted(reprs, key=itemgetter(0))}
-
-    def nav_title(self):
-        return _('Settings')
-
-    def title(self):
-        return _('Settings')
-
-    def url(self):
-        return ''

@@ -41,6 +41,8 @@ class PerformanceDebugPanel(DebugPanel):
     has_resource = bool(resource)
     has_content = bool(pstats and profile)
     template = 'pyramid_debugtoolbar.panels:templates/performance.dbtmako'
+    title = _('Performance')
+    nav_title = title
 
     def __init__(self, request):
         if profile is not None:
@@ -136,17 +138,9 @@ class PerformanceDebugPanel(DebugPanel):
         handler = self._wrap_timer_handler(handler)
         return handler
 
-    def title(self):
-        return _('Performance')
-
-    def nav_title(self):
-        return _('Performance')
-
+    @property
     def nav_subtitle(self):
         return '%0.2fms' % (self.total_time)
-
-    def url(self):
-        return ''
 
     def _elapsed_ru(self, name):
         return getattr(self._end_rusage, name) - getattr(self._start_rusage,

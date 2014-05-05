@@ -65,6 +65,8 @@ class SQLADebugPanel(DebugPanel):
     """
     name = 'SQLAlchemy'
     template = 'pyramid_debugtoolbar.panels:templates/sqlalchemy.dbtmako'
+    title = _('SQLAlchemy Queries')
+    nav_title = _('SQLAlchemy')
 
     def __init__(self, request):
         self.queries = request.pdtb_sqla_queries = []
@@ -81,18 +83,10 @@ class SQLADebugPanel(DebugPanel):
         else:
             return False
 
-    def nav_title(self):
-        return _('SQLAlchemy')
-
+    @property
     def nav_subtitle(self):
         if self.queries:
             return "%d" % (len(self.queries))
-
-    def title(self):
-        return _('SQLAlchemy queries')
-
-    def url(self):
-        return ''
 
     def process_response(self, response):
         data = []

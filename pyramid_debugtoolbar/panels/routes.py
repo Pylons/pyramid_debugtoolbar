@@ -17,6 +17,8 @@ class RoutesDebugPanel(DebugPanel):
     name = 'Routes'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/routes.dbtmako'
+    title = _('Routes')
+    nav_title = title
 
     def __init__(self, request):
         self.mapper = request.registry.queryUtility(IRoutesMapper)
@@ -25,15 +27,6 @@ class RoutesDebugPanel(DebugPanel):
             self.is_active = False
         else:
             self.populate(request)
-
-    def nav_title(self):
-        return _('Routes')
-
-    def title(self):
-        return _('Routes')
-
-    def url(self):
-        return ''
 
     def populate(self, request):
         info = []
