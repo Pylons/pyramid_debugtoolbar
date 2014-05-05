@@ -30,12 +30,15 @@ class VersionDebugPanel(DebugPanel):
     def __init__(self, request):
         self.data = {'platform': self.get_platform(), 'packages': packages}
 
+    @property
     def nav_title(self):
         return _('Versions')
 
+    @property
     def url(self):
         return ''
 
+    @property
     def title(self):
         return _('Versions')
 

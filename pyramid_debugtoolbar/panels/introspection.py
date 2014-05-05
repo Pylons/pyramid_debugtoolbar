@@ -32,12 +32,15 @@ class IntrospectionDebugPanel(DebugPanel):
             'object_description':object_description,
             'nl2br': nl2br}
 
+    @property
     def nav_title(self):
         return _('Introspection')
 
+    @property
     def title(self):
         return _('Introspection')
 
+    @property
     def url(self):
         return ''
 

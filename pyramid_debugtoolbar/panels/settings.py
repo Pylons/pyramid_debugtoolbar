@@ -39,11 +39,14 @@ class SettingsDebugPanel(DebugPanel):
             reprs = [(k, repr(v)) for k, v in settings.items()]
         self.data = {'settings': sorted(reprs, key=itemgetter(0))}
 
+    @property
     def nav_title(self):
         return _('Settings')
 
+    @property
     def title(self):
         return _('Settings')
 
+    @property
     def url(self):
         return ''

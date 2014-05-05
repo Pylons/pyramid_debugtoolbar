@@ -81,16 +81,20 @@ class SQLADebugPanel(DebugPanel):
         else:
             return False
 
+    @property
     def nav_title(self):
         return _('SQLAlchemy')
 
+    @property
     def nav_subtitle(self):
         if self.queries:
             return "%d" % (len(self.queries))
 
+    @property
     def title(self):
         return _('SQLAlchemy queries')
 
+    @property
     def url(self):
         return ''
 
