@@ -1,5 +1,5 @@
-Unreleased
-----------
+2.1 (2014-05-22)
+----------------
 
 - Add new "debugtoolbar." configuration settings that allow enabling or
   disabling various Pyramid knobs in a users .ini file. This for instance
