@@ -19,16 +19,26 @@
 
 import sys, os
 
-parent = os.path.dirname(os.path.dirname(__file__))
-sys.path.append(os.path.abspath(parent))
-wd = os.getcwd()
-os.chdir(parent)
-os.system('%s setup.py test -q' % sys.executable)
-os.chdir(wd)
+import pkg_resources
 
-for item in os.listdir(parent):
-    if item.endswith('.egg'):
-        sys.path.append(os.path.join(parent, item))
+# Add and use Pylons theme
+if 'sphinx-build' in ' '.join(sys.argv):  # protect against dumb importers
+    from subprocess import call, Popen, PIPE
+    cwd = os.getcwd()
+    p = Popen('which git', shell=True, stdout=PIPE)
+    here = os.path.abspath(os.path.dirname(__file__))
+    parent = os.path.abspath(os.path.dirname(here))
+    _themes = os.path.join(here, '_themes')
+    git = p.stdout.read().strip()
+    try:
+        os.chdir(parent)
+        if not os.listdir(_themes):
+            call([git, 'submodule', '--init'])
+        else:
+            call([git, 'submodule', 'update'])
+        sys.path.append(_themes)
+    finally:
+        os.chdir(cwd)
 
 # General configuration
 # ---------------------
@@ -62,7 +72,8 @@ copyright = '2012, Agendaless Consulting <chrism@plope.com>'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '2.0.3dev'
+version = pkg_resources.get_distribution('pyramid_debugtoolbar').version
+
 # The full version, including alpha/beta/rc tags.
 release = version
 
