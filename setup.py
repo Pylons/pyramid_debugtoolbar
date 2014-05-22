@@ -60,7 +60,7 @@ setup(name='pyramid_debugtoolbar',
       author=("Chris McDonough, Michael Merickel, Casey Duncan, "
               "Blaise Laflamme"),
       author_email="pylons-devel@googlegroups.com",
-      url="http://docs.pylonsproject.org",
+      url="http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
       license="BSD",
       packages=find_packages(),
       include_package_data=True,
