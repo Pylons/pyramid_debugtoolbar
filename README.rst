@@ -14,8 +14,8 @@ version of the Werkzeug debugger code by Armin Ronacher and team.
 Documentation
 -------------
 The documentation of the current stable release of ``pyramid_debugtoolbar``
-is available at `http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/
-<http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/>`_.
+is available at
+http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/.
 
 Demonstration
 -------------

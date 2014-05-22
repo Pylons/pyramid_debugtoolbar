@@ -9,7 +9,7 @@
   is using a default permission.
   See https://github.com/Pylons/pyramid_debugtoolbar/issues/147
 
-- Stabilize and document the :class:`pyramid_debugtoolbar.panels.DebugPanel`
+- Stabilize and document the ``pyramid_debugtoolbar.panels.DebugPanel``
   API to allow developers to create their own panels.
 
 - Add new ``debugtoolbar.extra_panels`` and
