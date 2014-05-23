@@ -229,17 +229,17 @@ def request_view(request):
     request_id = request.matchdict.get('request_id', last_request_id)
     toolbar = history.get(request_id, None)
 
-    if not toolbar:
-        raise NotFound
-
     static_path = request.static_url(STATIC_PATH)
     root_path = request.route_url(ROOT_ROUTE_NAME)
     button_style = get_setting(request.registry.settings,
             'button_style', '')
     hist_toolbars = history.last(10)
-    return {'panels': toolbar.panels, 'static_path': static_path,
-            'root_path': root_path, 'button_style': button_style,
-            'history': hist_toolbars, 'global_panels': toolbar.global_panels,
+    return {'panels': toolbar.panels if toolbar else [],
+            'static_path': static_path,
+            'root_path': root_path,
+            'button_style': button_style,
+            'history': hist_toolbars,
+            'global_panels': toolbar.global_panels if toolbar else [],
             'request_id': request_id
             }
 
