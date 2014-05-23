@@ -6,6 +6,7 @@ from pyramid_debugtoolbar.utils import dictrepr
 
 _ = lambda x: x
 
+
 class RequestVarsDebugPanel(DebugPanel):
     """
     A panel to display request variables (POST/GET, session, cookies, and
@@ -26,12 +27,17 @@ class RequestVarsDebugPanel(DebugPanel):
             attr_dict['response'] = repr(attr_dict['response'])
         data.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],
-            'post': [(k, [saferepr(p) for p in request.POST.getall(k)])
-                    for k in request.POST],
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
             'attrs': dictrepr(attr_dict),
             'environ': dictrepr(request.environ),
         })
+        if (request.method == 'POST' and
+                request.content_type in ['application/x-www-form-urlencoded',
+                                         'multipart/form-data']):
+            data['post'] = [(k, [saferepr(p) for p in request.POST.getall(k)])
+                            for k in request.POST]
+        else:
+            data['post'] = {}
         if hasattr(request, 'session'):
             data.update({
                 'session': dictrepr(request.session),
