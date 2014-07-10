@@ -19,7 +19,7 @@ from pyramid_debugtoolbar.utils import hexlify
 from pyramid.httpexceptions import WSGIHTTPException
 from pyramid_debugtoolbar.utils import ToolbarStorage
 
-html_types = ('text/html', 'application/xml+html')
+html_types = ('text/html', 'application/xhtml+xml')
 
 
 class IRequestAuthorization(Interface):
