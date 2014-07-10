@@ -263,7 +263,7 @@ toolbar_html_template = """\
 <div id="pDebug">
     <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
-           href="%(toolbar_url)s" target="pDebugToolbar">&laquo; FIXME: Debug Toolbar</a>
+           href="%(toolbar_url)s" target="pDebugToolbar">&#171; FIXME: Debug Toolbar</a>
     </div>
 </div>
 """
