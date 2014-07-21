@@ -110,6 +110,8 @@ if __name__ == '__main__':
     settings['debugtoolbar.reload_templates'] = True
     settings['debugtoolbar.hosts'] = ['127.0.0.1']
     settings['debugtoolbar.intercept_redirects'] = True
+    settings['debugtoolbar.activated'] = ['pDebugPerformancePanel']
+
     # session factory
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # configuration setup
