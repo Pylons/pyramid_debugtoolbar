@@ -34,7 +34,16 @@ class IRequestAuthorization(Interface):
 
 class DebugToolbar(object):
 
-    def __init__(self, request, panel_classes, global_panel_classes):
+    def __init__(self, request, panel_classes, global_panel_classes, registry=None):
+        if registry:
+            settings = registry.settings
+
+            def sget(opt, default=None):
+                return get_setting(settings, opt, default)
+        else:
+            def sget(opt, default=None):
+                return default
+
         self.panels = []
         self.global_panels = []
         self.request = request
@@ -44,6 +53,9 @@ class DebugToolbar(object):
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
 
         activated = pdtb_active.split(';')
+        # If the panel is activated in the settings, we want to enable it
+        activated.extend(sget('activated', []))
+
         # XXX
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
@@ -164,7 +176,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
             or auth_check and not auth_check(request):
                 return handler(request)
 
-        toolbar = DebugToolbar(request, panel_classes, global_panel_classes)
+        toolbar = DebugToolbar(request, panel_classes, global_panel_classes, registry)
         request.debug_toolbar = toolbar
 
         _handler = handler
