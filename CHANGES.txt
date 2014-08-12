@@ -1,6 +1,9 @@
 2.2 (unreleased)
 ----------------
 
+- Avoid polluting user code with unnecessary toolbar css just to show the
+  button. See https://github.com/Pylons/pyramid_debugtoolbar/pull/174
+
 - Inject the toolbar button into ``application/xhtml+xml`` requests.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/176
 
