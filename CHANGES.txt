@@ -1,4 +1,4 @@
-2.2 (unreleased)
+2.2 (2014-08-12)
 ----------------
 
 - Avoid polluting user code with unnecessary toolbar css just to show the
