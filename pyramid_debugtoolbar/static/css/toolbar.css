@@ -18,11 +18,11 @@
 }
 
 .switch.active {
-    background-image: url(/_debug_toolbar/static/img/tick.png);
+    background-image: url(../img/tick.png);
 }
 
 .switch.inactive{
-    background-image: url(/_debug_toolbar/static/img/tick-red.png);
+    background-image: url(../img/tick-red.png);
 }
 
 li.nav-label {
@@ -45,7 +45,7 @@ li.nav-label strong {
 
 @media print {
     #pDebug {
-	display: none;
+        display: none;
     }
 }
 
