@@ -1,8 +1,11 @@
 2.2 (unreleased)
 ----------------
 
+- Inject the toolbar button into ``application/xhtml+xml`` requests.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/176
+
 - Make the toolbar accessible before another request has been served by the
-  appliaction. See https://github.com/Pylons/pyramid_debugtoolbar/pull/171
+  application. See https://github.com/Pylons/pyramid_debugtoolbar/pull/171
 
 
 2.1 (2014-05-22)
