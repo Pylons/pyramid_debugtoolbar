@@ -19,7 +19,7 @@ from pyramid_debugtoolbar.utils import hexlify
 from pyramid.httpexceptions import WSGIHTTPException
 from pyramid_debugtoolbar.utils import ToolbarStorage
 
-html_types = ('text/html', 'application/xml+html')
+html_types = ('text/html', 'application/xhtml+xml')
 
 
 class IRequestAuthorization(Interface):
@@ -263,7 +263,7 @@ toolbar_html_template = """\
 <div id="pDebug">
     <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
-           href="%(toolbar_url)s" target="pDebugToolbar">&laquo; FIXME: Debug Toolbar</a>
+           href="%(toolbar_url)s" target="pDebugToolbar">&#171; FIXME: Debug Toolbar</a>
     </div>
 </div>
 """
