@@ -47,7 +47,7 @@ default_settings = [
     ('extra_global_panels', as_globals_list, ()),
     ('hosts', as_list, default_hosts),
     ('exclude_prefixes', as_cr_separated_list, []),
-    ('activated', as_cr_separated_list, []),
+    ('active_panels', as_list, []),
 ]
 
 # We need to transform these from debugtoolbar. to pyramid. in our
