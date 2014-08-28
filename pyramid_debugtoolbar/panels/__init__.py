@@ -9,7 +9,7 @@ class DebugPanel(object):
     Base class for debug panels. A new instance of this class is created
     for every request.
 
-    A panel is given notified of events throughout the request lifecycle. It
+    A panel is notified of events throughout the request lifecycle. It
     is then persisted and used later by the toolbar to render its results
     as a tab on the interface. The lifecycle hooks are available in the
     following order:
@@ -29,7 +29,8 @@ class DebugPanel(object):
     location to store the contents of previous events.
     """
     #: A unique identifier for the name of the panel. This **must** be
-    #: defined by a subclass.
+    #: defined by a subclass and be a valid Python variable name
+    #: (something like ``[a-zA-Z0-9_-]+``).
     name = NotImplemented
 
     #: If ``False`` then the panel's tab will be disabled and
@@ -100,8 +101,13 @@ class DebugPanel(object):
     @property
     def dom_id(self):
         """The ``id`` tag of the panel's tab. May be used by CSS and
-        Javascript to implement custom styles and actions."""
-        return 'pDebug%sPanel' % (self.name.replace(' ', ''))
+        Javascript to implement custom styles and actions.
+
+        By default, the :attr:`.dom_id` for a panel with a :attr:`.name` of
+        ``'performance'`` will be ``'pDebugPanel-performance'``.
+
+        """
+        return 'pDebugPanel-%s' % self.name
 
     def pluralize(self, singular, plural, n, domain=None, mapping=None):
         request = get_current_request()

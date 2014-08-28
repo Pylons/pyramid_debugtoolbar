@@ -34,7 +34,7 @@ class PerformanceDebugPanel(DebugPanel):
     It will display the time a request took and, optionally, the
     cProfile output.
     """
-    name = 'Performance'
+    name = 'performance'
     user_activate = True
     stats = None
     function_calls = None

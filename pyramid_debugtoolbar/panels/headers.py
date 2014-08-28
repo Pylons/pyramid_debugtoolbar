@@ -8,7 +8,7 @@ class HeaderDebugPanel(DebugPanel):
     """
     A panel to display HTTP request and response headers.
     """
-    name = 'Header'
+    name = 'header'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/headers.dbtmako'
     title = _('HTTP Headers')

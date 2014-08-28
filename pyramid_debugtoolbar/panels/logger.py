@@ -43,7 +43,7 @@ handler = ThreadTrackingHandler()
 logging.root.addHandler(handler)
 
 class LoggingPanel(DebugPanel):
-    name = 'Logging'
+    name = 'logging'
     template = 'pyramid_debugtoolbar.panels:templates/logger.dbtmako'
     title = _('Log Messages')
     nav_title = _('Logging')

@@ -18,7 +18,7 @@ class IntrospectionDebugPanel(DebugPanel):
     """
     A panel to display generic Pyramid introspection info.
     """
-    name = 'Introspection'
+    name = 'introspection'
     has_content = has_content
     is_active = not has_content
     template = 'pyramid_debugtoolbar.panels:templates/introspection.dbtmako'

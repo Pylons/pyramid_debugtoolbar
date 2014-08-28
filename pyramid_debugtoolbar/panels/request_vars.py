@@ -11,7 +11,7 @@ class RequestVarsDebugPanel(DebugPanel):
     A panel to display request variables (POST/GET, session, cookies, and
     ad-hoc request attributes).
     """
-    name = 'RequestVars'
+    name = 'request_vars'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/request_vars.dbtmako'
     title = _('Request Vars')

@@ -9,7 +9,7 @@ class RenderingsDebugPanel(DebugPanel):
     Panel that displays the renderers (templates and 'static' renderers such
     as JSON) used during a request.
     """
-    name = 'Template'
+    name = 'renderings'
     renderings = ()
     template = 'pyramid_debugtoolbar.panels:templates/renderings.dbtmako'
     title = _('Renderers')
@@ -42,4 +42,3 @@ class RenderingsDebugPanel(DebugPanel):
 
     def process_response(self, response):
         self.data = {'renderings': self.renderings}
-

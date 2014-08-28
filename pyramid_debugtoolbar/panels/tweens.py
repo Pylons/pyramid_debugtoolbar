@@ -10,7 +10,7 @@ class TweensDebugPanel(DebugPanel):
     """
     A panel to display the tweens used by your Pyramid application.
     """
-    name = 'Tweens'
+    name = 'tweens'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/tweens.dbtmako'
     title = _('Tweens')

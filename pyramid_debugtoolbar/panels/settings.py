@@ -10,7 +10,7 @@ class SettingsDebugPanel(DebugPanel):
     A panel to display Pyramid deployment settings for your application (the
     values in ``registry.settings``).
     """
-    name = 'Settings'
+    name = 'settings'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/settings.dbtmako'
     title = _('Settings')
