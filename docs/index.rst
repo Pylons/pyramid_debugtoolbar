@@ -186,14 +186,14 @@ file.
 
 ``debugtoolbar.exclude_prefixes``
 
-  The debug toolbar won't be shown if the ``PATH_INFO`` variable starts with
-  any of the prefixes listed in this setting.  If configuration is done via an
-  ``.ini`` file, the prefixes should be separated by carriage returns. For
-  example::
+  The debug toolbar won't be shown and no data will be recorded if the
+  ``PATH_INFO`` variable starts with any of the prefixes listed in this setting.
+  If configuration is done via an ``.ini`` file, the prefixes should be separated
+  by carriage returns. For example::
 
     debugtoolbar.exclude_prefixes =
-        /manage
         /settings
+        /static
 
   If configuration is done via Python, the setting should be a list.  This
   setting was added in debugtoolbar version 1.0.4.
