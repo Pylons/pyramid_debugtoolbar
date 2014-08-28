@@ -46,6 +46,7 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.reload_resources': False,
                           'debugtoolbar.reload_assets': False,
                           'debugtoolbar.prevent_http_cache': False,
+                          'debugtoolbar.activated': [],
                           }
                          )
 
