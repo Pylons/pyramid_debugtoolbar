@@ -1,3 +1,17 @@
+unreleased
+----------
+
+- Document the cookie used to activate panels on a per-request basis. It is
+  possible to specify the cookie per-request to turn on certain panels. This
+  is used by default in the browser, but may also be used on a per-request
+  basis by curl or other http APIs.
+
+- Add new ``debugtoolbar.active_panels`` setting which can specify certain
+  panels to be active by default.
+
+- Modify ``DebugPanel.name`` to be a valid python identifier, used for
+  settings and lookup.
+
 2.2 (2014-08-12)
 ----------------
 
