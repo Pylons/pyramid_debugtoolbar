@@ -633,13 +633,14 @@ The following is a listing of panels and user interface extras for
 not supported by the Pylons Project. To add your contribution, please submit a
 pull request to update this documentation.
 
-`Page Up <https://github.com/Pylons/pyramid_debugtoolbar/pull/190>`_
+`Page Up <https://github.com/Pylons/pyramid_debugtoolbar/pull/190/files#diff-0>`_
     For tabs that have content which requires lots of scrolling down or to the
     right, clicking the Page Up icon resets the window to 0,0.
 
-`Repeat Request <https://github.com/Pylons/pyramid_debugtoolbar/issues/191>`_
-    Adds a Repeat Request button to click that repeats the request in a new
-    window while keeping the ``pyramid_debugtoolbar`` window open.
+`pyramid_debugtoolbar_ajax <https://github.com/jvanasco/pyramid_debugtoolbar_ajax>`_
+    Adds an "AJAX" panel to the ``pyramid_debugtoolbar``. This panel contains
+    a button to replay the request in a new window -- allowing you to spawn a
+    debugger window for errors encountered on background ajax requests.
 
 
 More Information
