@@ -625,6 +625,23 @@ Once your panel is ready, you can simply add its package name to the
       samplepanel
 
 
+Panel and UI Extras
+-------------------
+
+The following is a listing of panels and user interface extras for
+``pyramid_debugtoolbar`` created by its users. These extras are unofficial and
+not supported by the Pylons Project. To add your contribution, please submit a
+pull request to update this documentation.
+
+`Page Up <https://github.com/Pylons/pyramid_debugtoolbar/pull/190>`_
+    For tabs that have content which requires lots of scrolling down or to the
+    right, clicking the Page Up icon resets the window to 0,0.
+
+`Repeat Request <https://github.com/Pylons/pyramid_debugtoolbar/issues/191>`_
+    Adds a Repeat Request button to click that repeats the request in a new
+    window while keeping the ``pyramid_debugtoolbar`` window open.
+
+
 More Information
 ----------------
 
