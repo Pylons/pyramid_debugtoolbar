@@ -11,6 +11,15 @@
     <link rel="stylesheet" type="text/css" href="${static_path}css/toolbar.css">
     <link rel="stylesheet" type="text/css" href="${static_path}css/dashboard.css">
     <link rel="stylesheet" href="${static_path}css/debugger.css" type="text/css">
+
+    ## include scripts here that should be included before pageload
+    <script type="text/javascript">
+      var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
+    </script>
+    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
+    <script src="${static_path}js/jquery.cookie.js"></script>
+    <script src="${static_path}js/jquery.tablesorter.min.js"></script>
+    <script src="${static_path}js/bootstrap.min.js"></script>
   </head>
   <body>
 
@@ -57,13 +66,7 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-      var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
-    </script>
-    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
-    <script src="${static_path}js/jquery.cookie.js"></script>
-    <script src="${static_path}js/jquery.tablesorter.min.js"></script>
-    <script src="${static_path}js/bootstrap.min.js"></script>
+    ## scripts that can be included after pageload
     <script src="${static_path}js/toolbar.js"></script>
 	<script>
 	  $(function () {

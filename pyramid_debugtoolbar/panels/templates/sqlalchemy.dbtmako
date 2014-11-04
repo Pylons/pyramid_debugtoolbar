@@ -48,3 +48,17 @@
 </div>
 
 <!-- /.modal -->
+
+##
+## See  "Twitter bootstrap remote modal shows same content everytime"
+##      * http://stackoverflow.com/questions/12286332/twitter-bootstrap-remote-modal-shows-same-content-everytime
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#ExplainModal").on("hidden.bs.modal", function (e) {
+	    $(e.target).removeData("bs.modal").find(".modal-content").empty();
+	});
+	$("#SelectModal").on("hidden.bs.modal", function (e) {
+	    $(e.target).removeData("bs.modal").find(".modal-content").empty();
+	});
+});
+</script>
