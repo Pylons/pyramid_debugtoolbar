@@ -13,13 +13,12 @@
     <link rel="stylesheet" href="${static_path}css/debugger.css" type="text/css">
 
     ## include scripts here that should be included before pageload
+    ##  this *should* only be jquery, as we only need the `$` variable defined
+    ##  in order for other javascript to be run after the document is loaded
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
     </script>
     <script src="${static_path}js/jquery-1.10.2.min.js"></script>
-    <script src="${static_path}js/jquery.cookie.js"></script>
-    <script src="${static_path}js/jquery.tablesorter.min.js"></script>
-    <script src="${static_path}js/bootstrap.min.js"></script>
   </head>
   <body>
 
@@ -67,6 +66,9 @@
     </div>
 
     ## scripts that can be included after pageload
+    <script src="${static_path}js/jquery.cookie.js"></script>
+    <script src="${static_path}js/jquery.tablesorter.min.js"></script>
+    <script src="${static_path}js/bootstrap.min.js"></script>
     <script src="${static_path}js/toolbar.js"></script>
 	<script>
 	  $(function () {
