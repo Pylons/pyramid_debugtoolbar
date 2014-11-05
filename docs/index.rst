@@ -642,6 +642,9 @@ pull request to update this documentation.
     a button to replay the request in a new window -- allowing you to spawn a
     debugger window for errors encountered on background ajax requests.
 
+`pyramid_debugtoolbar_dogpile <https://github.com/jvanasco/pyramid_debugtoolbar_dogpile>`_
+    dogpile caching support for pyramid_debugtoolbar.
+
 
 More Information
 ----------------
