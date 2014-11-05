@@ -633,7 +633,7 @@ The following is a listing of panels and user interface extras for
 not supported by the Pylons Project. To add your contribution, please submit a
 pull request to update this documentation.
 
-`Page Up <https://github.com/Pylons/pyramid_debugtoolbar/pull/190/files#diff-0>`_
+`Page Up <https://github.com/jvanasco/pyramid_debugtoolbar/commit/189479422ed996d022e79bfa1aa4a8f6038b6d62>`_
     For tabs that have content which requires lots of scrolling down or to the
     right, clicking the Page Up icon resets the window to 0,0.
 
