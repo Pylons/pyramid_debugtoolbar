@@ -13,6 +13,7 @@
 ##############################################################################
 
 import os
+import sys
 
 from setuptools import setup, find_packages
 
@@ -26,9 +27,14 @@ except IOError:
 install_requires = [
     'pyramid>=1.2dev',
     'pyramid_mako>=0.3.1', # lazy configuration loading works
-    'Pygments',
     'repoze.lru',
     ]
+
+# Pygments 2.0 dropped 3.2 support
+if (sys.version_info[0], sys.version_info[1]) == (3, 2):
+    install_requires.append('Pygments<2')
+else:
+    install_requires.append('Pygments')
 
 testing_extras = [
     'nose',
