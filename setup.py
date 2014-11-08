@@ -32,7 +32,7 @@ install_requires = [
 
 # Pygments 2.0 dropped 3.2 support
 if (sys.version_info[0], sys.version_info[1]) == (3, 2):
-    install_requires.append('Pygments<2')
+    install_requires.append('Pygments<=1.99')
 else:
     install_requires.append('Pygments')
 
