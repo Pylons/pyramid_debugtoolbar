@@ -1,6 +1,11 @@
 Next release
 ------------
 
+- Several internal links were not relative causing them to fail when the
+  app is mounted at a path prefix. See
+  https://github.com/Pylons/pyramid_debugtoolbar/pull/185 and
+  https://github.com/Pylons/pyramid_debugtoolbar/pull/196
+
 - Pin pygments<2 on 3.2 as the new release has dropped support.
 
 2.2 (2014-08-12)
