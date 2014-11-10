@@ -1,5 +1,5 @@
-Next release
-------------
+2.2.1 (2014-11-09)
+------------------
 
 - Several internal links were not relative causing them to fail when the
   app is mounted at a path prefix. See
