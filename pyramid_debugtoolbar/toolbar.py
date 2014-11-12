@@ -197,6 +197,9 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                 del subenviron['PATH_INFO']
                 del subenviron['QUERY_STRING']
                 subrequest = type(request).blank(exc_url, subenviron)
+                subrequest.script_name = request.script_name
+                subrequest.path_info = \
+                    subrequest.path_info[len(request.script_name):]
                 response = request.invoke_subrequest(subrequest)
 
                 toolbar.process_response(request, response)
