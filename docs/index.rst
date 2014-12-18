@@ -198,6 +198,19 @@ file.
   If configuration is done via Python, the setting should be a list.  This
   setting was added in debugtoolbar version 1.0.4.
 
+``debugtoolbar.max_request_history``
+
+  The debug toolbar works by storing the original request and it's associated
+  data in memory, and making this data available to subsequent requests.  By
+  default, the toolbar maintains a history of the last 100 requests made to the
+  application. By setting ``debugtoolbar.max_request_history``, one can override
+  the default of 100 and set it to a different number.
+
+``debugtoolbar.show_request_history``
+
+  The number of requests shown in the sidebar.  The default is 10.
+
+
 Useful settings for debugging panels/debugtoolbar
 `````````````````````````````````````````````````
 

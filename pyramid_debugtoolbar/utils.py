@@ -34,8 +34,9 @@ EXC_ROUTE_NAME = 'debugtoolbar.exception'
 class ToolbarStorage(deque):
     """Deque for storing Toolbar objects."""
 
-    def __init__(self, max_elem):
-        super(ToolbarStorage, self ).__init__([], max_elem)
+    def __init__(self, max_elem, default_last=10):
+        self._default_last = default_last  # the default num for `self.last`
+        super(ToolbarStorage, self).__init__([], max_elem)
 
     def get(self, request_id, default=None):
         dict_ = dict(self)
@@ -44,8 +45,9 @@ class ToolbarStorage(deque):
     def put(self, request_id, request):
         self.appendleft((request_id, request))
 
-    def last(self, num=10):
+    def last(self, num=None):
         """Returns the last `num` Toolbar objects"""
+        num = num or self._default_last
         return list(islice(self, 0, num))
 
 def format_fname(value, _sys_path=None):
@@ -202,3 +204,11 @@ def hexlify(value):
     str_ = str(value)
     hexified = text_(binascii.hexlify(bytes_(str_)))
     return hexified
+
+
+def get_application_registry(request):
+    """the settings are in the parent application's registry.settings,
+    not the settings of toolbar application"""
+    if hasattr(request.registry, 'parent_registry'):
+        return request.registry.parent_registry
+    return request.registry

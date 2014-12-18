@@ -1,22 +1,22 @@
 import sys
 import os
 
+from pyramid.exceptions import URLDecodeError
+from pyramid.httpexceptions import WSGIHTTPException
 from pyramid.interfaces import Interface
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
-from pyramid.exceptions import URLDecodeError
-from pyramid_debugtoolbar.tbtools import get_traceback
-from pyramid_debugtoolbar.compat import url_unquote
 from pyramid_debugtoolbar.compat import bytes_
+from pyramid_debugtoolbar.compat import url_unquote
+from pyramid_debugtoolbar.tbtools import get_traceback
+from pyramid_debugtoolbar.utils import addr_in
+from pyramid_debugtoolbar.utils import debug_toolbar_url
 from pyramid_debugtoolbar.utils import get_setting
+from pyramid_debugtoolbar.utils import hexlify
+from pyramid_debugtoolbar.utils import last_proxy
+from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import logger
-from pyramid_debugtoolbar.utils import addr_in
-from pyramid_debugtoolbar.utils import last_proxy
-from pyramid_debugtoolbar.utils import debug_toolbar_url
-from pyramid_debugtoolbar.utils import hexlify
-from pyramid.httpexceptions import WSGIHTTPException
 from pyramid_debugtoolbar.utils import ToolbarStorage
 
 html_types = ('text/html', 'application/xhtml+xml')
@@ -121,7 +121,9 @@ def toolbar_tween_factory(handler, registry, _logger=None):
     if not sget('enabled'):
         return handler
 
-    request_history = ToolbarStorage(100)
+    max_request_history = int(sget('max_request_history', 100))
+    show_request_history = int(sget('show_request_history', 10))
+    request_history = ToolbarStorage(max_request_history, default_last=show_request_history)
     registry.request_history = request_history
 
     redirect_codes = (301, 302, 303, 304)

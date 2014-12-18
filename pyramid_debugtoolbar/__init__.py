@@ -5,48 +5,48 @@ except ImportError: # pragma: no cover
     from pyramid.interfaces import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.wsgi import wsgiapp2
-from pyramid_debugtoolbar.utils import as_globals_list
-from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import as_cr_separated_list
 from pyramid_debugtoolbar.utils import as_display_debug_or_false
+from pyramid_debugtoolbar.utils import as_globals_list
+from pyramid_debugtoolbar.utils import as_list
+from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
                                           toolbar_tween_factory)  # API
 toolbar_tween_factory = toolbar_tween_factory  # pyflakes
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
-    'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-    'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
+    'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
+    'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     'pyramid_debugtoolbar.panels.traceback.TracebackPanel',
 )
 
 default_global_panel_names = (
-    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
-    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
-    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
-    'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
     'pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel',
+    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
+    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
+    'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
+    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
 )
 
 default_hosts = ('127.0.0.1', '::1')
 
 default_settings = [
     ('enabled', asbool, 'true'),
+    ('exclude_prefixes', as_cr_separated_list, []),
+    ('extra_global_panels', as_globals_list, ()),
+    ('extra_panels', as_globals_list, ()),
+    ('global_panels', as_globals_list, default_global_panel_names),
+    ('hosts', as_list, default_hosts),
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
     ('panels', as_globals_list, default_panel_names),
-    ('extra_panels', as_globals_list, ()),
-    ('global_panels', as_globals_list, default_global_panel_names),
-    ('extra_global_panels', as_globals_list, ()),
-    ('hosts', as_list, default_hosts),
-    ('exclude_prefixes', as_cr_separated_list, []),
 ]
 
 # We need to transform these from debugtoolbar. to pyramid. in our
@@ -55,10 +55,10 @@ default_settings = [
 default_transform = [
     ('debug_notfound', asbool, 'false'),
     ('debug_routematch', asbool, 'false'),
-    ('reload_templates', asbool, 'false'),
-    ('reload_resources', asbool, 'false'),
-    ('reload_assets', asbool, 'false'),
     ('prevent_http_cache', asbool, 'false'),
+    ('reload_assets', asbool, 'false'),
+    ('reload_resources', asbool, 'false'),
+    ('reload_templates', asbool, 'false'),
 ]
 
 
