@@ -198,6 +198,13 @@ file.
   If configuration is done via Python, the setting should be a list.  This
   setting was added in debugtoolbar version 1.0.4.
 
+``debugtoolbar.includes``
+
+  The debugtoolbar will use Pyramid's default
+  :meth:`pyramid.config.Configurator.include` mechanism to extend the toolbar's
+  internal Pyramid application with custom logic. This is a good spot to affect
+  static assets used by the toolbar, or add custom urls.
+
 Useful settings for debugging panels/debugtoolbar
 `````````````````````````````````````````````````
 
