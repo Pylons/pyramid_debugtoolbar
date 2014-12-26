@@ -5,14 +5,17 @@ except ImportError: # pragma: no cover
     from pyramid.interfaces import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.wsgi import wsgiapp2
-from pyramid_debugtoolbar.utils import as_globals_list
-from pyramid_debugtoolbar.utils import as_list
-from pyramid_debugtoolbar.utils import as_cr_separated_list
-from pyramid_debugtoolbar.utils import as_display_debug_or_false
-from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
-from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
+from pyramid_debugtoolbar.utils import (
+    as_cr_separated_list,
+    as_display_debug_or_false,
+    as_globals_list,
+    as_list,
+    as_verbatim,
+    SETTINGS_PREFIX,
+    STATIC_PATH,
+    ROOT_ROUTE_NAME,
+    EXC_ROUTE_NAME,
+)
 from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
                                           toolbar_tween_factory)  # API
 toolbar_tween_factory = toolbar_tween_factory  # pyflakes
@@ -46,7 +49,7 @@ default_settings = [
     ('global_panels', as_globals_list, default_global_panel_names),
     ('extra_global_panels', as_globals_list, ()),
     ('hosts', as_list, default_hosts),
-    ('exclude_prefixes', as_cr_separated_list, []),
+    ('exclude_prefixes', as_cr_separated_list, ()),
 ]
 
 # We need to transform these from debugtoolbar. to pyramid. in our
@@ -59,6 +62,7 @@ default_transform = [
     ('reload_resources', asbool, 'false'),
     ('reload_assets', asbool, 'false'),
     ('prevent_http_cache', asbool, 'false'),
+    ('includes', as_verbatim, ()),
 ]
 
 
@@ -71,8 +75,9 @@ def parse_settings(settings):
         parsed[name] = value
 
     # Extend the ones we are going to transform later ...
-    default_settings.extend(default_transform)
-    for name, convert, default in default_settings:
+    cfg = list(default_settings)
+    cfg.extend(default_transform)
+    for name, convert, default in cfg:
         populate(name, convert, default)
     return parsed
 

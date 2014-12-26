@@ -164,6 +164,8 @@ def as_display_debug_or_false(value):
         return 'debug'
     return False
 
+as_verbatim = lambda v: v
+
 def get_setting(settings, name, default=None):
     return settings.get('%s%s' % (SETTINGS_PREFIX, name), default)
 

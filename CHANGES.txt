@@ -1,6 +1,10 @@
 unreleased
 ----------
 
+- Support a ``debugtoolbar.includes`` setting which will allow addons to
+  extend the toolbar's internal Pyramid application with custom logic.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/207
+
 - Fixed an issue when the toolbar is not mounted at the root of the domain.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/201
 
