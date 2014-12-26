@@ -1,3 +1,9 @@
+unreleased
+----------
+
+- Fixed an issue when the toolbar is not mounted at the root of the domain.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/201
+
 2.2.2 (2014-11-09)
 ------------------
 
