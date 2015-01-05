@@ -52,7 +52,7 @@ default_settings = [
     ('extra_global_panels', as_globals_list, ()),
     ('hosts', as_list, default_hosts),
     ('exclude_prefixes', as_cr_separated_list, []),
-    ('button_style', None, ''), 
+    ('button_style', None, ''),
     ('max_request_history', as_int, 100),
     ('max_visible_requests', as_int, 10),
 ]

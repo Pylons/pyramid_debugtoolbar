@@ -28,6 +28,9 @@ class Test_parse_settings(unittest.TestCase):
                     'debugtoolbar.reload_resources': 'false',
                     'debugtoolbar.reload_assets': 'false',
                     'debugtoolbar.prevent_http_cache': 'false',
+                    'debugtoolbar.button_style': '',
+                    'debugtoolbar.max_request_history': 100,
+                    'debugtoolbar.max_visible_requests': 10,
                     }
         result = self._callFUT(settings)
         self.assertEqual(result,
@@ -46,6 +49,10 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.reload_resources': False,
                           'debugtoolbar.reload_assets': False,
                           'debugtoolbar.prevent_http_cache': False,
+                          'debugtoolbar.includes': (),
+                          'debugtoolbar.button_style': '',
+                          'debugtoolbar.max_request_history': 100,
+                          'debugtoolbar.max_visible_requests': 10,
                           }
                          )
 
