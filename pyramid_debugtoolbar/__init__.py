@@ -5,6 +5,7 @@ except ImportError: # pragma: no cover
     from pyramid.interfaces import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.wsgi import wsgiapp2
+<<<<<<< HEAD
 from pyramid_debugtoolbar.utils import as_cr_separated_list
 from pyramid_debugtoolbar.utils import as_display_debug_or_false
 from pyramid_debugtoolbar.utils import as_globals_list
@@ -14,6 +15,19 @@ from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
 from pyramid_debugtoolbar.utils import STATIC_PATH
+=======
+from pyramid_debugtoolbar.utils import (
+    as_cr_separated_list,
+    as_display_debug_or_false,
+    as_globals_list,
+    as_list,
+    as_verbatim,
+    SETTINGS_PREFIX,
+    STATIC_PATH,
+    ROOT_ROUTE_NAME,
+    EXC_ROUTE_NAME,
+)
+>>>>>>> 4f312249748a86e616bb7e32cc785bbbb98c9d80
 from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
                                           toolbar_tween_factory)  # API
 toolbar_tween_factory = toolbar_tween_factory  # pyflakes
@@ -47,11 +61,15 @@ default_settings = [
     ('extra_panels', as_globals_list, ()),
     ('global_panels', as_globals_list, default_global_panel_names),
     ('hosts', as_list, default_hosts),
+<<<<<<< HEAD
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
     ('max_request_history', as_int, 100),
     ('max_visible_requests', as_int, 10),
     ('panels', as_globals_list, default_panel_names),
+=======
+    ('exclude_prefixes', as_cr_separated_list, ()),
+>>>>>>> 4f312249748a86e616bb7e32cc785bbbb98c9d80
 ]
 
 # We need to transform these from debugtoolbar. to pyramid. in our
@@ -61,6 +79,7 @@ default_transform = [
     # name, convert, default
     ('debug_notfound', asbool, 'false'),
     ('debug_routematch', asbool, 'false'),
+    ('includes', as_verbatim, ()),
     ('prevent_http_cache', asbool, 'false'),
     ('reload_assets', asbool, 'false'),
     ('reload_resources', asbool, 'false'),
@@ -79,11 +98,13 @@ def parse_settings(settings):
         parsed[name] = value
 
     # Extend the ones we are going to transform later ...
-    default_settings.extend(default_transform)
-    
+    cfg = list(default_settings)
+    cfg.extend(default_transform)
+
     # Convert to the proper format ...
-    for name, convert, default in default_settings:
+    for name, convert, default in cfg:
         populate(name, convert, default)
+
     return parsed
 
 def transform_settings(settings):
