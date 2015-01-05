@@ -1,5 +1,5 @@
-unreleased
-----------
+2.3 (2015-01-05)
+----------------
 
 - Support a ``debugtoolbar.includes`` setting which will allow addons to
   extend the toolbar's internal Pyramid application with custom logic.
