@@ -206,7 +206,7 @@ file.
   application. By setting ``debugtoolbar.max_request_history``, one can override
   the default of 100 and set it to a different number.
 
-``debugtoolbar.show_request_history``
+``debugtoolbar.max_visible_requests``
 
   The number of requests shown in the sidebar.  The default is 10.
 

@@ -121,9 +121,8 @@ def toolbar_tween_factory(handler, registry, _logger=None):
     if not sget('enabled'):
         return handler
 
-    max_request_history = int(sget('max_request_history', 100))
-    show_request_history = int(sget('show_request_history', 10))
-    request_history = ToolbarStorage(max_request_history, default_last=show_request_history)
+    max_request_history = sget('max_request_history')
+    request_history = ToolbarStorage(max_request_history)
     registry.request_history = request_history
 
     redirect_codes = (301, 302, 303, 304)

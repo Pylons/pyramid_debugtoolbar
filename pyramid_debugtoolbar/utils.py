@@ -34,8 +34,7 @@ EXC_ROUTE_NAME = 'debugtoolbar.exception'
 class ToolbarStorage(deque):
     """Deque for storing Toolbar objects."""
 
-    def __init__(self, max_elem, default_last=10):
-        self._default_last = default_last  # the default num for `self.last`
+    def __init__(self, max_elem):
         super(ToolbarStorage, self).__init__([], max_elem)
 
     def get(self, request_id, default=None):
@@ -45,10 +44,9 @@ class ToolbarStorage(deque):
     def put(self, request_id, request):
         self.appendleft((request_id, request))
 
-    def last(self, num=None):
-        """Returns the last `num` Toolbar objects"""
-        num = num or self._default_last
-        return list(islice(self, 0, num))
+    def last(self, num_items):
+        """Returns the last `num_items` Toolbar objects"""
+        return list(islice(self, 0, num_items))
 
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
@@ -140,6 +138,11 @@ def as_cr_separated_list(value):
         value = list(filter(None, [x.strip() for x in value.splitlines()]))
     return value
 
+def as_int(value):
+    if isinstance(value, string_types):
+        value = int(value)
+    return value
+
 def as_list(value):
     values = as_cr_separated_list(value)
     result = []
@@ -204,11 +207,3 @@ def hexlify(value):
     str_ = str(value)
     hexified = text_(binascii.hexlify(bytes_(str_)))
     return hexified
-
-
-def get_application_registry(request):
-    """the settings are in the parent application's registry.settings,
-    not the settings of toolbar application"""
-    if hasattr(request.registry, 'parent_registry'):
-        return request.registry.parent_registry
-    return request.registry

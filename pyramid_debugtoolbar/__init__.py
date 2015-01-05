@@ -8,6 +8,7 @@ from pyramid.wsgi import wsgiapp2
 from pyramid_debugtoolbar.utils import as_cr_separated_list
 from pyramid_debugtoolbar.utils import as_display_debug_or_false
 from pyramid_debugtoolbar.utils import as_globals_list
+from pyramid_debugtoolbar.utils import as_int
 from pyramid_debugtoolbar.utils import as_list
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
@@ -38,6 +39,8 @@ default_global_panel_names = (
 default_hosts = ('127.0.0.1', '::1')
 
 default_settings = [
+    # name, convert, default
+    ('button_style', None, ''), 
     ('enabled', asbool, 'true'),
     ('exclude_prefixes', as_cr_separated_list, []),
     ('extra_global_panels', as_globals_list, ()),
@@ -46,6 +49,8 @@ default_settings = [
     ('hosts', as_list, default_hosts),
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
+    ('max_request_history', as_int, 100),
+    ('max_visible_requests', as_int, 10),
     ('panels', as_globals_list, default_panel_names),
 ]
 
@@ -53,6 +58,7 @@ default_settings = [
 # make_application, but we want to allow people to set them in their
 # configurations as debugtoolbar.
 default_transform = [
+    # name, convert, default
     ('debug_notfound', asbool, 'false'),
     ('debug_routematch', asbool, 'false'),
     ('prevent_http_cache', asbool, 'false'),
@@ -67,11 +73,15 @@ def parse_settings(settings):
 
     def populate(name, convert, default):
         name = '%s%s' % (SETTINGS_PREFIX, name)
-        value = convert(settings.get(name, default))
+        value = settings.get(name, default)
+        if convert is not None:
+            value = convert(value)
         parsed[name] = value
 
     # Extend the ones we are going to transform later ...
     default_settings.extend(default_transform)
+    
+    # Convert to the proper format ...
     for name, convert, default in default_settings:
         populate(name, convert, default)
     return parsed
