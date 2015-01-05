@@ -13,13 +13,13 @@ from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.console import _ConsoleFrame
-from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.utils import addr_in
+from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
-from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import last_proxy
-from pyramid_debugtoolbar.utils import find_request_history
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
 U_BLANK = text_("")
@@ -231,9 +231,12 @@ def request_view(request):
 
     static_path = request.static_url(STATIC_PATH)
     root_path = request.route_url(ROOT_ROUTE_NAME)
+    
     button_style = get_setting(request.registry.settings,
-            'button_style', '')
-    hist_toolbars = history.last(10)
+            'button_style')
+    max_visible_requests = get_setting(request.registry.settings, 
+            'max_visible_requests')
+    hist_toolbars = history.last(max_visible_requests)
     return {'panels': toolbar.panels if toolbar else [],
             'static_path': static_path,
             'root_path': root_path,
@@ -255,13 +258,15 @@ def sse(request):
     active_request_id = text_(request.GET.get('request_id'))
     client_last_request_id = text_(request.headers.get('Last-Event-Id', 0))
 
+    max_visible_requests = get_setting(request.registry.settings,
+        'max_visible_requests')
     if history:
         last_request_pair = history.last(1)[0]
         last_request_id = last_request_pair[0]
         if not last_request_id == client_last_request_id:
             data = [[_id, toolbar.json, 'active'
                         if active_request_id == _id else '']
-                            for _id,toolbar in history.last(10)]
+                            for _id,toolbar in history.last(max_visible_requests)]
             if data:
                 response.text = U_SSE_PAYLOAD.format(last_request_id,
                                                      json.dumps(data))
