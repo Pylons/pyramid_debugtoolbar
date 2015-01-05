@@ -33,7 +33,7 @@ if 'sphinx-build' in ' '.join(sys.argv):  # protect against dumb importers
     try:
         os.chdir(parent)
         if not os.listdir(_themes):
-            call([git, 'submodule', '--init'])
+            call([git, 'submodule', 'update', '--init', '--recursive'])
         else:
             call([git, 'submodule', 'update'])
         sys.path.append(_themes)
