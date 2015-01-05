@@ -8,6 +8,11 @@ unreleased
 - Fixed an issue when the toolbar is not mounted at the root of the domain.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/201
 
+- Fixed an issue where the `button_css` was not pulled from the settings.
+  Added support for configurable `max_request_history` and
+  `max_visible_requests`.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/206
+
 2.2.2 (2014-11-09)
 ------------------
 
