@@ -85,7 +85,7 @@
 		% for i, (key, value) in enumerate(post):
 		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
 			<td>${key|h}</td>
-			<td>${', '.join(value)|h}</td>
+			<td>${value|h}</td>
 		</tr>
 		% endfor
 	</tbody>
