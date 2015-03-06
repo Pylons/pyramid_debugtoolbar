@@ -82,15 +82,29 @@ class DebugToolbar(object):
         button_style = get_setting(request.registry.settings,
                 'button_style', '')
         css_path = request.static_url(STATIC_PATH + 'css/toolbar_button.css')
-        toolbar_html = toolbar_html_template % {
+        toolbar_html_button = toolbar_html_button_template % {
             'button_style': button_style,
             'css_path': css_path,
             'toolbar_url': toolbar_url}
-        toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
+        toolbar_html_button = toolbar_html_button.encode(
+            response.charset or 'utf-8'
+        )
         response.body = replace_insensitive(
             response_html, bytes_('</body>'),
-            toolbar_html + bytes_('</body>')
+            toolbar_html_button + bytes_('</body>')
             )
+
+        toolbar_html_link = toolbar_html_link_template % {
+            'button_style': button_style,
+            'css_path': css_path,
+            'toolbar_url': toolbar_url}
+        toolbar_html_link = toolbar_html_link.encode(
+            response.charset or 'utf-8'
+        )
+        response.body = replace_insensitive(
+            response.body, bytes_('</head>'),
+            toolbar_html_link + bytes_('</head>')
+        )
 
 
 class ExceptionHistory(object):
@@ -255,15 +269,12 @@ def toolbar_tween_factory(handler, registry, _logger=None):
 
     return toolbar_tween
 
-toolbar_html_template = """\
-<script type="text/javascript">
-    var fileref=document.createElement("link")
-    fileref.setAttribute("rel", "stylesheet")
-    fileref.setAttribute("type", "text/css")
-    fileref.setAttribute("href", "%(css_path)s")
-    document.getElementsByTagName("head")[0].appendChild(fileref)
-</script>
 
+toolbar_html_link_template = """\
+<link rel="stylesheet" type="text/css" href="%(css_path)s">
+"""
+
+toolbar_html_button_template = """\
 <div id="pDebug">
     <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
