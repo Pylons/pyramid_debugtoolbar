@@ -26,8 +26,7 @@ class RequestVarsDebugPanel(DebugPanel):
             attr_dict['response'] = repr(attr_dict['response'])
         data.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],
-            'post': [(k, [saferepr(p) for p in request.POST.getall(k)])
-                    for k in request.POST],
+            'post': [(k, saferepr(v)) for k, v in request.POST.items()],
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
             'attrs': dictrepr(attr_dict),
             'environ': dictrepr(request.environ),
