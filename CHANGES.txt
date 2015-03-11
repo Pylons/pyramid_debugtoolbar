@@ -1,3 +1,13 @@
+unreleased
+----------
+
+- Add a lock icon next to the request method in the sidebar if the request
+  was accessed over https.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/213
+
+- Update to bootstrap 3.1.1.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/213
+
 2.3 (2015-01-05)
 ----------------
 
