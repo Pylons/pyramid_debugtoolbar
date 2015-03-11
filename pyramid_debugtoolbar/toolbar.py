@@ -60,6 +60,7 @@ class DebugToolbar(object):
     def json(self):
         return {'method': self.request.method,
                 'path': self.request.path,
+                'scheme': self.request.scheme,
                 'status_code': self.status_int}
 
     def process_response(self, request, response):

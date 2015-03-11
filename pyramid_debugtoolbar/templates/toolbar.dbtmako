@@ -90,7 +90,11 @@
 
                 html += '<li class="'+active+'"><a href="${root_path}'+request_id+'" title="'+details.path+'">';
                 html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
-                html += details.method+'<br>'+details.path;
+                html += details.method;
+                if (details.scheme == 'https'){
+                	html += '&nbsp;<span class="badge"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>';
+                }
+                html += '<br>' + details.path;
                 html += '</a></li>';
             });
 
