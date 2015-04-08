@@ -30,6 +30,7 @@ class RequestVarsDebugPanel(DebugPanel):
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
             'attrs': dictrepr(attr_dict),
             'environ': dictrepr(request.environ),
+            'original_request': request,
         })
         if hasattr(request, 'session'):
             data.update({

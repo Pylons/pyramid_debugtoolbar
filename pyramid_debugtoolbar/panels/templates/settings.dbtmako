@@ -7,7 +7,7 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(settings):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<tr>
 				<td>${key|h}</td>
 				<td>${value|h}</td>
 			</tr>
