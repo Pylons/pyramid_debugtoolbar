@@ -10,7 +10,7 @@
 	</thead>
 	<tbody>
 	% for i, query in enumerate(queries):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+		<tr>
 			<td>${'%.2f' % query['duration']}</td>
 			<td>
 

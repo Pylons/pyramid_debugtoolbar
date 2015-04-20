@@ -13,7 +13,7 @@
 		<% i = 0 %>
 		% for k, v in sorted(intro.items()):
 		% if v:
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+		<tr>
 			<td>${k}</td>
 			<td>${debug_repr(v)|n}</td>
 		</tr>
@@ -41,7 +41,7 @@
 	</thead>
 	<tbody>
 		% for i, ref in enumerate(entry['related']):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+		<tr>
 			<td colspan="2">
 				<a href="#${ref.category_name}${str(ref.discriminator_hash)}">${ref.type_name} ${ref.title}</a>
 			</td>

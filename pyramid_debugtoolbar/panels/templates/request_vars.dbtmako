@@ -1,24 +1,87 @@
+<h4>Pyramid Request Properties</h4>
+<%
+    # format is
+    # ( attr_, is_show_dict, is_execute_method )
+    attrs_ = (
+        ('application_url', None, None),
+        ('authenticated_userid', None, None),
+        ('authorization', None, None),
+        ('cache_control', None, None),
+        ('context', None, None),
+        ('current_route_path', None, True),
+        ('current_route_url', None, True),
+        ('effective_principals', None, None),
+        ('exc_info', None, None),
+        ('exception', None, None),
+        ('locale_name', None, None),
+        ('matchdict', None, None),
+        ('matched_route', True, None),
+        # ('registry', None, None),  # as a 'string' will be the python package name; as a dict will be the contents
+        ('root', None, None),
+        ('subpath', None, None),
+        ('traversed', None, None),
+        ('unauthenticated_userid', None, None),
+        ('view_name', None, None),
+        ('virtual_root_path', None, None),
+        ('virtual_root', None, None),
+    )
+%>
+<table class="table table-striped table-condensed">
+% for (attr_, is_show_dict, is_execute_method) in sorted(attrs_):
+    <%
+        # earlier versions of pyramid may not have newer attrs (ie, authenticated_userid)
+        if not hasattr(original_request, attr_):
+            continue
+        value = None
+        if is_show_dict:
+            value = getattr(original_request, attr_).__dict__
+        elif is_execute_method:
+            value = getattr(original_request, attr_)()
+        else:
+            value = getattr(original_request, attr_)
+    %>
+    <tr>
+        <th>${attr_}</th>
+        <td>
+        	% if isinstance(value, dict):
+	            <table class="table table-striped table-condensed">
+	            	% for k in sorted(value.keys()):
+	            		<tr>
+	            			<th>${k}</th>
+	            			<td>${value[k]}</td>
+	            	% endfor
+	            </table>
+	        % else :
+	            ${value}
+	        % endif
+        </td>
+    </tr>
+% endfor
+</table>
+
+
+
 <h4>Cookie Variables</h4>
 % if cookies:
-<table class="table table-striped">
-	<colgroup>
-		<col style="width:20%"/>
-		<col/>
-	</colgroup>
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(cookies):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
+<table class="table table-striped table-condensed">
+    <colgroup>
+        <col style="width:20%"/>
+        <col/>
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Variable</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for i, (key, value) in enumerate(sorted(cookies)):
+        <tr>
+            <td>${key|h}</td>
+            <td>${value|h}</td>
+        </tr>
+        % endfor
+    </tbody>
 </table>
 % else:
 <p>No cookie data</p>
@@ -26,25 +89,25 @@
 
 <h4>Session Variables</h4>
 % if session:
-<table class="table table-striped">
-	<colgroup>
-		<col style="width:20%"/>
-		<col/>
-	</colgroup>
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(session):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
+<table class="table table-striped table-condensed">
+    <colgroup>
+        <col style="width:20%"/>
+        <col/>
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Variable</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for i, (key, value) in enumerate(sorted(session)):
+        <tr>
+            <td>${key|h}</td>
+            <td>${value|h}</td>
+        </tr>
+        % endfor
+    </tbody>
 </table>
 % else:
 <p>No session data</p>
@@ -52,21 +115,21 @@
 
 <h4>GET Variables</h4>
 % if get:
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(get):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${key|h}</td>
-			<td>${', '.join(value)|h}</td>
-		</tr>
-		% endfor
-	</tbody>
+<table class="table table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>Variable</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for i, (key, value) in enumerate(sorted(get)):
+        <tr>
+            <td>${key|h}</td>
+            <td>${', '.join(value)|h}</td>
+        </tr>
+        % endfor
+    </tbody>
 </table>
 % else:
 <p>No GET data</p>
@@ -74,21 +137,21 @@
 
 <h4>POST Variables</h4>
 % if post:
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(post):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
+<table class="table table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>Variable</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for i, (key, value) in enumerate(sorted(post)):
+        <tr>
+            <td>${key|h}</td>
+            <td>${value|h}</td>
+        </tr>
+        % endfor
+    </tbody>
 </table>
 % else:
 <p>No POST data</p>
@@ -96,21 +159,21 @@
 
 <h4>Request attributes</h4>
 % if attrs:
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Attribute</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(attrs):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
+<table class="table table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for i, (key, value) in enumerate(sorted(attrs)):
+        <tr>
+            <td>${key|h}</td>
+            <td>${value|h}</td>
+        </tr>
+        % endfor
+    </tbody>
 </table>
 % else:
 <p>No request attributes</p>
@@ -118,22 +181,24 @@
 
 <h4>Request environ</h4>
 % if environ:
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Attribute</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(environ):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
+<table class="table table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for i, (key, value) in enumerate(sorted(environ)):
+        <tr>
+            <td>${key|h}</td>
+            <td>${value|h}</td>
+        </tr>
+        % endfor
+    </tbody>
 </table>
 % else:
 <p>No request environ</p>
 % endif
+
+<hr/><hr/><hr/>

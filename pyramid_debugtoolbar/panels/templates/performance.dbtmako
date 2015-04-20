@@ -12,7 +12,7 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(timing_rows):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<tr>
 				<td>${key|h}</td>
 				<td>${value|h}</td>
 			</tr>
@@ -40,7 +40,7 @@
         </thead>
         <tbody>
             % for i, row in enumerate(function_calls):
-                <tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+                <tr>
                     <td>${str(row['ncalls'])}</td>
                     <td>${str(row['tottime'])}</td>
                     <td>${'%.4f' % row['percall']}</td>

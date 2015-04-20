@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		% for i, route_info in enumerate(routes):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<tr>
 				<td>${route_info['route'].name|h}</td>
 				<td>${route_info['route'].pattern|h}</td>
 				<td>${repr(route_info['view_callable'])}</td>
