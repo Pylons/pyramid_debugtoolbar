@@ -8,7 +8,7 @@
 	</thead>
 	<tbody>
 		% for i, (name, tween) in enumerate(tweens):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<tr>
 				<td>${str(i)}</td>
 				<td>${name}</td>
 			</tr>

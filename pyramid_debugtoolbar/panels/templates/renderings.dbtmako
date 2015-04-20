@@ -16,7 +16,7 @@
 			<th colspan="2">Rendering Value</th>
 		</tr>
 	</thead>
-	<tbody>	
+	<tbody>
 		<tr class="pDebugOdd">
 			<td colspan="2">${rendering['val']|h}</td>
 		</tr>
@@ -26,9 +26,9 @@
 			<th colspan="2">System Values</th>
 		</tr>
 	</thead>
-	<tbody>	
+	<tbody>
 		% for i, (key, value) in enumerate(rendering['system']):
-		<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+		<tr>
 			<td>${key|h}</td>
 			<td>${value|h}</td>
 		</tr>
