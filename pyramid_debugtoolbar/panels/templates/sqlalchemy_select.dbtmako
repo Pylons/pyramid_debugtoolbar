@@ -27,7 +27,7 @@
 			</thead>
 			<tbody>
 				% for i, row in enumerate(result):
-				    <tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+				    <tr>
 						% for column in row:
 						<td>${column}</td>
 						% endfor
