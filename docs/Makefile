@@ -26,7 +26,7 @@ help:
 clean:
 	-rm -rf $(BUILDDIR)/*
 
-html: _themes
+html:
 	mkdir -p $(BUILDDIR)/html $(BUILDDIR)/doctrees
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
@@ -48,7 +48,7 @@ pickle:
 
 web: pickle
 
-htmlhelp: _themes
+htmlhelp:
 	mkdir -p $(BUILDDIR)/htmlhelp $(BUILDDIR)/doctrees
 	$(SPHINXBUILD) -b htmlhelp $(ALLSPHINXOPTS) $(BUILDDIR)/htmlhelp
 	@echo
@@ -84,6 +84,3 @@ epub:
 	$(SPHINXBUILD) -b epub $(ALLSPHINXOPTS) $(BUILDDIR)/epub
 	@echo
 	@echo "Build finished. The epub file is in $(BUILDDIR)/epub."
-
-_themes:
-	cd ..; git submodule update --init; cd docs
