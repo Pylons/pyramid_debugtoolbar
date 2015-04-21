@@ -203,11 +203,12 @@ file.
   A space-separated list of panel names (see
   :attr:`pyramid_debugtoolbar.panels.DebugPanel.name`). This list of panels
   will have their :attr:`pyramid_debugtoolbar.panels.DebugPanel.is_active`
-  state set to ``True`` by default. For example::
+  state set to ``True`` always. For example::
 
     debugtoolbar.active_panels = performance
 
-  This can still be overridden per-request via :ref:`activating_panels`.
+  This activation setting will override any per-request settings set via
+  :ref:`activating_panels`.
 
 ``debugtoolbar.max_request_history``
 
