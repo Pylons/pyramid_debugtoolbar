@@ -6,10 +6,10 @@
 *.txt.py
 *~
 .*.swp
-.coverage
+.coverage*
 build/
 dist/
 .tox/
-nosetests.xml
-coverage.xml
+nosetests*.xml
+coverage*.xml
 env*/

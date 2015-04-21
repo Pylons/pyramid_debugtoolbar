@@ -35,7 +35,7 @@ class ToolbarStorage(deque):
     """Deque for storing Toolbar objects."""
 
     def __init__(self, max_elem):
-        super(ToolbarStorage, self ).__init__([], max_elem)
+        super(ToolbarStorage, self).__init__([], max_elem)
 
     def get(self, request_id, default=None):
         dict_ = dict(self)
@@ -44,9 +44,9 @@ class ToolbarStorage(deque):
     def put(self, request_id, request):
         self.appendleft((request_id, request))
 
-    def last(self, num=10):
-        """Returns the last `num` Toolbar objects"""
-        return list(islice(self, 0, num))
+    def last(self, num_items):
+        """Returns the last `num_items` Toolbar objects"""
+        return list(islice(self, 0, num_items))
 
 def format_fname(value, _sys_path=None):
     if _sys_path is None:
@@ -138,6 +138,11 @@ def as_cr_separated_list(value):
         value = list(filter(None, [x.strip() for x in value.splitlines()]))
     return value
 
+def as_int(value):
+    if isinstance(value, string_types):
+        value = int(value)
+    return value
+
 def as_list(value):
     values = as_cr_separated_list(value)
     result = []
@@ -163,6 +168,8 @@ def as_display_debug_or_false(value):
     if b: # bw compat for dbt <=0.9
         return 'debug'
     return False
+
+as_verbatim = lambda v: v
 
 def get_setting(settings, name, default=None):
     return settings.get('%s%s' % (SETTINGS_PREFIX, name), default)

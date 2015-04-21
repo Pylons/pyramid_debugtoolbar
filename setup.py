@@ -13,6 +13,7 @@
 ##############################################################################
 
 import os
+import sys
 
 from setuptools import setup, find_packages
 
@@ -26,9 +27,14 @@ except IOError:
 install_requires = [
     'pyramid>=1.2dev',
     'pyramid_mako>=0.3.1', # lazy configuration loading works
-    'Pygments',
     'repoze.lru',
     ]
+
+# Pygments 2.0 dropped 3.2 support
+if (sys.version_info[0], sys.version_info[1]) == (3, 2):
+    install_requires.append('Pygments<=1.99')
+else:
+    install_requires.append('Pygments')
 
 testing_extras = [
     'nose',
@@ -40,7 +46,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='2.2',
+      version='2.3',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
@@ -63,7 +69,7 @@ setup(name='pyramid_debugtoolbar',
       author_email="pylons-devel@googlegroups.com",
       url="http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
       license="BSD",
-      packages=find_packages(),
+      packages=find_packages(exclude=('tests',)),
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
@@ -74,6 +80,6 @@ setup(name='pyramid_debugtoolbar',
       package_data={'pyramid_debugtoolbar': ['static/css/*', 'static/font/*',
           'static/img/*', 'static/js/*', 'templates/*', 'panels/templates/*']
           },
-      test_suite="pyramid_debugtoolbar",
+      test_suite="tests",
       entry_points='',
       )

@@ -11,6 +11,14 @@
     <link rel="stylesheet" type="text/css" href="${static_path}css/toolbar.css">
     <link rel="stylesheet" type="text/css" href="${static_path}css/dashboard.css">
     <link rel="stylesheet" href="${static_path}css/debugger.css" type="text/css">
+
+    ## include scripts here that should be included before pageload
+    ##  this *should* only be jquery, as we only need the `$` variable defined
+    ##  in order for other javascript to be run after the document is loaded
+    <script type="text/javascript">
+      var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
+    </script>
+    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
   </head>
   <body>
 
@@ -23,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="${root_path}">
             <!-- <img src="${static_path}img/pyramid.png"/> -->
             Pyramid DebugToolbar</a>
         </div>
@@ -57,10 +65,7 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-      var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
-    </script>
-    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
+    ## scripts that can be included after pageload
     <script src="${static_path}js/jquery.cookie.js"></script>
     <script src="${static_path}js/jquery.tablesorter.min.js"></script>
     <script src="${static_path}js/bootstrap.min.js"></script>
@@ -83,9 +88,13 @@
                 var request_id = item[0];
                 var active = item[2];
 
-                html += '<li class="'+active+'"><a href="/_debug_toolbar/'+request_id+'" title="'+details.path+'">';
+                html += '<li class="'+active+'"><a href="${root_path}'+request_id+'" title="'+details.path+'">';
                 html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
-                html += details.method+'<br>'+details.path;
+                html += details.method;
+                if (details.scheme == 'https'){
+                	html += '&nbsp;<span class="badge"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>';
+                }
+                html += '<br>' + details.path;
                 html += '</a></li>';
             });
 
@@ -101,7 +110,7 @@
                 source.close();
             }
 
-            source = new EventSource('/_debug_toolbar/sse?request_id=${request_id}');
+            source = new EventSource('${root_path}sse?request_id=${request_id}');
             source.addEventListener('new_request', new_request);
         }
 

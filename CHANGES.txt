@@ -12,6 +12,46 @@ unreleased
 - Modify ``DebugPanel.name`` to be a valid python identifier, used for
   settings and lookup.
 
+- Add a lock icon next to the request method in the sidebar if the request
+  was accessed over https.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/213
+
+- Update to bootstrap 3.1.1.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/213
+
+- Fix display of POST variables where the same key is used multiple times.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/210
+
+2.3 (2015-01-05)
+----------------
+
+- Support a ``debugtoolbar.includes`` setting which will allow addons to
+  extend the toolbar's internal Pyramid application with custom logic.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/207
+
+- Fixed an issue when the toolbar is not mounted at the root of the domain.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/201
+
+- Fixed an issue where the `button_css` was not pulled from the settings.
+  Added support for configurable `max_request_history` and
+  `max_visible_requests`.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/206
+
+2.2.2 (2014-11-09)
+------------------
+
+- Brownbagged 2.2.1, forgot to include the templates!
+
+2.2.1 (2014-11-09)
+------------------
+
+- Several internal links were not relative causing them to fail when the
+  app is mounted at a path prefix. See
+  https://github.com/Pylons/pyramid_debugtoolbar/pull/185 and
+  https://github.com/Pylons/pyramid_debugtoolbar/pull/196
+
+- Pin pygments<2 on 3.2 as the new release has dropped support.
+
 2.2 (2014-08-12)
 ----------------
 

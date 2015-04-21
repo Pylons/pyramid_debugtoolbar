@@ -5,39 +5,44 @@ except ImportError: # pragma: no cover
     from pyramid.interfaces import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.wsgi import wsgiapp2
-from pyramid_debugtoolbar.utils import as_globals_list
-from pyramid_debugtoolbar.utils import as_list
-from pyramid_debugtoolbar.utils import as_cr_separated_list
-from pyramid_debugtoolbar.utils import as_display_debug_or_false
-from pyramid_debugtoolbar.utils import SETTINGS_PREFIX
-from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
+from pyramid_debugtoolbar.utils import (
+    as_cr_separated_list,
+    as_display_debug_or_false,
+    as_globals_list,
+    as_int,
+    as_list,
+    as_verbatim,
+    EXC_ROUTE_NAME,
+    ROOT_ROUTE_NAME,
+    SETTINGS_PREFIX,
+    STATIC_PATH,
+)
 from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
                                           toolbar_tween_factory)  # API
 toolbar_tween_factory = toolbar_tween_factory  # pyflakes
 
 default_panel_names = (
     'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
-    'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-    'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
+    'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
+    'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
     'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
     'pyramid_debugtoolbar.panels.traceback.TracebackPanel',
 )
 
 default_global_panel_names = (
-    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
-    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
-    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
-    'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
     'pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel',
+    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
+    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
+    'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
+    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
 )
 
 default_hosts = ('127.0.0.1', '::1')
 
 default_settings = [
+    # name, convert, default
     ('enabled', asbool, 'true'),
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
@@ -48,18 +53,23 @@ default_settings = [
     ('hosts', as_list, default_hosts),
     ('exclude_prefixes', as_cr_separated_list, []),
     ('active_panels', as_list, []),
+    ('button_style', None, ''),
+    ('max_request_history', as_int, 100),
+    ('max_visible_requests', as_int, 10),
 ]
 
 # We need to transform these from debugtoolbar. to pyramid. in our
 # make_application, but we want to allow people to set them in their
 # configurations as debugtoolbar.
 default_transform = [
+    # name, convert, default
     ('debug_notfound', asbool, 'false'),
     ('debug_routematch', asbool, 'false'),
-    ('reload_templates', asbool, 'false'),
-    ('reload_resources', asbool, 'false'),
-    ('reload_assets', asbool, 'false'),
+    ('includes', as_verbatim, ()),
     ('prevent_http_cache', asbool, 'false'),
+    ('reload_assets', asbool, 'false'),
+    ('reload_resources', asbool, 'false'),
+    ('reload_templates', asbool, 'false'),
 ]
 
 
@@ -68,13 +78,19 @@ def parse_settings(settings):
 
     def populate(name, convert, default):
         name = '%s%s' % (SETTINGS_PREFIX, name)
-        value = convert(settings.get(name, default))
+        value = settings.get(name, default)
+        if convert is not None:
+            value = convert(value)
         parsed[name] = value
 
     # Extend the ones we are going to transform later ...
-    default_settings.extend(default_transform)
-    for name, convert, default in default_settings:
+    cfg = list(default_settings)
+    cfg.extend(default_transform)
+
+    # Convert to the proper format ...
+    for name, convert, default in cfg:
         populate(name, convert, default)
+
     return parsed
 
 def transform_settings(settings):

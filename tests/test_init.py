@@ -7,19 +7,19 @@ class Test_parse_settings(unittest.TestCase):
         return parse_settings(settings)
 
     def test_it(self):
-        panels = ('pyramid_debugtoolbar.tests.test_init.DummyPanel\n'
-                  'pyramid_debugtoolbar.tests.test_init.DummyPanel')
-        global_panels = ('pyramid_debugtoolbar.tests.test_init.DummyPanel\n'
-                  'pyramid_debugtoolbar.tests.test_init.DummyPanel')
+        panels = ('tests.test_init.DummyPanel\n'
+                  'tests.test_init.DummyPanel')
+        global_panels = ('tests.test_init.DummyPanel\n'
+                  'tests.test_init.DummyPanel')
         settings = {'debugtoolbar.enabled':'false',
                     'debugtoolbar.intercept_exc':'false',
                     'debugtoolbar.intercept_redirects': 'false',
                     'debugtoolbar.panels': panels,
                     'debugtoolbar.extra_panels': (
-                        'pyramid_debugtoolbar.tests.test_init.DummyCustomPanel'),
+                        'tests.test_init.DummyCustomPanel'),
                     'debugtoolbar.global_panels': global_panels,
                     'debugtoolbar.extra_global_panels': (
-                        'pyramid_debugtoolbar.tests.test_init.DummyGlobalPanel'),
+                        'tests.test_init.DummyGlobalPanel'),
                     'debugtoolbar.hosts': '127.0.0.1',
                     'debugtoolbar.exclude_prefixes': '/excluded\n/e2',
                     'debugtoolbar.debug_notfound': 'false',
@@ -28,6 +28,9 @@ class Test_parse_settings(unittest.TestCase):
                     'debugtoolbar.reload_resources': 'false',
                     'debugtoolbar.reload_assets': 'false',
                     'debugtoolbar.prevent_http_cache': 'false',
+                    'debugtoolbar.button_style': '',
+                    'debugtoolbar.max_request_history': 100,
+                    'debugtoolbar.max_visible_requests': 10,
                     }
         result = self._callFUT(settings)
         self.assertEqual(result,
@@ -47,6 +50,10 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.reload_assets': False,
                           'debugtoolbar.prevent_http_cache': False,
                           'debugtoolbar.activated': [],
+                          'debugtoolbar.includes': (),
+                          'debugtoolbar.button_style': '',
+                          'debugtoolbar.max_request_history': 100,
+                          'debugtoolbar.max_visible_requests': 10,
                           }
                          )
 

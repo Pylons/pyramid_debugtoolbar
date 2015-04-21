@@ -209,6 +209,25 @@ file.
 
   This can still be overridden per-request via :ref:`activating_panels`.
 
+``debugtoolbar.max_request_history``
+
+  The debug toolbar works by storing the original request and it's associated
+  data in memory, and making this data available to subsequent requests.  By
+  default, the toolbar maintains a history of the last 100 requests made to the
+  application. By setting ``debugtoolbar.max_request_history``, one can override
+  the default of 100 and set it to a different number.
+
+``debugtoolbar.max_visible_requests``
+
+  The number of requests shown in the sidebar.  The default is 10.
+
+``debugtoolbar.includes``
+
+  The debugtoolbar will use Pyramid's default
+  :meth:`pyramid.config.Configurator.include` mechanism to extend the toolbar's
+  internal Pyramid application with custom logic. This is a good spot to affect
+  static assets used by the toolbar, or add custom urls.
+
 Useful settings for debugging panels/debugtoolbar
 `````````````````````````````````````````````````
 
@@ -655,6 +674,27 @@ Once your panel is ready, you can simply add its package name to the
   pyramid.includes =
       pyramid_debugtoolbar
       samplepanel
+
+
+Panel and UI Extras
+-------------------
+
+The following is a listing of panels and user interface extras for
+``pyramid_debugtoolbar`` created by its users. These extras are unofficial and
+not supported by the Pylons Project. To add your contribution, please submit a
+pull request to update this documentation.
+
+`Page Up <https://github.com/jvanasco/pyramid_debugtoolbar/commit/189479422ed996d022e79bfa1aa4a8f6038b6d62>`_
+    For tabs that have content which requires lots of scrolling down or to the
+    right, clicking the Page Up icon resets the window to 0,0.
+
+`pyramid_debugtoolbar_ajax <https://github.com/jvanasco/pyramid_debugtoolbar_ajax>`_
+    Adds an "AJAX" panel to the ``pyramid_debugtoolbar``. This panel contains
+    a button to replay the request in a new window -- allowing you to spawn a
+    debugger window for errors encountered on background ajax requests.
+
+`pyramid_debugtoolbar_dogpile <https://github.com/jvanasco/pyramid_debugtoolbar_dogpile>`_
+    dogpile caching support for pyramid_debugtoolbar.
 
 
 More Information

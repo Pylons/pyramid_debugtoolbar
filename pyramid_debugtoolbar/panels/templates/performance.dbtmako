@@ -1,5 +1,5 @@
 % if timing_rows:
-<table class="table table-striped">
+<table class="table table-striped table-condensed">
 	<colgroup>
 		<col style="width:20%"/>
 		<col/>
@@ -12,7 +12,7 @@
 	</thead>
 	<tbody>
 		% for i, (key, value) in enumerate(timing_rows):
-			<tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+			<tr>
 				<td>${key|h}</td>
 				<td>${value|h}</td>
 			</tr>
@@ -27,7 +27,7 @@
 <h4>Profile</h4>
 % if stats:
     <p>Times in milliseconds</p>
-    <table class="pDebugSortable table table-striped">
+    <table class="pDebugSortable table table-striped table-condensed">
         <thead>
             <tr>
                 <th>Calls</th>
@@ -40,7 +40,7 @@
         </thead>
         <tbody>
             % for i, row in enumerate(function_calls):
-                <tr class="${i%2 and 'pDebugEven' or 'pDebugOdd'}">
+                <tr>
                     <td>${str(row['ncalls'])}</td>
                     <td>${str(row['tottime'])}</td>
                     <td>${'%.4f' % row['percall']}</td>
