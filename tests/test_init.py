@@ -20,6 +20,7 @@ class Test_parse_settings(unittest.TestCase):
                     'debugtoolbar.global_panels': global_panels,
                     'debugtoolbar.extra_global_panels': (
                         'tests.test_init.DummyGlobalPanel'),
+                    'debugtoolbar.active_panels': 'dummy_panel',
                     'debugtoolbar.hosts': '127.0.0.1',
                     'debugtoolbar.exclude_prefixes': '/excluded\n/e2',
                     'debugtoolbar.debug_notfound': 'false',
@@ -49,7 +50,7 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.reload_resources': False,
                           'debugtoolbar.reload_assets': False,
                           'debugtoolbar.prevent_http_cache': False,
-                          'debugtoolbar.activated': [],
+                          'debugtoolbar.active_panels': ['dummy_panel'],
                           'debugtoolbar.includes': (),
                           'debugtoolbar.button_style': '',
                           'debugtoolbar.max_request_history': 100,

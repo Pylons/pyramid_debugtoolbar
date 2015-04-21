@@ -16,14 +16,17 @@ class DebugToolbarTests(unittest.TestCase):
     def tearDown(self):
         del self.config
 
-    def _makeOne(self, request, panel_classes, global_panel_classes):
+    def _makeOne(self, request, panel_classes, global_panel_classes,
+                 default_active_panels):
         from pyramid_debugtoolbar.toolbar import DebugToolbar
-        return DebugToolbar(request, panel_classes, global_panel_classes)
+        return DebugToolbar(request, panel_classes, global_panel_classes,
+                            default_active_panels)
 
     def test_ctor_panel_is_up(self):
         request = Request.blank('/')
         request.environ['HTTP_COOKIE'] = 'pdtb_active="id"'
-        toolbar = self._makeOne(request, [DummyPanelWithContent], [DummyPanelWithContent])
+        toolbar = self._makeOne(
+            request, [DummyPanelWithContent], [DummyPanelWithContent], [])
         self.assertEqual(len(toolbar.panels), 1)
         panel = toolbar.panels[0]
         self.assertEqual(panel.request, request)
@@ -32,7 +35,8 @@ class DebugToolbarTests(unittest.TestCase):
     def test_ctor_panel_has_content(self):
         request = Request.blank('/')
         request.environ['HTTP_COOKIE'] = 'pdtb_active="id"'
-        toolbar = self._makeOne(request, [DummyPanelWithContent], [DummyPanelWithContent])
+        toolbar = self._makeOne(
+            request, [DummyPanelWithContent], [DummyPanelWithContent], [])
         self.assertEqual(len(toolbar.panels), 1)
         panel = toolbar.panels[0]
         self.assertEqual(panel.request, request)
@@ -42,7 +46,7 @@ class DebugToolbarTests(unittest.TestCase):
         response = Response()
         response.content_type = 'text/plain'
         request = Request.blank('/')
-        toolbar = self._makeOne(request, [DummyPanel], [DummyPanel])
+        toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.process_response(request, response)
         self.assertTrue(response.processed)
 
@@ -55,7 +59,7 @@ class DebugToolbarTests(unittest.TestCase):
         request = Request.blank('/')
         request.id = 'abc'
         request.registry = self.config.registry
-        toolbar = self._makeOne(request, [DummyPanel], [DummyPanel])
+        toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
         self.assertTrue(bytes_('div id="pDebug"') in response.app_iter[0])
         self.assertEqual(response.content_length, len(response.app_iter[0]))
@@ -71,7 +75,7 @@ class DebugToolbarTests(unittest.TestCase):
         request = Request.blank('/')
         request.id = 'abc'
         request.registry = self.config.registry
-        toolbar = self._makeOne(request, [DummyPanel], [DummyPanel])
+        toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
         self.assertTrue(bytes_('top:120px;zoom:50%') in response.app_iter[0])
 
@@ -370,6 +374,7 @@ class Test_toolbar_handler(unittest.TestCase):
 
 
 class DummyPanel(object):
+    name = 'dummy_panel'
     is_active = False
     has_content = False
     user_activate = False
