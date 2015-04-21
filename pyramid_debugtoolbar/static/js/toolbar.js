@@ -30,7 +30,7 @@ $(".pDebugPanels li:not(.disabled) a").click( function(event_) {
 });
 
 
-$('#settings .switch').click(function() {
+$('#settings .switchable').click(function() {
   var $panel = $(this).parent();
   var $this = $(this);
   var name = $this.attr('data-pdtb-panel');

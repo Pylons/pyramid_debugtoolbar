@@ -25,6 +25,10 @@
     background-image: url(../img/tick-red.png);
 }
 
+.switch.default-active {
+    background-image: url(../img/tick-default.png);
+}
+
 li.nav-label {
     position: relative;
     display: block;

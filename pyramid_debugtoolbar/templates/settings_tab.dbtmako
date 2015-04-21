@@ -12,8 +12,12 @@
 		<h4>
 		${panel.nav_title}
 		</h4>
-		<span>Enable: </span>	<span id="${panel.dom_id}-switch" data-pdtb-panel="${panel.name}" class="switch ${'active' if panel.is_active else 'inactive'}"
+		% if panel.name in default_active_panels:
+		<span>Enabled: </span>   <span class="switch default-active" title="Panel is active by default."></span>
+		% else:
+		<span>Enabled: </span>	<span id="${panel.dom_id}-switch" data-pdtb-panel="${panel.name}" class="switch switchable ${'active' if panel.is_active else 'inactive'}"
 		title="Enable or disable the panel"> </span>
+		% endif
 	% endif
 % endfor
 

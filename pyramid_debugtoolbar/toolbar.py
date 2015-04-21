@@ -40,6 +40,7 @@ class DebugToolbar(object):
         self.global_panels = []
         self.request = request
         self.status_int = 200
+        self.default_active_panels = default_active_panels
 
         # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
