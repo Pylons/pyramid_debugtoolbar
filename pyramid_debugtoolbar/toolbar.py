@@ -34,26 +34,35 @@ class IRequestAuthorization(Interface):
 
 class DebugToolbar(object):
 
-    def __init__(self, request, panel_classes, global_panel_classes):
+    def __init__(self, request, panel_classes, global_panel_classes,
+                 default_active_panels):
         self.panels = []
         self.global_panels = []
         self.request = request
         self.status_int = 200
+        self.default_active_panels = default_active_panels
 
         # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
 
-        activated = pdtb_active.split(';')
-        # XXX
+        activated = pdtb_active.split(',')
+        # If the panel is activated in the settings, we want to enable it
+        activated.extend(default_active_panels)
+
+        def configure_panel(panel):
+            panel_inst.is_active = False
+            if panel_inst.name in activated and panel_inst.has_content:
+                panel_inst.is_active = True
+            elif not panel_inst.user_activate:
+                panel_inst.is_active = True
+
         for panel_class in panel_classes:
             panel_inst = panel_class(request)
-            if panel_inst.dom_id in activated and panel_inst.has_content:
-                panel_inst.is_active = True
+            configure_panel(panel_inst)
             self.panels.append(panel_inst)
         for panel_class in global_panel_classes:
             panel_inst = panel_class(request)
-            if panel_inst.dom_id in activated and panel_inst.has_content:
-                panel_inst.is_active = True
+            configure_panel(panel_inst)
             self.global_panels.append(panel_inst)
 
     @property
@@ -140,6 +149,8 @@ def toolbar_tween_factory(handler, registry, _logger=None):
     registry.exc_history = exc_history = None
     registry.pdtb_token = hexlify(os.urandom(10))
 
+    default_active_panels = sget('active_panels', [])
+
     if intercept_exc:
         registry.exc_history = exc_history = ExceptionHistory()
         exc_history.eval_exc = intercept_exc == 'debug'
@@ -166,7 +177,8 @@ def toolbar_tween_factory(handler, registry, _logger=None):
             or auth_check and not auth_check(request):
                 return handler(request)
 
-        toolbar = DebugToolbar(request, panel_classes, global_panel_classes)
+        toolbar = DebugToolbar(request, panel_classes, global_panel_classes,
+                               default_active_panels)
         request.debug_toolbar = toolbar
 
         _handler = handler

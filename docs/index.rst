@@ -198,6 +198,18 @@ file.
   If configuration is done via Python, the setting should be a list.  This
   setting was added in debugtoolbar version 1.0.4.
 
+``debugtoolbar.active_panels``
+
+  A space-separated list of panel names (see
+  :attr:`pyramid_debugtoolbar.panels.DebugPanel.name`). This list of panels
+  will have their :attr:`pyramid_debugtoolbar.panels.DebugPanel.is_active`
+  state set to ``True`` always. For example::
+
+    debugtoolbar.active_panels = performance
+
+  This activation setting will override any per-request settings set via
+  :ref:`activating_panels`.
+
 ``debugtoolbar.max_request_history``
 
   The debug toolbar works by storing the original request and it's associated
@@ -298,6 +310,27 @@ functionality is enabled or not.
    config.include('pyramid_debugtoolbar')
    config.set_debugtoolbar_request_authorization(admin_only_debugtoolbar)
 
+.. _activating_panels:
+
+Activating Panels
+~~~~~~~~~~~~~~~~~
+
+Most panels do not support any extra active features and need not be
+explicitly activated. However, some panels support an optional
+:attr:`~pyramid_debugtoolbar.panel.DebugPanel.is_active` state in which they
+will do some extra work. For example, the
+:class:`~pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel``
+will not do profiling of your requests unless it has been activated.
+
+This activation can be controlled on a per-request basis by setting the
+``pdtb_active`` cookie to a comma-separated list of panel names.
+For example::
+
+  Cookie: pdtb_active=performance,foo,bar
+
+A panel name is defined by the
+:attr:`~pyramid_debugtoolbar.panels.DebugPanel.name` attribute of each
+debug panel.
 
 The Toolbar
 -----------

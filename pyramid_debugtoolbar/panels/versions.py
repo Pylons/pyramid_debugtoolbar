@@ -23,7 +23,7 @@ class VersionDebugPanel(DebugPanel):
     Panel that displays the Python version, the Pyramid version, and the
     versions of other software on your PYTHONPATH.
     """
-    name = 'Version'
+    name = 'versions'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/versions.dbtmako'
     title = _('Versions')

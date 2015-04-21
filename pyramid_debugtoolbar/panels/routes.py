@@ -14,7 +14,7 @@ class RoutesDebugPanel(DebugPanel):
     """
     A panel to display the routes used by your Pyramid application.
     """
-    name = 'Routes'
+    name = 'routes'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/routes.dbtmako'
     title = _('Routes')

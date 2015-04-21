@@ -10,7 +10,7 @@ from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 _ = lambda x: x
 
 class TracebackPanel(DebugPanel):
-    name = 'Traceback'
+    name = 'traceback'
     template = 'pyramid_debugtoolbar.panels:templates/traceback.dbtmako'
     title = _('Traceback')
     nav_title = title

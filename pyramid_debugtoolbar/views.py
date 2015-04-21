@@ -242,6 +242,8 @@ def request_view(request):
             'root_path': root_path,
             'button_style': button_style,
             'history': hist_toolbars,
+            'default_active_panels': (
+                toolbar.default_active_panels if toolbar else []),
             'global_panels': toolbar.global_panels if toolbar else [],
             'request_id': request_id
             }
