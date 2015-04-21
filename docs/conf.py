@@ -21,24 +21,7 @@ import sys, os
 
 import pkg_resources
 
-# Add and use Pylons theme
-if 'sphinx-build' in ' '.join(sys.argv):  # protect against dumb importers
-    from subprocess import call, Popen, PIPE
-    cwd = os.getcwd()
-    p = Popen('which git', shell=True, stdout=PIPE)
-    here = os.path.abspath(os.path.dirname(__file__))
-    parent = os.path.abspath(os.path.dirname(here))
-    _themes = os.path.join(here, '_themes')
-    git = p.stdout.read().strip()
-    try:
-        os.chdir(parent)
-        if not os.listdir(_themes):
-            call([git, 'submodule', 'update', '--init', '--recursive'])
-        else:
-            call([git, 'submodule', 'update'])
-        sys.path.append(_themes)
-    finally:
-        os.chdir(cwd)
+import pylons_sphinx_themes
 
 # General configuration
 # ---------------------
@@ -114,8 +97,7 @@ pygments_style = 'sphinx'
 # -----------------------
 
 # Add and use Pylons theme
-sys.path.append(os.path.abspath('_themes'))
-html_theme_path = ['_themes']
+html_theme_path = pylons_sphinx_themes.get_html_themes_path()
 html_theme = 'pyramid'
 html_theme_options = dict(github_url='https://github.com/Pylons/pyramid_debugtoolbar')
 

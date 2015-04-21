@@ -43,6 +43,7 @@ testing_extras = [
 
 docs_extras = [
     'Sphinx',
+     'pylons-sphinx-themes >= 0.3',
     ]
 
 setup(name='pyramid_debugtoolbar',
