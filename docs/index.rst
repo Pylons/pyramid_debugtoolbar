@@ -207,8 +207,8 @@ file.
 
     debugtoolbar.active_panels = performance
 
-  This activation setting will override any per-request settings set via
-  :ref:`activating_panels`.
+  This will set the listed panels to always be active. Instead, in order
+  to enable per-request activation see :ref:`activating_panels`.
 
 ``debugtoolbar.max_request_history``
 

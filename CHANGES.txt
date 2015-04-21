@@ -7,7 +7,7 @@ unreleased
   basis by curl or other http APIs.
 
 - Add new ``debugtoolbar.active_panels`` setting which can specify certain
-  panels to be active by default.
+  panels to be always active.
 
 - Modify ``DebugPanel.name`` to be a valid python identifier, used for
   settings and lookup.
