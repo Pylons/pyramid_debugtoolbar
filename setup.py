@@ -25,7 +25,7 @@ except IOError:
     README = CHANGES = ''
 
 install_requires = [
-    'pyramid>=1.2dev',
+    'pyramid>=1.4',
     'pyramid_mako>=0.3.1', # lazy configuration loading works
     'repoze.lru',
     ]

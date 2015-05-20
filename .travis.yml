@@ -13,6 +13,8 @@ env:
   - TOXENV=py2-docs
   - TOXENV=py3-docs
   - TOXENV=py2-cover,py3-cover,coverage
+  - TOXENV=py27-pyramid14
+  - TOXENV=py27-pyramid15
 
 install:
   - travis_retry pip install tox
