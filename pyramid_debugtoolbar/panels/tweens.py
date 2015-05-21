@@ -17,7 +17,6 @@ class TweensDebugPanel(DebugPanel):
     nav_title = title
 
     def __init__(self, request):
-        self.request = request
         self.tweens = request.registry.queryUtility(ITweens)
         if self.tweens is None:
             self.has_content = False
