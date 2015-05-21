@@ -37,6 +37,7 @@ else:
     install_requires.append('Pygments')
 
 testing_extras = [
+    'WebTest',
     'nose',
     'coverage',
     ]
