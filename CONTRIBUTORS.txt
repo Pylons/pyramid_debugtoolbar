@@ -116,3 +116,4 @@ Contributors
 - Bert JW Regeer, 2014-04-25
 - Jonathan Vanasco, 2014-04-30
 - Marco Martinez, 2014-12-26
+- Jon Rosebaugh, 2015-05-21

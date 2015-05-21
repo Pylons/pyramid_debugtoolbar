@@ -35,7 +35,7 @@ def valid_host(info, request):
 
 
 def valid_request(info, request):
-    auth_check = request.registry.queryUtility(IRequestAuthorization)
+    auth_check = request.registry.parent_registry.queryUtility(IRequestAuthorization)
     return auth_check(request) if auth_check else True
 
 
