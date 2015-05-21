@@ -24,7 +24,6 @@ class DebugToolbarTests(unittest.TestCase):
 
     def test_ctor_panel_is_up(self):
         request = Request.blank('/')
-        request.environ['HTTP_COOKIE'] = 'pdtb_active="id"'
         toolbar = self._makeOne(
             request, [DummyPanelWithContent], [DummyPanelWithContent], [])
         self.assertEqual(len(toolbar.panels), 1)
@@ -34,13 +33,12 @@ class DebugToolbarTests(unittest.TestCase):
 
     def test_ctor_panel_has_content(self):
         request = Request.blank('/')
-        request.environ['HTTP_COOKIE'] = 'pdtb_active="id"'
         toolbar = self._makeOne(
             request, [DummyPanelWithContent], [DummyPanelWithContent], [])
         self.assertEqual(len(toolbar.panels), 1)
         panel = toolbar.panels[0]
         self.assertEqual(panel.request, request)
-        self.assertEqual(panel.is_active, True)
+        self.assertEqual(panel.has_content, True)
 
     def test_process_response_nonhtml(self):
         response = Response()
