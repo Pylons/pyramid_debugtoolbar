@@ -12,6 +12,10 @@ unreleased
 - Modify ``DebugPanel.name`` to be a valid python identifier, used for
   settings and lookup.
 
+- The toolbar no longer will clobber the ``request.id`` property. It now
+  namespaces its usage as ``request.pdbt_id``, freeing up ``request.id``
+  for applications.
+
 - Add a lock icon next to the request method in the sidebar if the request
   was accessed over https.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/213
