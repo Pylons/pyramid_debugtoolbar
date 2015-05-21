@@ -57,7 +57,7 @@ class DebugToolbarTests(unittest.TestCase):
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
-        request.id = 'abc'
+        request.pdbt_id = 'abc'
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
@@ -73,7 +73,7 @@ class DebugToolbarTests(unittest.TestCase):
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
-        request.id = 'abc'
+        request.pdbt_id = 'abc'
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
