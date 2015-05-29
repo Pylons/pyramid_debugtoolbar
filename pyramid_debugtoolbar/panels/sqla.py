@@ -75,6 +75,7 @@ class SQLADebugPanel(DebugPanel):
         else:
             self.engines = request.registry.pdtb_sqla_engines = {}
         self.token = request.registry.pdtb_token
+        self.pdbt_id = request.pdbt_id
 
     @property
     def has_content(self):
@@ -90,7 +91,7 @@ class SQLADebugPanel(DebugPanel):
 
     def process_response(self, response):
         data = []
-        for query in self.queries:
+        for index, query in enumerate(self.queries):
             stmt = query['statement']
 
             is_select = stmt.strip().lower().startswith('select')
@@ -115,6 +116,7 @@ class SQLADebugPanel(DebugPanel):
                 'params': params,
                 'is_select': is_select,
                 'context': query['context'],
+                'query_index': index,
             })
 
         self.data = {
@@ -129,6 +131,8 @@ class SQLADebugPanel(DebugPanel):
 
     def render_vars(self, request):
         return {
+            'pdbt_id': self.pdbt_id,
+            'route_url': request.route_url,
             'static_path': request.static_url(STATIC_PATH),
             'root_path': request.route_url(ROOT_ROUTE_NAME)
         }

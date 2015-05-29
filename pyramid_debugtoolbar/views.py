@@ -128,19 +128,14 @@ class ExceptionDebugView(object):
 class SQLAlchemyViews(object):
     def __init__(self, request):
         self.request = request
-        self.token = request.registry.parent_registry.pdtb_token
 
-    def validate(self):
-        stmt = self.request.params['sql']
-        params = self.request.params['params']
-
-        # Validate hash
-        need = self.token + stmt + url_quote(params)
-
-        hash = hashlib.sha1(bytes_(need)).hexdigest()
-        if hash != self.request.params['hash']:
-            raise HTTPBadRequest('Bad token in request')
-        return stmt, params
+    def find_query(self):
+        request_id = self.request.matchdict['request_id']
+        all_history = find_request_history(self.request)
+        history = all_history.get(request_id)
+        sqlapanel = [p for p in history.panels if p.name == 'sqlalchemy'][0]
+        query_index = int(self.request.matchdict['query_index'])
+        return sqlapanel.queries[query_index]
 
     @view_config(
         route_name='debugtoolbar.sql_select',
@@ -149,8 +144,10 @@ class SQLAlchemyViews(object):
         custom_predicates=(valid_host, valid_request)
         )
     def sql_select(self):
-        stmt, params = self.validate()
-        engine_id = self.request.params['engine_id']
+        query_dict = self.find_query()
+        stmt = query_dict['statement']
+        engine_id = query_dict['engine_id']
+        params = query_dict['parameters']
         # Make sure it is a select statement
         if not stmt.lower().strip().startswith('select'):
             raise HTTPBadRequest('Not a SELECT SQL statement')
@@ -160,14 +157,13 @@ class SQLAlchemyViews(object):
 
         engines = self.request.registry.parent_registry.pdtb_sqla_engines
         engine = engines[int(engine_id)]()
-        params = [json.loads(params)]
         result = engine.execute(stmt, params)
 
         return {
             'result': result.fetchall(),
             'headers': result.keys(),
             'sql': format_sql(stmt),
-            'duration': float(self.request.params['duration']),
+            'duration': float(query_dict['duration']),
         }
 
     @view_config(
@@ -177,15 +173,16 @@ class SQLAlchemyViews(object):
         custom_predicates=(valid_host, valid_request)
         )
     def sql_explain(self):
-        stmt, params = self.validate()
-        engine_id = self.request.params['engine_id']
+        query_dict = self.find_query()
+        stmt = query_dict['statement']
+        engine_id = query_dict['engine_id']
+        params = query_dict['parameters']
 
         if not engine_id:
             raise HTTPBadRequest('No valid database engine')
 
         engines = self.request.registry.parent_registry.pdtb_sqla_engines
         engine = engines[int(engine_id)]()
-        params = json.loads(params)
 
         if engine.name.startswith('sqlite'):
             query = 'EXPLAIN QUERY PLAN %s' % stmt
@@ -199,7 +196,7 @@ class SQLAlchemyViews(object):
             'headers': result.keys(),
             'sql': format_sql(stmt),
             'str': str,
-            'duration': float(self.request.params['duration']),
+            'duration': float(query_dict['duration']),
         }
 
 

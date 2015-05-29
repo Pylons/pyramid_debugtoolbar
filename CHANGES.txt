@@ -29,6 +29,10 @@ unreleased
 - Fix auth callback so it protects the toolbar views. Auth system is tested now.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/226
 
+- Convert SQLAlchemy views to obtain the query and params internally; this allows
+  executing queries with parameters that are not serializable.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/227
+
 2.3 (2015-01-05)
 ----------------
 
