@@ -13,13 +13,10 @@
 		<tr>
 			<td>${'%.2f' % query['duration']}</td>
 			<td>
-
-			% if query['params']:
-				% if query['is_select']:
-					<!-- Button to trigger modal -->
-					<a href="${root_path}/sqlalchemy/sql_select?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}" data-target="#SelectModal" data-toggle="modal">SELECT</a>
-					<a href="${root_path}/sqlalchemy/sql_explain?sql=${query['raw_sql']|u,n}&amp;params=${query['params']}&amp;duration=${str(query['duration'])|u}&amp;hash=${query['hash']}&amp;engine_id=${str(query['engine_id'])|u}" data-target="#ExplainModal" data-toggle="modal">EXPLAIN</a>
-				% endif
+			% if query['is_select']:
+				<!-- Button to trigger modal -->
+				<a href="${route_url('debugtoolbar.sql_select', request_id=pdbt_id, query_index=query['query_index'])}" data-target="#SelectModal" data-toggle="modal">SELECT</a>
+				<a href="${route_url('debugtoolbar.sql_explain', request_id=pdbt_id, query_index=query['query_index'])}" data-target="#ExplainModal" data-toggle="modal">EXPLAIN</a>
 			% endif
 			</td>
 			<td>${query['sql']|n}</td>

@@ -177,6 +177,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
             or auth_check and not auth_check(request):
                 return handler(request)
 
+        request.pdbt_id = hexlify(id(request))
         toolbar = DebugToolbar(request, panel_classes, global_panel_classes,
                                default_active_panels)
         request.debug_toolbar = toolbar
@@ -218,7 +219,6 @@ def toolbar_tween_factory(handler, registry, _logger=None):
 
                 toolbar.process_response(request, response)
 
-                request.pdbt_id = hexlify(id(request))
                 toolbar.response = response
                 toolbar.status_int = response.status_int
 
@@ -251,7 +251,6 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                         response.status_int = 200
 
             toolbar.process_response(request, response)
-            request.pdbt_id = hexlify(id(request))
             # Don't store the favicon.ico request
             # it's requested by the browser automatically
             if not "/favicon.ico" == request.path:
