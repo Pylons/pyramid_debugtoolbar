@@ -252,7 +252,7 @@ class Test_toolbar_handler(unittest.TestCase):
         response = self._callFUT(request, handler, _logger=logger)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
-        self.assertTrue(response.status_int, 500)
+        self.assertEqual(response.status_int, 500)
 
     def test_it_intercept_redirect_nonredirect_code(self):
         request = Request.blank('/')
@@ -287,7 +287,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
         response = self._callFUT(request, handler, _logger=logger)
-        self.assertTrue(response.status_int, 500)
+        self.assertEqual(response.status_int, 500)
         self.assertTrue(
             b'NotImplementedError: K\xc3\xa4se!\xe2\x98\xa0' in response.body or
             # Python 3: the byte exception is escaped
@@ -307,7 +307,7 @@ class Test_toolbar_handler(unittest.TestCase):
         logger = DummyLogger()
         response = self._callFUT(request, handler, _logger=logger)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
-        self.assertTrue(response.status_int, 500)
+        self.assertEqual(response.status_int, 500)
 
     def test_show_on_exc_without_exc_raised(self):
         request = Request.blank('/')
@@ -322,7 +322,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
-        self.assertTrue(response.status_int, 200)
+        self.assertEqual(response.status_int, 200)
         self.assertEqual(response.body, b"<html><body>OK!</body></html>")
         self.assertFalse(hasattr(request, 'debug_toolbar'))
 
@@ -339,7 +339,7 @@ class Test_toolbar_handler(unittest.TestCase):
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
-        self.assertTrue(response.status_int, 200)
+        self.assertEqual(response.status_int, 200)
         self.assertNotEqual(response.body, b"<html><body>OK!</body></html>")
         self.assertFalse(hasattr(request, 'debug_toolbar'))
 
