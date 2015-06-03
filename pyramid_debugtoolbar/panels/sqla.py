@@ -75,7 +75,7 @@ class SQLADebugPanel(DebugPanel):
         else:
             self.engines = request.registry.pdtb_sqla_engines = {}
         self.token = request.registry.pdtb_token
-        self.pdbt_id = request.pdbt_id
+        self.pdtb_id = request.pdtb_id
 
     @property
     def has_content(self):
@@ -131,7 +131,7 @@ class SQLADebugPanel(DebugPanel):
 
     def render_vars(self, request):
         return {
-            'pdbt_id': self.pdbt_id,
+            'pdtb_id': self.pdtb_id,
             'route_url': request.route_url,
             'static_path': request.static_url(STATIC_PATH),
             'root_path': request.route_url(ROOT_ROUTE_NAME)

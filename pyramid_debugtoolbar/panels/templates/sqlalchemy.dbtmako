@@ -15,8 +15,8 @@
 			<td>
 			% if query['is_select']:
 				<!-- Button to trigger modal -->
-				<a href="${route_url('debugtoolbar.sql_select', request_id=pdbt_id, query_index=query['query_index'])}" data-target="#SelectModal" data-toggle="modal">SELECT</a>
-				<a href="${route_url('debugtoolbar.sql_explain', request_id=pdbt_id, query_index=query['query_index'])}" data-target="#ExplainModal" data-toggle="modal">EXPLAIN</a>
+				<a href="${route_url('debugtoolbar.sql_select', request_id=pdtb_id, query_index=query['query_index'])}" data-target="#SelectModal" data-toggle="modal">SELECT</a>
+				<a href="${route_url('debugtoolbar.sql_explain', request_id=pdtb_id, query_index=query['query_index'])}" data-target="#ExplainModal" data-toggle="modal">EXPLAIN</a>
 			% endif
 			</td>
 			<td>${query['sql']|n}</td>

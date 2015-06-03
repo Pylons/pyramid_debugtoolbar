@@ -88,7 +88,7 @@ class DebugToolbar(object):
         """
         # called in host app
         response_html = response.body
-        toolbar_url = debug_toolbar_url(request, request.pdbt_id)
+        toolbar_url = debug_toolbar_url(request, request.pdtb_id)
         button_style = get_setting(request.registry.settings,
                 'button_style', '')
         css_path = request.static_url(STATIC_PATH + 'css/toolbar_button.css')
@@ -177,7 +177,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
             or auth_check and not auth_check(request):
                 return handler(request)
 
-        request.pdbt_id = hexlify(id(request))
+        request.pdtb_id = hexlify(id(request))
         toolbar = DebugToolbar(request, panel_classes, global_panel_classes,
                                default_active_panels)
         request.debug_toolbar = toolbar
@@ -222,7 +222,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                 toolbar.response = response
                 toolbar.status_int = response.status_int
 
-                request_history.put(request.pdbt_id, toolbar)
+                request_history.put(request.pdtb_id, toolbar)
                 toolbar.inject(request, response)
                 return response
             else:
@@ -255,7 +255,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
             # it's requested by the browser automatically
             if not "/favicon.ico" == request.path:
                 toolbar.response = response
-                request_history.put(request.pdbt_id, toolbar)
+                request_history.put(request.pdtb_id, toolbar)
 
             if not show_on_exc_only and response.content_type in html_types:
                 toolbar.inject(request, response)
