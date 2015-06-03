@@ -17,8 +17,10 @@ from pyramid_debugtoolbar.utils import (
     SETTINGS_PREFIX,
     STATIC_PATH,
 )
-from pyramid_debugtoolbar.toolbar import (IRequestAuthorization,
-                                          toolbar_tween_factory)  # API
+from pyramid_debugtoolbar.toolbar import (
+    IRequestAuthorization,
+    IToolbarWSGIApp,
+    toolbar_tween_factory)  # API
 toolbar_tween_factory = toolbar_tween_factory  # pyflakes
 
 default_panel_names = (
@@ -107,11 +109,11 @@ def transform_settings(settings):
 
     return parsed
 
-def set_request_authorization_callback(request, callback):
+def set_request_authorization_callback(config, callback):
     """
     Register IRequestAuthorization utility to authorize toolbar per request.
     """
-    request.registry.registerUtility(callback, IRequestAuthorization)
+    config.registry.registerUtility(callback, IRequestAuthorization)
 
 def includeme(config):
     """ Activate the debug toolbar; usually called via
@@ -141,6 +143,7 @@ def includeme(config):
 
     # Create the new application using the updated settings
     application = make_application(settings, config.registry)
+    config.registry.registerUtility(application, IToolbarWSGIApp)
     config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
     config.add_view(wsgiapp2(application), route_name='debugtoolbar',
                     permission=NO_PERMISSION_REQUIRED)
