@@ -32,6 +32,14 @@ class IRequestAuthorization(Interface):
         """
 
 
+class IToolbarWSGIApp(Interface):
+
+    def __call__(environ, start_response):
+        """
+        Toolbar's WSGI app, used to render toolbar views.
+        """
+
+
 class DebugToolbar(object):
 
     def __init__(self, request, panel_classes, global_panel_classes,
@@ -145,6 +153,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
     show_on_exc_only = sget('show_on_exc_only')
     hosts = sget('hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
+    toolbar_wsgiapp = registry.queryUtility(IToolbarWSGIApp)
     exclude_prefixes = sget('exclude_prefixes', [])
     registry.exc_history = exc_history = None
     registry.pdtb_token = hexlify(os.urandom(10))
@@ -205,6 +214,7 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                 qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
                 exc_url = debug_toolbar_url(request, 'exception', _query=qs)
+                
                 exc_msg = msg % (request.url, exc_url)
                 _logger.exception(exc_msg)
 
@@ -215,8 +225,18 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                 subrequest.script_name = request.script_name
                 subrequest.path_info = \
                     subrequest.path_info[len(request.script_name):]
-                response = request.invoke_subrequest(subrequest)
+                # probably this is not the best way to do this
+                # but we need to remove the _debug_toolbar/ from the path_info
+                # and put it into script_name. this is basically the same
+                # transformation done by wsgiapp2; we have to do it
+                # before route matching occurs on the subrequest
+                subrequest.script_name += '/_debug_toolbar'
+                subrequest.path_info = subrequest.path_info.replace('_debug_toolbar/', '', 1)
 
+                response = subrequest.get_response(toolbar_wsgiapp)
+
+                # The toolbar must process the original response so that it can be
+                # examined later in the full toolbar view.
                 toolbar.process_response(request, response)
 
                 toolbar.response = response
