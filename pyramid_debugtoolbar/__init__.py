@@ -107,11 +107,11 @@ def transform_settings(settings):
 
     return parsed
 
-def set_request_authorization_callback(request, callback):
+def set_request_authorization_callback(config, callback):
     """
     Register IRequestAuthorization utility to authorize toolbar per request.
     """
-    request.registry.registerUtility(callback, IRequestAuthorization)
+    config.registry.registerUtility(callback, IRequestAuthorization)
 
 def includeme(config):
     """ Activate the debug toolbar; usually called via
