@@ -1,17 +1,13 @@
-import hashlib
-
 from pyramid.events import subscriber
 from pyramid.events import NewRequest
-from pyramid.exceptions import NotFound
 from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
 from pyramid.view import view_config
 
 from pyramid_debugtoolbar.compat import json
-from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import text_
-from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.console import _ConsoleFrame
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import find_request_history
@@ -24,19 +20,25 @@ from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
 U_BLANK = text_("")
 
-def valid_host(info, request):
-    hosts = get_setting(request.registry.settings, 'hosts')
-    if request.remote_addr is None:
-        return False
+def valid_host(wrapped):
+    def wrapper(context, request):
+        hosts = get_setting(request.registry.settings, 'hosts')
+        if request.remote_addr is not None:
+            last_proxy_addr = last_proxy(request.remote_addr)
+            if addr_in(last_proxy_addr, hosts):
+                return wrapped(context, request)
+        raise HTTPNotFound('untrusted client ip address')
+    return wrapper
 
-    last_proxy_addr = last_proxy(request.remote_addr)
 
-    return addr_in(last_proxy_addr, hosts)
-
-
-def valid_request(info, request):
-    auth_check = request.registry.parent_registry.queryUtility(IRequestAuthorization)
-    return auth_check(request) if auth_check else True
+def valid_request(wrapped):
+    def wrapper(context, request):
+        parent_registry = request.registry.parent_registry
+        auth_check = parent_registry.queryUtility(IRequestAuthorization)
+        if auth_check is None or auth_check(request):
+            return wrapped(context, request)
+        raise HTTPNotFound('client authorization failed')
+    return wrapper
 
 
 class ExceptionDebugView(object):
@@ -66,7 +68,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.exception',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host, valid_request)
+        decorator=[valid_host, valid_request],
         )
     def exception(self):
         tb = self.exc_history.tracebacks[self.tb]
@@ -77,7 +79,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.source',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host, valid_request)
+        decorator=[valid_host, valid_request],
         )
     def source(self):
         exc_history = self.exc_history
@@ -90,7 +92,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.execute',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host, valid_request)
+        decorator=[valid_host, valid_request],
         )
     def execute(self):
         if self.request.exc_history.eval_exc:
@@ -105,7 +107,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.console',
         renderer='pyramid_debugtoolbar:templates/console.dbtmako',
-        custom_predicates=(valid_host, valid_request)
+        decorator=[valid_host, valid_request],
         )
     def console(self):
         static_path = self.request.static_url(STATIC_PATH)
@@ -141,7 +143,7 @@ class SQLAlchemyViews(object):
         route_name='debugtoolbar.sql_select',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host, valid_request)
+        decorator=[valid_host, valid_request],
         )
     def sql_select(self):
         query_dict = self.find_query()
@@ -170,7 +172,7 @@ class SQLAlchemyViews(object):
         route_name='debugtoolbar.sql_explain',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako',
         permission=NO_PERMISSION_REQUIRED,
-        custom_predicates=(valid_host, valid_request)
+        decorator=[valid_host, valid_request],
         )
     def sql_explain(self):
         query_dict = self.find_query()
@@ -203,13 +205,13 @@ class SQLAlchemyViews(object):
 @view_config(
     route_name='debugtoolbar.main',
     permission=NO_PERMISSION_REQUIRED,
-    custom_predicates=(valid_host, valid_request),
+    decorator=[valid_host, valid_request],
     renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
 )
 @view_config(
     route_name='debugtoolbar.request',
     permission=NO_PERMISSION_REQUIRED,
-    custom_predicates=(valid_host, valid_request),
+    decorator=[valid_host, valid_request],
     renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
 )
 def request_view(request):
@@ -247,6 +249,7 @@ def request_view(request):
 
 U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
 @view_config(route_name='debugtoolbar.sse',
+             decorator=[valid_host, valid_request],
              permission=NO_PERMISSION_REQUIRED)
 def sse(request):
     response = request.response
