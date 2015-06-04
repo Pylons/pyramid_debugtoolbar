@@ -13,7 +13,7 @@ unreleased
   settings and lookup.
 
 - The toolbar no longer will clobber the ``request.id`` property. It now
-  namespaces its usage as ``request.pdbt_id``, freeing up ``request.id``
+  namespaces its usage as ``request.pdtb_id``, freeing up ``request.id``
   for applications.
 
 - Add a lock icon next to the request method in the sidebar if the request
@@ -26,18 +26,20 @@ unreleased
 - Fix display of POST variables where the same key is used multiple times.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/210
 
-- Fix auth callback so it protects the toolbar views. Auth system is tested now.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/226
+- Fix auth callback so it protects the toolbar views. Auth system is tested
+  now. See https://github.com/Pylons/pyramid_debugtoolbar/pull/226
 
-- Convert SQLAlchemy views to obtain the query and params internally; this allows
-  executing queries with parameters that are not serializable.
+- Convert SQLAlchemy views to obtain the query and params internally; this
+  allows executing queries with parameters that are not serializable.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/227
 
 - Adds Pyramid version tests and bumps required Pyramid version to 1.4.
   The pyramid_mako dependency requires 1.3, but debugtoolbar also uses
-  invoke_subrequest which was added in 1.4. The invoke_subrequest call was added
-  in pyramid_debugtoolbar 2.0; if you need Pyramid 1.3 compatibility, try an older
-  version. See https://github.com/Pylons/pyramid_debugtoolbar/issues/183
+  ``invoke_subrequest`` which was added in 1.4. The ``invoke_subrequest`` call
+  was added
+  in pyramid_debugtoolbar 2.0; if you need Pyramid 1.3 compatibility, try
+  an older version.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/183
   and https://github.com/Pylons/pyramid_debugtoolbar/pull/225
 
 2.3 (2015-01-05)

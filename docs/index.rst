@@ -14,10 +14,6 @@ The toolbar is a blatant rip-off of Michael van Tellingen's
 ``django-debugtoolbar``).  It also includes a lightly sanded down version of
 the Werkzeug debugger code by Armin Ronacher and team.
 
-.. warning::
-
-   This package only works with Pyramid 1.2a1 and better.
-
 Installation
 ------------
 
