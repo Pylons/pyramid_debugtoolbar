@@ -217,12 +217,15 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                     subrequest.path_info[len(request.script_name):]
                 response = request.invoke_subrequest(subrequest)
 
+                # The original request must be processed so that the panel data exists
+                # if the request is later examined in the full toolbar view.
                 toolbar.process_response(request, response)
 
                 toolbar.response = response
                 toolbar.status_int = response.status_int
 
                 request_history.put(request.pdtb_id, toolbar)
+                # Inject the button to activate the full toolbar view.
                 toolbar.inject(request, response)
                 return response
             else:
