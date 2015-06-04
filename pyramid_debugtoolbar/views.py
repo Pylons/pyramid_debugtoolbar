@@ -25,10 +25,9 @@ def valid_host(wrapped):
         hosts = get_setting(request.registry.settings, 'hosts')
         if request.remote_addr is not None:
             last_proxy_addr = last_proxy(request.remote_addr)
-
             if addr_in(last_proxy_addr, hosts):
                 return wrapped(context, request)
-        raise HTTPNotFound
+        raise HTTPNotFound('untrusted client ip address')
     return wrapper
 
 
@@ -38,7 +37,7 @@ def valid_request(wrapped):
         auth_check = parent_registry.queryUtility(IRequestAuthorization)
         if auth_check is None or auth_check(request):
             return wrapped(context, request)
-        raise HTTPNotFound
+        raise HTTPNotFound('client authorization failed')
     return wrapper
 
 
