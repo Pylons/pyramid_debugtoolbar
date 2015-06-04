@@ -73,6 +73,4 @@ class Test_auth(unittest.TestCase):
         resp = self._req('/hello/protected', remote_user='admin')
         new_url = resp.html.body.div.div.a['href']
         resp = self._req(new_url, remote_user=None, status=404)
-        # predicate mismatch appears because the valid_request predicate forbids access
-        self.assertTrue(b'predicate mismatch' in resp.body, 'incorrect body')
-        self.assertTrue(b'valid_request' in resp.body, 'incorrect body')
+        self.assertTrue(b'client authorization failed' in resp.body, 'incorrect body')
