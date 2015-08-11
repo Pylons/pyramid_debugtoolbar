@@ -103,15 +103,11 @@ class SQLADebugPanel(DebugPanel):
             except UnicodeDecodeError:
                 pass # parameters contain non-utf8 (probably binary) data
 
-            need = self.token + stmt + params
-            hash = hashlib.sha1(bytes_(need)).hexdigest()
-
             data.append({
                 'engine_id': query['engine_id'],
                 'duration': query['duration'],
                 'sql': format_sql(stmt),
                 'raw_sql': stmt,
-                'hash': hash,
                 'parameters': query['parameters'],
                 'params': params,
                 'is_select': is_select,
