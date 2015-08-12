@@ -1,3 +1,10 @@
+unreleased
+----------
+
+- Remove the extra query hash constructed when indexing into SQL queries via
+  url as it was unused after releasing 2.4.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/232
+
 2.4 (2015-06-04)
 ----------------
 
