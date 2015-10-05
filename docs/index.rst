@@ -331,13 +331,13 @@ debug panel.
 The Toolbar
 -----------
 
-When you include the toolbar in your application, a floating toolbar logo
-will appear over your application's HTML:
+When you include the toolbar in your application, a floating Pyramid logo
+will appear on the upper right over your application's HTML:
 
 .. image:: toolbar-closed.png
 
-If you click on the "Pyramid DT" logo, a new target window will open with
-your current request highlighted and all of your configured panels loaded.
+If you click on the Pyramid logo, a new target window will open with your
+current request highlighted and all of your configured panels loaded.
 
 .. image:: toolbar-open.png
 
