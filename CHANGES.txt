@@ -1,3 +1,12 @@
+2.4.2 (2015-10-28)
+------------------
+
+- Fix a long-standing bug in which log messages were not rendered until
+  the end of the response. By this time the arguments passed to the logger
+  may no longer be valid (such as SQLAlchemy managed objects) and you would
+  see a ``DetachedInstanceError``.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/188
+
 2.4.1 (2015-08-12)
 ------------------
 
