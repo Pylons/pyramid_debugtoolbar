@@ -20,7 +20,14 @@ class ThreadTrackingHandler(logging.Handler):
         self.records = {} # a dictionary that maps threads to log records
 
     def emit(self, record):
-        self.get_records().append(record)
+        self.get_records().append({
+            'message': record.getMessage(),
+            'time': datetime.datetime.fromtimestamp(record.created),
+            'level': record.levelname,
+            'file': format_fname(record.pathname),
+            'file_long': record.pathname,
+            'line': record.lineno,
+        })
 
     def get_records(self, thread=None):
         """
@@ -52,17 +59,7 @@ class LoggingPanel(DebugPanel):
         handler.clear_records()
 
     def process_response(self, response):
-        records = []
-        for record in self.get_and_delete():
-            records.append({
-                'message': record.getMessage(),
-                'time': datetime.datetime.fromtimestamp(record.created),
-                'level': record.levelname,
-                'file': format_fname(record.pathname),
-                'file_long': record.pathname,
-                'line': record.lineno,
-            })
-
+        records = self.get_and_delete()
         self.data = {'records': records}
 
     @property
