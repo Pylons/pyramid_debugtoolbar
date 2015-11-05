@@ -9,35 +9,39 @@ _ = lambda x: x
 
 # extractable_request_attributes allow us to programmatically pull data
 # the format is...
-#                                 ( attr_, is_show_dict, is_execute_method )
+#                                 ( attr_, is_show_dict, )
 extractable_request_attributes = (
-                                  ('accept_charset', None, None),
-                                  ('accept_encoding', None, None),
-                                  ('accept_language', None, None),
-                                  ('application_url', None, None),
-                                  ('authenticated_userid', None, None),
-                                  ('authorization', None, None),
-                                  ('cache_control', None, None),
-                                  ('context', None, None),
-                                  ('current_route_path', None, True),
-                                  ('current_route_url', None, True),
-                                  ('effective_principals', None, None),
-                                  ('exc_info', None, None),
-                                  ('exception', None, None),
-                                  ('locale_name', None, None),
-                                  ('matchdict', None, None),
-                                  ('matched_route', True, None),
-                                  # ('registry', None, None),  # see "Note1"
-                                  ('root', None, None),
-                                  ('subpath', None, None),
-                                  ('traversed', None, None),
-                                  ('unauthenticated_userid', None, None),
-                                  ('view_name', None, None),
-                                  ('virtual_root_path', None, None),
-                                  ('virtual_root', None, None),
+                                  ('accept_charset', None, ),
+                                  ('accept_encoding', None, ),
+                                  ('accept_language', None, ),
+                                  ('application_url', None, ),
+                                  ('authenticated_userid', None, ),
+                                  ('authorization', None, ),
+                                  ('cache_control', None, ),
+                                  ('context', None, ),
+                                  ('effective_principals', None, ),
+                                  ('exc_info', None, ),
+                                  ('exception', None, ),
+                                  ('locale_name', None, ),
+                                  ('matchdict', None, ),
+                                  ('matched_route', True, ),
+                                  ('path', None, ),
+                                  # ('registry', None, ),  # see "Note1"
+                                  ('root', None, ),
+                                  ('subpath', None, ),
+                                  ('traversed', None, ),
+                                  ('unauthenticated_userid', None, ),
+                                  ('url', None, ),
+                                  ('view_name', None, ),
+                                  ('virtual_root_path', None, ),
+                                  ('virtual_root', None, ),
                                   )
 # Note1: accessed as a 'string', `registry` be the python package name;
-#                 as a dict, will be the contents of the registry
+#        accessed as a dict, will be the contents of the registry
+
+# Note2: only request attributes and properties are supported.  all known
+#        'read' methods have properties that show the same info
+#        For example `request.current_url()` is essentially `request.url`
 
 
 def extract_request_attributes(request):
@@ -49,7 +53,6 @@ def extract_request_attributes(request):
     extracted_attributes = {}
     for (attr_,
          is_show_dict,
-         is_execute_method,
          ) in extractable_request_attributes:
         # earlier versions of pyramid may not have newer attrs
         # (ie, authenticated_userid)
@@ -58,8 +61,6 @@ def extract_request_attributes(request):
         value = None
         if is_show_dict and getattr(request, attr_):
             value = getattr(request, attr_).__dict__
-        elif is_execute_method:
-            value = getattr(request, attr_)()
         else:
             value = getattr(request, attr_)
         extracted_attributes[attr_] = value
