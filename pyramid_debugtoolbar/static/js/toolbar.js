@@ -59,7 +59,7 @@ $('#settings .switchable').click(function() {
   }
 });
 
-// $(".pDebugSortable").tablesorter();
+ $(".pDebugSortable").tablesorter();
 
 bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
 
