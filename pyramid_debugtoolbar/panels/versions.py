@@ -11,8 +11,10 @@ packages = []
 for distribution in pkg_resources.working_set:
     name = distribution.project_name
     packages.append({'version': distribution.version,
+                     'location': distribution.location,
                      'lowername': name.lower(),
-                     'name': name})
+                     'name': name,
+                     })
 
 packages = sorted(packages, key=itemgetter('lowername'))
 pyramid_version = pkg_resources.get_distribution('pyramid').version
@@ -30,7 +32,9 @@ class VersionDebugPanel(DebugPanel):
     nav_title = title
 
     def __init__(self, request):
-        self.data = {'platform': self.get_platform(), 'packages': packages}
+        self.data = {'platform': self.get_platform(),
+                     'packages': packages,
+                     }
 
     def _get_platform_name(self):
         return platform.platform()
