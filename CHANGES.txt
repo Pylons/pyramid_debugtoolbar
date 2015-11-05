@@ -1,3 +1,10 @@
+unreleased
+==========
+
+- Added the packages' `.location` to the "Versions" panel so developers can tell
+  which version of each package is actually being used.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
+
 2.4.2 (2015-10-28)
 ------------------
 

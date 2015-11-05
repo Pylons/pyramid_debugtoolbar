@@ -8,6 +8,7 @@
 		<tr>
 			<th>Package Name</th>
 			<th>Version</th>
+			<th>Location</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -15,6 +16,7 @@
 			<tr>
 				<td>${package['name']|h}</td>
 				<td>${package['version']|h}</td>
+				<td>${package['location']|h}</td>
 			</tr>
 		% endfor
 	</tbody>
