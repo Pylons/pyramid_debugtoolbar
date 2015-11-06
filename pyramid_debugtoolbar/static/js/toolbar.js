@@ -13,6 +13,7 @@ function toggle_active(elem) {
     elem.toggleClass('active');
 }
 
+
 jQuery(document).ready(function($) {
 
 
@@ -59,14 +60,19 @@ $('#settings .switchable').click(function() {
   }
 });
 
-// $(".pDebugSortable").tablesorter();
+
+// see http://mottie.github.io/tablesorter/docs/example-widget-bootstrap-theme.html
+$(".pDebugSortable").tablesorter({theme: "bootstrap",
+								  widgets: ["uitheme", ],
+                                  headerTemplate: '{content} {icon}'
+                                  });
+
 
 bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
-
 for (var i = 0; i < bootstrap_panels.length; i++) {
     $('.pDebugWindow #' + bootstrap_panels[i] + '-content').show();
     $('li#' + bootstrap_panels[i]).addClass('active');
 }
 
-});
 
+});

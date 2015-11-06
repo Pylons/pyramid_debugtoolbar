@@ -5,6 +5,12 @@ unreleased
   which version of each package is actually being used.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
 
+- Fixed Tablesorting
+  - uncommented erroneous(?) javascript initialization
+  - replaced old tablesorter library with more current fork (https://github.com/Mottie/tablesorter)
+  - added docs
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/148
+
 2.4.2 (2015-10-28)
 ------------------
 

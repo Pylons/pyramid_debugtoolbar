@@ -672,6 +672,20 @@ Once your panel is ready, you can simply add its package name to the
       pyramid_debugtoolbar
       samplepanel
 
+JavaScript and CSS Available to Custom Panels
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:mod:`pyramid_debugtoolbar` automatically loads several Javascript and CSS
+libraries that you can take advantage of when writing custom panels.
+
+    * Bootstrap [http://getbootstrap.com/]
+    * jQuery [https://jquery.org/]
+    * jquery.tablesorter [http://mottie.github.io/tablesorter]
+
+If you wish to enable tablesorting, add the CSS class "pDebugSortable" to the
+opening <table> tag.  For example:
+
+    <table class="pDebugSortable table table-striped table-condensed">
 
 Panel and UI Extras
 -------------------
