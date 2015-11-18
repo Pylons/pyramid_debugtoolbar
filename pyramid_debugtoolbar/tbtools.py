@@ -34,7 +34,7 @@ from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 _coding_re = re.compile(r'coding[:=]\s*([-\w.]+)')
 _line_re = re.compile(r'^(.*?)$(?m)')
 _funcdef_re = re.compile(r'^(\s*def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)')
-UTF8_COOKIE = '\xef\xbb\xbf'
+UTF8_COOKIE = b'\xef\xbb\xbf'
 
 system_exceptions = (SystemExit, KeyboardInterrupt)
 try:
