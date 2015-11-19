@@ -5,6 +5,10 @@ unreleased
   which version of each package is actually being used.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
 
+- Upon exception do a better job guessing the charset of the sourcefile when
+  reading it in to display tracebacks.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/244
+
 2.4.2 (2015-10-28)
 ------------------
 
