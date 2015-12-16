@@ -9,6 +9,10 @@ unreleased
   reading it in to display tracebacks.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/244
 
+- Removed jQuery code in the toolbar referring to a DOM node called 'myTab',
+  which doesn't seem to exist anymore.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/247
+
 2.4.2 (2015-10-28)
 ------------------
 
