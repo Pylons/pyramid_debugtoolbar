@@ -78,23 +78,35 @@ class RequestVarsDebugPanel(DebugPanel):
     def __init__(self, request):
         self.request = request
         self.data = data = {}
-        attr_dict = request.__dict__.copy()
+        attrs = request.__dict__.copy()
         # environ is displayed separately
-        del attr_dict['environ']
-        if 'response' in attr_dict:
-            attr_dict['response'] = repr(attr_dict['response'])
+        del attrs['environ']
+
+        if 'response' in attrs:
+            attrs['response'] = repr(attrs['response'])
+
+        if 'session' in attrs:
+            self.process_session_attr(self, attrs['session'])
+            del attrs['session']
+        else:
+            # only process the session if it's accessed
+            callback_on_load(request, 'session', self.process_session_attr)
+
         data.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],
             'post': [(k, saferepr(v)) for k, v in request.POST.items()],
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
-            'attrs': dictrepr(attr_dict),
             'environ': dictrepr(request.environ),
             'extracted_attributes': {},
+            'attrs': dictrepr(attrs),
+            'session': None,
         })
-        if hasattr(request, 'session'):
-            data.update({
-                'session': dictrepr(request.session),
-            })
+
+    def process_session_attr(self, session):
+        self.data.update({
+            'session': dictrepr(session),
+        })
+        return session
 
     def process_response(self, response):
         extracted_attributes = extract_request_attributes(self.request)
@@ -102,3 +114,15 @@ class RequestVarsDebugPanel(DebugPanel):
 
         # stop hanging onto the request after the response is processed
         del self.request
+
+def callback_on_load(obj, name, cb):
+    """ Callback when a property is accessed.
+
+    This currently only works for reified properties that are called once.
+
+    """
+    orig_property = getattr(obj.__class__, name)
+    def wrapper(self):
+        val = orig_property.__get__(obj)
+        return cb(val)
+    obj.set_property(wrapper, name=name, reify=True)
