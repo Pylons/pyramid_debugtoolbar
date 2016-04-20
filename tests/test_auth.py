@@ -56,7 +56,7 @@ class Test_auth(unittest.TestCase):
 
     def test_authenticated_toolbar_injection(self):
         resp = self._req('/hello/secrets', remote_user='admin')
-        self.assertTrue(resp.html.body.script is not None, 'unexpectedly None')
+        self.assertTrue(resp.html.body.link is not None, 'unexpectedly None')
         # dive into the request history stored by the toolbar tween
         request_id = self.testapp.app.registry.request_history[0][0]
         # check it against the link in the injected html
