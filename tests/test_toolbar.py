@@ -6,15 +6,14 @@ from pyramid import testing
 from pyramid_debugtoolbar.compat import bytes_
 
 
-class DebugToolbarTests(unittest.TestCase):
+class TestDebugToolbar(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        self.config.registry.settings['mako.directories'] = []
         self.config.include('pyramid_mako')
         self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 
     def tearDown(self):
-        del self.config
+        testing.tearDown()
 
     def _makeOne(self, request, panel_classes, global_panel_classes,
                  default_active_panels):
@@ -122,6 +121,8 @@ class Test_toolbar_tween_factory(unittest.TestCase):
         self.assertTrue(result is handler)
 
     def test_it_enabled(self):
+        from pyramid_debugtoolbar.toolbar import IToolbarWSGIApp
+        self.config.registry.registerUtility(DummyApp(None), IToolbarWSGIApp)
         self.config.registry.settings['debugtoolbar.enabled'] = True
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
@@ -130,19 +131,20 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
 class Test_toolbar_handler(unittest.TestCase):
     def setUp(self):
+        from pyramid_debugtoolbar.toolbar import IToolbarWSGIApp
         from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
         from pyramid_debugtoolbar.utils import STATIC_PATH
         self.config = testing.setUp()
         settings = self.config.registry.settings
         settings['debugtoolbar.enabled'] = True
         settings['debugtoolbar.hosts'] = ['127.0.0.1']
-        settings['mako.directories'] = []
         settings['debugtoolbar.exclude_prefixes'] = ['/excluded']
-        self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
-        self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
-        self.config.add_static_view('_debugtoolbar/static', STATIC_PATH)
         self.config.include('pyramid_mako')
         self.config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
+        self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
+        self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
+        self.config.add_static_view('_debug_toolbar/static', STATIC_PATH)
+        self.config.registry.registerUtility(DummyApp(None), IToolbarWSGIApp)
 
     def tearDown(self):
         testing.tearDown()
@@ -153,19 +155,32 @@ class Test_toolbar_handler(unittest.TestCase):
             return self.response
         return handler
 
-    def _callFUT(self, request, handler=None, _logger=None):
+    def _callFUT(self, request, handler=None, _logger=None, _dispatch=None):
         from pyramid_debugtoolbar.toolbar import toolbar_tween_factory
-        from pyramid_debugtoolbar.views import ExceptionDebugView
         registry = self.config.registry
         if handler is None:
             handler = self._makeHandler()
-        def invoke_subrequest(request):
+        handler = toolbar_tween_factory(
+            handler, registry, _logger=_logger, _dispatch=_dispatch)
+        return handler(request)
+
+    def _makeExceptionDispatcher(self):
+        from pyramid_debugtoolbar.views import ExceptionDebugView
+        registry = self.config.registry
+        def dispatcher(app, request):
             request.registry = registry.parent_registry = registry
             request.exc_history = registry.exc_history
             return ExceptionDebugView(request).exception()
-        handler = toolbar_tween_factory(handler, registry, _logger=_logger)
-        request.invoke_subrequest = invoke_subrequest
-        return handler(request)
+        return dispatcher
+
+    def _makeRedirectDispatcher(self):
+        from pyramid_debugtoolbar.views import redirect_view
+        from pyramid.renderers import render
+        def dispatcher(app, request):
+            result = redirect_view(request)
+            body = render('pyramid_debugtoolbar:templates/redirect.dbtmako', result)
+            return Response(body)
+        return dispatcher
 
     def test_it_path_cannot_be_decoded(self):
         from pyramid.exceptions import URLDecodeError
@@ -249,7 +264,8 @@ class Test_toolbar_handler(unittest.TestCase):
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
-        response = self._callFUT(request, handler, _logger=logger)
+        dispatch = self._makeExceptionDispatcher()
+        response = self._callFUT(request, handler, _logger=logger, _dispatch=dispatch)
         self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertEqual(response.status_int, 500)
@@ -271,7 +287,8 @@ class Test_toolbar_handler(unittest.TestCase):
         request.remote_addr = '127.0.0.1'
         request.registry = self.config.registry
         self.config.registry.settings['debugtoolbar.intercept_redirects'] = True
-        result = self._callFUT(request, handler)
+        dispatch = self._makeRedirectDispatcher()
+        result = self._callFUT(request, handler, _dispatch=dispatch)
         self.assertTrue(result is response)
         self.assertEqual(result.status_int, 200)
         self.assertEqual(result.location, None)
@@ -286,7 +303,8 @@ class Test_toolbar_handler(unittest.TestCase):
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
-        response = self._callFUT(request, handler, _logger=logger)
+        dispatch = self._makeExceptionDispatcher()
+        response = self._callFUT(request, handler, _logger=logger, _dispatch=dispatch)
         self.assertEqual(response.status_int, 500)
         self.assertTrue(
             b'NotImplementedError: K\xc3\xa4se!\xe2\x98\xa0' in response.body or
@@ -305,7 +323,8 @@ class Test_toolbar_handler(unittest.TestCase):
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
-        response = self._callFUT(request, handler, _logger=logger)
+        dispatch = self._makeExceptionDispatcher()
+        response = self._callFUT(request, handler, _logger=logger, _dispatch=dispatch)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
         self.assertEqual(response.status_int, 500)
 
@@ -404,3 +423,9 @@ class DummyLogger(object):
     def exception(self, msg):
         self.msg = msg
 
+class DummyApp(object):
+    def __init__(self, response):
+        self.response = response
+
+    def __call__(self, environ, start_response):
+        return self.response

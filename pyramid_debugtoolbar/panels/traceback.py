@@ -16,21 +16,17 @@ class TracebackPanel(DebugPanel):
 
     def __init__(self, request):
         self.request = request
+        self.traceback = None
         self.exc_history = request.exc_history
 
     @property
     def has_content(self):
-        if hasattr(self.request, 'pdbt_tb'):
-            return True
-        else:
-            return False
+        return self.traceback is not None
 
     def process_response(self, response):
-        if self.has_content:
-            traceback = self.request.pdbt_tb
-
+        self.traceback = traceback = getattr(self.request, 'pdbt_tb', None)
+        if self.traceback is not None:
             exc = escape(traceback.exception)
-            summary = Traceback.render_summary(traceback, include_title=False, request=self.request)
             token = self.request.registry.pdtb_token
             url = '' # self.request.route_url(EXC_ROUTE_NAME, _query=qs)
             evalex = self.exc_history.eval_exc
@@ -42,7 +38,6 @@ class TracebackPanel(DebugPanel):
                 'title':            exc,
                 'exception':        exc,
                 'exception_type':   escape(traceback.exception_type),
-                'summary':          summary,
                 'plaintext':        traceback.plaintext,
                 'plaintext_cs':     re.sub('-{2,}', '-', traceback.plaintext),
                 'traceback_id':     traceback.id,
@@ -50,11 +45,16 @@ class TracebackPanel(DebugPanel):
                 'url':              url,
             }
 
-    def render_content(self, request):
-        return super(TracebackPanel, self).render_content(request)
+        # stop hanging onto the request after the response is processed
+        del self.request
 
     def render_vars(self, request):
         return {
             'static_path': request.static_url(STATIC_PATH),
-            'root_path': request.route_url(ROOT_ROUTE_NAME)
+            'root_path': request.route_url(ROOT_ROUTE_NAME),
+
+            # render the summary using the toolbar's request object, not
+            # the original request that generated the traceback!
+            'summary': self.traceback.render_summary(
+                include_title=False, request=request),
         }

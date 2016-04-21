@@ -4,7 +4,6 @@ import os
 from pyramid.exceptions import URLDecodeError
 from pyramid.httpexceptions import WSGIHTTPException
 from pyramid.interfaces import Interface
-from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import url_unquote
@@ -15,20 +14,27 @@ from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import hexlify
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import logger
+from pyramid_debugtoolbar.utils import make_subrequest
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ToolbarStorage
 
 html_types = ('text/html', 'application/xhtml+xml')
 
+class IToolbarWSGIApp(Interface):
+    """ Marker interface for the toolbar WSGI application."""
+    def __call__(environ, start_response):
+        pass
+
 
 class IRequestAuthorization(Interface):
-
     def __call__(request):
         """
         Toolbar per-request authorization.
-        Should return bool values whether toolbar is permitted to be shown
-        within provided request.
+
+        Should return bool values whether toolbar is permitted to monitor
+        the provided request.
+
         """
 
 
@@ -119,11 +125,13 @@ def beforerender_subscriber(event):
             panel.process_beforerender(event)
 
 
-def toolbar_tween_factory(handler, registry, _logger=None):
+def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
     """ Pyramid tween factory for the debug toolbar """
-    # _logger passed for testing purposes only
+    # _logger and _dispatch are passed for testing purposes only
     if _logger is None:
         _logger = logger
+    if _dispatch is None:
+        _dispatch = lambda app, request: request.get_response(app)
     settings = registry.settings
 
     def sget(opt, default=None):
@@ -156,36 +164,43 @@ def toolbar_tween_factory(handler, registry, _logger=None):
         registry.exc_history = exc_history = ExceptionHistory()
         exc_history.eval_exc = intercept_exc == 'debug'
 
-    def toolbar_tween(request):
-        request.exc_history = exc_history
-        request.history = request_history
-        root_url = request.route_path('debugtoolbar', subpath='')
-        exclude = [root_url] + exclude_prefixes
-        last_proxy_addr = None
+    toolbar_app = registry.getUtility(IToolbarWSGIApp)
+    dispatch = lambda request: _dispatch(toolbar_app, request)
 
+    def toolbar_tween(request):
         try:
-            p = request.path
+            p = request.path_info
         except UnicodeDecodeError as e:
             raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
-        starts_with_excluded = list(filter(None, map(p.startswith, exclude)))
 
+        last_proxy_addr = None
         if request.remote_addr:
             last_proxy_addr = last_proxy(request.remote_addr)
 
-        if last_proxy_addr is None \
-            or starts_with_excluded \
-            or not addr_in(last_proxy_addr, hosts) \
-            or auth_check and not auth_check(request):
-                return handler(request)
+        if (
+            last_proxy_addr is None
+            or any(p.startswith(e) for e in exclude_prefixes)
+            or not addr_in(last_proxy_addr, hosts)
+            or auth_check and not auth_check(request)
+        ):
+            return handler(request)
 
+        root_path = debug_toolbar_url(request, '', _app_url='')
+        if p.startswith(root_path):
+            # we know root_path will always have a trailing slash
+            # but script_name doesn't want it
+            request.script_name += root_path[:-1]
+            request.path_info = request.path_info[len(root_path) - 1:]
+            return dispatch(request)
+
+        request.exc_history = exc_history
+        request.history = request_history
         request.pdtb_id = hexlify(id(request))
         toolbar = DebugToolbar(request, panel_classes, global_panel_classes,
                                default_active_panels)
         request.debug_toolbar = toolbar
 
         _handler = handler
-
-        # XXX
         for panel in toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
@@ -203,20 +218,14 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                 exc_history.tracebacks[tb.id] = tb
                 request.pdbt_tb = tb
 
-                qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
                 msg = 'Exception at %s\ntraceback url: %s'
-                exc_url = debug_toolbar_url(request, 'exception', _query=qs)
-                exc_msg = msg % (request.url, exc_url)
+                qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
+                subrequest = make_subrequest(
+                    request, root_path, 'exception', qs)
+                exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
-                subenviron = request.environ.copy()
-                del subenviron['PATH_INFO']
-                del subenviron['QUERY_STRING']
-                subrequest = type(request).blank(exc_url, subenviron)
-                subrequest.script_name = request.script_name
-                subrequest.path_info = \
-                    subrequest.path_info[len(request.script_name):]
-                response = request.invoke_subrequest(subrequest)
+                response = dispatch(subrequest)
 
                 # The original request must be processed so that the panel data exists
                 # if the request is later examined in the full toolbar view.
@@ -241,17 +250,16 @@ def toolbar_tween_factory(handler, registry, _logger=None):
                     redirect_to = response.location
                     redirect_code = response.status_int
                     if redirect_to:
-                        content = render(
-                            'pyramid_debugtoolbar:templates/redirect.dbtmako',
-                            {
-                                'redirect_to': redirect_to,
-                                'redirect_code': redirect_code,
-                            },
-                            request=request)
-                        content = content.encode(response.charset)
-                        response.content_length = len(content)
+                        qs = {
+                            'token': registry.pdtb_token,
+                            'redirect_to': redirect_to,
+                            'redirect_code': str(redirect_code),
+                        }
+                        subrequest = make_subrequest(
+                            request, root_path, 'redirect', qs)
+                        content = dispatch(subrequest).text
                         response.location = None
-                        response.app_iter = [content]
+                        response.text = content
                         response.status_int = 200
 
             toolbar.process_response(request, response)

@@ -1,44 +1,19 @@
 from pyramid.events import subscriber
 from pyramid.events import NewRequest
 from pyramid.httpexceptions import HTTPBadRequest
-from pyramid.httpexceptions import HTTPNotFound
-from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.response import Response
 from pyramid.view import view_config
 
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.console import _ConsoleFrame
-from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import get_setting
-from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.toolbar import IRequestAuthorization
 
 U_BLANK = text_("")
-
-def valid_host(wrapped):
-    def wrapper(context, request):
-        hosts = get_setting(request.registry.settings, 'hosts')
-        if request.remote_addr is not None:
-            last_proxy_addr = last_proxy(request.remote_addr)
-            if addr_in(last_proxy_addr, hosts):
-                return wrapped(context, request)
-        raise HTTPNotFound('untrusted client ip address')
-    return wrapper
-
-
-def valid_request(wrapped):
-    def wrapper(context, request):
-        parent_registry = request.registry.parent_registry
-        auth_check = parent_registry.queryUtility(IRequestAuthorization)
-        if auth_check is None or auth_check(request):
-            return wrapped(context, request)
-        raise HTTPNotFound('client authorization failed')
-    return wrapper
 
 
 class ExceptionDebugView(object):
@@ -65,22 +40,14 @@ class ExceptionDebugView(object):
             tb = int(tb)
         self.tb = tb
 
-    @view_config(
-        route_name='debugtoolbar.exception',
-        permission=NO_PERMISSION_REQUIRED,
-        decorator=[valid_host, valid_request],
-        )
+    @view_config(route_name='debugtoolbar.exception')
     def exception(self):
         tb = self.exc_history.tracebacks[self.tb]
         body = tb.render_full(self.request).encode('utf-8', 'replace')
         response = Response(body, status=500)
         return response
 
-    @view_config(
-        route_name='debugtoolbar.source',
-        permission=NO_PERMISSION_REQUIRED,
-        decorator=[valid_host, valid_request],
-        )
+    @view_config(route_name='debugtoolbar.source')
     def source(self):
         exc_history = self.exc_history
         if self.frame is not None:
@@ -89,11 +56,7 @@ class ExceptionDebugView(object):
                 return Response(frame.render_source(), content_type='text/html')
         return HTTPBadRequest()
 
-    @view_config(
-        route_name='debugtoolbar.execute',
-        permission=NO_PERMISSION_REQUIRED,
-        decorator=[valid_host, valid_request],
-        )
+    @view_config(route_name='debugtoolbar.execute')
     def execute(self):
         if self.request.exc_history.eval_exc:
             exc_history = self.exc_history
@@ -107,8 +70,7 @@ class ExceptionDebugView(object):
     @view_config(
         route_name='debugtoolbar.console',
         renderer='pyramid_debugtoolbar:templates/console.dbtmako',
-        decorator=[valid_host, valid_request],
-        )
+    )
     def console(self):
         static_path = self.request.static_url(STATIC_PATH)
         toolbar_root_path = self.request.route_url(ROOT_ROUTE_NAME)
@@ -142,9 +104,7 @@ class SQLAlchemyViews(object):
     @view_config(
         route_name='debugtoolbar.sql_select',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako',
-        permission=NO_PERMISSION_REQUIRED,
-        decorator=[valid_host, valid_request],
-        )
+    )
     def sql_select(self):
         query_dict = self.find_query()
         stmt = query_dict['statement']
@@ -171,9 +131,7 @@ class SQLAlchemyViews(object):
     @view_config(
         route_name='debugtoolbar.sql_explain',
         renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako',
-        permission=NO_PERMISSION_REQUIRED,
-        decorator=[valid_host, valid_request],
-        )
+    )
     def sql_explain(self):
         query_dict = self.find_query()
         stmt = query_dict['statement']
@@ -203,15 +161,22 @@ class SQLAlchemyViews(object):
 
 
 @view_config(
+    route_name='debugtoolbar.redirect',
+    renderer='pyramid_debugtoolbar:templates/redirect.dbtmako',
+)
+def redirect_view(request):
+    return {
+        'redirect_to': request.params.get('redirect_to'),
+        'redirect_code': request.params.get('redirect_code'),
+    }
+
+
+@view_config(
     route_name='debugtoolbar.main',
-    permission=NO_PERMISSION_REQUIRED,
-    decorator=[valid_host, valid_request],
     renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
 )
 @view_config(
     route_name='debugtoolbar.request',
-    permission=NO_PERMISSION_REQUIRED,
-    decorator=[valid_host, valid_request],
     renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
 )
 def request_view(request):
@@ -248,9 +213,7 @@ def request_view(request):
             }
 
 U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
-@view_config(route_name='debugtoolbar.sse',
-             decorator=[valid_host, valid_request],
-             permission=NO_PERMISSION_REQUIRED)
+@view_config(route_name='debugtoolbar.sse')
 def sse(request):
     response = request.response
     response.content_type = 'text/event-stream'
