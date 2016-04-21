@@ -16,6 +16,7 @@
 			<dd>${'%.2f' % (duration)} ms</dd>
 		</dl>
 		% if result:
+                <h4>Results</h4>
 		<table class="djSqlExplain table table-striped"
 >
 			<thead>
