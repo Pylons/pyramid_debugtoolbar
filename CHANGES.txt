@@ -21,6 +21,12 @@ unreleased
   which doesn't seem to exist anymore.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/247
 
+- Updated the "Request Vars" panel:
+  1. Show additional values that were previously missing
+  2. Sections upgraded to link to Pyramid Documentation when possible
+  3. Mako reformatted into "defs" for simpler reorganization in the future
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/241
+
 2.4.2 (2015-10-28)
 ------------------
 

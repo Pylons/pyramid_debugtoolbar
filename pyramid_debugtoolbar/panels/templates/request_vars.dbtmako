@@ -1,139 +1,234 @@
-<h4>Cookie Variables</h4>
-% if cookies:
-<table class="table table-striped table-condensed">
-	<colgroup>
-		<col style="width:20%"/>
-		<col/>
-	</colgroup>
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(cookies):
-		<tr>
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
-</table>
-% else:
-<p>No cookie data</p>
-% endif
+<%doc>
+    Request data is "zoned" into mako `def`s below, and written alphabetically.
+    Data can be displayed in any order in the `Render Section`
+</%doc>
 
-<h4>Session Variables</h4>
-% if session:
-<table class="table table-striped table-condensed">
-	<colgroup>
-		<col style="width:20%"/>
-		<col/>
-	</colgroup>
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(session):
-		<tr>
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
-</table>
-% else:
-<p>No session data</p>
-% endif
 
-<h4>GET Variables</h4>
-% if get:
-<table class="table table-striped table-condensed">
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(get):
-		<tr>
-			<td>${key|h}</td>
-			<td>${', '.join(value)|h}</td>
-		</tr>
-		% endfor
-	</tbody>
-</table>
-% else:
-<p>No GET data</p>
-% endif
+##
+## Library Section -- Define available panel sections
+##
 
-<h4>POST Variables</h4>
-% if post:
-<table class="table table-striped table-condensed">
-	<thead>
-		<tr>
-			<th>Variable</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(post):
-		<tr>
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
-</table>
-% else:
-<p>No POST data</p>
-% endif
 
-<h4>Request attributes</h4>
-% if attrs:
-<table class="table table-striped table-condensed">
-	<thead>
-		<tr>
-			<th>Attribute</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(attrs):
-		<tr>
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
-		% endfor
-	</tbody>
-</table>
-% else:
-<p>No request attributes</p>
-% endif
+<%def name="cookie_variables()">
+	<h4>Cookie Variables</h4>
+	% if cookies:
+		<table class="table table-striped table-condensed">
+			<colgroup>
+				<col style="width:20%"/>
+				<col/>
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Variable</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for i, (key, value) in enumerate(sorted(cookies)):
+					<tr>
+						<td>${key|h}</td>
+						<td>${value|h}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	% else:
+		<p>No cookie data</p>
+	% endif
+	<hr/>
+</%def>
 
-<h4>Request environ</h4>
-% if environ:
-<table class="table table-striped table-condensed">
-	<thead>
-		<tr>
-			<th>Attribute</th>
-			<th>Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		% for i, (key, value) in enumerate(environ):
-		<tr>
-			<td>${key|h}</td>
-			<td>${value|h}</td>
-		</tr>
+
+<%def name="get_variables()">
+	<h4>GET Variables</h4>
+	% if get:
+		<table class="table table-striped table-condensed">
+			<thead>
+				<tr>
+					<th>Variable</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for i, (key, value) in enumerate(sorted(get)):
+					<tr>
+						<td>${key|h}</td>
+						<td>${', '.join(value)|h}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	% else:
+		<p>No GET data</p>
+	% endif
+	<hr/>
+</%def>
+
+<%def name="post_variables()">
+	<h4>POST Variables</h4>
+	% if post:
+		<table class="table table-striped table-condensed">
+			<thead>
+				<tr>
+					<th>Variable</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for i, (key, value) in enumerate(sorted(post)):
+					<tr>
+						<td>${key|h}</td>
+						<td>${value|h}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	% else:
+		<p>No POST data</p>
+	% endif
+	<hr/>
+</%def>
+
+
+<%def name="request_attributes()">
+	<h4>Request attributes</h4>
+	% if attrs:
+		<table class="table table-striped table-condensed">
+			<thead>
+				<tr>
+					<th>Attribute</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for i, (key, value) in enumerate(sorted(attrs)):
+					<tr>
+						<td>${key|h}</td>
+						<td>${value|h}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	% else:
+		<p>No request attributes</p>
+	% endif
+	<hr/>
+</%def>
+
+
+<%def name="request_environ()">
+	<h4>Request environ</h4>
+	% if environ:
+		<table class="table table-striped table-condensed">
+			<thead>
+				<tr>
+					<th>Attribute</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for i, (key, value) in enumerate(sorted(environ)):
+					<tr>
+						<td>${key|h}</td>
+						<td>${value|h}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	% else:
+		<p>No request environ</p>
+	% endif
+	<hr/>
+</%def>
+
+
+<%def name="request_properties()">
+	<h4>Pyramid Request Properties</h4>
+	<table class="table table-striped table-condensed">
+		% for i, (attr_, value) in enumerate(sorted(extracted_attributes.items())):
+			<tr>
+				<th>
+					${attr_}
+					<a 	href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/request.html#pyramid.request.Request.${attr_}"
+						target="_blank"
+					>*</a>
+				</th>
+				<td>
+					% if isinstance(value, dict):
+						<table class="table table-striped table-condensed">
+							% for k in sorted(value.keys()):
+								<tr>
+									<th>${k}</th>
+									<td>${value[k]}</td>
+								</tr>
+							% endfor
+						</table>
+					% else :
+						${value}
+					% endif
+				</td>
+			</tr>
 		% endfor
-	</tbody>
-</table>
-% else:
-<p>No request environ</p>
-% endif
+	</table>
+	<h5>Documentation Links</h5>
+	<ul>
+    	<li>API Docs:
+    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/request.html">pyramid.request</a>
+    	</li>
+	</ul>
+	<hr/>
+</%def>
+
+
+<%def name="session_variables()">
+	<h4>Session Variables</h4>
+	% if session:
+		<table class="table table-striped table-condensed">
+			<colgroup>
+				<col style="width:20%"/>
+				<col/>
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Variable</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for i, (key, value) in enumerate(sorted(session)):
+					<tr>
+						<td>${key|h}</td>
+						<td>${value|h}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	% else:
+		<p>No session data</p>
+	% endif
+	<h5>Documentation Links</h5>
+	<ul>
+    	<li>API Docs:
+    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/session.html">pyramid.session</a>
+    	</li>
+    	<li>Narrative Docs:
+    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Session</a>
+    	</li>
+	</ul>
+	<hr/>
+</%def>
+
+
+##
+## Render Section -- You can alter the display the above defs in any order below
+##
+
+
+<hr/>
+${get_variables()}
+${post_variables()}
+${cookie_variables()}
+${session_variables()}
+${request_properties()}
+${request_attributes()}
+${request_environ()}
