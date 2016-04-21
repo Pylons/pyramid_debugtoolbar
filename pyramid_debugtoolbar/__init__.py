@@ -1,8 +1,5 @@
 from pyramid.config import Configurator
-try:
-    from pyramid.security import NO_PERMISSION_REQUIRED
-except ImportError: # pragma: no cover
-    from pyramid.interfaces import NO_PERMISSION_REQUIRED
+from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.wsgi import wsgiapp2
 from pyramid_debugtoolbar.utils import (
