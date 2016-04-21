@@ -5,6 +5,10 @@ unreleased
 
 - Add Python 3.5 support.
 
+- Remove inline javascript from injected pages to work better with any
+  Content Security Policy that may be in place.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/250
+
 - Added the packages' `.location` to the "Versions" panel so developers can tell
   which version of each package is actually being used.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
