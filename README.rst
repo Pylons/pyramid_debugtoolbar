@@ -32,7 +32,7 @@ For a demonstration:
 - Install the Pyramid trunk into the virtualenv::
 
   $ cd pyramid
-  $ $VENV/bin/python setup.py develop
+  $ $VENV/bin/pip install -e .
 
 - Clone the ``pyramid_debugtoolbar`` trunk::
 
@@ -41,12 +41,12 @@ For a demonstration:
 - Install the ``pyramid_debugtoolbar`` trunk into the virtualenv::
 
   $ cd pyramid_debugtoolbar
-  $ $VENV/bin/python setup.py develop
+  $ $VENV/bin/pip install -e .
 
 - Install the ``pyramid_debugtoolbar/demo`` package into the virtualenv::
 
   $ cd demo
-  $ $VENV/bin/python setup.py develop
+  $ $VENV/bin/pip install -e .
 
 - Run the ``pyramid_debugtoolbar`` package's ``demo/demo.py`` file using the
   virtualenv's Python::
