@@ -1,6 +1,10 @@
 unreleased
 ==========
 
+- Drop Python 2.6 and Python 3.2 support.
+
+- Add Python 3.5 support.
+
 - Added the packages' `.location` to the "Versions" panel so developers can tell
   which version of each package is actually being used.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
