@@ -61,12 +61,15 @@ $('#settings .switchable').click(function() {
 });
 
 
-// see http://mottie.github.io/tablesorter/docs/example-widget-bootstrap-theme.html
-$(".pDebugSortable").tablesorter({theme: "bootstrap",
-								  widgets: ["uitheme", ],
-                                  headerTemplate: '{content} {icon}'
-                                  });
-
+try {
+	// see http://mottie.github.io/tablesorter/docs/example-widget-bootstrap-theme.html
+	$(".pDebugSortable").tablesorter({theme: "bootstrap",
+									  widgets: ["uitheme", ],
+									  headerTemplate: '{content} {icon}'
+									  });
+} catch (err){
+	console.log("there was an error on applying the `pDebugSortable`");
+}
 
 bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
 for (var i = 0; i < bootstrap_panels.length; i++) {

@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="${static_path}css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="${static_path}css/toolbar.css">
     <link rel="stylesheet" type="text/css" href="${static_path}css/dashboard.css">
-    <link rel="stylesheet" href="${static_path}css/debugger.css" type="text/css">
+    <link rel="stylesheet" type="text/css"href="${static_path}css/debugger.css">
 
     ## include scripts here that should be included before pageload
     ##  this *should* only be jquery, as we only need the `$` variable defined
@@ -77,7 +77,6 @@
     <script src="${static_path}js/bootstrap.min.js"></script>
     <script src="${static_path}js/toolbar.js"></script>
 
-
 	<script>
 	  $(function () {
         var source;
@@ -124,5 +123,5 @@
 	  });
 	</script>
 
-      </body>
-    </html>
+  </body>
+</html>
