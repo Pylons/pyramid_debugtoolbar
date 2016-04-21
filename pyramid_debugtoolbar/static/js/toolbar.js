@@ -61,6 +61,15 @@ $('#settings .switchable').click(function() {
 });
 
 
+/*
+	This next area is wrapped in a try block, because the call to `$(FOO).tablesorter`
+	can cause a fatal javascript crash in some browsers IF jquery is not loaded.
+
+	The current debugtoolbar implementation loads this file `toolbar.js` on both
+	the toolbar view AND the interactive traceback view.  jquery is not included on
+	the interactive traceback view; the inclusion of the next line has the potential
+	to break the javascript engine on that page, rendering it unusable.
+*/
 try {
 	// see http://mottie.github.io/tablesorter/docs/example-widget-bootstrap-theme.html
 	$(".pDebugSortable").tablesorter({theme: "bootstrap",
