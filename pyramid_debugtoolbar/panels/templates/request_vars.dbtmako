@@ -203,6 +203,8 @@
 				% endfor
 			</tbody>
 		</table>
+	% elif session is None:
+		<p>Session was not accessed</p>
 	% else:
 		<p>No session data</p>
 	% endif
