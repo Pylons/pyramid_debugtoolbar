@@ -27,6 +27,12 @@ unreleased
   3. Mako reformatted into "defs" for simpler reorganization in the future
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/241
 
+- Fix to prevent the toolbar from loading the session until it is actually
+  accessed by the user. This avoids unnecessary parsing of the session object
+  as well as waiting to parse it until later in the request which may meet
+  more expectations of the session factory.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/249
+
 2.4.2 (2015-10-28)
 ------------------
 
