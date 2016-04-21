@@ -43,24 +43,23 @@ testing_extras = [
     ]
 
 docs_extras = [
-    'Sphinx',
-     'pylons-sphinx-themes >= 0.3',
+    'Sphinx >= 1.3.1',  # Read The Docs minimum version
+    'pylons-sphinx-themes >= 0.3',
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='2.4.2',
+      version='2.5',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Intended Audience :: Developers",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP :: WSGI",
         "License :: Repoze Public License",

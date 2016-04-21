@@ -1,15 +1,47 @@
 unreleased
 ==========
 
-- Added the packages' `.location` to the "Versions" panel so developers can tell
-  which version of each package is actually being used.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
-
 - Fixed Tablesorting
   - uncommented erroneous(?) javascript initialization
   - replaced old tablesorter library with more current fork (https://github.com/Mottie/tablesorter)
   - added docs
   See https://github.com/Pylons/pyramid_debugtoolbar/issues/148
+
+
+2.5 (2016-04-20)
+================
+
+- Drop Python 2.6 and Python 3.2 support.
+
+- Add Python 3.5 support.
+
+- Remove inline javascript from injected pages to work better with any
+  Content Security Policy that may be in place.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/250
+
+- Added the packages' `.location` to the "Versions" panel so developers can tell
+  which version of each package is actually being used.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/240
+
+- Upon exception do a better job guessing the charset of the sourcefile when
+  reading it in to display tracebacks.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/244
+
+- Removed jQuery code in the toolbar referring to a DOM node called 'myTab',
+  which doesn't seem to exist anymore.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/247
+
+- Updated the "Request Vars" panel:
+  1. Show additional values that were previously missing
+  2. Sections upgraded to link to Pyramid Documentation when possible
+  3. Mako reformatted into "defs" for simpler reorganization in the future
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/241
+
+- Fix to prevent the toolbar from loading the session until it is actually
+  accessed by the user. This avoids unnecessary parsing of the session object
+  as well as waiting to parse it until later in the request which may meet
+  more expectations of the session factory.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/249
 
 2.4.2 (2015-10-28)
 ------------------
@@ -492,5 +524,3 @@ any custom panels for the toolbar please review the changes.
 ----------------
 
 - Initial release.
-
-

@@ -31,10 +31,10 @@ from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 
-_coding_re = re.compile(r'coding[:=]\s*([-\w.]+)')
-_line_re = re.compile(r'^(.*?)$(?m)')
+_coding_re = re.compile(br'coding[:=]\s*([-\w.]+)')
+_line_re = re.compile(br'^(.*?)$(?m)')
 _funcdef_re = re.compile(r'^(\s*def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)')
-UTF8_COOKIE = '\xef\xbb\xbf'
+UTF8_COOKIE = b'\xef\xbb\xbf'
 
 system_exceptions = (SystemExit, KeyboardInterrupt)
 try:
@@ -381,7 +381,7 @@ class Frame(object):
 
         if source is None:
             try:
-                f = open(self.filename)
+                f = open(self.filename, 'rb')
             except IOError:
                 return []
             try:
@@ -400,7 +400,7 @@ class Frame(object):
             source = source[3:]
         else:
             for idx, match in enumerate(_line_re.finditer(source)):
-                match = _line_re.search(match.group())
+                match = _coding_re.search(match.group())
                 if match is not None:
                     charset = match.group(1)
                     break
