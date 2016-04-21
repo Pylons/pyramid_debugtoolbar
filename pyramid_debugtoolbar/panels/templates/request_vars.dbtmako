@@ -39,7 +39,7 @@
 </%def>
 
 
-<%def name="get_post_variables()">
+<%def name="get_variables()">
 	<h4>GET Variables</h4>
 	% if get:
 		<table class="table table-striped table-condensed">
@@ -61,7 +61,10 @@
 	% else:
 		<p>No GET data</p>
 	% endif
+	<hr/>
+</%def>
 
+<%def name="post_variables()">
 	<h4>POST Variables</h4>
 	% if post:
 		<table class="table table-striped table-condensed">
@@ -221,9 +224,11 @@
 ##
 
 
-${request_properties()}
+<hr/>
+${get_variables()}
+${post_variables()}
 ${cookie_variables()}
 ${session_variables()}
-${get_post_variables()}
+${request_properties()}
 ${request_attributes()}
 ${request_environ()}
