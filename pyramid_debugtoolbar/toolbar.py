@@ -93,7 +93,8 @@ class DebugToolbar(object):
                 'button_style', '')
         css_path = request.static_url(STATIC_PATH + 'css/toolbar_button.css')
         toolbar_html = toolbar_html_template % {
-            'button_style': button_style,
+            'button_style':
+                'style="{0}"'.format(button_style) if button_style else "",
             'css_path': css_path,
             'toolbar_url': toolbar_url}
         toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
@@ -271,16 +272,10 @@ def toolbar_tween_factory(handler, registry, _logger=None):
     return toolbar_tween
 
 toolbar_html_template = """\
-<script type="text/javascript">
-    var fileref=document.createElement("link")
-    fileref.setAttribute("rel", "stylesheet")
-    fileref.setAttribute("type", "text/css")
-    fileref.setAttribute("href", "%(css_path)s")
-    document.getElementsByTagName("head")[0].appendChild(fileref)
-</script>
+<link rel="stylesheet" type="text/css" href="%(css_path)s">
 
 <div id="pDebug">
-    <div style="display: block; %(button_style)s" id="pDebugToolbarHandle">
+    <div %(button_style)s id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
            href="%(toolbar_url)s" target="pDebugToolbar">&#171; FIXME: Debug Toolbar</a>
     </div>
