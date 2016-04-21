@@ -209,7 +209,7 @@
     	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/session.html">pyramid.session</a>
     	</li>
     	<li>Narrative Docs:
-    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Ssession</a>
+    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Session</a>
     	</li>
 	</ul>
 	<hr/>
