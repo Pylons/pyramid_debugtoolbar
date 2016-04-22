@@ -1,3 +1,13 @@
+unreleased
+==========
+
+- Fixed Tablesorting
+  - uncommented erroneous(?) javascript initialization
+  - replaced old tablesorter library with more current fork (https://github.com/Mottie/tablesorter)
+  - added docs
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/148
+
+
 2.5 (2016-04-20)
 ================
 
@@ -514,5 +524,3 @@ any custom panels for the toolbar please review the changes.
 ----------------
 
 - Initial release.
-
-

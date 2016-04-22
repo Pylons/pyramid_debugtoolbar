@@ -69,7 +69,13 @@
 
     ## scripts that can be included after pageload
     <script src="${static_path}js/jquery.cookie.js"></script>
-    <script src="${static_path}js/jquery.tablesorter.min.js"></script>
+
+    ## tablesorter, load before toolbar.js
+    ## it needs the widgets file for 'bootstrap' & 'uitheme'
+    <script src="${static_path}js/jquery.tablesorter/js/jquery.tablesorter.min.js"></script>
+    <script src="${static_path}js/jquery.tablesorter/js/jquery.tablesorter.widgets.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${static_path}js/jquery.tablesorter/css/theme.bootstrap.min.css">
+
     <script src="${static_path}js/bootstrap.min.js"></script>
     <script src="${static_path}js/toolbar.js"></script>
   </body>

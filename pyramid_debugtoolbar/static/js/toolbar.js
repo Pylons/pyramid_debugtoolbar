@@ -57,7 +57,11 @@ $(function() {
     }
   });
 
-  // $(".pDebugSortable").tablesorter();
+  $(".pDebugSortable").tablesorter({
+    theme: "bootstrap",
+    widgets: ["uitheme"],
+    headerTemplate: '{content} {icon}'
+  });
 
   bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
 
