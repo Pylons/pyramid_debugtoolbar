@@ -13,7 +13,7 @@ function toggle_active(elem) {
     elem.toggleClass('active');
 }
 
-jQuery(document).ready(function($) {
+$(function() {
 
 
 // When clicked on the panels menu
@@ -69,4 +69,3 @@ for (var i = 0; i < bootstrap_panels.length; i++) {
 }
 
 });
-

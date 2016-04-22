@@ -18,7 +18,7 @@
     <script type="text/javascript">
       var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
     </script>
-    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
+    <script src="${static_path}js/jquery.min.js"></script>
   </head>
   <body>
 

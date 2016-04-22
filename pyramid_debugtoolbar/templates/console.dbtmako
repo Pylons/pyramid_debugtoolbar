@@ -9,10 +9,14 @@
       var TRACEBACK = ${str(traceback_id)},
           CONSOLE_MODE = ${console},
           DEBUGGER_TOKEN = "${token}",
-          EVALEX = ${evalex};
+          EVALEX = ${evalex},
+          DEBUG_TOOLBAR_STATIC_PATH = "${static_path}",
+          DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
     </script>
-    <script data-main="${static_path}js/debugger"
-            src="${static_path}js/require.js"></script>
+    <script src="${static_path}js/jquery.min.js"></script>
+    <script src="${static_path}js/bootstrap.min.js"></script>
+    <script src="${static_path}js/toolbar.js"></script>
+    <script src="${static_path}js/debugger.js"></script>
   </head>
   <body>
 
