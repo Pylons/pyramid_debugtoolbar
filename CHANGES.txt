@@ -1,15 +1,11 @@
 unreleased
-==========
+----------
 
-- Fixed Tablesorting
-  - uncommented erroneous(?) javascript initialization
-  - replaced old tablesorter library with more current fork (https://github.com/Mottie/tablesorter)
-  - added docs
-  See https://github.com/Pylons/pyramid_debugtoolbar/issues/148
-
+- Enabled interactive tablesorting on table columns.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/256
 
 2.5 (2016-04-20)
-================
+----------------
 
 - Drop Python 2.6 and Python 3.2 support.
 
