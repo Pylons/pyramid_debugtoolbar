@@ -19,7 +19,6 @@
     </script>
     <script src="${static_path}js/jquery.min.js"></script>
     <script src="${static_path}js/bootstrap.min.js"></script>
-    <script src="${static_path}js/toolbar.js"></script>
     <script src="${static_path}js/debugger.js"></script>
   </head>
   <body>
