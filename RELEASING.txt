@@ -1,0 +1,72 @@
+Releasing Pyramid Debugtoolbar
+==============================
+
+Prepare master for a new release
+--------------------------------
+
+- Do platform test via tox:
+
+  $ tox -r
+
+  Make sure statement coverage is at 100% (the test run will fail if not).
+
+- Run tests on Windows if feasible.
+
+- Ensure all features of the release are documented (audit CHANGES.txt or
+  communicate with contributors).
+
+- Change CHANGES.txt heading to reflect the new version number.
+
+- Change setup.py version to the release version number.
+
+- Make sure PyPI long description renders (requires ``collective.dist``
+  installed into your Python)::
+
+  $ python setup.py check -r
+
+- Create a release tag.
+
+- Make sure your Python has ``setuptools-git``, ``twine``, and ``wheel``
+  installed and release to PyPI::
+
+  $ python setup.py sdist bdist_wheel
+  $ twine upload dist/pyramid_debugtoolbar-X.X-*
+
+Marketing and communications
+----------------------------
+
+- Announce to Twitter.
+
+```
+Pyramid Debugtoolbar 2.x released.
+
+PyPI
+https://pypi.python.org/pypi/pyramid_debugtoolbar/2.x
+
+Issues
+https://github.com/Pylons/pyramid_debugtoolbar/issues
+```
+
+- Announce to maillist.
+
+```
+Pyramid Debugtoolbar 2.X.X has been released.
+
+Here are the changes:
+
+<<changes>>
+
+Full change history:
+http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.html
+
+You can install it via PyPI:
+
+  pip install pyramid_debugtoolbar==2.X.X
+
+Enjoy, and please report any issues you find to the issue tracker at
+https://github.com/Pylons/pyramid_debugtoolbar/issues
+
+Thanks!
+
+- Pylons Project core developers
+```
