@@ -5,7 +5,6 @@ from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import escape
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 
 _ = lambda x: x
 

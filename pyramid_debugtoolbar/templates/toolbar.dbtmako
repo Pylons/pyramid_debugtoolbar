@@ -6,19 +6,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>Pyramid Debug Toolbar</title>
-    <!--bootstrap version 2.3.2-->
-    <link rel="stylesheet" type="text/css" href="${static_path}css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="${static_path}css/toolbar.css">
-    <link rel="stylesheet" type="text/css" href="${static_path}css/dashboard.css">
-    <link rel="stylesheet" href="${static_path}css/debugger.css" type="text/css">
+
+    <link rel="stylesheet" href="${static_path}css/bootstrap.min.css">
+    <link rel="stylesheet" href="${static_path}css/toolbar.css">
+    <link rel="stylesheet" href="${static_path}css/dashboard.css">
+    <link rel="stylesheet" href="${static_path}css/debugger.css">
 
     ## include scripts here that should be included before pageload
     ##  this *should* only be jquery, as we only need the `$` variable defined
     ##  in order for other javascript to be run after the document is loaded
-    <script type="text/javascript">
-      var DEBUG_TOOLBAR_STATIC_PATH = '${static_path}';
+    <script>
+      var DEBUG_TOOLBAR_STATIC_PATH = "${static_path}";
+      var DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
+      var DEBUG_TOOLBAR_CURRENT_REQUEST_ID = "${request_id}";
     </script>
-    <script src="${static_path}js/jquery-1.10.2.min.js"></script>
+    <script src="${static_path}js/jquery.min.js"></script>
   </head>
   <body>
 
@@ -70,51 +72,5 @@
     <script src="${static_path}js/jquery.tablesorter.min.js"></script>
     <script src="${static_path}js/bootstrap.min.js"></script>
     <script src="${static_path}js/toolbar.js"></script>
-	<script>
-	  $(function () {
-        var source;
-        function new_request(e) {
-            $('ul#requests li a').tooltip('hide')
-            var html = '<li><h4>Requests</strong></h4></li>';
-            var requests = $('ul#requests');
-            var data = JSON.parse(e.data);
-            data.forEach(function (item) {
-                var details = item[1];
-                var request_id = item[0];
-                var active = item[2];
-
-                html += '<li class="'+active+'"><a href="${root_path}'+request_id+'" title="'+details.path+'">';
-                html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
-                html += details.method;
-                if (details.scheme == 'https'){
-                	html += '&nbsp;<span class="badge"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>';
-                }
-                html += '<br>' + details.path;
-                html += '</a></li>';
-            });
-
-            requests.html(html);
-            $('ul#requests li a').tooltip({
-                placement: 'right',
-                container: 'body'
-            });
-        }
-
-        function connectEventSource() {
-            if (source) {
-                source.close();
-            }
-
-            source = new EventSource('${root_path}sse?request_id=${request_id}');
-            source.addEventListener('new_request', new_request);
-        }
-
-        if (!!window.EventSource) {
-            connectEventSource();
-        }
-
-	  });
-	</script>
-
-      </body>
-    </html>
+  </body>
+</html>
