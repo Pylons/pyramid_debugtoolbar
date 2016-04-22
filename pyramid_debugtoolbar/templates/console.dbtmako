@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>${title} // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="${static_path}css/debugger.css">
+    <link rel="stylesheet" href="${static_path}debugger/debugger.css">
     <script type="text/javascript">
       var TRACEBACK = ${str(traceback_id)},
           CONSOLE_MODE = ${console},
@@ -12,8 +12,8 @@
           DEBUG_TOOLBAR_STATIC_PATH = "${static_path}",
           DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
     </script>
-    <script src="${static_path}js/jquery.min.js"></script>
-    <script src="${static_path}js/debugger.js"></script>
+    <script src="${static_path}jquery/jquery.min.js"></script>
+    <script src="${static_path}debugger/debugger.js"></script>
   </head>
   <body>
 

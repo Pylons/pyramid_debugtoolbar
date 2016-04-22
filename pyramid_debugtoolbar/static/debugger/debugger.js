@@ -22,7 +22,7 @@ $(function() {
       */
     if (EVALEX)
       $('<img class="console-icon" src="'
-        + window.DEBUG_TOOLBAR_STATIC_PATH + 'img/console.png">')
+        + window.DEBUG_TOOLBAR_STATIC_PATH + 'debugger/img/console.png">')
         .attr('title', 'Open an interactive python shell in this frame')
         .click(function() {
           consoleNode = openShell(consoleNode, target, frameID);
@@ -33,7 +33,7 @@ $(function() {
     /**
       * Show sourcecode
       */
-    var sourceButton = $('<img src="' + window.DEBUG_TOOLBAR_STATIC_PATH + 'img/source.png">')
+    var sourceButton = $('<img src="' + window.DEBUG_TOOLBAR_STATIC_PATH + 'debugger/img/source.png">')
       .attr('title', 'Display the sourcecode for this frame')
       .click(function() {
         if (!sourceView)

@@ -25,7 +25,7 @@
       <p>
 
         Hover over any gray area in the traceback and click on the
-        <img src="${static_path}img/console.png"/> icon on the right hand
+        <img src="${static_path}debugger/img/console.png"/> icon on the right hand
         side of that gray area to show an interactive console for the
         associated frame.  Type arbitrary Python into the console; it will be
         evaluated in the context of the associated frame.  In the interactive
@@ -40,7 +40,7 @@
 
       <p>
         Hover over any gray area in the traceback and click on
-        <img src="${static_path}img/source.png"/> on the right hand side
+        <img src="${static_path}debugger/img/source.png"/> on the right hand side
         of that gray area to show the source of the file associated with the frame.
       </p>
 
@@ -74,5 +74,5 @@
           DEBUG_TOOLBAR_STATIC_PATH = "${static_path}",
           DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
     </script>
-    <script src="${static_path}js/debugger.js"></script>
+    <script src="${static_path}debugger/debugger.js"></script>
 

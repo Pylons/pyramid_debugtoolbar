@@ -36,7 +36,7 @@ a:hover {
     position: absolute;
     top: 10px;
     left: 10px;
-    content: url(../img/pyramid.png);
+    content: url(img/pyramid.png);
 }
 .navbar-brand {
     padding-left: 50px;

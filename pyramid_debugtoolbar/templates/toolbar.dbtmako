@@ -7,11 +7,11 @@
     <meta charset="UTF-8" />
     <title>Pyramid Debug Toolbar</title>
 
-    <link rel="stylesheet" href="${static_path}css/bootstrap.min.css">
+    <link rel="stylesheet" href="${static_path}bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${static_path}jquery.tablesorter/css/theme.bootstrap.min.css">
-    <link rel="stylesheet" href="${static_path}css/toolbar.css">
-    <link rel="stylesheet" href="${static_path}css/dashboard.css">
-    <link rel="stylesheet" href="${static_path}css/debugger.css">
+    <link rel="stylesheet" href="${static_path}toolbar/toolbar.css">
+    <link rel="stylesheet" href="${static_path}toolbar/dashboard.css">
+    <link rel="stylesheet" href="${static_path}debugger/debugger.css">
 
     ## include scripts here that should be included before pageload
     ##  this *should* only be jquery, as we only need the `$` variable defined
@@ -21,7 +21,7 @@
       var DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
       var DEBUG_TOOLBAR_CURRENT_REQUEST_ID = "${request_id}";
     </script>
-    <script src="${static_path}js/jquery.min.js"></script>
+    <script src="${static_path}jquery/jquery.min.js"></script>
   </head>
   <body>
 
@@ -35,7 +35,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="${root_path}">
-            <!-- <img src="${static_path}img/pyramid.png"/> -->
+            <!-- <img src="${static_path}toolbar/img/pyramid.png"/> -->
             Pyramid DebugToolbar</a>
         </div>
         <div class="navbar-collapse collapse">
@@ -69,14 +69,14 @@
     </div>
 
     ## scripts that can be included after pageload
-    <script src="${static_path}js/jquery.cookie.js"></script>
+    <script src="${static_path}jquery.cookie/jquery.cookie.js"></script>
 
     ## tablesorter, load before toolbar.js
     ## it needs the widgets file for 'bootstrap' & 'uitheme'
     <script src="${static_path}jquery.tablesorter/js/jquery.tablesorter.min.js"></script>
     <script src="${static_path}jquery.tablesorter/js/jquery.tablesorter.widgets.min.js"></script>
 
-    <script src="${static_path}js/bootstrap.min.js"></script>
-    <script src="${static_path}js/toolbar.js"></script>
+    <script src="${static_path}bootstrap/js/bootstrap.min.js"></script>
+    <script src="${static_path}toolbar/toolbar.js"></script>
   </body>
 </html>
