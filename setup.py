@@ -13,7 +13,6 @@
 ##############################################################################
 
 import os
-import sys
 
 from setuptools import setup, find_packages
 
@@ -28,13 +27,8 @@ install_requires = [
     'pyramid>=1.4',
     'pyramid_mako>=0.3.1', # lazy configuration loading works
     'repoze.lru',
+    'Pygments',
     ]
-
-# Pygments 2.0 dropped 3.2 support
-if (sys.version_info[0], sys.version_info[1]) == (3, 2):
-    install_requires.append('Pygments<=1.99')
-else:
-    install_requires.append('Pygments')
 
 testing_extras = [
     'WebTest',
@@ -48,7 +42,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='2.5',
+      version='3.0',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,

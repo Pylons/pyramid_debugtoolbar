@@ -1,5 +1,5 @@
-unreleased
-----------
+3.0 (2016-04-23)
+----------------
 
 - The toolbar is now a completely standalone application running inside the
   tween. There are several minor incompatibilities and improvements related
@@ -25,6 +25,8 @@ unreleased
 
 - Enabled interactive tablesorting on table columns.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/256
+
+- setuptools-git is now required to instal the codebase in non-editable mode.
 
 2.5 (2016-04-20)
 ----------------
