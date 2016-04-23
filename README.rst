@@ -62,9 +62,6 @@ options.
 Testing
 -------
 
-For this section, first navigate to
-``pyramid_debugtoolbar_demo/pyramid_debugtoolbar``.
-
 If you have ``tox`` installed, run all tests with:
 
 .. code-block:: bash
@@ -89,9 +86,6 @@ then run the tests.
 
 Building documentation
 ----------------------
-
-For this section, first navigate to
-``pyramid_debugtoolbar_demo/pyramid_debugtoolbar``.
 
 If you have ``tox`` installed, build the docs with:
 
