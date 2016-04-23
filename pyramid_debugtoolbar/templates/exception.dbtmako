@@ -5,9 +5,9 @@
   <head>
     <title>${title} // Werkzeug Debugger</title>
     <!--bootstrap version 2.3.2-->
-    <link rel="stylesheet" type="text/css" href="${static_path}css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="${static_path}css/toolbar.css">
-    <link rel="stylesheet" type="text/css" href="${static_path}css/debugger.css">
+    <link rel="stylesheet" type="text/css" href="${static_path}bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="${static_path}toolbar/toolbar.css">
+    <link rel="stylesheet" type="text/css" href="${static_path}debugger/debugger.css">
     <script type="text/javascript">
       var TRACEBACK = ${str(traceback_id)},
           DEBUGGER_TOKEN = "${token}",
@@ -16,9 +16,9 @@
           DEBUG_TOOLBAR_STATIC_PATH = "${static_path}",
           DEBUG_TOOLBAR_ROOT_PATH = "${root_path}";
     </script>
-    <script src="${static_path}js/jquery.min.js"></script>
-    <script src="${static_path}js/bootstrap.min.js"></script>
-    <script src="${static_path}js/debugger.js"></script>
+    <script src="${static_path}jquery/jquery.min.js"></script>
+    <script src="${static_path}bootstrap/js/bootstrap.min.js"></script>
+    <script src="${static_path}debugger/debugger.js"></script>
   </head>
   <body>
     <div class="debugger">
@@ -52,7 +52,7 @@
       <p>
 
         Hover over any gray area in the traceback and click on the
-        <img src="${static_path}img/console.png"/> icon on the right hand
+        <img src="${static_path}debugger/img/console.png"/> icon on the right hand
         side of that gray area to show an interactive console for the
         associated frame.  Type arbitrary Python into the console; it will be
         evaluated in the context of the associated frame.  In the interactive
@@ -67,7 +67,7 @@
 
       <p>
         Hover over any gray area in the traceback and click on
-        <img src="${static_path}img/source.png"/> on the right hand side
+        <img src="${static_path}debugger/img/source.png"/> on the right hand side
         of that gray area to show the source of the file associated with the frame.
       </p>
 

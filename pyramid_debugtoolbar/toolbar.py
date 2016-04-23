@@ -90,11 +90,12 @@ class DebugToolbar(object):
         response_html = response.body
         toolbar_url = debug_toolbar_url(request, request.pdtb_id)
         button_style = get_setting(request.registry.settings,
-                'button_style', '')
-        css_path = request.static_url(STATIC_PATH + 'css/toolbar_button.css')
+                                   'button_style', '')
+        css_path = request.static_url(
+            STATIC_PATH + 'toolbar/toolbar_button.css')
         toolbar_html = toolbar_html_template % {
-            'button_style':
-                'style="{0}"'.format(button_style) if button_style else "",
+            'button_style': (
+                'style="{0}"'.format(button_style) if button_style else ""),
             'css_path': css_path,
             'toolbar_url': toolbar_url}
         toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
