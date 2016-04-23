@@ -202,10 +202,20 @@ def find_request_history(request):
 def debug_toolbar_url(request, *elements, **kw):
     return request.route_url('debugtoolbar', subpath=elements, **kw)
 
-
 def hexlify(value):
     """Hexlify int, str then returns native str type."""
     # If integer
     str_ = str(value)
     hexified = text_(binascii.hexlify(bytes_(str_)))
     return hexified
+
+def make_subrequest(request, root_path, path, params=None):
+    # we know root_path will have a trailing slash and
+    # path will need one
+    subrequest = type(request).blank(
+        '/' + path,
+        base_url=request.application_url + root_path[:-1],
+    )
+    if params is not None:
+        subrequest.GET.update(params)
+    return subrequest

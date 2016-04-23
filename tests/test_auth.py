@@ -51,8 +51,8 @@ class Test_auth(unittest.TestCase):
         self.assertEqual(resp.content_type, 'text/html')
         self.assertEqual(resp.html.body.string, 'Hello pyramid!')
         # Python 2.6 doesn't include assertIsNone or other useful asserts. Sigh.
-        self.assertTrue(resp.html.body.script is None, 'not None')
-        self.assertTrue(resp.html.body.div is None, 'not None')
+        self.assertTrue(resp.html.body.script is None)
+        self.assertTrue(resp.html.body.div is None)
 
     def test_authenticated_toolbar_injection(self):
         resp = self._req('/hello/secrets', remote_user='admin')
@@ -60,7 +60,7 @@ class Test_auth(unittest.TestCase):
         # dive into the request history stored by the toolbar tween
         request_id = self.testapp.app.registry.request_history[0][0]
         # check it against the link in the injected html
-        self.assertTrue(request_id in resp.html.body.div.div.a['href'], 'request_id not found in html')
+        self.assertTrue(request_id in resp.html.body.div.div.a['href'])
 
     def test_authenticated_toolbar_views(self):
         resp = self._req('/hello/rumors', remote_user='admin')
@@ -73,4 +73,4 @@ class Test_auth(unittest.TestCase):
         resp = self._req('/hello/protected', remote_user='admin')
         new_url = resp.html.body.div.div.a['href']
         resp = self._req(new_url, remote_user=None, status=404)
-        self.assertTrue(b'client authorization failed' in resp.body, 'incorrect body')
+        self.assertTrue(b'404 Not Found' in resp.body)
