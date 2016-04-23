@@ -23,68 +23,37 @@ Demonstration
 
 For a demonstration:
 
-- Create a workspace.
+- Clone the ``pyramid_debugtoolbar`` trunk.
 
   .. code-block:: bash
 
-      $ mkdir ~/projects/pyramid_debugtoolbar_demo
-      $ cd ~/projects/pyramid_debugtoolbar_demo
+      $ git clone https://github.com/Pylons/pyramid_debugtoolbar.git
 
 - Create a virtual environment in the workspace.
 
   .. code-block:: bash
 
-      # Set the path to our virtual environment
-      $ export VENV=${PWD}/env
-      $ $VENV/bin/python -m venv $VENV
-
-- Ugrade ``pip`` and ``setuptools``.
-
-  .. code-block:: bash
-
-      $ $VENV/bin/pip install --upgrade pip setuptools
-
-- Clone the Pyramid trunk.
-
-  .. code-block:: bash
-
-      $ git clone https://github.com/Pylons/pyramid.git
-
-- Install the Pyramid trunk into the virtual environment.
-
-  .. code-block:: bash
-
-      $ cd pyramid
-      $ $VENV/bin/pip install -e .
-
-- Clone the ``pyramid_debugtoolbar`` trunk.
-
-  .. code-block:: bash
-
-      # go back up into the workspace directory
-      $ cd ..
-      $ git clone https://github.com/Pylons/pyramid_debugtoolbar.git
+      $ cd pyramid_debugtoolbar
+      $ python3 -m venv env
 
 - Install the ``pyramid_debugtoolbar`` trunk into the virtualenv.
 
   .. code-block:: bash
 
-      $ cd pyramid_debugtoolbar
-      $ $VENV/bin/pip install -e .
+      $ env/bin/pip install -e .
 
 - Install the ``pyramid_debugtoolbar/demo`` package into the virtualenv.
 
   .. code-block:: bash
 
-      $ cd demo
-      $ $VENV/bin/pip install -e .
+      $ env/bin/pip install -e demo
 
 - Run the ``pyramid_debugtoolbar`` package's ``demo/demo.py`` file using the
   virtual environment's Python.
 
   .. code-block:: bash
 
-      $ $VENV/bin/python demo.py
+      $ env/bin/python demo/demo.py
 
 Visit http://localhost:8080 in a web browser to see a page full of test
 options.
@@ -113,8 +82,9 @@ then run the tests.
 
 .. code-block:: bash
 
-    $ $VENV/bin/pip install -e ".[testing]"
-    $ $VENV/bin/nosetests
+    $ python3 -m venv env
+    $ env/bin/pip install -e ".[testing]"
+    $ env/bin/nosetests
 
 
 Building documentation
@@ -134,6 +104,6 @@ the docs, then build them.
 
 .. code-block:: bash
 
-    $ $VENV/bin/pip install -e ".[docs]"
+    $ env/bin/pip install -e ".[docs]"
     $ cd docs
-    $ make clean html SPHINXBUILD=$VENV/bin/sphinx-build
+    $ make clean html SPHINXBUILD=../env/bin/sphinx-build
