@@ -1,6 +1,28 @@
 unreleased
 ----------
 
+- The toolbar is now a completely standalone application running inside the
+  tween. There are several minor incompatibilities and improvements related
+  to this extra isolation:
+
+  1. ``pyramid_mako`` and the ``.dbtmako`` renderer are no longer included
+     in the parent application (your app).
+  2. Panels must be extra careful now that they only render templates inside
+     of the ``render_vars`` and ``render_content`` functions. These are the
+     only functions in which the ``request`` object is for rendering the
+     toolbar panel.
+  3. The toolbar will not be affected by any global security policies your
+     application may put in place other than via
+     ``config.set_debugtoolbar_request_authorization``.
+     **never run the toolbar in production**
+
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/253
+
+- Updated Bootstrap to v3.3.6, refactored static assets and dropped require.js.
+  Each page now depends on what it needs without extra dependencies included
+  in the debugger pages.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/259
+
 - Enabled interactive tablesorting on table columns.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/256
 
