@@ -1,3 +1,14 @@
+unreleased
+----------
+
+- Avoid touching ``request.unauthenticated_userid``,
+  ``request.authenticated_userid`` and ``request.effective_principals`` unless
+  they are accessed by the user in the normal request lifecycle. This avoids
+  some issues where unauthenticated requests could trigger side effects on
+  your authentication policy or access the properties outside of the
+  expected lifecycle of the properties.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/263
+
 3.0 (2016-04-23)
 ----------------
 
