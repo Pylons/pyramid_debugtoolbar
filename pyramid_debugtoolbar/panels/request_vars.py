@@ -90,7 +90,7 @@ class RequestVarsDebugPanel(DebugPanel):
             attrs['response'] = repr(attrs['response'])
 
         if 'session' in attrs:
-            self.process_session_attr(self, attrs['session'])
+            self.process_session_attr(attrs['session'])
             del attrs['session']
         else:
             # only process the session if it's accessed
