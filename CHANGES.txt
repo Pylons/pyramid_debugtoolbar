@@ -1,3 +1,10 @@
+unreleased
+----------
+
+- Fix a regression with inspecting requests with a session that is loaded
+  before the toolbar executes.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/268
+
 3.0.1 (2016-05-20)
 ------------------
 
