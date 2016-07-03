@@ -1,5 +1,5 @@
-unreleased
-----------
+3.0.2 (2016-07-02)
+------------------
 
 - Fix a regression with inspecting requests with a session that is loaded
   before the toolbar executes.
