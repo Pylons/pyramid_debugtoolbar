@@ -1,3 +1,11 @@
+unreleased
+----------
+
+- Fix another regression where the toolbar was modifying requests to the
+  toolbar itself such that the ``script_name`` and ``path_info`` were
+  different after handling the request than before.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/269
+
 3.0.2 (2016-07-02)
 ------------------
 
