@@ -190,9 +190,15 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         if p.startswith(root_path):
             # we know root_path will always have a trailing slash
             # but script_name doesn't want it
-            request.script_name += root_path[:-1]
-            request.path_info = request.path_info[len(root_path) - 1:]
-            return dispatch(request)
+            try:
+                old_script_name = request.script_name
+                old_path_info = request.path_info
+                request.script_name += root_path[:-1]
+                request.path_info = request.path_info[len(root_path) - 1:]
+                return dispatch(request)
+            finally:
+                request.script_name = old_script_name
+                request.path_info = old_path_info
 
         request.exc_history = exc_history
         request.history = request_history
