@@ -1,5 +1,5 @@
-unreleased
-----------
+3.0.3 (2016-07-26)
+------------------
 
 - Fix another regression where the toolbar was modifying requests to the
   toolbar itself such that the ``script_name`` and ``path_info`` were
