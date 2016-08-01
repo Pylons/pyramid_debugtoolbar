@@ -72,8 +72,8 @@ class ExceptionDebugView(object):
         renderer='pyramid_debugtoolbar:templates/console.dbtmako',
     )
     def console(self):
-        static_path = self.request.static_url(STATIC_PATH)
-        toolbar_root_path = self.request.route_url(ROOT_ROUTE_NAME)
+        static_path = self.request.static_path(STATIC_PATH)
+        toolbar_root_path = self.request.route_path(ROOT_ROUTE_NAME)
         exc_history = self.exc_history
         vars = {
             'evalex':           exc_history.eval_exc and 'true' or 'false',
@@ -193,8 +193,8 @@ def request_view(request):
     request_id = request.matchdict.get('request_id', last_request_id)
     toolbar = history.get(request_id, None)
 
-    static_path = request.static_url(STATIC_PATH)
-    root_path = request.route_url(ROOT_ROUTE_NAME)
+    static_path = request.static_path(STATIC_PATH)
+    root_path = request.route_path(ROOT_ROUTE_NAME)
     
     button_style = get_setting(request.registry.settings,
             'button_style')

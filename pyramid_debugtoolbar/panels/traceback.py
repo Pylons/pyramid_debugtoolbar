@@ -50,8 +50,8 @@ class TracebackPanel(DebugPanel):
 
     def render_vars(self, request):
         return {
-            'static_path': request.static_url(STATIC_PATH),
-            'root_path': request.route_url(ROOT_ROUTE_NAME),
+            'static_path': request.static_path(STATIC_PATH),
+            'root_path': request.route_path(ROOT_ROUTE_NAME),
 
             # render the summary using the toolbar's request object, not
             # the original request that generated the traceback!
