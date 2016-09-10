@@ -113,3 +113,65 @@ $(function () {
     connectEventSource();
   }
 });
+
+
+/*
+	Sticky Panel Functionality
+
+	The functionality can be turned on/off via the global settings tab.
+	Two cookies are used to control this feature:
+	* pdtb_sticky_panel_active - is the feature active?
+	* pdtb_sticky_panel_selected - the last selected panel
+*/
+$(function() {
+	// store active panel into this cookie
+	var COOKIE_NAME_STICKYPANEL_ACTIVE = 'pdtb_sticky_panel_active';
+	var COOKIE_NAME_STICKYPANEL_SELECTED = 'pdtb_sticky_panel_selected';
+
+	var feature_activated = ($.cookie(COOKIE_NAME_STICKYPANEL_ACTIVE) === 'true') ? true : false;
+	var selected_panel = $.cookie(COOKIE_NAME_STICKYPANEL_SELECTED);
+
+	var switcher = $('#sticky_toolbar-switch');
+		switcher.addClass(feature_activated ? 'active' : 'inactive');
+		switcher.click(function(){
+			if (switcher.hasClass('active')){
+				feature_activated = false;
+				switcher.addClass('inactive').removeClass('active');
+			} else {
+				feature_activated = true;
+				switcher.removeClass('inactive').addClass('active');
+			}
+			// set the new cookie
+			$.cookie(COOKIE_NAME_STICKYPANEL_ACTIVE, feature_activated);
+		});
+
+	// only run the feature when activated
+	if (feature_activated){
+		if (selected_panel){
+			// activate the panel if it exists and is populated
+			console.log("Activating Debug Toolbar Panel : ", selected_panel);
+			// toolbar doesn't seem to use the normal bootstrap integration, so invoke two methods
+			// the issue is that 2 identical #ids are generated : one on the `li`, one of the `li.a`
+			var panel_tab = $("#"+selected_panel);
+			if (!panel_tab.length){
+				console.log('The toolbar panel is not on this screen');
+			} else {
+				if (panel_tab.hasClass('disabled')){
+					console.log('The toolbar panel is disabled on this view');
+				} else {
+					$(panel_tab).tab('show');
+					// handle bootstrap incompatibility by invoking the content directly
+					$("#"+selected_panel+'-content').show();
+				}
+			}
+		}
+		// subscribe panels for recording the active panel in a cookie
+		$(".pDebugPanels ul li a").click(function() {
+			var panel_selected = $(this).attr('id');
+			if (panel_selected){
+				$.cookie(COOKIE_NAME_STICKYPANEL_SELECTED, panel_selected);
+			}
+		});
+	}
+
+});
