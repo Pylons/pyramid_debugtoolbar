@@ -22,7 +22,7 @@
 }
 
 .switch.inactive{
-    background-image: url(img/tick-red.png);
+    background-image: url(img/cross.png);
 }
 
 .switch.default-active {
