@@ -1,5 +1,5 @@
-Unreleased
-------------------
+3.0.5 (2016-11-1)
+-----------------
 
 - Change static toolbar asset to accommodate color blindness. See:
   https://github.com/Pylons/pyramid_debugtoolbar/issues/273
