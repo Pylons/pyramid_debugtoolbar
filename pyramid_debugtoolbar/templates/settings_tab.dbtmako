@@ -21,16 +21,6 @@
 	% endif
 % endfor
 
-<hr/>
-
-
-<h4>Toolbar Behavior</h4>
-
-<h5>Sticky Panels</h5>
-<%doc>Note: this is just using the `switch` class to get the icon. it is not using `switchable`, which has it's own javascript controls</%doc>
-<span>Enabled: </span> <span id="sticky_toolbar-switch" class="switch" title="Enable or disable the function"></span>
-<p>If enabled, the panel selection will be sticky across requests.</p>
-
 
 </div>
 </div>
