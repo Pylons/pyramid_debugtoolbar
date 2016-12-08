@@ -74,29 +74,26 @@ $(function() {
 $(function () {
   var source;
   function new_request(e) {
-    $('ul#requests li a').tooltip('hide')
-    var html = '<li><h4>Requests</strong></h4></li>';
     var requests = $('ul#requests');
     var data = JSON.parse(e.data);
+    var html = '';
     data.forEach(function (item) {
       var details = item[1];
       var request_id = item[0];
       var active = item[2];
 
-      html += '<li class="'+active+'"><a href="'+window.DEBUG_TOOLBAR_ROOT_PATH+request_id+'" title="'+details.path+'">';
-      html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
-      html += details.method;
+      html += '<li class="'+active+'"><a class="path" href="'+window.DEBUG_TOOLBAR_ROOT_PATH+request_id+'" title="'+details.path+'">';
+      html += '<span class="badge status-code pull-right _'+details.status_code+'">'+details.status_code+'</span>';
+      html += '<span class="method">'+details.method+'</span>';
       if (details.scheme == 'https'){
         html += '&nbsp;<span class="badge"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>';
       }
       html += '<br>' + details.path;
       html += '</a></li>';
     });
-
     requests.html(html);
-    $('ul#requests li a').tooltip({
-      placement: 'right',
-      container: 'body'
+    new List('req_list', {
+        valueNames: ['status-code', 'path', 'method']
     });
   }
 
