@@ -1,3 +1,20 @@
+Unreleased
+-----------------
+
+- Added "sticky" panel functionality to allow a selected panel to persist 
+  across pageviews using cookies.  If a cookied panel does not have content
+  available for display, the first non-disabled panel will be displayed. If a
+  cookied panel is not enabled on the toolbar, the first non-disabled panel will
+  be displayed AND will become the new default panel.
+  
+  See: https://github.com/Pylons/pyramid_debugtoolbar/pull/272
+
+- Added `CustomLoggerFactory` to javascript, used in the development of PR 272.
+  This javascript factory allows panel developers and maintainers to use verbose
+  console logging during development, partitioned by feature, and silence it for
+  deployment while still leaving the logging lines activated.
+
+
 3.0.5 (2016-11-1)
 -----------------
 
