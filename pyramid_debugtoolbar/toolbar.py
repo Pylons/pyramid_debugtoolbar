@@ -1,5 +1,6 @@
 import sys
 import os
+import weakref
 
 from pyramid.exceptions import URLDecodeError
 from pyramid.httpexceptions import WSGIHTTPException
@@ -55,7 +56,11 @@ class DebugToolbar(object):
         # If the panel is activated in the settings, we want to enable it
         activated.extend(default_active_panels)
 
+        # generate a weakref to the toolbar
+        toolbar_ref = weakref.ref(self)
+
         def configure_panel(panel):
+            panel_inst.register_toolbar_reference(toolbar_ref)
             panel_inst.is_active = False
             if panel_inst.name in activated and panel_inst.has_content:
                 panel_inst.is_active = True

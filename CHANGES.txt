@@ -1,6 +1,15 @@
 Unreleased
 -----------------
 
+- Extended the toolbar panels to track the invoking toolbar via a weakref.  The
+  panels now have a Added `_toolbar_ref` attribute and methods:
+  `register_toolbar_reference` and `get_toolbar`. Registering the toolbar into 
+  each panel allows for panels to access the data of earlier instantiated 
+  panels, such as allowing for a user-defined panel to filter and display the
+  data generated in the standard SqlAlchemy panel in a custom manner.
+
+  See: https://github.com/Pylons/pyramid_debugtoolbar/issues/163
+
 - Added "sticky" panel functionality to allow a selected panel to persist 
   across pageviews using cookies.  If a cookied panel does not have content
   available for display, the first non-disabled panel will be displayed. If a
