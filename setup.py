@@ -61,7 +61,7 @@ setup(name='pyramid_debugtoolbar',
       keywords='wsgi pylons pyramid transaction',
       author=("Chris McDonough, Michael Merickel, Casey Duncan, "
               "Blaise Laflamme"),
-      author_email="pylons-devel@googlegroups.com",
+      author_email="pylons-discuss@googlegroups.com",
       url="http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
       license="BSD",
       packages=find_packages(exclude=('tests',)),
