@@ -21,6 +21,7 @@ from pyramid_debugtoolbar.toolbar import (
 toolbar_tween_factory = toolbar_tween_factory  # API
 
 default_panel_names = (
+    'pyramid_debugtoolbar.panels.exception.ExceptionDebugPanel',
     'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
     'pyramid_debugtoolbar.panels.logger.LoggingPanel',
     'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',

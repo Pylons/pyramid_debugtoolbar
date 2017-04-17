@@ -47,6 +47,7 @@ class DebugToolbar(object):
         self.request = request
         self.status_int = 200
         self.default_active_panels = default_active_panels
+        self.exception_url = None
 
         # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
@@ -231,6 +232,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                     request, root_path, 'exception', qs)
                 exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
+                toolbar.exception_url = exc_url
 
                 response = dispatch(subrequest)
 

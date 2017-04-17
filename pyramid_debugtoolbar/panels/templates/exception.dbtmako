@@ -1,0 +1,7 @@
+<h4>Exception!</h4>
+<p>
+	It looks like this page generated an exception:
+</p>
+<ul class="list">
+	<li><a href="${traceback_url}">${traceback_url}</a></li>
+</ul>
