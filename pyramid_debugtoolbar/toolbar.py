@@ -118,7 +118,7 @@ class ExceptionHistory(object):
 
 
 def beforerender_subscriber(event):
-    request = event['request']
+    request = event.get('request')
     if request is None:
         request = get_current_request()
     if getattr(request, 'debug_toolbar', None) is not None:

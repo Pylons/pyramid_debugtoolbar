@@ -81,8 +81,8 @@ class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
         self.request = Request.blank('/')
         self.config = testing.setUp(request=self.request)
-        panel = DummyPanel(self.request)
-        self.request.debug_toolbar = DummyToolbar([panel])
+        self.panel = DummyPanel(self.request)
+        self.request.debug_toolbar = DummyToolbar([self.panel])
 
     def tearDown(self):
         testing.tearDown()

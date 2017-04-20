@@ -222,8 +222,8 @@ file.
 
   The debugtoolbar will use Pyramid's default
   :meth:`pyramid.config.Configurator.include` mechanism to extend the toolbar's
-  internal Pyramid application with custom logic. This is a good spot to affect
-  static assets used by the toolbar, or add custom urls.
+  internal Pyramid application with custom logic. This is a good spot to add
+  custom panels, affect static assets used by the toolbar, or add custom urls.
 
 Useful settings for debugging panels/debugtoolbar
 `````````````````````````````````````````````````
@@ -556,7 +556,7 @@ sample panel:
            return _('Sample')
 
    def includeme(config):
-       config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
+       config.add_debugtoolbar_panel(SampleDebugPanel)
 
 After inheriting from the DebugPanel class, you have to define a few methods and
 attributes on your panel:
@@ -666,10 +666,12 @@ Configuring an application to use the panel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once your panel is ready, you can simply add its package name to the
-``pyramid.includes`` setting on your application configuration file::
+``debugtoolbar.includes`` setting on your application configuration file::
 
   pyramid.includes =
       pyramid_debugtoolbar
+
+  debugtoolbar.includes =
       samplepanel
 
 JavaScript and CSS Available to Custom Panels

@@ -9,6 +9,8 @@
 
 .. autofunction:: toolbar_tween_factory
 
+.. autofunction:: add_debugtoolbar_panel
+
 .. automodule:: pyramid_debugtoolbar.panels
 
 .. autoclass:: DebugPanel

@@ -147,8 +147,11 @@ def as_list(value):
     values = as_cr_separated_list(value)
     result = []
     for value in values:
-        subvalues = value.split()
-        result.extend(subvalues)
+        if isinstance(value, string_types):
+            subvalues = value.split()
+            result.extend(subvalues)
+        else:
+            result.append(value)
     return result
 
 def as_globals_list(value):
@@ -168,8 +171,6 @@ def as_display_debug_or_false(value):
     if b: # bw compat for dbt <=0.9
         return 'debug'
     return False
-
-as_verbatim = lambda v: v
 
 def get_setting(settings, name, default=None):
     return settings.get('%s%s' % (SETTINGS_PREFIX, name), default)
