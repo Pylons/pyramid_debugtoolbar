@@ -103,6 +103,37 @@ class Test_beforerender_subscriber(unittest.TestCase):
         self._callFUT(event)
         self.assertTrue(event['processed'])
 
+class Test_beforerender_subscriber_order(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_it(self):
+        panels = []
+        def panel_factory(request):
+            panel = DummyPanel(request)
+            panels.append(panel)
+            return panel
+        def includeme(config):
+            config.add_debugtoolbar_panel(panel_factory)
+        self.config.add_settings({'debugtoolbar.includes': [includeme]})
+        self.config.include('pyramid_debugtoolbar')
+        def dummy_subscriber(event):
+            event['foo'] = 'bar'
+        self.config.add_subscriber(
+            dummy_subscriber, 'pyramid.events.BeforeRender')
+        # add the toolbar after the subscriber
+        self.config.add_view(lambda r: {}, renderer='json')
+        app = self.config.make_wsgi_app()
+        request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
+        request.get_response(app)
+        self.assertEqual(len(panels), 1)
+        event = panels[0].event
+        self.assertEqual(event['foo'], 'bar')
+
 
 class Test_toolbar_tween_factory(unittest.TestCase):
     def setUp(self):
@@ -411,6 +442,7 @@ class DummyPanel(object):
 
     def process_beforerender(self, event):
         event['processed'] = True
+        self.event = event.copy()
 
 class DummyPanelWithContent(DummyPanel):
     has_content = True
