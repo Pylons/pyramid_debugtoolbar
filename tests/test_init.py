@@ -51,7 +51,7 @@ class Test_parse_settings(unittest.TestCase):
                           'debugtoolbar.reload_assets': False,
                           'debugtoolbar.prevent_http_cache': False,
                           'debugtoolbar.active_panels': ['dummy_panel'],
-                          'debugtoolbar.includes': (),
+                          'debugtoolbar.includes': [],
                           'debugtoolbar.button_style': '',
                           'debugtoolbar.max_request_history': 100,
                           'debugtoolbar.max_visible_requests': 10,
