@@ -727,12 +727,12 @@ More Information
 Development Versions
 --------------------
 
-Visit http://github.com/Pylons/pyramid_debugtoolbar to download development or
+Visit https://github.com/Pylons/pyramid_debugtoolbar to download development or
 tagged versions.
 
 Reporting Bugs
 --------------
-Visit http://github.com/Pylons/pyramid_debugtoolbar/issues to report bugs.
+Visit https://github.com/Pylons/pyramid_debugtoolbar/issues to report bugs.
 
 Indices and tables
 ------------------
