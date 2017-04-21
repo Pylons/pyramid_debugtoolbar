@@ -14,6 +14,12 @@ Unreleased
   console logging during development, partitioned by feature, and silence it for
   deployment while still leaving the logging lines activated.
 
+- Add a new ``config.add_debugtoolbar_panel`` directive that can be invoked
+  from ``includeme`` functions included via the ``debugtoolbar.includes``
+  setting. These panels are automatically added to the default panel list
+  and should become the way to define toolbar panels in the future.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/283
+
 - The toolbar registers a ``BeforeRender`` subscriber in your application to
   monitor the rendering of templates. Previously it was possible that the
   toolbar would miss rendering information because of the order in which the
