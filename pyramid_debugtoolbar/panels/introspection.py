@@ -35,7 +35,7 @@ class IntrospectionDebugPanel(DebugPanel):
             'nl2br': nl2br}
 
     def render_vars(self, request):
-        return {'static_path': request.static_url(STATIC_PATH)}
+        return {'static_path': request.static_path(STATIC_PATH)}
 
 
 def nl2br(s):
