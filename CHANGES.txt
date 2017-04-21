@@ -14,6 +14,13 @@ Unreleased
   console logging during development, partitioned by feature, and silence it for
   deployment while still leaving the logging lines activated.
 
+- The toolbar registers a ``BeforeRender`` subscriber in your application to
+  monitor the rendering of templates. Previously it was possible that the
+  toolbar would miss rendering information because of the order in which the
+  subscribers were registered. The toolbar now waits until the application
+  is created and then appends a new subscriber that encapsulates the
+  your application's ``BeforeRender`` subscribers.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/284
 
 3.0.5 (2016-11-1)
 -----------------

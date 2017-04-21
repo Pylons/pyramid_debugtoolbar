@@ -111,6 +111,21 @@ def set_request_authorization_callback(config, callback):
     """
     config.registry.registerUtility(callback, IRequestAuthorization)
 
+def inject_toolbar(event):
+    app = event.app
+    registry = app.registry
+
+    # inject the BeforeRender subscriber after the application is created
+    # and all other subscribers are registered in hopes that this will be
+    # the last subscriber in the chain and will be able to see the effects
+    # of all previous subscribers on the event
+    config = Configurator(registry=registry, introspection=False)
+    config.add_subscriber(
+        'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
+        'pyramid.events.BeforeRender',
+    )
+    config.commit()
+
 def includeme(config):
     """ Activate the debug toolbar; usually called via
     ``config.include('pyramid_debugtoolbar')`` instead of being invoked
@@ -136,10 +151,7 @@ def includeme(config):
     config.registry.registerUtility(application, IToolbarWSGIApp)
 
     config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
-    config.add_subscriber(
-        'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
-        'pyramid.events.BeforeRender',
-    )
+    config.add_subscriber(inject_toolbar, 'pyramid.events.ApplicationCreated')
     config.add_directive('set_debugtoolbar_request_authorization',
                          set_request_authorization_callback)
 
