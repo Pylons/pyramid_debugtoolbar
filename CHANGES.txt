@@ -32,6 +32,12 @@ Unreleased
   the top-level ``<li>`` tag has the id now.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/285
 
+- Emit a warning and disable the toolbar if the app is being served by
+  a forking / multiprocess wsgi server that sets
+  ``environ['wsgi.multiprocess']`` to ``True``. This should help avoid
+  confusing issues in certain deployments like gunicorn and uwsgi multiprocess
+  modes. See https://github.com/Pylons/pyramid_debugtoolbar/pull/286
+
 3.0.5 (2016-11-1)
 -----------------
 

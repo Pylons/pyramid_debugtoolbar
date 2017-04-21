@@ -1,5 +1,6 @@
 import sys
 import os
+import warnings
 
 from pyramid.exceptions import URLDecodeError
 from pyramid.httpexceptions import WSGIHTTPException
@@ -184,6 +185,14 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             or not addr_in(last_proxy_addr, hosts)
             or auth_check and not auth_check(request)
         ):
+            return handler(request)
+
+        if request.environ.get('wsgi.multiprocess', False):
+            warnings.warn(
+                'pyramid_debugtoolbar has detected that the application is '
+                'being served by a forking / multiprocess web server. The '
+                'toolbar relies on global state to work and is not compatible '
+                'with this environment. The toolbar will be disabled.')
             return handler(request)
 
         root_path = debug_toolbar_url(request, '', _app_url='')
