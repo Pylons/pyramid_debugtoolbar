@@ -28,6 +28,10 @@ Unreleased
   your application's ``BeforeRender`` subscribers.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/284
 
+- Remove duplicate ``id="${panel.dom_id}"`` tags in history tab html. Only
+  the top-level ``<li>`` tag has the id now.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/285
+
 3.0.5 (2016-11-1)
 -----------------
 
