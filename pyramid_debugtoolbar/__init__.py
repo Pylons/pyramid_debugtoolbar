@@ -191,7 +191,7 @@ def make_application(settings, parent_registry):
         '/{request_id}/sqlalchemy/explain/{query_index}')
     config.add_route('debugtoolbar.request', '/{request_id}')
     config.add_route('debugtoolbar.main', '/')
-    config.scan('pyramid_debugtoolbar.views')
+    config.scan('.views')
 
     # commit the toolbar config and include any user-defined includes
     config.commit()

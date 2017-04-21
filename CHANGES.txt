@@ -1,13 +1,12 @@
 Unreleased
 -----------------
 
-- Added "sticky" panel functionality to allow a selected panel to persist 
+- Added "sticky" panel functionality to allow a selected panel to persist
   across pageviews using cookies.  If a cookied panel does not have content
   available for display, the first non-disabled panel will be displayed. If a
   cookied panel is not enabled on the toolbar, the first non-disabled panel will
   be displayed AND will become the new default panel.
-  
-  See: https://github.com/Pylons/pyramid_debugtoolbar/pull/272
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/272
 
 - Added `CustomLoggerFactory` to javascript, used in the development of PR 272.
   This javascript factory allows panel developers and maintainers to use verbose
@@ -43,8 +42,8 @@ Unreleased
 3.0.5 (2016-11-1)
 -----------------
 
-- Change static toolbar asset to accommodate color blindness. See:
-  https://github.com/Pylons/pyramid_debugtoolbar/issues/273
+- Change static toolbar asset to accommodate color blindness.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/273
 
 3.0.4 (2016-07-26)
 ------------------
