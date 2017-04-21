@@ -17,9 +17,9 @@ the Werkzeug debugger code by Armin Ronacher and team.
 Installation
 ------------
 
-Install using setuptools, e.g. (within a virtualenv)::
+Install using pip, e.g. (within a virtualenv)::
 
-  $ easy_install pyramid_debugtoolbar
+  $ pip install pyramid_debugtoolbar
 
 Setup
 -----
