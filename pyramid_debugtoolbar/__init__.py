@@ -1,5 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.settings import asbool
+import pyramid.tweens
 from pyramid_debugtoolbar.utils import (
     as_cr_separated_list,
     as_display_debug_or_false,
@@ -150,7 +151,13 @@ def includeme(config):
     application = make_application(settings, config.registry)
     config.registry.registerUtility(application, IToolbarWSGIApp)
 
-    config.add_tween('pyramid_debugtoolbar.toolbar_tween_factory')
+    config.add_tween(
+        'pyramid_debugtoolbar.toolbar_tween_factory',
+        over=[
+            pyramid.tweens.EXCVIEW,
+            'pyramid_tm.tm_tween_factory',
+        ],
+    )
     config.add_subscriber(inject_toolbar, 'pyramid.events.ApplicationCreated')
     config.add_directive('set_debugtoolbar_request_authorization',
                          set_request_authorization_callback)

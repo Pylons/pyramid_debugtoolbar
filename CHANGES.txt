@@ -38,6 +38,8 @@ Unreleased
   confusing issues in certain deployments like gunicorn and uwsgi multiprocess
   modes. See https://github.com/Pylons/pyramid_debugtoolbar/pull/286
 
+- The toolbar tween is always placed explicitly OVER the pyramid_tm tween.
+
 3.0.5 (2016-11-1)
 -----------------
 
