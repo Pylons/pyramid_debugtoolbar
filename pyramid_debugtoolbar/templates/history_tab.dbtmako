@@ -21,12 +21,10 @@
           <li class="${_css_class}" id="${panel.dom_id}">
             % if panel.has_content:
             <a href="${panel.url or '#'}" 
-              title="${panel.title}" 
-              id="${panel.dom_id}">
+              title="${panel.title}">
               % else:
               <a href="${panel.url or '#'}"
                 title="${panel.title}"
-                id="${panel.dom_id}"
                 class="contentless">
                 % endif
 
