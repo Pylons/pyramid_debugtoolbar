@@ -225,6 +225,9 @@ file.
   internal Pyramid application with custom logic. This is a good spot to add
   custom panels, affect static assets used by the toolbar, or add custom urls.
 
+  Within the ``includeme`` the application registry may be accessed as
+  ``config.registry.parent_registry``.
+
 Useful settings for debugging panels/debugtoolbar
 `````````````````````````````````````````````````
 
