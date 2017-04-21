@@ -80,7 +80,8 @@ def test_highorder(request):
 def test_predicates(request):
     return {'title': 'Test route predicates'}
 
-@view_config(route_name='test_chameleon_exc', renderer='error.pt')
+@view_config(route_name='test_chameleon_exc',
+             renderer=__name__ + ':templates/error.pt')
 @view_config(route_name='test_mako_exc', renderer='error.mako')
 @view_config(route_name='test_jinja2_exc', renderer='error.jinja2')
 def test_template_exc(request):
@@ -101,6 +102,7 @@ def make_app():
         pass
     settings = {}
     settings['pyramid.reload_templates'] = True
+    settings['jinja2.directories'] = __name__ + ':templates'
     settings['mako.directories'] = __name__ + ':templates'
     settings['mako.module_directory'] = __name__ + ':mako_modules'
     settings['debugtoolbar.reload_templates'] = True
