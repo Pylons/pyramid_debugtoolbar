@@ -50,4 +50,4 @@ def includeme(config):
     initialize_sql(settings)
 
     config.add_route('test_sqla', '/test_sqla')
-    config.scan('.')
+    config.scan(__name__)
