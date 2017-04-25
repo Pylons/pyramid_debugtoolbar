@@ -188,3 +188,6 @@ class PerformanceDebugPanel(DebugPanel):
             vars['stats'] = self.stats
             vars['function_calls'] = self.function_calls
         self.data = vars
+
+def includeme(config):
+    config.add_debugtoolbar_panel(PerformanceDebugPanel)

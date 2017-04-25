@@ -11,6 +11,8 @@
 
 .. autofunction:: add_debugtoolbar_panel
 
+.. autofunction:: inject_parent_action
+
 .. automodule:: pyramid_debugtoolbar.panels
 
 .. autoclass:: DebugPanel

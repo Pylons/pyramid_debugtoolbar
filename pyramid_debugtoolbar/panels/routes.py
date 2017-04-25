@@ -59,3 +59,6 @@ class RoutesDebugPanel(DebugPanel):
             self.data = {
                 'routes': registry.debugtoolbar_routeinfo,
                 }
+
+def includeme(config):
+    config.add_debugtoolbar_panel(RoutesDebugPanel, is_global=True)
