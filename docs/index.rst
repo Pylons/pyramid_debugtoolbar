@@ -142,7 +142,8 @@ file.
   debugtoolbar at all. This option allows the developer to use the toolbar for
   debugging purposes without interfering with successful responses.
 
-  Inspection of requests is still possible by visiting the toolbar manually.
+  Inspection of requests is still possible by visiting the toolbar manually
+  at ``/_debug_toolbar/``.
 
 ``debugtoolbar.intercept_redirects``
 
@@ -167,6 +168,14 @@ file.
   name may also be the dotted Python path to the panel class. For example,
   ``pyramid_debugtoolbar.panels.sqla.SQLADebugPanel``.
 
+``debugtoolbar.extra_panels``
+
+  A list of panel names that will be appended to the ``debugtoolbar.panels``
+  list. This setting is mostly useful if you have a panel that is not included
+  by default (using ``debugtoolbar.includes`` and you do not want to maintain
+  the list of all panels via ``debugtoolbar.panels``). This may be a
+  dotted Python path to the panel class.
+
 ``debugtoolbar.global_panels``
 
   A list of panel names.  Defaults to a list of all global panels known by
@@ -180,6 +189,15 @@ file.
   For compatibility with older versions of the toolbar, the panel
   name may also be the dotted Python path to the panel class. For example,
   ``pyramid_debugtoolbar.panels.settings.SettingsDebugPanel``.
+
+``debugtoolbar.extra_global_panels``
+
+  A list of panel names that will be appended to the
+  ``debugtoolbar.global_panels`` list. This setting is mostly useful if you
+  have a panel that is not included by default (using ``debugtoolbar.includes``
+  and you do not want to maintain the list of all panels via
+  ``debugtoolbar.panels``). This may be a dotted Python path to the panel
+  class.
 
 ``debugtoolbar.button_style``
 
@@ -330,6 +348,10 @@ For example::
 A panel name is defined by the
 :attr:`~pyramid_debugtoolbar.panels.DebugPanel.name` attribute of each
 debug panel.
+
+The cookie may also be set via the web interface in the `Settings` tab but,
+remember, since it is a cookie it must be set on the exact HTTP client you
+are using or the panel will not be active for the request.
 
 The Toolbar
 -----------
