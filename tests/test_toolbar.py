@@ -116,6 +116,7 @@ class Test_beforerender_subscriber_order(unittest.TestCase):
             panel = DummyPanel(request)
             panels.append(panel)
             return panel
+        panel_factory.name = 'dummy_panel'
         def includeme(config):
             config.add_debugtoolbar_panel(panel_factory)
         self.config.add_settings({'debugtoolbar.includes': [includeme]})
@@ -153,7 +154,8 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
     def test_it_enabled(self):
         from pyramid_debugtoolbar.toolbar import IToolbarWSGIApp
-        self.config.registry.registerUtility(DummyApp(None), IToolbarWSGIApp)
+        toolbar_app = DummyApp(None, self.config.registry)
+        self.config.registry.registerUtility(toolbar_app, IToolbarWSGIApp)
         self.config.registry.settings['debugtoolbar.enabled'] = True
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
@@ -175,7 +177,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
         self.config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-        self.config.registry.registerUtility(DummyApp(None), IToolbarWSGIApp)
+        self.toolbar_app = DummyApp(None, self.config.registry)
+        self.config.registry.registerUtility(self.toolbar_app, IToolbarWSGIApp)
 
     def tearDown(self):
         testing.tearDown()
@@ -196,7 +199,7 @@ class Test_toolbar_handler(unittest.TestCase):
         return handler(request)
 
     def _makeExceptionDispatcher(self):
-        from pyramid_debugtoolbar.views import ExceptionDebugView
+        from pyramid_debugtoolbar.panels.traceback import ExceptionDebugView
         registry = self.config.registry
         def dispatcher(app, request):
             request.registry = registry.parent_registry = registry
@@ -456,7 +459,8 @@ class DummyLogger(object):
         self.msg = msg
 
 class DummyApp(object):
-    def __init__(self, response):
+    def __init__(self, response, registry):
+        self.registry = registry
         self.response = response
 
     def __call__(self, environ, start_response):

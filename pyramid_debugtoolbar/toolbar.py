@@ -16,6 +16,7 @@ from pyramid_debugtoolbar.utils import hexlify
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import make_subrequest
+from pyramid_debugtoolbar.utils import resolve_panel_classes
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ToolbarStorage
@@ -26,6 +27,10 @@ class IToolbarWSGIApp(Interface):
     """ Marker interface for the toolbar WSGI application."""
     def __call__(environ, start_response):
         pass
+
+
+class IPanelMap(Interface):
+    """ Marker interface for the set of known panels."""
 
 
 class IRequestAuthorization(Interface):
@@ -56,7 +61,7 @@ class DebugToolbar(object):
         # If the panel is activated in the settings, we want to enable it
         activated.extend(default_active_panels)
 
-        def configure_panel(panel):
+        def configure_panel(panel_inst):
             panel_inst.is_active = False
             if panel_inst.name in activated and panel_inst.has_content:
                 panel_inst.is_active = True
@@ -142,15 +147,30 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
     if not sget('enabled'):
         return handler
 
+    toolbar_app = registry.getUtility(IToolbarWSGIApp)
+    toolbar_registry = toolbar_app.registry
+
     max_request_history = sget('max_request_history')
     request_history = ToolbarStorage(max_request_history)
     registry.request_history = request_history
 
-    redirect_codes = (301, 302, 303, 304)
-    panel_classes = sget('panels', [])
+    panel_map = toolbar_registry.queryUtility(IPanelMap, default={})
+    resolve_panels = lambda a, b: resolve_panel_classes(a, b, panel_map)
+
+    panel_classes = list(sget('panels', []))
+    if not panel_classes:
+        # if no panels are defined then use all available panels
+        panel_classes = [p for p, g in panel_map if not g]
     panel_classes.extend(sget('extra_panels', []))
-    global_panel_classes = sget('global_panels', [])
+    panel_classes = resolve_panels(panel_classes, False)
+    global_panel_classes = list(sget('global_panels', []))
+    if not global_panel_classes:
+        # if no panels are defined then use all available global panels
+        global_panel_classes = [p for p, g in panel_map if g]
     global_panel_classes.extend(sget('extra_global_panels', []))
+    global_panel_classes = resolve_panels(global_panel_classes, True)
+
+    redirect_codes = (301, 302, 303, 304)
     intercept_exc = sget('intercept_exc')
     intercept_redirects = sget('intercept_redirects')
     show_on_exc_only = sget('show_on_exc_only')
@@ -166,7 +186,6 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         registry.exc_history = exc_history = ExceptionHistory()
         exc_history.eval_exc = intercept_exc == 'debug'
 
-    toolbar_app = registry.getUtility(IToolbarWSGIApp)
     dispatch = lambda request: _dispatch(toolbar_app, request)
 
     def toolbar_tween(request):

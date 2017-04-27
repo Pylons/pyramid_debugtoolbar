@@ -17,7 +17,7 @@ class TestExceptionDebugView(unittest.TestCase):
         testing.tearDown()
 
     def _makeOne(self, request):
-        from pyramid_debugtoolbar.views import ExceptionDebugView
+        from pyramid_debugtoolbar.panels.traceback import ExceptionDebugView
         return ExceptionDebugView(request)
 
     def _makeRequest(self):
@@ -106,34 +106,6 @@ class TestExceptionDebugView(unittest.TestCase):
         view = self._makeOne(request)
         response = view.execute()
         self.assertEqual(response.status_int, 400)
-
-    def test_console(self):
-        request = self._makeRequest()
-        request.static_url = lambda *arg, **kw: 'http://static'
-        request.route_url = lambda *arg, **kw: 'http://root'
-        request.params['frm'] = '0'
-        view = self._makeOne(request)
-        result = view.console()
-        self.assertEqual(result,
-                         {'console': 'true',
-                          'title': 'Console',
-                          'evalex': 'true',
-                          'traceback_id': -1,
-                          'token': 'token',
-                          'static_path': 'http://static',
-                          'root_path':'http://root',
-                          }
-                         )
-
-    def test_console_no_initial_history_frame(self):
-        request = self._makeRequest()
-        request.static_url = lambda *arg, **kw: 'http://static'
-        request.route_url = lambda *arg, **kw: 'http://root'
-        request.params['frm'] = '0'
-        request.exc_history.frames = {}
-        view = self._makeOne(request)
-        view.console()
-        self.assertEqual(len(request.exc_history.frames), 1)
 
     def test_exception_summary(self):
         from pyramid.renderers import render

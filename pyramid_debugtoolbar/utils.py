@@ -5,7 +5,8 @@ from logging import getLogger
 from collections import deque
 from itertools import islice
 
-from pyramid.util import DottedNameResolver
+from pyramid.exceptions import ConfigurationError
+from pyramid.path import DottedNameResolver
 from pyramid.settings import asbool
 
 from pyramid_debugtoolbar.compat import binary_type
@@ -154,14 +155,6 @@ def as_list(value):
             result.append(value)
     return result
 
-def as_globals_list(value):
-    L = []
-    value = as_list(value)
-    for dottedname in value:
-        obj = resolver.resolve(dottedname)
-        L.append(obj)
-    return L
-
 def as_display_debug_or_false(value):
     if isinstance(value, string_types):
         val = value.lower().strip()
@@ -199,7 +192,6 @@ def last_proxy(addr):
 def find_request_history(request):
     return request.registry.parent_registry.request_history
 
-
 def debug_toolbar_url(request, *elements, **kw):
     return request.route_url('debugtoolbar', subpath=elements, **kw)
 
@@ -220,3 +212,22 @@ def make_subrequest(request, root_path, path, params=None):
     if params is not None:
         subrequest.GET.update(params)
     return subrequest
+
+def resolve_panel_classes(panels, is_global, panel_map):
+    classes = []
+    for panel in panels:
+        if isinstance(panel, string_types):
+            panel_class = panel_map.get((panel, is_global))
+            if panel_class is None:
+                panel_class = resolver.maybe_resolve(panel)
+
+        else:
+            panel_class = panel
+
+        if panel_class is None:
+            raise ConfigurationError(
+                'failed to load debugtoolbar panel named %s' % panel)
+
+        if panel_class not in classes:
+            classes.append(panel_class)
+    return classes

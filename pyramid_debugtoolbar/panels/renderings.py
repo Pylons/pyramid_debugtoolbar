@@ -42,3 +42,6 @@ class RenderingsDebugPanel(DebugPanel):
 
     def process_response(self, response):
         self.data = {'renderings': self.renderings}
+
+def includeme(config):
+    config.add_debugtoolbar_panel(RenderingsDebugPanel)

@@ -7,17 +7,13 @@ class Test_parse_settings(unittest.TestCase):
         return parse_settings(settings)
 
     def test_it(self):
-        panels = ('tests.test_init.DummyPanel\n'
-                  'tests.test_init.DummyPanel')
-        global_panels = ('tests.test_init.DummyPanel\n'
-                  'tests.test_init.DummyPanel')
         settings = {'debugtoolbar.enabled':'false',
                     'debugtoolbar.intercept_exc':'false',
                     'debugtoolbar.intercept_redirects': 'false',
-                    'debugtoolbar.panels': panels,
+                    'debugtoolbar.panels': 'foo bar',
                     'debugtoolbar.extra_panels': (
-                        'tests.test_init.DummyCustomPanel'),
-                    'debugtoolbar.global_panels': global_panels,
+                        'tests.test_init.DummyCustomPanel foo'),
+                    'debugtoolbar.global_panels': 'foo\nbar baz',
                     'debugtoolbar.extra_global_panels': (
                         'tests.test_init.DummyGlobalPanel'),
                     'debugtoolbar.active_panels': 'dummy_panel',
@@ -38,10 +34,12 @@ class Test_parse_settings(unittest.TestCase):
                          {'debugtoolbar.enabled':False,
                           'debugtoolbar.intercept_exc': False,
                           'debugtoolbar.intercept_redirects': False,
-                          'debugtoolbar.panels': [DummyPanel, DummyPanel],
-                          'debugtoolbar.extra_panels': [DummyCustomPanel],
-                          'debugtoolbar.global_panels': [DummyPanel, DummyPanel],
-                          'debugtoolbar.extra_global_panels': [DummyGlobalPanel],
+                          'debugtoolbar.panels': ['foo', 'bar'],
+                          'debugtoolbar.extra_panels': [
+                              'tests.test_init.DummyCustomPanel', 'foo'],
+                          'debugtoolbar.global_panels': ['foo', 'bar', 'baz'],
+                          'debugtoolbar.extra_global_panels': [
+                              'tests.test_init.DummyGlobalPanel'],
                           'debugtoolbar.exclude_prefixes': ['/excluded', '/e2'],
                           'debugtoolbar.hosts': ['127.0.0.1'],
                           'debugtoolbar.debug_notfound': False,
@@ -77,12 +75,3 @@ class Test_includeme(unittest.TestCase):
         self._callFUT(self.config)
         self.assertEqual(self.config.registry.settings['debugtoolbar.hosts'],
                          ['127.0.0.1', '192.168.1.1', '192.168.1.2'])
-
-class DummyPanel(object):
-    pass
-
-class DummyCustomPanel(object):
-    pass
-
-class DummyGlobalPanel(object):
-    pass

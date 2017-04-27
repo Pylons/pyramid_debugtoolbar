@@ -1,18 +1,20 @@
+from collections import OrderedDict
 from pyramid.config import Configurator
+from pyramid.interfaces import Interface
 from pyramid.settings import asbool
 import pyramid.tweens
 from pyramid_debugtoolbar.utils import (
     as_cr_separated_list,
     as_display_debug_or_false,
-    as_globals_list,
     as_int,
     as_list,
-    EXC_ROUTE_NAME,
+    find_request_history,
     ROOT_ROUTE_NAME,
     SETTINGS_PREFIX,
     STATIC_PATH,
 )
 from pyramid_debugtoolbar.toolbar import (
+    IPanelMap,
     IRequestAuthorization,
     IToolbarWSGIApp,
     toolbar_tween_factory,
@@ -20,22 +22,19 @@ from pyramid_debugtoolbar.toolbar import (
 
 toolbar_tween_factory = toolbar_tween_factory  # API
 
-default_panel_names = (
-    'pyramid_debugtoolbar.panels.headers.HeaderDebugPanel',
-    'pyramid_debugtoolbar.panels.logger.LoggingPanel',
-    'pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel',
-    'pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel',
-    'pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-    'pyramid_debugtoolbar.panels.sqla.SQLADebugPanel',
-    'pyramid_debugtoolbar.panels.traceback.TracebackPanel',
-)
-
-default_global_panel_names = (
-    'pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel',
-    'pyramid_debugtoolbar.panels.routes.RoutesDebugPanel',
-    'pyramid_debugtoolbar.panels.settings.SettingsDebugPanel',
-    'pyramid_debugtoolbar.panels.tweens.TweensDebugPanel',
-    'pyramid_debugtoolbar.panels.versions.VersionDebugPanel',
+bundled_includes = (
+    'pyramid_debugtoolbar.panels.headers',
+    'pyramid_debugtoolbar.panels.introspection',
+    'pyramid_debugtoolbar.panels.logger',
+    'pyramid_debugtoolbar.panels.performance',
+    'pyramid_debugtoolbar.panels.renderings',
+    'pyramid_debugtoolbar.panels.request_vars',
+    'pyramid_debugtoolbar.panels.routes',
+    'pyramid_debugtoolbar.panels.settings',
+    'pyramid_debugtoolbar.panels.sqla',
+    'pyramid_debugtoolbar.panels.traceback',
+    'pyramid_debugtoolbar.panels.tweens',
+    'pyramid_debugtoolbar.panels.versions',
 )
 
 default_hosts = ('127.0.0.1', '::1')
@@ -45,12 +44,12 @@ default_settings = [
     ('enabled', asbool, 'true'),
     ('intercept_exc', as_display_debug_or_false, 'debug'),
     ('intercept_redirects', asbool, 'false'),
-    ('panels', as_globals_list, default_panel_names),
-    ('extra_panels', as_globals_list, ()),
-    ('global_panels', as_globals_list, default_global_panel_names),
-    ('extra_global_panels', as_globals_list, ()),
+    ('panels', as_list, ()),
+    ('extra_panels', as_list, ()),
+    ('global_panels', as_list, ()),
+    ('extra_global_panels', as_list, ()),
     ('hosts', as_list, default_hosts),
-    ('exclude_prefixes', as_cr_separated_list, []),
+    ('exclude_prefixes', as_cr_separated_list, ()),
     ('active_panels', as_list, ()),
     ('includes', as_list, ()),
     ('button_style', None, ''),
@@ -71,6 +70,8 @@ default_transform = [
     ('reload_templates', asbool, 'false'),
 ]
 
+class IParentActions(Interface):
+    """ Marker interface for registered parent actions in the toolbar app."""
 
 def parse_settings(settings):
     parsed = {}
@@ -109,28 +110,39 @@ def transform_settings(settings):
 def set_request_authorization_callback(config, callback):
     """
     Register IRequestAuthorization utility to authorize toolbar per request.
+
     """
     config.registry.registerUtility(callback, IRequestAuthorization)
 
-def inject_toolbar(event):
-    app = event.app
-    registry = app.registry
+def update_parent_app(event):
+    parent_registry = event.app.registry
 
     # inject the BeforeRender subscriber after the application is created
     # and all other subscribers are registered in hopes that this will be
     # the last subscriber in the chain and will be able to see the effects
     # of all previous subscribers on the event
-    config = Configurator(registry=registry, introspection=False)
-    config.add_subscriber(
+    parent_config = Configurator(registry=parent_registry, introspection=False)
+
+    parent_config.add_subscriber(
         'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
         'pyramid.events.BeforeRender',
     )
-    config.commit()
+
+    toolbar_registry = parent_registry.getUtility(IToolbarWSGIApp).registry
+    actions = toolbar_registry.queryUtility(IParentActions, default=[])
+    for action in actions:
+        action(parent_config)
+
+    parent_config.commit()
 
 def includeme(config):
-    """ Activate the debug toolbar; usually called via
-    ``config.include('pyramid_debugtoolbar')`` instead of being invoked
-    directly. """
+    """
+    Activate the debug toolbar.
+
+    Usually called via ``config.include('pyramid_debugtoolbar')`` instead
+    of being invoked directly.
+
+    """
     introspection = getattr(config, 'introspection', True)
     # dont register any introspectables for Pyramid 1.3a9+
     config.introspection = False
@@ -158,7 +170,8 @@ def includeme(config):
             'pyramid_tm.tm_tween_factory',
         ],
     )
-    config.add_subscriber(inject_toolbar, 'pyramid.events.ApplicationCreated')
+    config.add_subscriber(update_parent_app,
+                          'pyramid.events.ApplicationCreated')
     config.add_directive('set_debugtoolbar_request_authorization',
                          set_request_authorization_callback)
 
@@ -172,26 +185,26 @@ def make_application(settings, parent_registry):
     """ WSGI application for rendering the debug toolbar."""
     config = Configurator(settings=settings)
     config.registry.parent_registry = parent_registry
-    config.include('pyramid_mako')
+    config.registry.registerUtility(OrderedDict(), IPanelMap)
     config.add_directive('add_debugtoolbar_panel', add_debugtoolbar_panel)
+    config.add_directive('inject_parent_action', inject_parent_action)
+
+    config.include('pyramid_mako')
     config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
+
+    config.add_route_predicate('history_request', HistoryRequestRoutePredicate)
+
     config.add_static_view('static', STATIC_PATH)
     config.add_route(ROOT_ROUTE_NAME, '/', static=True)
     config.add_route('debugtoolbar.sse', '/sse')
-    config.add_route('debugtoolbar.source', '/source')
-    config.add_route('debugtoolbar.execute', '/execute')
-    config.add_route('debugtoolbar.console', '/console')
     config.add_route('debugtoolbar.redirect', '/redirect')
-    config.add_route(EXC_ROUTE_NAME, '/exception')
-    config.add_route(
-        'debugtoolbar.sql_select',
-        '/{request_id}/sqlalchemy/select/{query_index}')
-    config.add_route(
-        'debugtoolbar.sql_explain',
-        '/{request_id}/sqlalchemy/explain/{query_index}')
-    config.add_route('debugtoolbar.request', '/{request_id}')
+    config.add_route('debugtoolbar.request', '/{request_id}',
+                     history_request=True)
     config.add_route('debugtoolbar.main', '/')
     config.scan('.views')
+
+    for include in bundled_includes:
+        config.include(include)
 
     # commit the toolbar config and include any user-defined includes
     config.commit()
@@ -202,15 +215,32 @@ def make_application(settings, parent_registry):
 
     return config.make_wsgi_app()
 
-def add_debugtoolbar_panel(config, panel_factory, is_global=False):
+class HistoryRequestRoutePredicate(object):
+    def __init__(self, val, config):
+        assert isinstance(val, bool), 'must be a bool'
+        self.val = val
+
+    def text(self):
+        return 'tbhistory = %s' % self.val
+
+    phash = text
+
+    def __call__(self, info, request):
+        match = info['match']
+        history = find_request_history(request)
+        is_historical = bool(history.get(match.get('request_id')))
+        return not (is_historical ^ self.val)
+
+def add_debugtoolbar_panel(config, panel_class, is_global=False):
     """
-    A Pyramid config directive accessible as ``config.add_debugtoolbar_panel``.
+    Register a new panel into the debugtoolbar.
 
-    This directive can add a new panel to the toolbar application. It should
-    be used from includeme functions via the ``debugtoolbar.includes`` setting.
+    This is a Pyramid config directive that is accessible as
+    ``config.add_debugtoolbar_panel`` within the debugtoolbar application.
+    It should be used from ``includeme`` functions via the
+    ``debugtoolbar.includes`` setting.
 
-    The ``panel_factory`` should be a factory that accepts a ``request``
-    object and returns a subclass of
+    The ``panel_class`` should be a subclass of
     :class:`pyramid_debugtoolbar.panels.DebugPanel`.
 
     If ``is_global`` is ``True`` then the panel will be added to the global
@@ -218,19 +248,28 @@ def add_debugtoolbar_panel(config, panel_factory, is_global=False):
     on per-request data to operate.
 
     """
-    parent_settings = config.registry.parent_registry.settings
-    if is_global:
-        default_setting = SETTINGS_PREFIX + 'global_panels'
-        extra_setting = SETTINGS_PREFIX + 'extra_global_panels'
-    else:
-        default_setting = SETTINGS_PREFIX + 'panels'
-        extra_setting = SETTINGS_PREFIX + 'extra_panels'
-    default_panels = parent_settings.get(default_setting, [])
-    extra_panels = parent_settings.setdefault(extra_setting, [])
+    panel_class = config.maybe_dotted(panel_class)
+    name = panel_class.name
 
-    # only add the panel if it wasn't added manually in an explicit order
-    if (
-        panel_factory not in extra_panels and
-        panel_factory not in default_panels
-    ):
-        default_panels.append(panel_factory)
+    panel_map = config.registry.getUtility(IPanelMap)
+    panel_map[(name, is_global)] = panel_class
+
+def inject_parent_action(config, action):
+    """
+    Inject an action into the parent application.
+
+    This is a Pyramid config directive that is accessible as
+    ``config.inject_parent_action`` within the debugtoolbar application.
+    It should be used from ``includeme`` functions via the
+    ``debugtoolbar.includes`` setting.
+
+    The ``action`` should be a callable that accepts the parent app's
+    ``config`` object. It will be executed after the parent app is created
+    to ensure that configuration is set prior to the actions being executed.
+
+    """
+    actions = config.registry.queryUtility(IParentActions)
+    if actions is None:
+        actions = []
+        config.registry.registerUtility(actions, IParentActions)
+    actions.append(action)
