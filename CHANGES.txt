@@ -1,6 +1,28 @@
 Unreleased
 -----------------
 
+- The config settings ``debugtoolbar.panels``, ``debugtoolbar.extra_panels``,
+  ``debugtoolbar.global_panels`` and ``debugtoolbar.extra_global_panels``
+  now all accept panel names as defined in
+  ``pyramid_debugtoolbar.panels.DebugPanel.name``. Thus you may use names
+  such as ``performance``, ``headers``, etc. These settings still support the
+  dotted Python path but it is suggested that panels now support being
+  included via ``debugtoolbar.includes`` and ``config.add_debugtoolbar_panel``
+  instead such that they are automatically added to the toolbar.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288
+
+- Add a new ``config.add_debugtoolbar_panel`` directive that can be invoked
+  from ``includeme`` functions included via the ``debugtoolbar.includes``
+  setting. These panels are automatically added to the default panel list
+  and should become the way to define toolbar panels in the future.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/283
+
+- Add a new ``config.inject_parent_action`` directive that can be invoked
+  from ``includeme`` functions included via the ``debugtoolbar.includes``
+  setting. These actions are invoked on the parent config just before it is
+  created such that actions can inspect / wrap existing config.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288
+
 - Added "sticky" panel functionality to allow a selected panel to persist
   across pageviews using cookies.  If a cookied panel does not have content
   available for display, the first non-disabled panel will be displayed. If a
@@ -12,12 +34,6 @@ Unreleased
   This javascript factory allows panel developers and maintainers to use verbose
   console logging during development, partitioned by feature, and silence it for
   deployment while still leaving the logging lines activated.
-
-- Add a new ``config.add_debugtoolbar_panel`` directive that can be invoked
-  from ``includeme`` functions included via the ``debugtoolbar.includes``
-  setting. These panels are automatically added to the default panel list
-  and should become the way to define toolbar panels in the future.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/283
 
 - The toolbar registers a ``BeforeRender`` subscriber in your application to
   monitor the rendering of templates. Previously it was possible that the
@@ -38,6 +54,10 @@ Unreleased
   modes. See https://github.com/Pylons/pyramid_debugtoolbar/pull/286
 
 - The toolbar tween is always placed explicitly OVER the pyramid_tm tween.
+
+- Refactored all debugtoolbar panels to be included using
+  ``config.add_debugtoolbar_panel`` and per-panel ``includeme`` functions.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288
 
 3.0.5 (2016-11-1)
 -----------------
