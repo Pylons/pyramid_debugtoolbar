@@ -208,7 +208,7 @@ class Test_toolbar_handler(unittest.TestCase):
         return dispatcher
 
     def _makeRedirectDispatcher(self):
-        from pyramid_debugtoolbar.views import redirect_view
+        from pyramid_debugtoolbar.toolbar_app import redirect_view
         from pyramid.renderers import render
         def dispatcher(app, request):
             result = redirect_view(request)
