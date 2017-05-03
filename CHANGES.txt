@@ -1,5 +1,5 @@
-Unreleased
------------------
+4.0 (2017-05-03)
+----------------
 
 - The config settings ``debugtoolbar.panels``, ``debugtoolbar.extra_panels``,
   ``debugtoolbar.global_panels`` and ``debugtoolbar.extra_global_panels``
