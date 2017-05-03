@@ -9,6 +9,8 @@
 
 .. autofunction:: toolbar_tween_factory
 
+.. automodule:: pyramid_debugtoolbar.toolbar_app
+
 .. autofunction:: add_debugtoolbar_panel
 
 .. autofunction:: inject_parent_action
