@@ -162,6 +162,14 @@ def request_view(request):
     request_id = request.matchdict.get('request_id', last_request_id)
     toolbar = history.get(request_id, None)
 
+    # set a dictionary of panels that can be accessed inside
+    # DebugPanel.render_content()
+    if toolbar:
+        request.toolbar_panels = {
+            panel.name: panel
+            for panel in toolbar.panels
+        }
+
     static_path = request.static_url(STATIC_PATH)
     root_path = request.route_url(ROOT_ROUTE_NAME)
 

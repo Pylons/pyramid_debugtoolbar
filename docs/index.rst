@@ -688,6 +688,11 @@ add the panel to their ``debugtoolbar.includes`` setting in their app.
 The source code for the standard debugpanel ``request_vars.py`` is a good
 starting point for inspiration.
 
+The ``render_vars`` and ``render_content`` methods may use the
+``request.toolbar_panels`` dictionary to introspect and work with other panels
+that captured data for the original request. The dictionary keys are the names
+of other panels and the values are the panel instances.
+
 Configuring an application to use the panel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
