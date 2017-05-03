@@ -95,27 +95,6 @@ def set_request_authorization_callback(config, callback):
     """
     config.registry.registerUtility(callback, IRequestAuthorization)
 
-def update_parent_app(event):
-    parent_registry = event.app.registry
-
-    # inject the BeforeRender subscriber after the application is created
-    # and all other subscribers are registered in hopes that this will be
-    # the last subscriber in the chain and will be able to see the effects
-    # of all previous subscribers on the event
-    parent_config = Configurator(registry=parent_registry, introspection=False)
-
-    parent_config.add_subscriber(
-        'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
-        'pyramid.events.BeforeRender',
-    )
-
-    toolbar_registry = parent_registry.getUtility(IToolbarWSGIApp).registry
-    actions = toolbar_registry.queryUtility(IParentActions, default=[])
-    for action in actions:
-        action(parent_config)
-
-    parent_config.commit()
-
 def includeme(config):
     """
     Activate the debug toolbar.
@@ -151,8 +130,6 @@ def includeme(config):
             'pyramid_tm.tm_tween_factory',
         ],
     )
-    config.add_subscriber(update_parent_app,
-                          'pyramid.events.ApplicationCreated')
     config.add_directive('set_debugtoolbar_request_authorization',
                          set_request_authorization_callback)
 
@@ -161,3 +138,68 @@ def includeme(config):
     config.add_static_view('/_debug_toolbar/static', STATIC_PATH, static=True)
 
     config.introspection = introspection
+
+def _apply_parent_actions(parent_registry):
+    toolbar_app = parent_registry.queryUtility(IToolbarWSGIApp)
+    if toolbar_app is None:
+        # this registry does not have a debugtoolbar attached
+        return
+
+    toolbar_registry = toolbar_app.registry
+
+    # inject the BeforeRender subscriber after the application is created
+    # and all other subscribers are registered in hopes that this will be
+    # the last subscriber in the chain and will be able to see the effects
+    # of all previous subscribers on the event
+    parent_config = Configurator(registry=parent_registry, introspection=False)
+
+    parent_config.add_subscriber(
+        'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
+        'pyramid.events.BeforeRender',
+    )
+
+    actions = toolbar_registry.queryUtility(IParentActions, default=[])
+    for action in actions:
+        action(parent_config)
+
+    # overwrite actions after they have been applied to avoid applying them
+    # twice - but leave it as a new list incase someone adds more actions later
+    # and calls config.make_wsgi_app() again... this would mainly be necessary
+    # for tests that call config.make_wsgi_app() multiple times.
+    toolbar_registry.registerUtility([], IParentActions)
+
+    parent_config.commit()
+
+# AVERT YOUR EYES NOTHING TO SEE HERE
+#
+# Okay so, we need a way to affect the Pyramid config **after** the user is
+# done applying their config. Pyramid does not have a BeforeApplicationCreated
+# hook (for good reason), and even if it did I would want to wrap it so that
+# the toolbar has the opportunity to wrap all other behavior.
+#
+# When a user invokes config.make_wsgi_app() this is intended to intercept
+# the call to pyramid.config.Router(registry) with our own router factory.
+# This will create a new configurator with the registry and apply our actions.
+# It will then return the use the original router factory to create a router
+# and return it.
+#
+# The only other trick here is that we only want to apply our actions the first
+# time config.make_wsgi_app() is invoked to avoid applying actions multiple
+# times.
+class _ToolbarRouterFactory(object):
+    def __init__(self, wrapped_router):
+        self.wrapped_router = wrapped_router
+
+    def __call__(self, registry):
+        _apply_parent_actions(registry)
+        return self.wrapped_router(registry)
+
+def _monkeypatch_pyramid_router():
+    import pyramid.config
+    router_factory = pyramid.config.Router
+
+    # do not monkeypatch twice
+    if not isinstance(pyramid.config.Router, _ToolbarRouterFactory):
+        pyramid.config.Router = _ToolbarRouterFactory(router_factory)
+
+_monkeypatch_pyramid_router()
