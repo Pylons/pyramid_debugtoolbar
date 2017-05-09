@@ -234,7 +234,7 @@ $(function() {
 
 	// subscribe panels for recording the active panel in a cookie
 	$(".pDebugPanels ul li a").click(function() {
-		var selected_panel_text = $(this).attr('id');
+		var selected_panel_text = $(this).parent().attr('id');
 		if (selected_panel_text){
 			$.cookie(COOKIE_NAME_STICKYPANEL_SELECTED, selected_panel_text);
 		}
