@@ -44,6 +44,70 @@ try:
                 })
         delattr(conn, 'pdtb_start_timer')
 
+    def _transactional_event_logger(conn, stmt, context=''):
+        """
+        abstract logger for transactional events
+        this does not do query timing (sorry)
+        """
+        request = get_current_request()
+        if request is not None and hasattr(request, 'pdtb_sqla_queries'):
+            with lock:
+                engines = request.registry.pdtb_sqla_engines
+                engines[id(conn.engine)] = weakref.ref(conn.engine)
+                queries = request.pdtb_sqla_queries
+                queries.append({
+                    'engine_id': id(conn.engine),
+                    'duration': 0,
+                    'statement': stmt,
+                    'parameters': '',
+                    'context': ''
+                })
+
+    @event.listens_for(Engine, "commit")
+    def _commit(conn):
+        stmt = 'commit;'
+        _transactional_logger(conn, stmt)
+
+    @event.listens_for(Engine, "rollback")
+    def _rollback(conn):
+        stmt = 'rollback;'
+        _transactional_logger(conn, stmt)
+
+    @event.listens_for(Engine, "savepoint")
+    def _savepoint(conn, name):
+        stmt = 'savepoint %s;' % name
+        _transactional_logger(conn, stmt)
+
+    @event.listens_for(Engine, "rollback_savepoint")
+    def _rollback_savepoint(conn, name, context):
+        stmt = 'rollback_savepoint %s;' % name
+        _transactional_logger(conn, stmt, context)
+
+    @event.listens_for(Engine, "release_savepoint")
+    def _release_savepoint(conn, name, context):
+        stmt = 'release_savepoint %s;' % name
+        _transactional_logger(conn, stmt, context)
+
+    @event.listens_for(Engine, "begin_twophase")
+    def _begin_twophase(conn, xid):
+        stmt = 'begin_twophase %s;' % xid
+        _transactional_logger(conn, stmt)
+
+    @event.listens_for(Engine, "commit_twophase")
+    def _commit_twophase(conn, xid, is_prepared):
+        stmt = 'commit_twophase %s %s;' % (xid, is_prepared)
+        _transactional_logger(conn, stmt)
+
+    @event.listens_for(Engine, "prepare_twophase")
+    def _prepare_twophase(conn, xid):
+        stmt = 'prepare_twophase %s %s;' % (xid, is_prepared)
+        _transactional_logger(conn, stmt)
+
+    @event.listens_for(Engine, "rollback_twophase")
+    def _rollback_twophase(conn, xid):
+        stmt = 'rollback_twophase %s %s;' % (xid, is_prepared)
+        _transactional_logger(conn, stmt)
+
     has_sqla = True
 except ImportError:
     has_sqla = False
