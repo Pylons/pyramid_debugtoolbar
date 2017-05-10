@@ -1,5 +1,5 @@
-unreleased
-----------
+4.0.1 (2017-05-09)
+------------------
 
 - Fix sticky panel functionality that was broken by other cleanup in the 4.0
   release. See https://github.com/Pylons/pyramid_debugtoolbar/pull/297
