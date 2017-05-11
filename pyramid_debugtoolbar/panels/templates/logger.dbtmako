@@ -1,4 +1,28 @@
 % if records:
+
+	<form class="form-inline">
+	  <div class="form-group">
+		<label for="logger-search">Message Filter</label>
+		<input class="form-control" id="logger-search" placeholder="Type To Filter">
+		<script type="text/javascript">
+			$("#logger-search").keyup(function () {
+				var rows = $("#logger-lines").find("tr").hide();
+				if (this.value.length) {
+					var data = this.value.split(" ");
+					$.each(data, function (i, v) {
+						rows.find("td.msg:contains('" + v + "')").parent().show();
+					});
+				} else rows.show();
+			});
+		</script>
+	  </div>
+	  <div class="form-group">
+		<label for="logger-search">or Message Level</label>
+		<select class="form-control" id="logger-level">
+			<option value="all">All</option>
+		</select>
+	  </div>
+	</form>	
 	<table class="table table-striped table-condensed">
 		<thead>
 			<tr>
@@ -8,17 +32,39 @@
 				<th>Location</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="logger-lines">
+			<% logger_levels = {} %>
 			% for i, record in enumerate(records):
-				<tr>
-					<td>${record['level']}</td>
+				<%
+					lvl = record['level']
+					if lvl not in logger_levels:
+						logger_levels[lvl] = 0
+					logger_levels[lvl] += 1
+				%>
+				<tr data-level="${record['level']}">
+					<td><code>${record['level']}</code></td>
 					<td>${record['time']}</td>
-					<td>${record['message']}</td>
+					<td class="msg">${record['message']}</td>
 					<td title="${record['file_long']}:${record['line']}">${record['file']}:${record['line']}</td>
 				</tr>
 			% endfor
 		</tbody>
 	</table>
+	<script type="text/javascript">
+		var logger_level = $("#logger-level");
+		## build the <options> in python, insert in javascript
+		% for lvl, cnt in logger_levels.items():
+			<% opt = """<option value='%s'> %s - %s</option>""" % (lvl, lvl, cnt) %>
+			logger_level.append("${opt|n}");
+		% endfor
+		logger_level.change(function () {
+			var rows = $("#logger-lines").find("tr").hide();
+			var lvl = this.value;
+			if (lvl != 'all') {
+				$("#logger-lines").find("tr[data-level='" + lvl + "']").show();
+			} else rows.show();
+		});
+	</script>
 % else:
 	<p>No messages logged.</p>
 % endif
