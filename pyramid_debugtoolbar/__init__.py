@@ -39,6 +39,7 @@ default_settings = [
     ('button_style', None, ''),
     ('max_request_history', as_int, 100),
     ('max_visible_requests', as_int, 10),
+    ('show_on_exc_only', asbool, 'false'),
 ]
 
 # We need to transform these from debugtoolbar. to pyramid. in our
