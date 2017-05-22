@@ -54,8 +54,7 @@ def make_toolbar_app(settings, parent_registry):
     config.add_route(ROOT_ROUTE_NAME, '/', static=True)
     config.add_route('debugtoolbar.sse', '/sse')
     config.add_route('debugtoolbar.redirect', '/redirect')
-    config.add_route('debugtoolbar.request', '/{request_id}',
-                     history_request=True)
+    config.add_route('debugtoolbar.request', '/{request_id}')
     config.add_route('debugtoolbar.main', '/')
     config.scan(__name__)
 
