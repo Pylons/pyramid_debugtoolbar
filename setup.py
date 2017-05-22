@@ -28,6 +28,7 @@ install_requires = [
     'pyramid_mako>=0.3.1', # lazy configuration loading works
     'repoze.lru',
     'Pygments',
+    'ipaddress;python_version<"3.3"',
     ]
 
 testing_extras = [

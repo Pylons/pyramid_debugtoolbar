@@ -15,7 +15,7 @@ from pyramid_debugtoolbar.compat import string_types
 from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.compat import text_type
 
-from pyramid_debugtoolbar import ipaddr
+import ipaddress
 
 try:
     from pygments import highlight
@@ -182,7 +182,7 @@ logger = getLogger('pyramid_debugtoolbar')
 
 def addr_in(addr, hosts):
     for host in hosts:
-        if ipaddr.IPAddress(addr) in ipaddr.IPNetwork(host):
+        if ipaddress.ip_address(u''+addr) in ipaddress.ip_network(u''+host):
             return True
     return False
 
