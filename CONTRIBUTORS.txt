@@ -119,3 +119,4 @@ Contributors
 - Jon Rosebaugh, 2015-05-21
 - Pieter Mulder, 2015-08-12
 - Kashif Iftikhar, 2016-07-01
+- Dan Clark, 2017-05-22

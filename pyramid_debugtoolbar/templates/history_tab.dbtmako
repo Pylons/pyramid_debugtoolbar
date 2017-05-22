@@ -13,8 +13,11 @@
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <div class="pDebugPanels">
         <ul class="nav nav-tabs">
-          % if not panels:
+          % if not panels and not request_id:
           <li class="pDebugButton">DEBUG</li>
+          % endif
+          % if request_id and not panels:
+          <p>Warning: The request has been lost due to an application reset.</p>
           % endif
           % for panel in panels:
           <% _css_class = 'disabled' if not panel.has_content else '' %>
