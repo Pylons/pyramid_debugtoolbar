@@ -28,7 +28,10 @@ install_requires = [
     'pyramid_mako>=0.3.1', # lazy configuration loading works
     'repoze.lru',
     'Pygments',
-    'ipaddress;python_version<"3.3"',
+    ]
+
+extra_requires = [
+    'ipaddress',
     ]
 
 testing_extras = [
@@ -71,6 +74,7 @@ setup(name='pyramid_debugtoolbar',
       zip_safe=False,
       install_requires=install_requires,
       extras_require = {
+          ':python_version<"3.3"': extra_requires,
           'testing':testing_extras,
           'docs':docs_extras,
           },
