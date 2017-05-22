@@ -1,3 +1,11 @@
+unreleased
+----------
+
+- Display a warning if the toolbar is used to display a request that no longer
+  exists. This may be because the app was restarted or the request fell off
+  the end of the ``max_request_history``.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/303
+
 4.0.1 (2017-05-09)
 ------------------
 
