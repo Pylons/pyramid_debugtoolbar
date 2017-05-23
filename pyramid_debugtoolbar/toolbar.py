@@ -242,21 +242,38 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         for panel in toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
+        def process_traceback(info):
+            tb = get_traceback(info=info,
+                               skip=1,
+                               show_hidden_frames=False,
+                               ignore_system_exceptions=True)
+            for frame in tb.frames:
+                exc_history.frames[frame.id] = frame
+            exc_history.tracebacks[tb.id] = tb
+            request.pdbt_tb = tb
+
+            return tb
+
         try:
+
             response = _handler(request)
             toolbar.status_int = response.status_int
+
+            if request.exc_info:
+                tb = process_traceback(request.exc_info)
+
+                msg = 'Squashed Exception at %s\ntraceback url: %s'
+                qs = {'tb': str(tb.id)}
+                subrequest = make_subrequest(
+                    request, root_path, path_helper('exception', registry.pdtb_token), qs)
+                exc_msg = msg % (request.url, subrequest.url)
+                _logger.exception(exc_msg)
+
         except Exception:
             if exc_history is not None:
-                tb = get_traceback(info=sys.exc_info(),
-                                   skip=1,
-                                   show_hidden_frames=False,
-                                   ignore_system_exceptions=True)
-                for frame in tb.frames:
-                    exc_history.frames[frame.id] = frame
-                exc_history.tracebacks[tb.id] = tb
-                request.pdbt_tb = tb
+                tb = process_traceback(sys.exc_info())
 
-                msg = 'Exception at %s\ntraceback url: %s'
+                msg = 'Uncaught Exception at %s\ntraceback url: %s'
                 qs = {'tb': str(tb.id)}
                 subrequest = make_subrequest(
                     request, root_path, path_helper('exception', registry.pdtb_token), qs)
