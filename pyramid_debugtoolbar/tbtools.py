@@ -240,8 +240,8 @@ class Traceback(object):
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
         token = request.registry.parent_registry.pdtb_token
-        qs = {'token': token, 'tb': str(self.id)}
-        url = request.route_url(EXC_ROUTE_NAME, _query=qs)
+        qs = {'tb': str(self.id)}
+        url = request.route_url(EXC_ROUTE_NAME, token=token, _query=qs)
         evalex = request.exc_history.eval_exc
         vars = {
             'evalex':           evalex and 'true' or 'false',

@@ -203,6 +203,7 @@ class Test_toolbar_handler(unittest.TestCase):
         registry = self.config.registry
         def dispatcher(app, request):
             request.registry = registry.parent_registry = registry
+            request.matchdict = {'token': request.registry.parent_registry.pdtb_token} 
             request.exc_history = registry.exc_history
             return ExceptionDebugView(request).exception()
         return dispatcher
@@ -294,7 +295,7 @@ class Test_toolbar_handler(unittest.TestCase):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -333,7 +334,7 @@ class Test_toolbar_handler(unittest.TestCase):
             raise NotImplementedError(b'K\xc3\xa4se!\xe2\x98\xa0')
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -353,7 +354,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -371,7 +372,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
@@ -388,7 +389,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = False
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)

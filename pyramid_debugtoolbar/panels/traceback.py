@@ -51,7 +51,6 @@ class TracebackPanel(DebugPanel):
 
         # stop hanging onto the request after the response is processed
         del self.request
-
     def render_vars(self, request):
         return {
             'static_path': request.static_url(STATIC_PATH),
@@ -70,7 +69,7 @@ class ExceptionDebugView(object):
         if exc_history is None:
             raise HTTPBadRequest('No exception history')
         self.exc_history = exc_history
-        token = self.request.params.get('token')
+        token = self.request.matchdict.get('token')
         if not token:
             raise HTTPBadRequest('No token in request')
         if not token == request.registry.parent_registry.pdtb_token:
@@ -115,9 +114,9 @@ class ExceptionDebugView(object):
         return HTTPBadRequest()
 
 def includeme(config):
-    config.add_route(EXC_ROUTE_NAME, '/exception')
-    config.add_route('debugtoolbar.source', '/source')
-    config.add_route('debugtoolbar.execute', '/execute')
+    config.add_route(EXC_ROUTE_NAME, '/exception/{token}')
+    config.add_route('debugtoolbar.source', '/source/{token}')
+    config.add_route('debugtoolbar.execute', '/execute/{token}')
 
     config.add_debugtoolbar_panel(TracebackPanel)
     config.scan(__name__)

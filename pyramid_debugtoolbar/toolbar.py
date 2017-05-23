@@ -188,7 +188,10 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
     dispatch = lambda request: _dispatch(toolbar_app, request)
 
-    def toolbar_tween(request):
+    def append_token(path, token):
+        return path + '/' + token
+
+    def toolbar_tween(request, path_helper=append_token):
         try:
             p = request.path_info
         except UnicodeDecodeError as e:
@@ -254,9 +257,9 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 request.pdbt_tb = tb
 
                 msg = 'Exception at %s\ntraceback url: %s'
-                qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
+                qs = {'tb': str(tb.id)}
                 subrequest = make_subrequest(
-                    request, root_path, 'exception', qs)
+                    request, root_path, path_helper('exception', registry.pdtb_token), qs)
                 exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
