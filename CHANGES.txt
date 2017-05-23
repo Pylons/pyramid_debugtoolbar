@@ -11,6 +11,9 @@ unreleased
   This dependency uses environment markers and thus requires pip 8.1.2+.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/304
 
+- Enable testing on Python 3.6.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/306
+
 4.0.1 (2017-05-09)
 ------------------
 
