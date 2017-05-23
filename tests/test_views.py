@@ -23,7 +23,7 @@ class TestExceptionDebugView(unittest.TestCase):
     def _makeRequest(self):
         request = testing.DummyRequest()
         request.secret = 'abc';
-        request.params['token'] = 'token'
+        request.matchdict['token'] = 'token'
         request.exc_history = self._makeExceptionHistory()
         return request
 
@@ -46,13 +46,12 @@ class TestExceptionDebugView(unittest.TestCase):
     def test_without_token_in_request(self):
         from pyramid.httpexceptions import HTTPBadRequest
         request = self._makeRequest()
-        del request.params['token']
+        del request.matchdict['token']
         self.assertRaises(HTTPBadRequest, self._makeOne, request)
-
     def test_with_bad_token_in_request(self):
         from pyramid.httpexceptions import HTTPBadRequest
         request = self._makeRequest()
-        request.params['token'] = 'wrong'
+        request.matchdict['token'] = 'wrong'
         self.assertRaises(HTTPBadRequest, self._makeOne, request)
 
     def test_source(self):
