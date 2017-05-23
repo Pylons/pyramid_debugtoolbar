@@ -4,7 +4,12 @@ unreleased
 - Display a warning if the toolbar is used to display a request that no longer
   exists. This may be because the app was restarted or the request fell off
   the end of the ``max_request_history``.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/303
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/305
+
+- Remove the vendored ipaddr package and use the stdlib ipaddress module on
+  Python 3.3+. On Python < 3.3 the ipaddress module is a dependency from PyPI.
+  This dependency uses environment markers and thus requires pip 8.1.2+.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/304
 
 4.0.1 (2017-05-09)
 ------------------
