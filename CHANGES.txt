@@ -1,6 +1,13 @@
 unreleased
 ----------
 
+- Debug squashed exceptions! If you register an exception view for an exception
+  it will render a response. The toolbar will see the squashed exception and
+  enable the ``Traceback`` tab in the toolbar and emit a message on the
+  console with the URL. You can then debug the exception while returning the
+  original response to the user.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/308
+
 - Display a warning if the toolbar is used to display a request that no longer
   exists. This may be because the app was restarted or the request fell off
   the end of the ``max_request_history``.
@@ -15,7 +22,7 @@ unreleased
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/306
 
 - Drop the link-local suffix off of local interfaces in order to accept
-  requests on them. See https://github.com/Pylons/pyramid_debugtoolbar/pull/306
+  requests on them. See https://github.com/Pylons/pyramid_debugtoolbar/pull/307
 
 4.0.1 (2017-05-09)
 ------------------
