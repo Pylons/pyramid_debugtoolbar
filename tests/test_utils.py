@@ -86,6 +86,22 @@ class Test_addr_in(unittest.TestCase):
     def test_in_network(self):
         self.assertTrue(self._callFUT('127.0.0.1', ['127.0.0.0/24']))
 
+    def test_empty_hosts_ipv6(self):
+        self.assertFalse(self._callFUT('::1', []))
+
+    def test_in_ipv6(self):
+        self.assertTrue(self._callFUT('::1', ['::1']))
+
+    def test_in_multi_ipv6(self):
+        self.assertTrue(self._callFUT('::1', ['fc00::', '::1']))
+
+    def test_in_network_ipv6(self):
+        self.assertTrue(self._callFUT('::1', ['::1/128']))
+
+    def test_in_network_ipv6_interface(self):
+        self.assertTrue(self._callFUT('fe80::e556:2a1a:91e2:7023%15', ['::/0']))
+
+
 class Test_last_proxy(unittest.TestCase):
     def _callFUT(self, addr):
         from pyramid_debugtoolbar.utils import last_proxy

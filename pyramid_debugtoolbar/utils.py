@@ -181,6 +181,7 @@ def dictrepr(d):
 logger = getLogger('pyramid_debugtoolbar')
 
 def addr_in(addr, hosts):
+    addr = addr.split('%')[0]
     for host in hosts:
         if ipaddress.ip_address(u''+addr) in ipaddress.ip_network(u''+host):
             return True
