@@ -73,7 +73,6 @@ class Test_addr_in(unittest.TestCase):
 
     def test_empty_hosts(self):
         self.assertFalse(self._callFUT('127.0.0.1', []))
-        
 
     def test_not_in(self):
         self.assertFalse(self._callFUT('127.0.0.1', ['192.168.1.1']))
@@ -85,7 +84,7 @@ class Test_addr_in(unittest.TestCase):
         self.assertTrue(self._callFUT('127.0.0.1', ['10.1.1.1', '127.0.0.1']))
 
     def test_in_network(self):
-        self.assertTrue(self._callFUT('127.0.0.1', ['127.0.0.1/24']))
+        self.assertTrue(self._callFUT('127.0.0.1', ['127.0.0.0/24']))
 
 class Test_last_proxy(unittest.TestCase):
     def _callFUT(self, addr):

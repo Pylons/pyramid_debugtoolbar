@@ -30,6 +30,10 @@ install_requires = [
     'Pygments',
     ]
 
+extra_requires = [
+    'ipaddress',
+    ]
+
 testing_extras = [
     'WebTest',
     'nose',
@@ -70,6 +74,7 @@ setup(name='pyramid_debugtoolbar',
       zip_safe=False,
       install_requires=install_requires,
       extras_require = {
+          ':python_version<"3.3"': extra_requires,
           'testing':testing_extras,
           'docs':docs_extras,
           },
