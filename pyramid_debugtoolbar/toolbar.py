@@ -259,7 +259,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             response = _handler(request)
             toolbar.status_int = response.status_int
 
-            if request.exc_info:
+            if request.exc_info and exc_history is not None:
                 tb = process_traceback(request.exc_info)
 
                 msg = 'Squashed Exception at %s\ntraceback url: %s'
