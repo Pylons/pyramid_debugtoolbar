@@ -38,6 +38,7 @@ div.traceback h4 { font-size: 13px; font-weight: normal; margin: 5px 0; }
 div.traceback pre { margin: 0; padding: 5px 0 3px 5px;
                     background-color: #f5f5f5;}
 div.traceback pre,
+#pDebugPanel-sqlalchemy-content div.highlight pre,
 div.box table.source { white-space: pre-wrap;       /* css-3 should we be so lucky... */
                        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
                        white-space: -pre-wrap;      /* Opera 4-6 ?? */
@@ -98,3 +99,5 @@ div.box table.source td.lineno { color: #999; padding-right: 10px; width: 1px; }
 div.box table.source tr.in-frame { background-color: white; }
 div.box table.source tr.current { background-color: #dddddd; color: #e5762b; }
 div.sourceview { overflow: auto; border: 1px solid #ccc; }
+
+#pDebugPanel-sqlalchemy-content div.highlight pre { word-break: normal; }
