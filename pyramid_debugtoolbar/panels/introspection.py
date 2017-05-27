@@ -40,3 +40,6 @@ class IntrospectionDebugPanel(DebugPanel):
 
 def nl2br(s):
     return s.replace('\n', '<br/>')
+
+def includeme(config):
+    config.add_debugtoolbar_panel(IntrospectionDebugPanel, is_global=True)

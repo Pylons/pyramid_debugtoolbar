@@ -81,8 +81,8 @@ class Test_beforerender_subscriber(unittest.TestCase):
     def setUp(self):
         self.request = Request.blank('/')
         self.config = testing.setUp(request=self.request)
-        panel = DummyPanel(self.request)
-        self.request.debug_toolbar = DummyToolbar([panel])
+        self.panel = DummyPanel(self.request)
+        self.request.debug_toolbar = DummyToolbar([self.panel])
 
     def tearDown(self):
         testing.tearDown()
@@ -103,6 +103,38 @@ class Test_beforerender_subscriber(unittest.TestCase):
         self._callFUT(event)
         self.assertTrue(event['processed'])
 
+class Test_beforerender_subscriber_order(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_it(self):
+        panels = []
+        def panel_factory(request):
+            panel = DummyPanel(request)
+            panels.append(panel)
+            return panel
+        panel_factory.name = 'dummy_panel'
+        def includeme(config):
+            config.add_debugtoolbar_panel(panel_factory)
+        self.config.add_settings({'debugtoolbar.includes': [includeme]})
+        self.config.include('pyramid_debugtoolbar')
+        def dummy_subscriber(event):
+            event['foo'] = 'bar'
+        self.config.add_subscriber(
+            dummy_subscriber, 'pyramid.events.BeforeRender')
+        # add the toolbar after the subscriber
+        self.config.add_view(lambda r: {}, renderer='json')
+        app = self.config.make_wsgi_app()
+        request = Request.blank('/')
+        request.remote_addr = '127.0.0.1'
+        request.get_response(app)
+        self.assertEqual(len(panels), 1)
+        event = panels[0].event
+        self.assertEqual(event['foo'], 'bar')
+
 
 class Test_toolbar_tween_factory(unittest.TestCase):
     def setUp(self):
@@ -122,7 +154,8 @@ class Test_toolbar_tween_factory(unittest.TestCase):
 
     def test_it_enabled(self):
         from pyramid_debugtoolbar.toolbar import IToolbarWSGIApp
-        self.config.registry.registerUtility(DummyApp(None), IToolbarWSGIApp)
+        toolbar_app = DummyApp(None, self.config.registry)
+        self.config.registry.registerUtility(toolbar_app, IToolbarWSGIApp)
         self.config.registry.settings['debugtoolbar.enabled'] = True
         def handler(): pass
         result = self._callFUT(handler, self.config.registry)
@@ -144,7 +177,8 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.add_route(ROOT_ROUTE_NAME, '/_debug_toolbar')
         self.config.add_route('debugtoolbar', '/_debug_toolbar/*subpath')
         self.config.add_static_view('_debug_toolbar/static', STATIC_PATH)
-        self.config.registry.registerUtility(DummyApp(None), IToolbarWSGIApp)
+        self.toolbar_app = DummyApp(None, self.config.registry)
+        self.config.registry.registerUtility(self.toolbar_app, IToolbarWSGIApp)
 
     def tearDown(self):
         testing.tearDown()
@@ -165,16 +199,17 @@ class Test_toolbar_handler(unittest.TestCase):
         return handler(request)
 
     def _makeExceptionDispatcher(self):
-        from pyramid_debugtoolbar.views import ExceptionDebugView
+        from pyramid_debugtoolbar.panels.traceback import ExceptionDebugView
         registry = self.config.registry
         def dispatcher(app, request):
             request.registry = registry.parent_registry = registry
+            request.matchdict = {'token': request.registry.parent_registry.pdtb_token} 
             request.exc_history = registry.exc_history
             return ExceptionDebugView(request).exception()
         return dispatcher
 
     def _makeRedirectDispatcher(self):
-        from pyramid_debugtoolbar.views import redirect_view
+        from pyramid_debugtoolbar.toolbar_app import redirect_view
         from pyramid.renderers import render
         def dispatcher(app, request):
             result = redirect_view(request)
@@ -260,7 +295,7 @@ class Test_toolbar_handler(unittest.TestCase):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -299,7 +334,7 @@ class Test_toolbar_handler(unittest.TestCase):
             raise NotImplementedError(b'K\xc3\xa4se!\xe2\x98\xa0')
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -319,7 +354,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -337,7 +372,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
@@ -354,7 +389,7 @@ class Test_toolbar_handler(unittest.TestCase):
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = False
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
         self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception')
+        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
@@ -411,6 +446,7 @@ class DummyPanel(object):
 
     def process_beforerender(self, event):
         event['processed'] = True
+        self.event = event.copy()
 
 class DummyPanelWithContent(DummyPanel):
     has_content = True
@@ -424,7 +460,8 @@ class DummyLogger(object):
         self.msg = msg
 
 class DummyApp(object):
-    def __init__(self, response):
+    def __init__(self, response, registry):
+        self.registry = registry
         self.response = response
 
     def __call__(self, environ, start_response):

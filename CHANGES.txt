@@ -1,25 +1,110 @@
-Unreleased
------------------
+unreleased
+----------
 
-- Added "sticky" panel functionality to allow a selected panel to persist 
+- Debug squashed exceptions! If you register an exception view for an exception
+  it will render a response. The toolbar will see the squashed exception and
+  enable the ``Traceback`` tab in the toolbar and emit a message on the
+  console with the URL. You can then debug the exception while returning the
+  original response to the user.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/308
+
+- Display a warning if the toolbar is used to display a request that no longer
+  exists. This may be because the app was restarted or the request fell off
+  the end of the ``max_request_history``.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/305
+
+- Remove the vendored ipaddr package and use the stdlib ipaddress module on
+  Python 3.3+. On Python < 3.3 the ipaddress module is a dependency from PyPI.
+  This dependency uses environment markers and thus requires pip 8.1.2+.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/304
+
+- Enable testing on Python 3.6.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/306
+
+- Drop the link-local suffix off of local interfaces in order to accept
+  requests on them. See https://github.com/Pylons/pyramid_debugtoolbar/pull/307
+
+4.0.1 (2017-05-09)
+------------------
+
+- Fix sticky panel functionality that was broken by other cleanup in the 4.0
+  release. See https://github.com/Pylons/pyramid_debugtoolbar/pull/297
+
+4.0 (2017-05-03)
+----------------
+
+- The config settings ``debugtoolbar.panels``, ``debugtoolbar.extra_panels``,
+  ``debugtoolbar.global_panels`` and ``debugtoolbar.extra_global_panels``
+  now all accept panel names as defined in
+  ``pyramid_debugtoolbar.panels.DebugPanel.name``. Thus you may use names
+  such as ``performance``, ``headers``, etc. These settings still support the
+  dotted Python path but it is suggested that panels now support being
+  included via ``debugtoolbar.includes`` and ``config.add_debugtoolbar_panel``
+  instead such that they are automatically added to the toolbar.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288
+
+- Add a new ``config.add_debugtoolbar_panel`` directive that can be invoked
+  from ``includeme`` functions included via the ``debugtoolbar.includes``
+  setting. These panels are automatically added to the default panel list
+  and should become the way to define toolbar panels in the future.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/283
+
+- Add a new ``config.inject_parent_action`` directive that can be invoked
+  from ``includeme`` functions included via the ``debugtoolbar.includes``
+  setting. These actions are invoked on the parent config just before it is
+  created such that actions can inspect / wrap existing config.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288
+
+- Added "sticky" panel functionality to allow a selected panel to persist
   across pageviews using cookies.  If a cookied panel does not have content
   available for display, the first non-disabled panel will be displayed. If a
   cookied panel is not enabled on the toolbar, the first non-disabled panel will
   be displayed AND will become the new default panel.
-  
-  See: https://github.com/Pylons/pyramid_debugtoolbar/pull/272
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/272
 
 - Added `CustomLoggerFactory` to javascript, used in the development of PR 272.
   This javascript factory allows panel developers and maintainers to use verbose
   console logging during development, partitioned by feature, and silence it for
   deployment while still leaving the logging lines activated.
 
+- The toolbar registers a ``BeforeRender`` subscriber in your application to
+  monitor the rendering of templates. Previously it was possible that the
+  toolbar would miss rendering information because of the order in which the
+  subscribers were registered. The toolbar now waits until the application
+  is created and then appends a new subscriber that encapsulates the
+  your application's ``BeforeRender`` subscribers.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/284
+
+- Remove duplicate ``id="${panel.dom_id}"`` tags in history tab html. Only
+  the top-level ``<li>`` tag has the id now.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/285
+
+- Emit a warning and disable the toolbar if the app is being served by
+  a forking / multiprocess wsgi server that sets
+  ``environ['wsgi.multiprocess']`` to ``True``. This should help avoid
+  confusing issues in certain deployments like gunicorn and uwsgi multiprocess
+  modes. See https://github.com/Pylons/pyramid_debugtoolbar/pull/286
+
+- The toolbar tween is always placed explicitly OVER the pyramid_tm tween.
+
+- Refactored all debugtoolbar panels to be included using
+  ``config.add_debugtoolbar_panel`` and per-panel ``includeme`` functions.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288
+
+- Exposed a ``request.toolbar_panels`` dictionary which can be used from within
+  ``DebugPanel.render_content`` and ``DebugPanel.render_vars`` in order to
+  introspect and use the data generated by other panels when rendering the
+  panel. See https://github.com/Pylons/pyramid_debugtoolbar/pull/291
+
+- Support streaming new requests on Microsoft Edge and Internet Explorer 8+ by
+  using a Server-Sent-Events polyfill.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/293
 
 3.0.5 (2016-11-1)
 -----------------
 
-- Change static toolbar asset to accommodate color blindness. See:
-  https://github.com/Pylons/pyramid_debugtoolbar/issues/273
+- Change static toolbar asset to accommodate color blindness.
+  See https://github.com/Pylons/pyramid_debugtoolbar/issues/273
 
 3.0.4 (2016-07-26)
 ------------------

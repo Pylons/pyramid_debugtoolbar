@@ -1,28 +1,21 @@
-from __future__ import with_statement
-
-import hashlib
 import threading
 import time
 import weakref
 
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.threadlocal import get_current_request
+from pyramid.view import view_config
 
 from pyramid_debugtoolbar.compat import json
-from pyramid_debugtoolbar.compat import bytes_
 from pyramid_debugtoolbar.compat import url_quote
-from pyramid_debugtoolbar.compat import PY3
 from pyramid_debugtoolbar.panels import DebugPanel
+from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.utils import format_sql
+from pyramid_debugtoolbar.utils import text_
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 lock = threading.Lock()
-
-def text(s):
-    if PY3: # pragma: no cover
-        return str(s)
-    else:
-        return unicode(s)
 
 try:
     from sqlalchemy import event
@@ -116,8 +109,8 @@ class SQLADebugPanel(DebugPanel):
             })
 
         self.data = {
-            'queries':data,
-            'text':text,
+            'queries': data,
+            'text': text_,
             }
 
     def render_content(self, request):
@@ -132,3 +125,85 @@ class SQLADebugPanel(DebugPanel):
             'static_path': request.static_url(STATIC_PATH),
             'root_path': request.route_url(ROOT_ROUTE_NAME)
         }
+
+
+class SQLAlchemyViews(object):
+    def __init__(self, request):
+        self.request = request
+
+    def find_query(self):
+        request_id = self.request.matchdict['request_id']
+        all_history = find_request_history(self.request)
+        history = all_history.get(request_id)
+        sqlapanel = [p for p in history.panels if p.name == 'sqlalchemy'][0]
+        query_index = int(self.request.matchdict['query_index'])
+        return sqlapanel.queries[query_index]
+
+    @view_config(
+        route_name='debugtoolbar.sql_select',
+        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako',
+    )
+    def sql_select(self):
+        query_dict = self.find_query()
+        stmt = query_dict['statement']
+        engine_id = query_dict['engine_id']
+        params = query_dict['parameters']
+        # Make sure it is a select statement
+        if not stmt.lower().strip().startswith('select'):
+            raise HTTPBadRequest('Not a SELECT SQL statement')
+
+        if not engine_id:
+            raise HTTPBadRequest('No valid database engine')
+
+        engines = self.request.registry.parent_registry.pdtb_sqla_engines
+        engine = engines[int(engine_id)]()
+        result = engine.execute(stmt, params)
+
+        return {
+            'result': result.fetchall(),
+            'headers': result.keys(),
+            'sql': format_sql(stmt),
+            'duration': float(query_dict['duration']),
+        }
+
+    @view_config(
+        route_name='debugtoolbar.sql_explain',
+        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako',
+    )
+    def sql_explain(self):
+        query_dict = self.find_query()
+        stmt = query_dict['statement']
+        engine_id = query_dict['engine_id']
+        params = query_dict['parameters']
+
+        if not engine_id:
+            raise HTTPBadRequest('No valid database engine')
+
+        engines = self.request.registry.parent_registry.pdtb_sqla_engines
+        engine = engines[int(engine_id)]()
+
+        if engine.name.startswith('sqlite'):
+            query = 'EXPLAIN QUERY PLAN %s' % stmt
+        else:
+            query = 'EXPLAIN %s' % stmt
+
+        result = engine.execute(query, params)
+
+        return {
+            'result': result.fetchall(),
+            'headers': result.keys(),
+            'sql': format_sql(stmt),
+            'str': str,
+            'duration': float(query_dict['duration']),
+        }
+
+def includeme(config):
+    config.add_route(
+        'debugtoolbar.sql_select',
+        '/{request_id}/sqlalchemy/select/{query_index}')
+    config.add_route(
+        'debugtoolbar.sql_explain',
+        '/{request_id}/sqlalchemy/explain/{query_index}')
+
+    config.add_debugtoolbar_panel(SQLADebugPanel)
+    config.scan(__name__)

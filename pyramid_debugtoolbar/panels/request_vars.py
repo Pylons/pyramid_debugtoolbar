@@ -152,3 +152,6 @@ def wrap_load(obj, name, cb, reify=False):
         val = orig_property.__get__(obj)
         return cb(val)
     obj.set_property(wrapper, name=name, reify=reify)
+
+def includeme(config):
+    config.add_debugtoolbar_panel(RequestVarsDebugPanel)

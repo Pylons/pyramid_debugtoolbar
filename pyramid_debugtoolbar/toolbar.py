@@ -1,5 +1,6 @@
 import sys
 import os
+import warnings
 
 from pyramid.exceptions import URLDecodeError
 from pyramid.httpexceptions import WSGIHTTPException
@@ -15,6 +16,7 @@ from pyramid_debugtoolbar.utils import hexlify
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import make_subrequest
+from pyramid_debugtoolbar.utils import resolve_panel_classes
 from pyramid_debugtoolbar.utils import replace_insensitive
 from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ToolbarStorage
@@ -25,6 +27,10 @@ class IToolbarWSGIApp(Interface):
     """ Marker interface for the toolbar WSGI application."""
     def __call__(environ, start_response):
         pass
+
+
+class IPanelMap(Interface):
+    """ Marker interface for the set of known panels."""
 
 
 class IRequestAuthorization(Interface):
@@ -55,7 +61,7 @@ class DebugToolbar(object):
         # If the panel is activated in the settings, we want to enable it
         activated.extend(default_active_panels)
 
-        def configure_panel(panel):
+        def configure_panel(panel_inst):
             panel_inst.is_active = False
             if panel_inst.name in activated and panel_inst.has_content:
                 panel_inst.is_active = True
@@ -118,7 +124,7 @@ class ExceptionHistory(object):
 
 
 def beforerender_subscriber(event):
-    request = event['request']
+    request = event.get('request')
     if request is None:
         request = get_current_request()
     if getattr(request, 'debug_toolbar', None) is not None:
@@ -141,15 +147,30 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
     if not sget('enabled'):
         return handler
 
+    toolbar_app = registry.getUtility(IToolbarWSGIApp)
+    toolbar_registry = toolbar_app.registry
+
     max_request_history = sget('max_request_history')
     request_history = ToolbarStorage(max_request_history)
     registry.request_history = request_history
 
-    redirect_codes = (301, 302, 303, 304)
-    panel_classes = sget('panels', [])
+    panel_map = toolbar_registry.queryUtility(IPanelMap, default={})
+    resolve_panels = lambda a, b: resolve_panel_classes(a, b, panel_map)
+
+    panel_classes = list(sget('panels', []))
+    if not panel_classes:
+        # if no panels are defined then use all available panels
+        panel_classes = [p for p, g in panel_map if not g]
     panel_classes.extend(sget('extra_panels', []))
-    global_panel_classes = sget('global_panels', [])
+    panel_classes = resolve_panels(panel_classes, False)
+    global_panel_classes = list(sget('global_panels', []))
+    if not global_panel_classes:
+        # if no panels are defined then use all available global panels
+        global_panel_classes = [p for p, g in panel_map if g]
     global_panel_classes.extend(sget('extra_global_panels', []))
+    global_panel_classes = resolve_panels(global_panel_classes, True)
+
+    redirect_codes = (301, 302, 303, 304)
     intercept_exc = sget('intercept_exc')
     intercept_redirects = sget('intercept_redirects')
     show_on_exc_only = sget('show_on_exc_only')
@@ -165,10 +186,12 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         registry.exc_history = exc_history = ExceptionHistory()
         exc_history.eval_exc = intercept_exc == 'debug'
 
-    toolbar_app = registry.getUtility(IToolbarWSGIApp)
     dispatch = lambda request: _dispatch(toolbar_app, request)
 
-    def toolbar_tween(request):
+    def append_token(path, token):
+        return path + '/' + token
+
+    def toolbar_tween(request, path_helper=append_token):
         try:
             p = request.path_info
         except UnicodeDecodeError as e:
@@ -184,6 +207,14 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             or not addr_in(last_proxy_addr, hosts)
             or auth_check and not auth_check(request)
         ):
+            return handler(request)
+
+        if request.environ.get('wsgi.multiprocess', False):
+            warnings.warn(
+                'pyramid_debugtoolbar has detected that the application is '
+                'being served by a forking / multiprocess web server. The '
+                'toolbar relies on global state to work and is not compatible '
+                'with this environment. The toolbar will be disabled.')
             return handler(request)
 
         root_path = debug_toolbar_url(request, '', _app_url='')
@@ -211,24 +242,41 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         for panel in toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
+        def process_traceback(info):
+            tb = get_traceback(info=info,
+                               skip=1,
+                               show_hidden_frames=False,
+                               ignore_system_exceptions=True)
+            for frame in tb.frames:
+                exc_history.frames[frame.id] = frame
+            exc_history.tracebacks[tb.id] = tb
+            request.pdbt_tb = tb
+
+            return tb
+
         try:
+
             response = _handler(request)
             toolbar.status_int = response.status_int
+
+            if request.exc_info and exc_history is not None:
+                tb = process_traceback(request.exc_info)
+
+                msg = 'Squashed Exception at %s\ntraceback url: %s'
+                qs = {'tb': str(tb.id)}
+                subrequest = make_subrequest(
+                    request, root_path, path_helper('exception', registry.pdtb_token), qs)
+                exc_msg = msg % (request.url, subrequest.url)
+                _logger.exception(exc_msg)
+
         except Exception:
             if exc_history is not None:
-                tb = get_traceback(info=sys.exc_info(),
-                                   skip=1,
-                                   show_hidden_frames=False,
-                                   ignore_system_exceptions=True)
-                for frame in tb.frames:
-                    exc_history.frames[frame.id] = frame
-                exc_history.tracebacks[tb.id] = tb
-                request.pdbt_tb = tb
+                tb = process_traceback(sys.exc_info())
 
-                msg = 'Exception at %s\ntraceback url: %s'
-                qs = {'token': registry.pdtb_token, 'tb': str(tb.id)}
+                msg = 'Uncaught Exception at %s\ntraceback url: %s'
+                qs = {'tb': str(tb.id)}
                 subrequest = make_subrequest(
-                    request, root_path, 'exception', qs)
+                    request, root_path, path_helper('exception', registry.pdtb_token), qs)
                 exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
