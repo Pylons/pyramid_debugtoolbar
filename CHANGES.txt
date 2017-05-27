@@ -1,5 +1,9 @@
 unreleased
 ----------
+- Headers panel defers its processing to a finished callback. This is best
+  effort of displaying actual headers, since they could be modified by
+  a response callback or another finished callback.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/310
 
 - Debug squashed exceptions! If you register an exception view for an exception
   it will render a response. The toolbar will see the squashed exception and
