@@ -1,5 +1,9 @@
 unreleased
 ----------
+- Query log inside SQLAlchemy panel does not cause horizontal scrolling 
+  anymore, which should improve UX.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/311 
+
 - Headers panel defers its processing to a finished callback. This is best
   effort of displaying actual headers, since they could be modified by
   a response callback or another finished callback.
