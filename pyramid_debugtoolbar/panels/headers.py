@@ -17,13 +17,7 @@ class HeaderDebugPanel(DebugPanel):
     def __init__(self, request):
         def finished_callback(request):
             self.process_response_deferred()
-
-        def prepare_finished_callback(request):
-            """ Best effort to be the last in case there are other callbacks
-            mutating the response """
-            request.add_finished_callback(finished_callback)
-
-        request.add_finished_callback(prepare_finished_callback)
+        request.add_finished_callback(finished_callback)
         self.request_headers = [
             (text_(k), text_(v)) for k, v in sorted(request.headers.items())
         ]
