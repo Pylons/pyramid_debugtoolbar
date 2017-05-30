@@ -101,5 +101,5 @@ div.sourceview { overflow: auto; border: 1px solid #ccc; }
 
 #pDebugPanel-sqlalchemy-content div.highlight pre {
   white-space: pre-wrap;
-	word-break: normal;
+  word-break: normal;
 }
