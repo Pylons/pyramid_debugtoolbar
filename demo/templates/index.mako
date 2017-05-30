@@ -14,7 +14,7 @@
           <a href="${request.route_url('test_exc')}">Exception example</a>
         </p>
         <p>
-          <a href="${request.route_url('test_hidden_exc')}">Hidden/Squashed exception example</a>
+          <a href="${request.route_url('test_squashed_exc')}">Hidden/Squashed exception example</a>
         </p>
         <p>
           <a href="${request.route_url('test_notfound')}">Not found example</a>
