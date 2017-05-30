@@ -15,25 +15,26 @@ class HeaderDebugPanel(DebugPanel):
     nav_title = title
 
     def __init__(self, request):
-        self.request = request
+        def finished_callback(request):
+            self.process_response_deferred()
+
+        def prepare_finished_callback(request):
+            """ Best effort to be the last in case there are other callbacks
+            mutating the response """
+            request.add_finished_callback(finished_callback)
+
+        request.add_finished_callback(prepare_finished_callback)
         self.request_headers = [
             (text_(k), text_(v)) for k, v in sorted(request.headers.items())
         ]
 
     def process_response(self, response):
-        def finished_callback(request):
-            self.process_response_deferred(response)
-
-        def prepare_finished_callback(request):
-            """ Best effort to be the last in case there are other callbacks
-            mutating the response """
-            self.request.add_finished_callback(finished_callback)
-
-        self.request.add_finished_callback(prepare_finished_callback)
+        self.response = response
         self.data = {'request_headers': self.request_headers,
                      'response_headers': []}
 
-    def process_response_deferred(self, response):
+    def process_response_deferred(self):
+        response = self.response
         response_headers = [
             (text_(k), text_(v)) for k, v in sorted(response.headerlist)
         ]
