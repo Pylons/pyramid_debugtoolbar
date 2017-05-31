@@ -1,13 +1,5 @@
 unreleased
 ----------
-- Query log inside SQLAlchemy panel does not cause horizontal scrolling 
-  anymore, which should improve UX.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/311 
-
-- Headers panel defers its processing to a finished callback. This is best
-  effort of displaying actual headers, since they could be modified by
-  a response callback or another finished callback.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/310
 
 - Debug squashed exceptions! If you register an exception view for an exception
   it will render a response. The toolbar will see the squashed exception and
@@ -16,21 +8,30 @@ unreleased
   original response to the user.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/308
 
-- Display a warning if the toolbar is used to display a request that no longer
-  exists. This may be because the app was restarted or the request fell off
-  the end of the ``max_request_history``.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/305
-
 - Remove the vendored ipaddr package and use the stdlib ipaddress module on
   Python 3.3+. On Python < 3.3 the ipaddress module is a dependency from PyPI.
   This dependency uses environment markers and thus requires pip 8.1.2+.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/304
+
+- Display a warning if the toolbar is used to display a request that no longer
+  exists. This may be because the app was restarted or the request fell off
+  the end of the ``max_request_history``.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/305
 
 - Enable testing on Python 3.6.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/306
 
 - Drop the link-local suffix off of local interfaces in order to accept
   requests on them. See https://github.com/Pylons/pyramid_debugtoolbar/pull/307
+
+- Headers panel defers its processing to a finished callback. This is best
+  effort of displaying actual headers, since they could be modified by
+  a response callback or another finished callback.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/310
+
+- Query log inside SQLAlchemy panel does not cause horizontal scrolling
+  anymore, which should improve UX.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/311
 
 4.0.1 (2017-05-09)
 ------------------
