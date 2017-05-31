@@ -2,8 +2,13 @@
 <div class="row">
   <div class="col-sm-3 col-md-2 sidebar">
 
-      <div class="pDebugRequests">
-        <ul id="requests" class="nav nav-sidebar">
+      <div id="req_list" class="pDebugRequests">
+        <h4>Requests</h4>
+        <p>
+            <input class="form-control search" type="search" placeholder="Filter requests"/>
+        </p>
+        <ul id="requests" class="list nav nav-sidebar">
+            <li>&nbsp;No requests recorded yet.</li>
         </ul>
       </div>
 
