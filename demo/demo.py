@@ -36,9 +36,9 @@ log = logging.getLogger(__file__)
 
 here = os.path.dirname(os.path.abspath(__file__))
 
-@view_config(route_name='test_exc')
-def exc(request):
-    raise NotImplementedError
+@view_config(route_name='test_squashed_exc')
+def squashed_exc(request):
+    raise RuntimeError
 
 @view_config(route_name='test_notfound')
 def notfound(request):
@@ -53,6 +53,11 @@ def call_ajax(request):
     return {'ajax':'success'}
 
 @view_config(context=HTTPNotFound, renderer='notfound.mako')
+def notfound_view(request):
+    request.response.status_code = 404
+    return {}
+
+@view_config(context=RuntimeError, renderer='notfound.mako')
 def notfound_view(request):
     request.response.status_code = 404
     return {}
@@ -128,6 +133,7 @@ def make_app():
     config.add_route('test_jinja2_exc', '/jinja2_exc')
     config.add_route('test_highorder', text_(b'/La Pe\xc3\xb1a', 'utf-8'))
     config.add_route('test_ajax', '/ajax')
+    config.add_route('test_squashed_exc', '/squashed_exc')
     config.add_route('call_ajax', '/call_ajax')
     config.scan(__name__)
     config.include('pyramid_chameleon')
