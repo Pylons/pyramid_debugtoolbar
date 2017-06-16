@@ -30,6 +30,10 @@ install_requires = [
     'Pygments',
     ]
 
+extra_requires = [
+    'ipaddress',
+    ]
+
 testing_extras = [
     'WebTest',
     'nose',
@@ -42,7 +46,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='3.0.4',
+      version='4.1',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
@@ -54,6 +58,7 @@ setup(name='pyramid_debugtoolbar',
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP :: WSGI",
         "License :: Repoze Public License",
@@ -61,7 +66,7 @@ setup(name='pyramid_debugtoolbar',
       keywords='wsgi pylons pyramid transaction',
       author=("Chris McDonough, Michael Merickel, Casey Duncan, "
               "Blaise Laflamme"),
-      author_email="pylons-devel@googlegroups.com",
+      author_email="pylons-discuss@googlegroups.com",
       url="http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
       license="BSD",
       packages=find_packages(exclude=('tests',)),
@@ -69,6 +74,7 @@ setup(name='pyramid_debugtoolbar',
       zip_safe=False,
       install_requires=install_requires,
       extras_require = {
+          ':python_version<"3.3"': extra_requires,
           'testing':testing_extras,
           'docs':docs_extras,
           },

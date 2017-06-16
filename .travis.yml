@@ -12,6 +12,8 @@ matrix:
           env: TOXENV=py34
         - python: 3.5
           env: TOXENV=py35
+        - python: 3.6
+          env: TOXENV=py36
         - python: pypy
           env: TOXENV=pypy
         - python: 3.5
@@ -24,7 +26,9 @@ matrix:
           env: TOXENV=py27-pyramid15
 
 install:
-  - travis_retry pip install tox
+  - travis_retry pip install -U setuptools
+  - travis_retry pip install -U pip
+  - travis_retry pip install -U tox
 
 script:
   - travis_retry tox

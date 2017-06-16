@@ -69,6 +69,7 @@
     </div>
 
     ## scripts that can be included after pageload
+    <script src="${static_path}eventsource/eventsource.js"></script>
     <script src="${static_path}jquery.cookie/jquery.cookie.js"></script>
 
     ## tablesorter, load before toolbar.js

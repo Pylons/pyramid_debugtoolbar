@@ -17,9 +17,9 @@ the Werkzeug debugger code by Armin Ronacher and team.
 Installation
 ------------
 
-Install using setuptools, e.g. (within a virtualenv)::
+Install using pip, e.g. (within a virtualenv)::
 
-  $ easy_install pyramid_debugtoolbar
+  $ pip install pyramid_debugtoolbar
 
 Setup
 -----
@@ -97,6 +97,16 @@ file.
   Default is ``true``.  This disables both the exception handler and the
   toolbar overlay.
 
+``debugtoolbar.includes``
+
+  The debugtoolbar will use Pyramid's default
+  :meth:`pyramid.config.Configurator.include` mechanism to extend the toolbar's
+  internal Pyramid application with custom logic. This is a good spot to add
+  custom panels, affect static assets used by the toolbar, or add custom urls.
+
+  Within the ``includeme`` the application registry may be accessed as
+  ``config.registry.parent_registry``.
+
 ``debugtoolbar.intercept_exc``
 
   This setting can have one of three values: ``display``, ``debug`` or
@@ -132,7 +142,8 @@ file.
   debugtoolbar at all. This option allows the developer to use the toolbar for
   debugging purposes without interfering with successful responses.
 
-  Inspection of requests is still possible by visiting the toolbar manually.
+  Inspection of requests is still possible by visiting the toolbar manually
+  at ``/_debug_toolbar/``.
 
 ``debugtoolbar.intercept_redirects``
 
@@ -143,33 +154,50 @@ file.
 
 ``debugtoolbar.panels``
 
-  A list of dotted Python global names to panel classes.  Defaults to a
-  list of all panel types known by :mod:`pyramid_debugtoolbar`, as
-  documented in :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an
-  ``.ini`` file, it should be a space- or newline-separated sequence of
-  dotted Python names.  For example::
+  A list of panel names.  Defaults to a list of all panels known by
+  :mod:`pyramid_debugtoolbar`, as documented in
+  :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an ``.ini`` file, it
+  overrides the default list and should be a space- or newline-separated
+  sequence of panel names. This setting should be mainly used to override
+  the default order of panels. For example::
 
-    debugtoolbar.panels =
-        pyramid_debugtoolbar.panels.versions.VersionDebugPanel
-        pyramid_debugtoolbar.panels.settings.SettingsDebugPanel
-        pyramid_debugtoolbar.panels.headers.HeaderDebugPanel
-        pyramid_debugtoolbar.panels.request_vars.RequestVarsDebugPanel
-        pyramid_debugtoolbar.panels.renderings.RenderingsDebugPanel
-        pyramid_debugtoolbar.panels.logger.LoggingPanel
-        pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel
-        pyramid_debugtoolbar.panels.routes.RoutesDebugPanel
-        pyramid_debugtoolbar.panels.sqla.SQLADebugPanel
-        pyramid_debugtoolbar.panels.tweens.TweensDebugPanel
-        pyramid_debugtoolbar.panels.introspection.IntrospectionDebugPanel
+    debugtoolbar.panels = headers logging performance renderings
+                          request_vars sqlalchemy traceback
+
+  For compatibility with older versions of the toolbar, the panel
+  name may also be the dotted Python path to the panel class. For example,
+  ``pyramid_debugtoolbar.panels.sqla.SQLADebugPanel``.
 
 ``debugtoolbar.extra_panels``
 
-  A list of dotted Python global names to panel classes. This list of panels
-  is appended to the panels defined in ``debugtoolbar.panels``. If you'd like
-  to maintain the default panels and add on some extra ones, this should help::
+  A list of panel names that will be appended to the ``debugtoolbar.panels``
+  list. This setting is mostly useful if you have a panel that is not included
+  by default (using ``debugtoolbar.includes`` and you do not want to maintain
+  the list of all panels via ``debugtoolbar.panels``). This may be a
+  dotted Python path to the panel class.
 
-    debugtoolbar.extra_panels =
-        myapp.debugtoolbar.panels.MyCustomPanel
+``debugtoolbar.global_panels``
+
+  A list of panel names.  Defaults to a list of all global panels known by
+  :mod:`pyramid_debugtoolbar`, as documented in
+  :ref:`pyramid_debugtoolbar_api`.  If this is spelled in an ``.ini`` file, it
+  overrides the default list and should be a space- or newline-separated
+  sequence of panel names. For example::
+
+    debugtoolbar.panels = introspection routes settings tweens versions
+
+  For compatibility with older versions of the toolbar, the panel
+  name may also be the dotted Python path to the panel class. For example,
+  ``pyramid_debugtoolbar.panels.settings.SettingsDebugPanel``.
+
+``debugtoolbar.extra_global_panels``
+
+  A list of panel names that will be appended to the
+  ``debugtoolbar.global_panels`` list. This setting is mostly useful if you
+  have a panel that is not included by default (using ``debugtoolbar.includes``
+  and you do not want to maintain the list of all panels via
+  ``debugtoolbar.panels``). This may be a dotted Python path to the panel
+  class.
 
 ``debugtoolbar.button_style``
 
@@ -217,13 +245,6 @@ file.
 ``debugtoolbar.max_visible_requests``
 
   The number of requests shown in the sidebar.  The default is 10.
-
-``debugtoolbar.includes``
-
-  The debugtoolbar will use Pyramid's default
-  :meth:`pyramid.config.Configurator.include` mechanism to extend the toolbar's
-  internal Pyramid application with custom logic. This is a good spot to affect
-  static assets used by the toolbar, or add custom urls.
 
 Useful settings for debugging panels/debugtoolbar
 `````````````````````````````````````````````````
@@ -327,6 +348,10 @@ For example::
 A panel name is defined by the
 :attr:`~pyramid_debugtoolbar.panels.DebugPanel.name` attribute of each
 debug panel.
+
+The cookie may also be set via the web interface in the `Settings` tab but,
+remember, since it is a cookie it must be set on the exact HTTP client you
+are using or the panel will not be active for the request.
 
 The Toolbar
 -----------
@@ -556,10 +581,10 @@ sample panel:
            return _('Sample')
 
    def includeme(config):
-       config.registry.settings['debugtoolbar.panels'].append(SampleDebugPanel)
+       config.add_debugtoolbar_panel(SampleDebugPanel)
 
-After inheriting from the DebugPanel class, you have to define a few methods and
-attributes on your panel:
+After inheriting from the ``DebugPanel`` class, you have to define a few
+methods and attributes on your panel:
 
 ``name``
   Attribute.  String value.  A unique identifier for the name of the panel. This
@@ -655,22 +680,65 @@ attributes on your panel:
 When creating a new panel, some of these methods *must* be subclassed, while
 others can rely on the base class.
 
-Once you define the panel it has to be added to the ``debugtoolbar.panels``
-setting of the configuration. A good way to do this is to use an ``includeme``
-method in the panel's ``__init__.py``.
+Once you define the panel it should be registered with the toolbar by defining
+an ``includeme`` function that calls
+:func:`pyramid_debugtoolbar.add_debugtoolbar_panel` and then having the user
+add the panel to their ``debugtoolbar.includes`` setting in their app.
 
 The source code for the standard debugpanel ``request_vars.py`` is a good
 starting point for inspiration.
+
+The ``render_vars`` and ``render_content`` methods may use the
+``request.toolbar_panels`` dictionary to introspect and work with other panels
+that captured data for the original request. The dictionary keys are the names
+of other panels and the values are the panel instances.
 
 Configuring an application to use the panel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once your panel is ready, you can simply add its package name to the
-``pyramid.includes`` setting on your application configuration file::
+``debugtoolbar.includes`` setting on your application configuration file::
 
   pyramid.includes =
       pyramid_debugtoolbar
+
+  debugtoolbar.includes =
       samplepanel
+
+Executing actions in the parent app
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It may be the case that your panel needs to instrument the parent application
+with extra settings or configuration. For example, maybe it wants to wrap the
+session factory with its own. To make this happen, your ``includeme`` that
+is included from ``debugtoolbar.includes`` should use
+:func:`pyramid_debugtoolbar.inject_parent_action` to register a callable
+that can modify the parent application.
+
+.. code-block:: python
+
+    from pyramid.interfaces import ISessionFactory
+    import time
+
+    class SessionFactoryWrapper:
+        def __init__(self, factory):
+            self.factory = factory
+
+        def __call__(self, request):
+            request.session_created_at = time.time()
+            return self.factory(request)
+
+    def includeme(config):
+        def action(parent_config):
+            factory = parent_config.registry.queryUtility(ISessionFactory)
+            if factory:
+                wrapped_factory = SessionFactoryWrapper(factory)
+                parent_config.set_session_factory(wrapped_factory)
+        config.inject_parent_action(action)
+
+In this example, you may also register a new toolbar panel that cares about
+``request.session_created_at`` to determine when the session was created
+during the request lifecycle.
 
 JavaScript and CSS Available to Custom Panels
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -683,7 +751,7 @@ libraries that you can take advantage of when writing custom panels.
     * jquery.tablesorter [http://mottie.github.io/tablesorter]
 
 If you wish to enable tablesorting, add the CSS class "pDebugSortable" to the
-opening <table> tag.  For example:
+opening ``<table>`` tag.  For example:
 
     <table class="pDebugSortable table table-striped table-condensed">
 
@@ -722,12 +790,12 @@ More Information
 Development Versions
 --------------------
 
-Visit http://github.com/Pylons/pyramid_debugtoolbar to download development or
+Visit https://github.com/Pylons/pyramid_debugtoolbar to download development or
 tagged versions.
 
 Reporting Bugs
 --------------
-Visit http://github.com/Pylons/pyramid_debugtoolbar/issues to report bugs.
+Visit https://github.com/Pylons/pyramid_debugtoolbar/issues to report bugs.
 
 Indices and tables
 ------------------

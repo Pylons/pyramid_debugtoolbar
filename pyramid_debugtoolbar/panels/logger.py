@@ -78,3 +78,6 @@ class LoggingPanel(DebugPanel):
     def nav_subtitle(self):
         if self.data:
             return '%d' % len(self.data.get('records'))
+
+def includeme(config):
+    config.add_debugtoolbar_panel(LoggingPanel)

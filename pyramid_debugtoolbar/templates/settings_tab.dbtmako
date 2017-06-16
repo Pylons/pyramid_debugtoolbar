@@ -8,19 +8,19 @@
 <p>Some pyramid debug toolbar panels can be activated (this enables additional features).</p>
 <p>NOTE: These settings are tracked in a cookie on a per-request basis. If you want to enable options for other requests such as via curl or a non-browser client then you should turn them on by default in your settings via the "debugtoolbar.active_panels" setting, or by setting the "pdtb_active" cookie on the client.</p>
 
+<h4>Panel Settings</h4>
 % for panel in panels:
 	% if panel.user_activate:
-		<h4>
-		${panel.nav_title}
-		</h4>
+		<h5>${panel.nav_title}</h5>
 		% if panel.name in default_active_panels:
-		<span>Enabled: </span>   <span class="switch default-active" title="Panel is active by default."></span>
+			<span>Enabled: </span> <span class="switch default-active" title="Panel is active by default."></span>
 		% else:
-		<span>Enabled: </span>	<span id="${panel.dom_id}-switch" data-pdtb-panel="${panel.name}" class="switch switchable ${'active' if panel.is_active else 'inactive'}"
-		title="Enable or disable the panel"> </span>
+			<span>Enabled: </span> <span id="${panel.dom_id}-switch" data-pdtb-panel="${panel.name}" class="switch switchable ${'active' if panel.is_active else 'inactive'}" title="Enable or disable the panel"></span>
 		% endif
+		<hr/>
 	% endif
 % endfor
+
 
 </div>
 </div>

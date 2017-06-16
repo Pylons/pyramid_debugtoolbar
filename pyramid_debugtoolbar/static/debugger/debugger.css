@@ -98,3 +98,8 @@ div.box table.source td.lineno { color: #999; padding-right: 10px; width: 1px; }
 div.box table.source tr.in-frame { background-color: white; }
 div.box table.source tr.current { background-color: #dddddd; color: #e5762b; }
 div.sourceview { overflow: auto; border: 1px solid #ccc; }
+
+#pDebugPanel-sqlalchemy-content div.highlight pre {
+  white-space: pre-wrap;
+  word-break: normal;
+}
