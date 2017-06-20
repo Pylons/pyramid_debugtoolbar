@@ -53,6 +53,7 @@ class DebugToolbar(object):
         self.request = request
         self.status_int = 200
         self.default_active_panels = default_active_panels
+        self.visible = False
 
         # Panels can be be activated (more features) (e.g. Performace panel)
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
@@ -94,6 +95,9 @@ class DebugToolbar(object):
         for panel in self.global_panels:
             panel.process_response(response)
 
+        self.response = response
+        self.visible = True
+
     def inject(self, request, response):
         """
         Inject the debug toolbar iframe into an HTML response.
@@ -117,10 +121,13 @@ class DebugToolbar(object):
             )
 
 
-class ExceptionHistory(object):
-    def __init__(self):
-        self.frames = {}
-        self.tracebacks = {}
+def process_traceback(info):
+    return get_traceback(
+        info=info,
+        skip=1,
+        show_hidden_frames=False,
+        ignore_system_exceptions=True,
+    )
 
 
 def beforerender_subscriber(event):
@@ -152,7 +159,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
     max_request_history = sget('max_request_history')
     request_history = ToolbarStorage(max_request_history)
-    registry.request_history = request_history
+    registry.pdtb_history = request_history
 
     panel_map = toolbar_registry.queryUtility(IPanelMap, default={})
     resolve_panels = lambda a, b: resolve_panel_classes(a, b, panel_map)
@@ -177,14 +184,10 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
     hosts = sget('hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = sget('exclude_prefixes', [])
-    registry.exc_history = exc_history = None
     registry.pdtb_token = hexlify(os.urandom(5))
+    registry.pdtb_eval_exc = intercept_exc
 
     default_active_panels = sget('active_panels', [])
-
-    if intercept_exc:
-        registry.exc_history = exc_history = ExceptionHistory()
-        exc_history.eval_exc = intercept_exc == 'debug'
 
     dispatch = lambda request: _dispatch(toolbar_app, request)
 
@@ -228,65 +231,50 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 request.script_name = old_script_name
                 request.path_info = old_path_info
 
-        request.exc_history = exc_history
-        request.history = request_history
         request.pdtb_id = hexlify(id(request))
         toolbar = DebugToolbar(request, panel_classes, global_panel_classes,
                                default_active_panels)
         request.debug_toolbar = toolbar
+        request_history.put(request.pdtb_id, toolbar)
 
         _handler = handler
         for panel in toolbar.panels:
             _handler = panel.wrap_handler(_handler)
 
-        def process_traceback(info):
-            tb = get_traceback(info=info,
-                               skip=1,
-                               show_hidden_frames=False,
-                               ignore_system_exceptions=True)
-            for frame in tb.frames:
-                exc_history.frames[frame.id] = frame
-            exc_history.tracebacks[tb.id] = tb
-            request.pdtb_tb = tb
-
-            return tb
-
         try:
             response = _handler(request)
             toolbar.status_int = response.status_int
 
-            if request.exc_info and exc_history is not None:
-                tb = process_traceback(request.exc_info)
+            if request.exc_info and intercept_exc:
+                toolbar.traceback = process_traceback(request.exc_info)
 
                 msg = 'Squashed Exception at %s\ntraceback url: %s'
                 subrequest = make_subrequest(
-                    request, root_path, 'exception/' + str(tb.id))
+                    request, root_path, request.pdtb_id + '/exception')
                 exc_msg = msg % (request.url, subrequest.url)
-                _logger.exception(exc_msg)
+                _logger.exception(exc_msg, exc_info=request.exc_info)
 
         except Exception:
-            if exc_history is not None:
-                tb = process_traceback(sys.exc_info())
+            if intercept_exc:
+                toolbar.traceback = process_traceback(sys.exc_info())
 
                 msg = 'Uncaught Exception at %s\ntraceback url: %s'
                 subrequest = make_subrequest(
-                    request, root_path, 'exception/' + str(tb.id))
+                    request, root_path, request.pdtb_id + '/exception')
                 exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
                 response = dispatch(subrequest)
+                toolbar.status_int = response.status_int
 
                 # The original request must be processed so that the panel data exists
                 # if the request is later examined in the full toolbar view.
                 toolbar.process_response(request, response)
 
-                toolbar.response = response
-                toolbar.status_int = response.status_int
-
-                request_history.put(request.pdtb_id, toolbar)
                 # Inject the button to activate the full toolbar view.
                 toolbar.inject(request, response)
                 return response
+
             else:
                 _logger.exception('Exception at %s' % request.url)
             raise
@@ -311,8 +299,6 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                         response.status_int = 200
 
             toolbar.process_response(request, response)
-            toolbar.response = response
-            request_history.put(request.pdtb_id, toolbar)
 
             if not show_on_exc_only and response.content_type in html_types:
                 toolbar.inject(request, response)

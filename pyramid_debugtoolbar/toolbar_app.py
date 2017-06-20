@@ -194,11 +194,15 @@ def sse(request):
         last_request_pair = history.last(1)[0]
         last_request_id = last_request_pair[0]
         if not last_request_id == client_last_request_id:
-            data = [[
-                _id,
-                toolbar.json,
-                'active' if active_request_id == _id else ''
-            ] for _id, toolbar in history.last(max_visible_requests)]
+            data = [
+                [
+                    _id,
+                    toolbar.json,
+                    'active' if active_request_id == _id else ''
+                ]
+                for _id, toolbar in history.last(max_visible_requests)
+                if toolbar.visible
+            ]
             if data:
                 response.text = U_SSE_PAYLOAD.format(last_request_id,
                                                      json.dumps(data))

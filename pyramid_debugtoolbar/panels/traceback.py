@@ -21,17 +21,17 @@ class TracebackPanel(DebugPanel):
     def __init__(self, request):
         self.request = request
         self.traceback = None
-        self.exc_history = request.exc_history
 
     @property
     def has_content(self):
         return self.traceback is not None
 
     def process_response(self, response):
-        self.traceback = traceback = getattr(self.request, 'pdtb_tb', None)
+        self.traceback = traceback = getattr(
+            self.request.debug_toolbar, 'traceback', None)
         if self.traceback is not None:
             exc = escape(traceback.exception)
-            evalex = self.exc_history.eval_exc
+            evalex = self.request.registry.pdtb_eval_exc
 
             self.data = {
                 'evalex':           evalex and 'true' or 'false',
@@ -42,8 +42,8 @@ class TracebackPanel(DebugPanel):
                 'exception_type':   escape(traceback.exception_type),
                 'plaintext':        traceback.plaintext,
                 'plaintext_cs':     re.sub('-{2,}', '-', traceback.plaintext),
-                'traceback_id':     traceback.id,
-                'token':            self.request.registry.pdtb_token,
+                'pdtb_token':       self.request.registry.pdtb_token,
+                'request_id':       self.request.pdtb_id,
             }
 
         # stop hanging onto the request after the response is processed
@@ -55,7 +55,7 @@ class TracebackPanel(DebugPanel):
             'static_path': request.static_url(STATIC_PATH),
             'root_path': request.route_url(ROOT_ROUTE_NAME),
             'url': request.route_url(
-                EXC_ROUTE_NAME, pdtb_id=vars['traceback_id']),
+                EXC_ROUTE_NAME, request_id=request.pdtb_id),
 
             # render the summary using the toolbar's request object, not
             # the original request that generated the traceback!
@@ -67,49 +67,64 @@ class TracebackPanel(DebugPanel):
 class ExceptionDebugView(object):
     def __init__(self, request):
         self.request = request
-        exc_history = request.exc_history
-        if exc_history is None:
-            raise HTTPBadRequest('No exception history')
-        self.exc_history = exc_history
-        frm = self.request.params.get('frm')
-        if frm is not None:
-            frm = int(frm)
-        self.frame = frm
-        cmd = self.request.params.get('cmd')
-        self.cmd = cmd
-        self.tb = int(self.request.matchdict['pdtb_id'])
+
+    @property
+    def history(self):
+        request_id = self.request.matchdict['request_id']
+        history = self.request.pdtb_history.get(request_id)
+        if history is None:
+            raise HTTPBadRequest('No history found for request.')
+        return history
+
+    @property
+    def traceback(self):
+        tb = getattr(self.history, 'traceback', None)
+        if tb is None:
+            raise HTTPBadRequest('No traceback found for request.')
+        return tb
+
+    @property
+    def frame(self):
+        frame_id = self.request.matchdict['frame_id']
+        for frame in self.traceback.frames:
+            if frame.id == frame_id:
+                return frame
+        raise HTTPBadRequest('Invalid traceback frame.')
 
     @view_config(route_name='debugtoolbar.exception')
     def exception(self):
-        tb = self.exc_history.tracebacks[self.tb]
+        tb = self.traceback
         body = tb.render_full(self.request).encode('utf-8', 'replace')
-        response = Response(body, status=500)
-        return response
+        return Response(body, content_type='text/html', status=500)
 
     @view_config(route_name='debugtoolbar.source')
     def source(self):
-        exc_history = self.exc_history
-        if self.frame is not None:
-            frame = exc_history.frames.get(self.frame)
-            if frame is not None:
-                return Response(frame.render_source(), content_type='text/html')
-        raise HTTPBadRequest()
+        frame = self.frame
+        body = frame.render_source()
+        return Response(body, content_type='text/html')
 
     @view_config(route_name='debugtoolbar.execute')
     def execute(self):
-        if self.request.exc_history.eval_exc:
-            exc_history = self.exc_history
-            if self.frame is not None and self.cmd is not None:
-                frame = exc_history.frames.get(self.frame)
-                if frame is not None:
-                    result = frame.console.eval(self.cmd)
-                    return Response(result, content_type='text/html')
-        raise HTTPBadRequest()
+        if not self.request.registry.parent_registry.pdtb_eval_exc:
+            raise HTTPBadRequest(
+                'Evaluating code in stack frames is not allowed.')
+        frame = self.frame
+        cmd = self.request.params.get('cmd')
+        if cmd is None:
+            raise HTTPBadRequest('Missing command.')
+        body = frame.console.eval(cmd)
+        return Response(body, content_type='text/html')
 
 def includeme(config):
-    config.add_route(EXC_ROUTE_NAME, '/exception/{pdtb_id}')
-    config.add_route('debugtoolbar.source', '/source/{pdtb_id}')
-    config.add_route('debugtoolbar.execute', '/execute/{pdtb_id}')
+    config.add_route(EXC_ROUTE_NAME, '/{request_id}/exception')
+    config.add_route(
+        'debugtoolbar.source',
+        '{request_id}/exception/source/{frame_id}',
+    )
+    config.add_route(
+        'debugtoolbar.execute',
+        '/{request_id}/exception/execute/{frame_id}',
+    )
 
     config.add_debugtoolbar_panel(TracebackPanel)
     config.scan(__name__)

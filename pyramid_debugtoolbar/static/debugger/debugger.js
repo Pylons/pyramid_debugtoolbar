@@ -46,8 +46,7 @@ $(function() {
               sourceView.slideUp('fast');
             });
         $.get(
-          window.DEBUG_TOOLBAR_ROOT_PATH + 'source/' + window.TRACEBACK,
-          {frm: frameID},
+          window.DEBUG_TOOLBAR_ROOT_PATH + window.REQUEST_ID + '/exception/source/' + frameID,
           function(data) {
             $('table', sourceView)
               .replaceWith(data);
@@ -99,7 +98,7 @@ $(function() {
       label.val('submitting...');
       $.ajax({
         dataType:     'json',
-        url:          window.DEBUG_TOOLBAR_ROOT_PATH + 'paste/' + window.TRACEBACK,
+        url:          window.DEBUG_TOOLBAR_ROOT_PATH + window.REQUEST_ID + '/exception/paste',
         success:      function(data) {
           $('div.plain span.pastemessage')
             .removeClass('pastemessage')
@@ -135,8 +134,8 @@ $(function() {
       .submit(function() {
         var cmd = command.val();
         $.get(
-          window.DEBUG_TOOLBAR_ROOT_PATH + 'execute/' + window.TRACEBACK,
-          {cmd: cmd, frm: frameID},
+          window.DEBUG_TOOLBAR_ROOT_PATH + window.REQUEST_ID + '/exception/execute/' + frameID,
+          {cmd: cmd},
           function(data) {
             var tmp = $('<div>').html(data);
             output.append(tmp);

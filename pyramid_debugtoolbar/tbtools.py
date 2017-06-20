@@ -43,7 +43,7 @@ except NameError:
     pass
 
 FRAME_HTML = text_('''\
-<div class="frame" id="frame-%(id)d">
+<div class="frame" id="frame-%(id)s">
   <h4>File <cite class="filename">"%(filename)s"</cite>,
       line <em class="line">%(lineno)s</em>,
       in <code class="function">%(function_name)s</code></h4>
@@ -239,9 +239,9 @@ class Traceback(object):
         root_path = request.route_url(ROOT_ROUTE_NAME)
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
-        token = request.registry.parent_registry.pdtb_token,
-        url = request.route_url(EXC_ROUTE_NAME, pdtb_id=self.id)
-        evalex = request.exc_history.eval_exc
+        token = request.registry.parent_registry.pdtb_token
+        url = request.route_url(EXC_ROUTE_NAME, request_id=request.pdtb_id)
+        evalex = request.registry.parent_registry.pdtb_eval_exc
         vars = {
             'evalex':           evalex and 'true' or 'false',
             'console':          'false',
@@ -255,7 +255,8 @@ class Traceback(object):
             'traceback_id':     self.id,
             'static_path':      static_path,
             'root_path':        root_path,
-            'token':            token,
+            'pdtb_token':       token,
+            'request_id':       request.pdtb_id,
             'url':              url,
         }
         return render('pyramid_debugtoolbar:templates/exception.dbtmako',
@@ -277,7 +278,7 @@ class Traceback(object):
     def plaintext(self):
         return text_('\n'.join(self.generate_plaintext_traceback()))
 
-    id = property(lambda x: id(x))
+    id = property(lambda x: str(id(x)))
 
 
 class Frame(object):
@@ -422,4 +423,4 @@ class Frame(object):
     def console(self):
         return Console(self.globals, self.locals)
 
-    id = property(lambda x: id(x))
+    id = property(lambda x: str(id(x)))

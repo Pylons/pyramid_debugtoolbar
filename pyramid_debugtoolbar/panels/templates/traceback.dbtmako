@@ -67,8 +67,8 @@
       -->
 
     <script type="text/javascript">
-      var TRACEBACK = ${str(traceback_id)},
-          DEBUGGER_TOKEN = "${token}",
+      var DEBUGGER_TOKEN = "${pdtb_token}",
+          REQUEST_ID = "${request_id}",
           CONSOLE_MODE = ${console},
           EVALEX = ${evalex},
           DEBUG_TOOLBAR_STATIC_PATH = "${static_path}",
