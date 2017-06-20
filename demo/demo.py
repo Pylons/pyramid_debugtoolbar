@@ -121,7 +121,7 @@ def make_app():
     settings['debugtoolbar.reload_templates'] = True
     settings['debugtoolbar.hosts'] = ['127.0.0.1']
     settings['debugtoolbar.intercept_redirects'] = True
-    settings['debugtoolbar.exclude_prefixes'] = ['/static']
+    settings['debugtoolbar.exclude_prefixes'] = ['/static', '/favicon.ico']
 
     # session factory
     session_factory = SignedCookieSessionFactory('itsaseekreet')

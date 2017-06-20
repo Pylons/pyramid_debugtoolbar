@@ -206,11 +206,13 @@ file.
   by carriage returns. For example::
 
     debugtoolbar.exclude_prefixes =
+        /favicon.ico
         /settings
         /static
 
-  If configuration is done via Python, the setting should be a list.  This
-  setting was added in debugtoolbar version 1.0.4.
+  If configuration is done via Python, the setting should be a list.
+
+  By default, the setting is ``['/favicon.ico']``.
 
 ``debugtoolbar.active_panels``
 

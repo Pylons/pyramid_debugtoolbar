@@ -311,11 +311,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                         response.status_int = 200
 
             toolbar.process_response(request, response)
-            # Don't store the favicon.ico request
-            # it's requested by the browser automatically
-            if not "/favicon.ico" == request.path:
-                toolbar.response = response
-                request_history.put(request.pdtb_id, toolbar)
+            toolbar.response = response
+            request_history.put(request.pdtb_id, toolbar)
 
             if not show_on_exc_only and response.content_type in html_types:
                 toolbar.inject(request, response)
