@@ -67,7 +67,6 @@ class SQLADebugPanel(DebugPanel):
             self.engines = request.registry.pdtb_sqla_engines
         else:
             self.engines = request.registry.pdtb_sqla_engines = {}
-        self.token = request.registry.pdtb_token
         self.pdtb_id = request.pdtb_id
 
     @property

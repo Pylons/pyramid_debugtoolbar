@@ -45,17 +45,20 @@ $(function() {
             .click(function() {
               sourceView.slideUp('fast');
             });
-        $.get(window.DEBUG_TOOLBAR_ROOT_PATH + 'source',
-                {frm: frameID, token: window.DEBUGGER_TOKEN}, function(data) {
-          $('table', sourceView)
-            .replaceWith(data);
-          if (!sourceView.is(':visible'))
-            sourceView.slideDown('fast', function() {
+        $.get(
+          window.DEBUG_TOOLBAR_ROOT_PATH + 'source/' + window.TRACEBACK,
+          {frm: frameID},
+          function(data) {
+            $('table', sourceView)
+              .replaceWith(data);
+            if (!sourceView.is(':visible'))
+              sourceView.slideDown('fast', function() {
+                focusSourceBlock();
+              });
+            else
               focusSourceBlock();
-            });
-          else
-            focusSourceBlock();
-        });
+          },
+        );
         return false;
       })
       .prependTo(target);
@@ -96,8 +99,7 @@ $(function() {
       label.val('submitting...');
       $.ajax({
         dataType:     'json',
-        url:          window.DEBUG_TOOLBAR_ROOT_PATH + 'paste',
-        data:         {tb: window.TRACEBACK, token: window.DEBUGGER_TOKEN},
+        url:          window.DEBUG_TOOLBAR_ROOT_PATH + 'paste/' + window.TRACEBACK,
         success:      function(data) {
           $('div.plain span.pastemessage')
             .removeClass('pastemessage')
@@ -132,18 +134,21 @@ $(function() {
     var form = $('<form>&gt;&gt;&gt; </form>')
       .submit(function() {
         var cmd = command.val();
-        $.get(window.DEBUG_TOOLBAR_ROOT_PATH + 'execute', {
-                cmd: cmd, frm: frameID, token:window.DEBUGGER_TOKEN}, function(data) {
-          var tmp = $('<div>').html(data);
-          output.append(tmp);
-          command.focus();
-          consoleNode.scrollTop(command.position().top);
-          var old = history.pop();
-          history.push(cmd);
-          if (typeof old != 'undefined')
-            history.push(old);
-          historyPos = history.length - 1;
-        });
+        $.get(
+          window.DEBUG_TOOLBAR_ROOT_PATH + 'execute/' + window.TRACEBACK,
+          {cmd: cmd, frm: frameID},
+          function(data) {
+            var tmp = $('<div>').html(data);
+            output.append(tmp);
+            command.focus();
+            consoleNode.scrollTop(command.position().top);
+            var old = history.pop();
+            history.push(cmd);
+            if (typeof old != 'undefined')
+              history.push(old);
+            historyPos = history.length - 1;
+          },
+        );
         command.val('');
         return false;
       }).

@@ -178,7 +178,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = sget('exclude_prefixes', [])
     registry.exc_history = exc_history = None
-    registry.pdtb_token = hexlify(os.urandom(10))
+    registry.pdtb_token = hexlify(os.urandom(5))
 
     default_active_panels = sget('active_panels', [])
 
@@ -188,10 +188,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
     dispatch = lambda request: _dispatch(toolbar_app, request)
 
-    def append_token(path, token):
-        return path + '/' + token
-
-    def toolbar_tween(request, path_helper=append_token):
+    def toolbar_tween(request):
         try:
             p = request.path_info
         except UnicodeDecodeError as e:
@@ -250,12 +247,11 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             for frame in tb.frames:
                 exc_history.frames[frame.id] = frame
             exc_history.tracebacks[tb.id] = tb
-            request.pdbt_tb = tb
+            request.pdtb_tb = tb
 
             return tb
 
         try:
-
             response = _handler(request)
             toolbar.status_int = response.status_int
 
@@ -263,9 +259,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 tb = process_traceback(request.exc_info)
 
                 msg = 'Squashed Exception at %s\ntraceback url: %s'
-                qs = {'tb': str(tb.id)}
                 subrequest = make_subrequest(
-                    request, root_path, path_helper('exception', registry.pdtb_token), qs)
+                    request, root_path, 'exception/' + str(tb.id))
                 exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
@@ -274,9 +269,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 tb = process_traceback(sys.exc_info())
 
                 msg = 'Uncaught Exception at %s\ntraceback url: %s'
-                qs = {'tb': str(tb.id)}
                 subrequest = make_subrequest(
-                    request, root_path, path_helper('exception', registry.pdtb_token), qs)
+                    request, root_path, 'exception/' + str(tb.id))
                 exc_msg = msg % (request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
@@ -306,7 +300,6 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                     redirect_code = response.status_int
                     if redirect_to:
                         qs = {
-                            'token': registry.pdtb_token,
                             'redirect_to': redirect_to,
                             'redirect_code': str(redirect_code),
                         }

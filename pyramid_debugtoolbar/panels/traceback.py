@@ -28,11 +28,9 @@ class TracebackPanel(DebugPanel):
         return self.traceback is not None
 
     def process_response(self, response):
-        self.traceback = traceback = getattr(self.request, 'pdbt_tb', None)
+        self.traceback = traceback = getattr(self.request, 'pdtb_tb', None)
         if self.traceback is not None:
             exc = escape(traceback.exception)
-            token = self.request.registry.pdtb_token
-            url = '' # self.request.route_url(EXC_ROUTE_NAME, _query=qs)
             evalex = self.exc_history.eval_exc
 
             self.data = {
@@ -45,22 +43,26 @@ class TracebackPanel(DebugPanel):
                 'plaintext':        traceback.plaintext,
                 'plaintext_cs':     re.sub('-{2,}', '-', traceback.plaintext),
                 'traceback_id':     traceback.id,
-                'token':            token,
-                'url':              url,
+                'token':            self.request.registry.pdtb_token,
             }
 
         # stop hanging onto the request after the response is processed
         del self.request
+
     def render_vars(self, request):
-        return {
+        vars = self.data.copy()
+        vars.update({
             'static_path': request.static_url(STATIC_PATH),
             'root_path': request.route_url(ROOT_ROUTE_NAME),
+            'url': request.route_url(
+                EXC_ROUTE_NAME, pdtb_id=vars['traceback_id']),
 
             # render the summary using the toolbar's request object, not
             # the original request that generated the traceback!
             'summary': self.traceback.render_summary(
                 include_title=False, request=request),
-        }
+        })
+        return vars
 
 class ExceptionDebugView(object):
     def __init__(self, request):
@@ -69,22 +71,13 @@ class ExceptionDebugView(object):
         if exc_history is None:
             raise HTTPBadRequest('No exception history')
         self.exc_history = exc_history
-        token = self.request.matchdict.get('token')
-        if not token:
-            raise HTTPBadRequest('No token in request')
-        if not token == request.registry.parent_registry.pdtb_token:
-            raise HTTPBadRequest('Bad token in request')
-        self.token = token
         frm = self.request.params.get('frm')
         if frm is not None:
             frm = int(frm)
         self.frame = frm
         cmd = self.request.params.get('cmd')
         self.cmd = cmd
-        tb = self.request.params.get('tb')
-        if tb is not None:
-            tb = int(tb)
-        self.tb = tb
+        self.tb = int(self.request.matchdict['pdtb_id'])
 
     @view_config(route_name='debugtoolbar.exception')
     def exception(self):
@@ -100,7 +93,7 @@ class ExceptionDebugView(object):
             frame = exc_history.frames.get(self.frame)
             if frame is not None:
                 return Response(frame.render_source(), content_type='text/html')
-        return HTTPBadRequest()
+        raise HTTPBadRequest()
 
     @view_config(route_name='debugtoolbar.execute')
     def execute(self):
@@ -111,12 +104,12 @@ class ExceptionDebugView(object):
                 if frame is not None:
                     result = frame.console.eval(self.cmd)
                     return Response(result, content_type='text/html')
-        return HTTPBadRequest()
+        raise HTTPBadRequest()
 
 def includeme(config):
-    config.add_route(EXC_ROUTE_NAME, '/exception/{token}')
-    config.add_route('debugtoolbar.source', '/source/{token}')
-    config.add_route('debugtoolbar.execute', '/execute/{token}')
+    config.add_route(EXC_ROUTE_NAME, '/exception/{pdtb_id}')
+    config.add_route('debugtoolbar.source', '/source/{pdtb_id}')
+    config.add_route('debugtoolbar.execute', '/execute/{pdtb_id}')
 
     config.add_debugtoolbar_panel(TracebackPanel)
     config.scan(__name__)

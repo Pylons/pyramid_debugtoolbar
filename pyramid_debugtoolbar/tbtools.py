@@ -239,9 +239,8 @@ class Traceback(object):
         root_path = request.route_url(ROOT_ROUTE_NAME)
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
-        token = request.registry.parent_registry.pdtb_token
-        qs = {'tb': str(self.id)}
-        url = request.route_url(EXC_ROUTE_NAME, token=token, _query=qs)
+        token = request.registry.parent_registry.pdtb_token,
+        url = request.route_url(EXC_ROUTE_NAME, pdtb_id=self.id)
         evalex = request.exc_history.eval_exc
         vars = {
             'evalex':           evalex and 'true' or 'false',
@@ -255,8 +254,8 @@ class Traceback(object):
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
             'traceback_id':     self.id,
             'static_path':      static_path,
-            'token':            token,
             'root_path':        root_path,
+            'token':            token,
             'url':              url,
         }
         return render('pyramid_debugtoolbar:templates/exception.dbtmako',
@@ -305,10 +304,7 @@ class Frame(object):
         self.hide = self.locals.get('__traceback_hide__', False)
         info = self.locals.get('__traceback_info__')
         if info is not None:
-            try:
-                info = unicode(info)
-            except UnicodeError:
-                info = str(info).decode('utf-8', 'replace')
+            info = text_(info, errors='replace')
         self.info = info
 
     def render(self):
