@@ -9,7 +9,6 @@ from pyramid.view import view_config
 from pyramid_debugtoolbar.compat import json
 from pyramid_debugtoolbar.compat import url_quote
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import find_request_history
 from pyramid_debugtoolbar.utils import format_sql
 from pyramid_debugtoolbar.utils import text_
 from pyramid_debugtoolbar.utils import STATIC_PATH
@@ -132,9 +131,10 @@ class SQLAlchemyViews(object):
 
     def find_query(self):
         request_id = self.request.matchdict['request_id']
-        all_history = find_request_history(self.request)
-        history = all_history.get(request_id)
-        sqlapanel = [p for p in history.panels if p.name == 'sqlalchemy'][0]
+        toolbar = self.request.pdtb_history.get(request_id)
+        if toolbar is None:
+            raise HTTPBadRequest('No history found for request.')
+        sqlapanel = [p for p in toolbar.panels if p.name == 'sqlalchemy'][0]
         query_index = int(self.request.matchdict['query_index'])
         return sqlapanel.queries[query_index]
 
