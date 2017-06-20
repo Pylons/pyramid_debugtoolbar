@@ -36,9 +36,22 @@ log = logging.getLogger(__file__)
 
 here = os.path.dirname(os.path.abspath(__file__))
 
+@view_config(route_name='test_exc')
+def exc(request):
+    raise RuntimeError
+
 @view_config(route_name='test_squashed_exc')
 def squashed_exc(request):
     raise RuntimeError
+
+@view_config(
+    route_name='test_squashed_exc',
+    context=RuntimeError,
+    renderer='notfound.mako',
+)
+def notfound_view(request):
+    request.response.status_code = 404
+    return {}
 
 @view_config(route_name='test_notfound')
 def notfound(request):
@@ -53,11 +66,6 @@ def call_ajax(request):
     return {'ajax':'success'}
 
 @view_config(context=HTTPNotFound, renderer='notfound.mako')
-def notfound_view(request):
-    request.response.status_code = 404
-    return {}
-
-@view_config(context=RuntimeError, renderer='notfound.mako')
 def notfound_view(request):
     request.response.status_code = 404
     return {}
