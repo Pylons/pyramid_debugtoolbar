@@ -80,3 +80,8 @@ li.nav-label strong {
     border-bottom-color:#fff;
     opacity:1.0;
 }
+
+#pDebugPanel-sqlalchemy-content div.highlight pre {
+  white-space: pre-wrap;
+  word-break: normal;
+}
