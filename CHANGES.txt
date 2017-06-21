@@ -1,5 +1,5 @@
-unreleased
-----------
+4.2 (2017-06-21)
+----------------
 
 This release contains a rewrite of the underlying exception / traceback
 tracking machinery and fixes regressions caused by the 4.1 release that
