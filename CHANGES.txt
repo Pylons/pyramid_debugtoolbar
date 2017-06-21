@@ -1,3 +1,37 @@
+unreleased
+----------
+
+This release contains a rewrite of the underlying exception / traceback
+tracking machinery and fixes regressions caused by the 4.1 release that
+broke the interactive debugger.
+See https://github.com/Pylons/pyramid_debugtoolbar/pull/318
+
+- Tracebacks are now tied to the per-request toolbar object one-to-one.
+  A request may have only one traceback. Previously they actually stuck
+  around for the entire lifetime of the app instead of being collected by
+  the max_request_history setting.
+
+- The routes for exceptions are standardized to look similar to the SQLA AJAX
+  routes. For example, ``/{request_id}/exception`` instead of
+  ``/exception?token=...&tb=...`` and
+  ``/{request_id}/exception/execute/{frame_id}?cmd=...`` instead of
+  ``/exception?token=...&tb=...&frm=...&cmd=...``.
+
+- Fixed the url generation for the traceback panel link at the bottom of the
+  traceback... it was actually empty previously - it got lost somewhere along
+  the way.
+
+- /favicon.ico is no longer specially handled.. it's just part of
+  ``exclude_prefixes`` like anything else that you want to exclude.
+
+- ``request.pdtb_history`` is available for toolbar requests (mostly AJAX
+  requests or panel rendering).
+
+- Removed the unused history predicate.
+
+- URL generation was broken in the ``debugger.js`` but that's fixed now so the
+  execute/source buttons work in tracebacks.
+
 4.1 (2017-05-30)
 ----------------
 
