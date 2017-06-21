@@ -203,8 +203,9 @@ class Test_toolbar_handler(unittest.TestCase):
         registry = self.config.registry
         def dispatcher(app, request):
             request.registry = registry.parent_registry = registry
-            request.matchdict = {'token': request.registry.parent_registry.pdtb_token} 
-            request.exc_history = registry.exc_history
+            request.pdtb_id = registry.pdtb_history.last(1)[0][0]
+            request.matchdict = {'request_id': request.pdtb_id}
+            request.pdtb_history = registry.pdtb_history
             return ExceptionDebugView(request).exception()
         return dispatcher
 
@@ -294,15 +295,14 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
-        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
+        self.config.add_route('debugtoolbar.exception', '/{request_id}/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
         dispatch = self._makeExceptionDispatcher()
         response = self._callFUT(request, handler, _logger=logger, _dispatch=dispatch)
-        self.assertEqual(len(request.exc_history.tracebacks), 1)
         self.assertFalse(hasattr(request, 'debug_toolbar'))
+        self.assertTrue(self.config.registry.pdtb_history.last(1)[0][1].traceback)
         self.assertEqual(response.status_int, 500)
 
     def test_it_intercept_redirect_nonredirect_code(self):
@@ -333,8 +333,7 @@ class Test_toolbar_handler(unittest.TestCase):
         def handler(request):
             raise NotImplementedError(b'K\xc3\xa4se!\xe2\x98\xa0')
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
-        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
+        self.config.add_route('debugtoolbar.exception', '/{request_id}/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -353,8 +352,7 @@ class Test_toolbar_handler(unittest.TestCase):
             raise NotImplementedError
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
-        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
+        self.config.add_route('debugtoolbar.exception', '/{request_id}/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         logger = DummyLogger()
@@ -371,8 +369,7 @@ class Test_toolbar_handler(unittest.TestCase):
             return response
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = True
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
-        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
+        self.config.add_route('debugtoolbar.exception', '/{request_id}/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
@@ -388,8 +385,7 @@ class Test_toolbar_handler(unittest.TestCase):
             return response
         self.config.registry.settings['debugtoolbar.show_on_exc_only'] = False
         self.config.registry.settings['debugtoolbar.intercept_exc'] = True
-        self.config.registry.settings['debugtoolbar.secret'] = 'abc'
-        self.config.add_route('debugtoolbar.exception', '/exception/{token}')
+        self.config.add_route('debugtoolbar.exception', '/{request_id}/exception')
         request.registry = self.config.registry
         request.remote_addr = '127.0.0.1'
         response = self._callFUT(request, handler)
@@ -463,6 +459,3 @@ class DummyApp(object):
     def __init__(self, response, registry):
         self.registry = registry
         self.response = response
-
-    def __call__(self, environ, start_response):
-        return self.response

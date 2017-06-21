@@ -33,7 +33,7 @@ default_settings = [
     ('global_panels', as_list, ()),
     ('extra_global_panels', as_list, ()),
     ('hosts', as_list, default_hosts),
-    ('exclude_prefixes', as_cr_separated_list, ()),
+    ('exclude_prefixes', as_cr_separated_list, ('/favicon.ico',)),
     ('active_panels', as_list, ()),
     ('includes', as_list, ()),
     ('button_style', None, ''),

@@ -43,7 +43,7 @@ except NameError:
     pass
 
 FRAME_HTML = text_('''\
-<div class="frame" id="frame-%(id)d">
+<div class="frame" id="frame-%(id)s">
   <h4>File <cite class="filename">"%(filename)s"</cite>,
       line <em class="line">%(lineno)s</em>,
       in <code class="function">%(function_name)s</code></h4>
@@ -240,9 +240,8 @@ class Traceback(object):
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
         token = request.registry.parent_registry.pdtb_token
-        qs = {'tb': str(self.id)}
-        url = request.route_url(EXC_ROUTE_NAME, token=token, _query=qs)
-        evalex = request.exc_history.eval_exc
+        url = request.route_url(EXC_ROUTE_NAME, request_id=request.pdtb_id)
+        evalex = request.registry.parent_registry.pdtb_eval_exc
         vars = {
             'evalex':           evalex and 'true' or 'false',
             'console':          'false',
@@ -255,8 +254,9 @@ class Traceback(object):
             'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
             'traceback_id':     self.id,
             'static_path':      static_path,
-            'token':            token,
             'root_path':        root_path,
+            'pdtb_token':       token,
+            'request_id':       request.pdtb_id,
             'url':              url,
         }
         return render('pyramid_debugtoolbar:templates/exception.dbtmako',
@@ -278,7 +278,7 @@ class Traceback(object):
     def plaintext(self):
         return text_('\n'.join(self.generate_plaintext_traceback()))
 
-    id = property(lambda x: id(x))
+    id = property(lambda x: str(id(x)))
 
 
 class Frame(object):
@@ -305,10 +305,7 @@ class Frame(object):
         self.hide = self.locals.get('__traceback_hide__', False)
         info = self.locals.get('__traceback_info__')
         if info is not None:
-            try:
-                info = unicode(info)
-            except UnicodeError:
-                info = str(info).decode('utf-8', 'replace')
+            info = text_(info, errors='replace')
         self.info = info
 
     def render(self):
@@ -426,4 +423,4 @@ class Frame(object):
     def console(self):
         return Console(self.globals, self.locals)
 
-    id = property(lambda x: id(x))
+    id = property(lambda x: str(id(x)))

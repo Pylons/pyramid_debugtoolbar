@@ -8,7 +8,6 @@ from pyramid_debugtoolbar.compat import text_
 
 from pyramid_debugtoolbar.toolbar import IPanelMap
 from pyramid_debugtoolbar.utils import (
-    find_request_history,
     get_setting,
     ROOT_ROUTE_NAME,
     SETTINGS_PREFIX,
@@ -44,11 +43,16 @@ def make_toolbar_app(settings, parent_registry):
     config.include('pyramid_mako')
     config.add_mako_renderer('.dbtmako', settings_prefix='dbtmako.')
 
-    config.add_route_predicate('history_request', HistoryRequestRoutePredicate)
-
     config.add_request_method(
-        lambda r: r.registry.parent_registry.exc_history,
-        'exc_history', reify=True)
+        lambda r: r.matchdict.get('request_id'),
+        'pdtb_id',
+        reify=True,
+    )
+    config.add_request_method(
+        lambda r: r.registry.parent_registry.pdtb_history,
+        'pdtb_history',
+        reify=True,
+    )
 
     config.add_static_view('static', STATIC_PATH)
     config.add_route(ROOT_ROUTE_NAME, '/', static=True)
@@ -69,22 +73,6 @@ def make_toolbar_app(settings, parent_registry):
         config.include(include)
 
     return config.make_wsgi_app()
-
-class HistoryRequestRoutePredicate(object):
-    def __init__(self, val, config):
-        assert isinstance(val, bool), 'must be a bool'
-        self.val = val
-
-    def text(self):
-        return 'tbhistory = %s' % self.val
-
-    phash = text
-
-    def __call__(self, info, request):
-        match = info['match']
-        history = find_request_history(request)
-        is_historical = bool(history.get(match.get('request_id')))
-        return not (is_historical ^ self.val)
 
 def add_debugtoolbar_panel(config, panel_class, is_global=False):
     """
@@ -148,7 +136,7 @@ def redirect_view(request):
     renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
 )
 def request_view(request):
-    history = find_request_history(request)
+    history = request.pdtb_history
 
     try:
         last_request_pair = history.last(1)[0]
@@ -194,7 +182,7 @@ U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
 def sse(request):
     response = request.response
     response.content_type = 'text/event-stream'
-    history = find_request_history(request)
+    history = request.pdtb_history
     response.text = U_BLANK
 
     active_request_id = text_(request.GET.get('request_id'))
@@ -206,11 +194,15 @@ def sse(request):
         last_request_pair = history.last(1)[0]
         last_request_id = last_request_pair[0]
         if not last_request_id == client_last_request_id:
-            data = [[
-                _id,
-                toolbar.json,
-                'active' if active_request_id == _id else ''
-            ] for _id, toolbar in history.last(max_visible_requests)]
+            data = [
+                [
+                    _id,
+                    toolbar.json,
+                    'active' if active_request_id == _id else ''
+                ]
+                for _id, toolbar in history.last(max_visible_requests)
+                if toolbar.visible
+            ]
             if data:
                 response.text = U_SSE_PAYLOAD.format(last_request_id,
                                                      json.dumps(data))

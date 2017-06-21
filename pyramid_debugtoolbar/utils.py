@@ -190,9 +190,6 @@ def addr_in(addr, hosts):
 def last_proxy(addr):
     return addr.split(',').pop().strip()
 
-def find_request_history(request):
-    return request.registry.parent_registry.request_history
-
 def debug_toolbar_url(request, *elements, **kw):
     return request.route_url('debugtoolbar', subpath=elements, **kw)
 
