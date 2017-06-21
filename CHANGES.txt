@@ -32,6 +32,9 @@ See https://github.com/Pylons/pyramid_debugtoolbar/pull/318
 - URL generation was broken in the ``debugger.js`` but that's fixed now so the
   execute/source buttons work in tracebacks.
 
+- Drop the license from ``LICENSE.txt`` for the removed ipaddr module in 4.1.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/315
+
 4.1 (2017-05-30)
 ----------------
 
