@@ -66,8 +66,7 @@ class LoggingPanel(DebugPanel):
     def has_content(self):
         if self.data.get('records'):
             return True
-        else:
-            return False
+        return False
 
     def get_and_delete(self):
         records = handler.get_records()
@@ -77,7 +76,8 @@ class LoggingPanel(DebugPanel):
     @property
     def nav_subtitle(self):
         if self.data:
-            return '%d' % len(self.data.get('records'))
+            return '%d/%d' % (len([i for i in self.data.get('records') if i['level'] != 'DEBUG']),
+                              len(self.data.get('records')))
 
 def includeme(config):
     config.add_debugtoolbar_panel(LoggingPanel)
