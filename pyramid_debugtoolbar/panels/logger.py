@@ -69,6 +69,25 @@ class LoggingPanel(DebugPanel):
         else:
             return False
 
+    @property
+    def log_level_summary(self):
+        """
+        returns number of times a logging level is present. Used to allow end
+        user to quickly see what types of log records are present.
+        """
+        summary = dict([('CRITICAL',0),
+                        ('ERROR',0),
+                        ('WARNING',0),
+                        ('INFO',0),
+                        ('DEBUG',0),
+                        ('NOTSET',0)])
+        if self.data.get('records'):
+            for r in self.data.get('records'):
+                if 'level' in r.keys() and r['level'] in summary.keys():
+                    #ToDo: Use numeric level to catch custom logging levels.
+                    summary[r['level']] +=1
+        return summary
+
     def get_and_delete(self):
         records = handler.get_records()
         handler.clear_records()
@@ -77,7 +96,12 @@ class LoggingPanel(DebugPanel):
     @property
     def nav_subtitle(self):
         if self.data:
-            return '%d' % len(self.data.get('records'))
+            # Leaving out CRITICAL for now for aesthetics, but it seems prudent
+            # to include it.
+            return '%(info_cnt)d|%(warn_cnt)d|%(err_cnt)d' % {
+                'info_cnt':self.log_level_summary['INFO'],
+                'warn_cnt':self.log_level_summary['WARNING'],
+                'err_cnt':self.log_level_summary['ERROR']}
 
 def includeme(config):
     config.add_debugtoolbar_panel(LoggingPanel)
