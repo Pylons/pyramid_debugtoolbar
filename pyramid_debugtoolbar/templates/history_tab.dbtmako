@@ -32,7 +32,7 @@
                 % endif
 
                 % if panel.nav_subtitle and panel.has_content:
-                <span class="badge pull-right">${panel.nav_subtitle}</span>
+                <span class="badge pull-right" style="background-color:${panel.nav_subtitle_bg_color}">${panel.nav_subtitle}</span>
                 % endif
 
                 ${panel.nav_title}
@@ -49,7 +49,7 @@
           % if panel.has_content:
           <div id="${panel.dom_id}-content" class="panelContent" style="display: none;">
             <div class="pDebugPanelTitle">
-              <h3>${panel.title}</h3>
+              <h3>${panel.title}</h3i>
             </div>
             <div class="pDebugPanelContent">
               <div class="scroll">

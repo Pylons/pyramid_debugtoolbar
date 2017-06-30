@@ -103,5 +103,17 @@ class LoggingPanel(DebugPanel):
                 'warn_cnt':self.log_level_summary['WARNING'],
                 'err_cnt':self.log_level_summary['ERROR']}
 
+    @property
+    def nav_subtitle_bg_color(self):
+        if self.data:
+            if self.log_level_summary['ERROR'] > 0:
+                return "#d9534f"
+            elif self.log_level_summary['WARNING'] > 0:
+                return "#f0ad4e"
+            elif self.log_level_summary['INFO'] > 0:
+                return "#5bc0de"
+            else:
+                return "#777"
+
 def includeme(config):
     config.add_debugtoolbar_panel(LoggingPanel)

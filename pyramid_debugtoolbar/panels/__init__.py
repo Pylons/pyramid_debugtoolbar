@@ -68,6 +68,8 @@ class DebugPanel(object):
     #: when the user clicks on the panel's tab in the toolbar.
     url = ''
 
+    nav_subtitle_bg_color = '#777'
+
     @reify
     def data(self):
         """A dictionary of data, updated during the request lifecycle, and
