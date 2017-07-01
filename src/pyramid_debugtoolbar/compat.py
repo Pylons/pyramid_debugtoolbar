@@ -4,7 +4,7 @@ import types
 # True if we are running on Python 3.
 PY3 = sys.version_info[0] == 3
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     string_types = str,
     integer_types = int,
     class_types = type,
@@ -24,33 +24,35 @@ else:
 def text_(s, encoding='latin-1', errors='strict'):
     if isinstance(s, binary_type):
         return s.decode(encoding, errors)
-    return s # pragma: no cover
+    return s  # pragma: no cover
+
 
 def bytes_(s, encoding='latin-1', errors='strict'):
-    if isinstance(s, text_type): # pragma: no cover
+    if isinstance(s, text_type):  # pragma: no cover
         return s.encode(encoding, errors)
     return s
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     def native_(s, encoding='latin-1', errors='strict'):
         if isinstance(s, text_type):
             return s
         return str(s, encoding, errors)
 else:
     def native_(s, encoding='latin-1', errors='strict'):
-        if isinstance(s, text_type): # pragma: no cover
+        if isinstance(s, text_type):  # pragma: no cover
             return s.encode(encoding, errors)
         return str(s)
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     import builtins
     exec_ = getattr(builtins, "exec")
+
     def reraise(exc_info):
         etype, exc, tb = exc_info
         if exc.__traceback__ is not tb:
             raise exc.with_traceback(tb)
         raise exc
-else: # pragma: no cover
+else:  # pragma: no cover
     def exec_(code, globs=None, locs=None):
         """Execute code in a namespace."""
         if globs is None:
@@ -66,14 +68,14 @@ else: # pragma: no cover
     raise exc_info[0], exc_info[1], exc_info[2]
 """)
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     from io import StringIO
     from io import BytesIO
 else:
     from StringIO import StringIO
     BytesIO = StringIO
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     import builtins
     exec_ = getattr(builtins, "exec")
 
@@ -83,10 +85,9 @@ if PY3: # pragma: no cover
             raise value.with_traceback(tb)
         raise value
 
-
     del builtins
 
-else: # pragma: no cover
+else:  # pragma: no cover
     def exec_(code, globs=None, locs=None):
         """Execute code in a namespace."""
         if globs is None:
@@ -99,12 +100,11 @@ else: # pragma: no cover
             locs = globs
         exec("""exec code in globs, locs""")
 
-
     exec_("""def reraise(tp, value, tb=None):
     raise tp, value, tb
 """)
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     from urllib import parse
     urlparse = parse
     from urllib.parse import quote as url_quote
@@ -120,13 +120,13 @@ else:
     from urllib import urlencode as url_encode
     from urllib2 import urlopen as url_open
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     xrange_ = range
 else:
     xrange_ = xrange
-    
 
-if PY3: # pragma: no cover
+
+if PY3:  # pragma: no cover
     def iteritems_(d):
         return d.items()
 else:
@@ -135,10 +135,8 @@ else:
 
 try:
     import json
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     try:
         import simplejson as json
     except NotImplementedError:
-        from django.utils import simplejson as json # GAE
-
-    
+        from django.utils import simplejson as json  # GAE

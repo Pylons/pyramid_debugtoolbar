@@ -38,7 +38,7 @@ UTF8_COOKIE = b'\xef\xbb\xbf'
 
 system_exceptions = (SystemExit, KeyboardInterrupt)
 try:
-    system_exceptions += (GeneratorExit,)
+    system_exceptions += (GeneratorExit, )
 except NameError:
     pass
 
@@ -110,9 +110,9 @@ class Line(object):
 
     def render(self):
         return SOURCE_LINE_HTML % {
-            'classes':      text_(' '.join(self.classes)),
-            'lineno':       self.lineno,
-            'code':         escape(self.code)
+            'classes': text_(' '.join(self.classes)),
+            'lineno': self.lineno,
+            'code': escape(self.code)
         }
 
 
@@ -208,13 +208,13 @@ class Traceback(object):
             if self.is_syntax_error:
                 title = text_('Syntax Error')
             else:
-                title = text_('Traceback <small>(most recent call last)</small>')
+                title = text_(
+                    'Traceback <small>(most recent call last)</small>')
 
         for frame in self.frames:
-            frames.append(
-                text_('<li%s>%s') % (
-                frame.info and text_(' title="%s"' % escape(frame.info)) or
-                    text_(''),
+            frames.append(text_('<li%s>%s') % (
+                text_(' title="%s"' % escape(frame.info))
+                if frame.info else text_(''),
                 frame.render()
             ))
 
@@ -224,10 +224,13 @@ class Traceback(object):
             description_wrapper = text_('<blockquote>%s</blockquote>')
 
         vars = {
-            'classes':      text_(' '.join(classes)),
-            'title':        title and text_('<h3 class="traceback">%s</h3>' % title) or text_(''),
-            'frames':       text_('\n'.join(frames)),
-            'description':  description_wrapper % escape(self.exception),
+            'classes': text_(' '.join(classes)),
+            'title': (
+                text_('<h3 class="traceback">%s</h3>' % title)
+                if title else text_('')
+            ),
+            'frames': text_('\n'.join(frames)),
+            'description': description_wrapper % escape(self.exception),
         }
         return render(
             'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
@@ -243,21 +246,21 @@ class Traceback(object):
         url = request.route_url(EXC_ROUTE_NAME, request_id=request.pdtb_id)
         evalex = request.registry.parent_registry.pdtb_eval_exc
         vars = {
-            'evalex':           evalex and 'true' or 'false',
-            'console':          'false',
-            'lodgeit_url':      escape(lodgeit_url),
-            'title':            exc,
-            'exception':        exc,
-            'exception_type':   escape(self.exception_type),
-            'summary':          summary,
-            'plaintext':        self.plaintext,
-            'plaintext_cs':     re.sub('-{2,}', '-', self.plaintext),
-            'traceback_id':     self.id,
-            'static_path':      static_path,
-            'root_path':        root_path,
-            'pdtb_token':       token,
-            'request_id':       request.pdtb_id,
-            'url':              url,
+            'evalex': evalex and 'true' or 'false',
+            'console': 'false',
+            'lodgeit_url': escape(lodgeit_url),
+            'title': exc,
+            'exception': exc,
+            'exception_type': escape(self.exception_type),
+            'summary': summary,
+            'plaintext': self.plaintext,
+            'plaintext_cs': re.sub('-{2,}', '-', self.plaintext),
+            'traceback_id': self.id,
+            'static_path': static_path,
+            'root_path': root_path,
+            'pdtb_token': token,
+            'request_id': request.pdtb_id,
+            'url': url,
         }
         return render('pyramid_debugtoolbar:templates/exception.dbtmako',
                       vars, request=request)
@@ -311,11 +314,11 @@ class Frame(object):
     def render(self):
         """Render a single frame in a traceback."""
         return FRAME_HTML % {
-            'id':               self.id,
-            'filename':         escape(self.filename),
-            'lineno':           self.lineno,
-            'function_name':    escape(self.function_name),
-            'current_line':     escape(self.current_line.strip())
+            'id': self.id,
+            'filename': escape(self.filename),
+            'lineno': self.lineno,
+            'function_name': escape(self.function_name),
+            'current_line': escape(self.current_line.strip())
         }
 
     def get_annotated_lines(self):
@@ -347,8 +350,8 @@ class Frame(object):
 
     def render_source(self):
         """Render the sourcecode."""
-        return SOURCE_TABLE_HTML % text_('\n'.join(line.render() for line in
-                                              self.get_annotated_lines()))
+        return SOURCE_TABLE_HTML % text_(
+            '\n'.join(line.render() for line in self.get_annotated_lines()))
 
     def eval(self, code, mode='single'):
         """Evaluate code in the context of the frame."""

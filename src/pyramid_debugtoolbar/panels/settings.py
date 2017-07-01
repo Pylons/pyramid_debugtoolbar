@@ -41,5 +41,6 @@ class SettingsDebugPanel(DebugPanel):
             reprs = [(k, repr(v)) for k, v in settings.items()]
         self.data = {'settings': sorted(reprs, key=itemgetter(0))}
 
+
 def includeme(config):
     config.add_debugtoolbar_panel(SettingsDebugPanel, is_global=True)

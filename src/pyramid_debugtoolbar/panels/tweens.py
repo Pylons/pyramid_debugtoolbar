@@ -33,10 +33,11 @@ class TweensDebugPanel(DebugPanel):
         self.data = {
             'tweens': tweens,
             'definition': definition,
-            }
+        }
 
     def render_vars(self, request):
         return {'static_path': request.static_url(STATIC_PATH)}
+
 
 def includeme(config):
     config.add_debugtoolbar_panel(TweensDebugPanel, is_global=True)

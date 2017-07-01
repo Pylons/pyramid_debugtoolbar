@@ -32,6 +32,7 @@ bundled_includes = (
     'pyramid_debugtoolbar.panels.versions',
 )
 
+
 class IParentActions(Interface):
     """ Marker interface for registered parent actions in the toolbar app."""
 
@@ -87,6 +88,7 @@ def make_toolbar_app(settings, parent_registry):
 
     return config.make_wsgi_app()
 
+
 def add_debugtoolbar_panel(config, panel_class, is_global=False):
     """
     Register a new panel into the debugtoolbar.
@@ -110,6 +112,7 @@ def add_debugtoolbar_panel(config, panel_class, is_global=False):
     panel_map = config.registry.getUtility(IPanelMap)
     panel_map[(name, is_global)] = panel_class
 
+
 def inject_parent_action(config, action):
     """
     Inject an action into the parent application.
@@ -130,6 +133,7 @@ def inject_parent_action(config, action):
         config.registry.registerUtility(actions, IParentActions)
     actions.append(action)
 
+
 @view_config(
     route_name='debugtoolbar.redirect',
     renderer='pyramid_debugtoolbar:templates/redirect.dbtmako',
@@ -139,6 +143,7 @@ def redirect_view(request):
         'redirect_to': request.params.get('redirect_to'),
         'redirect_code': request.params.get('redirect_code'),
     }
+
 
 @view_config(
     route_name='debugtoolbar.main',
@@ -188,8 +193,10 @@ def request_view(request):
             'request_id': request_id
             }
 
+
 U_BLANK = text_("")
 U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
+
 
 @view_config(route_name='debugtoolbar.sse')
 def sse(request):

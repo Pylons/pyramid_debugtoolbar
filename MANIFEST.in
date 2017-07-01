@@ -1,0 +1,18 @@
+graft src
+graft tests
+graft docs
+graft demo
+prune docs/_build
+prune demo/mako_modules
+
+include README.rst
+include CHANGES.txt
+include LICENSE.txt
+include CONTRIBUTORS.txt
+include contributing.md
+include RELEASING.txt
+include TODO.txt
+
+include tox.ini .travis.yml rtd.txt
+
+recursive-exclude * __pycache__ *.py[cod]

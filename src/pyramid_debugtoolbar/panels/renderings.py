@@ -4,6 +4,7 @@ from pyramid_debugtoolbar.compat import text_
 
 _ = lambda x: x
 
+
 class RenderingsDebugPanel(DebugPanel):
     """
     Panel that displays the renderers (templates and 'static' renderers such
@@ -33,7 +34,7 @@ class RenderingsDebugPanel(DebugPanel):
             val = '<unknown>'
         self.renderings.append(
             dict(name=name, system=dictrepr(event), val=text_(val, 'utf-8'))
-            )
+        )
 
     @property
     def nav_subtitle(self):
@@ -42,6 +43,7 @@ class RenderingsDebugPanel(DebugPanel):
 
     def process_response(self, response):
         self.data = {'renderings': self.renderings}
+
 
 def includeme(config):
     config.add_debugtoolbar_panel(RenderingsDebugPanel)

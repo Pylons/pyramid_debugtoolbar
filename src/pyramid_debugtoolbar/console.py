@@ -21,6 +21,7 @@ from pyramid_debugtoolbar.utils import escape
 
 _local = threading.local()
 
+
 class HTMLStringO(object):
     """A StringO version that HTML escapes on write."""
 
@@ -137,6 +138,7 @@ class _ConsoleLoader(object):
 
 def _wrap_compiler(console):
     compile = console.compile
+
     def func(source, filename, symbol):
         code = compile(source, filename, symbol)
         console.loader.register(code, source)
@@ -216,7 +218,7 @@ class _ConsoleFrame(object):
     """Helper class so that we can reuse the frame console code for the
     standalone console.
     """
+
     def __init__(self, namespace):
         self.console = Console(namespace)
         self.id = 0
-

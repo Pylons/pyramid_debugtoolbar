@@ -6,6 +6,13 @@ Unreleased
   containing list of accepted host domains (IP addresses are always 
   accepted, as the attack depends on DNS). By default, only "localhost"
   domain is accepted.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/321
+
+4.2.1 (2017-06-30)
+------------------
+
+- Fix a bug with the logging of squashed exceptions on Python < 3.5.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/320
 
 4.2 (2017-06-21)
 ----------------
