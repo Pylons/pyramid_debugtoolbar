@@ -12,16 +12,14 @@
 #
 ##############################################################################
 
-import os
-
 from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
-try:
-    README = open(os.path.join(here, 'README.rst')).read()
-    CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
-except IOError:
-    README = CHANGES = ''
+def readfile(name):
+    with open(name) as f:
+        return f.read()
+
+README = readfile('README.rst')
+CHANGES = readfile('CHANGES.txt')
 
 install_requires = [
     'pyramid>=1.4',
