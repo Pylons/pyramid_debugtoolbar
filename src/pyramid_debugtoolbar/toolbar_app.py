@@ -41,8 +41,8 @@ def check_host(event):
     Protect itself from DNS Rebinding attacks by using accepted host header
     whitelist.
     """
-    app_hosts = get_setting(event.request.registry.settings, 'app_domains')
-    if not is_acceptable_host(event.request.host, app_hosts):
+    app_domains = get_setting(event.request.registry.settings, 'app_domains')
+    if not is_acceptable_host(event.request.host, app_domains):
         raise HTTPNotFound()
 
 def make_toolbar_app(settings, parent_registry):
