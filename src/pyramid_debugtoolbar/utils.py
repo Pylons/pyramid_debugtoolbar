@@ -253,12 +253,13 @@ def is_dotted_decimal_ipv4(host):
         octets = host.split('.')
         if len(octets) != 4:
             return False
+        dec_digits = set('0123456789')
         for octet in octets:
             if len(octet) == 0:
                 return False
             if octet[0] == '0' and len(octet) > 1:
                 return False
-            if not set(octet) <= set('0123456789'):
+            if not set(octet) < dec_digits:
                 return False
             if not 0 <= int(octet) <= 255:
                 return False
