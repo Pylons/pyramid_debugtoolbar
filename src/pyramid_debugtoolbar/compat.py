@@ -47,7 +47,6 @@ if PY3:  # pragma: no cover
     import builtins
     exec_ = getattr(builtins, "exec")
 
-
     def reraise(exc_info):
         etype, exc, tb = exc_info
         if exc.__traceback__ is not tb:
