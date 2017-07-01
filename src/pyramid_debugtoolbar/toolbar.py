@@ -106,11 +106,14 @@ class DebugToolbar(object):
         """
         # called in host app
         response_html = response.body
-        toolbar_url = debug_toolbar_url(request, request.pdtb_id)
+        # Use first domain in the accepted domains whitelist.
+        app_domains = get_setting(request.registry.settings, 'app_domains')
+        domain = app_domains[0]
+        toolbar_url = debug_toolbar_url(request, request.pdtb_id, _host=domain)
         button_style = get_setting(request.registry.settings,
                                    'button_style', '')
         css_path = request.static_url(
-            STATIC_PATH + 'toolbar/toolbar_button.css')
+            STATIC_PATH + 'toolbar/toolbar_button.css', _host=domain)
         toolbar_html = toolbar_html_template % {
             'button_style': (
                 'style="{0}"'.format(button_style) if button_style else ""),

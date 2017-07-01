@@ -97,7 +97,8 @@ file.
   will be only accessible when the domain in the header is in the whitelist.
   Otherwise it will return 404 response. Basically it works like a typical 
   virtual hosting. This is done to protect the toolbar from DNS Rebinding
-  attacks.
+  attacks. Toolbar iframe will use the first domain in the list to refer
+  to toolbar resources and views.
   
   You don't have to include IP addresses here, as IP addresses in the Host
   header are always accepted. For simplicity, only ASCII domains are supported
