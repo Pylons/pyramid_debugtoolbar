@@ -23,6 +23,8 @@ toolbar_tween_factory = toolbar_tween_factory  # API
 
 default_hosts = ('127.0.0.1', '::1')
 
+default_app_domains = ('localhost',)
+
 default_settings = [
     # name, convert, default
     ('enabled', asbool, 'true'),
@@ -33,6 +35,7 @@ default_settings = [
     ('global_panels', as_list, ()),
     ('extra_global_panels', as_list, ()),
     ('hosts', as_list, default_hosts),
+    ('app_domains', as_list, default_app_domains),
     ('exclude_prefixes', as_cr_separated_list, ('/favicon.ico',)),
     ('active_panels', as_list, ()),
     ('includes', as_list, ()),

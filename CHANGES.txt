@@ -1,3 +1,12 @@
+Unreleased
+----------
+
+- Introduced validation for the Host header to protect the toolbar from
+  DNS Rebinding attacks. There is a dedicated app_domains setting 
+  containing list of accepted host domains (IP addresses are always 
+  accepted, as the attack depends on DNS). By default, only "localhost"
+  domain is accepted.
+
 4.2 (2017-06-21)
 ----------------
 

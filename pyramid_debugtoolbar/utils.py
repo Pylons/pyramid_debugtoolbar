@@ -229,3 +229,41 @@ def resolve_panel_classes(panels, is_global, panel_map):
         if panel_class not in classes:
             classes.append(panel_class)
     return classes
+
+def is_dotted_decimal_ipv4(host):
+        octets = host.split('.')
+        if len(octets) != 4:
+            return False
+        for octet in octets:
+            if octet[0] == '0' and len(octet) > 1:
+                return False
+            if not set(octet) <= set('0123456789'):
+                return False
+            if not 0 <= int(octet) <= 255:
+                return False
+        return True
+
+def is_acceptable_host(host_header, whitelist):
+    # We are only concerned about DNS attack, so we don't need to validate 
+    # IP addresses using the whitelist.
+    if host_header[0] == '[':  # IPv6-literal
+        return True
+    # Remove port if present
+    host = host_header.rsplit(':', 1)[0]
+    # From https://tools.ietf.org/html/rfc3986#section-3.2.2 :
+    # 
+    # The syntax rule for host is ambiguous because it does not completely
+    #  distinguish between an IPv4address and a reg-name.  In order to
+    # disambiguate the syntax, we apply the "first-match-wins" algorithm:
+    #  If host matches the rule for IPv4address, then it should be
+    # considered an IPv4 address literal and not a reg-name.
+    if is_dotted_decimal_ipv4(host):
+        return True
+    # Validate reg-name. For simplicity, only ASCII domains are supported,
+    # as the user can always host his toolbar on an ASCII host, even if his
+    # main project domain is IDN.
+    host = host.lower()
+    for wl_host in whitelist:
+        if host == wl_host.lower():
+            return True
+    return False

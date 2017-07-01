@@ -91,6 +91,20 @@ file.
 
   To enable access from any host, use the hostmask ``0.0.0.0/0``.
 
+``debugtoolbar.app_domains``
+  
+  Contains a whitelist of accepted Hosts header domains. The toolbar app
+  will be only accessible when the domain in the header is in the whitelist.
+  Otherwise it will return 404 response. Basically it works like a typical 
+  virtual hosting. This is done to protect the toolbar from DNS Rebinding
+  attacks.
+  
+  You don't have to include IP addresses here, as IP addresses in the Host
+  header are always accepted. For simplicity, only ASCII domains are supported
+  by this setting. Default value is "localhost". For example: ::
+  
+    debugtoolbar.app_domains = myproject.dev devproject.local mytoolbar
+
 ``debugtoolbar.enabled``
 
   ``true`` if the toolbar is enabled; ``false`` if the toolbar is disabled.

@@ -1,5 +1,7 @@
 from collections import OrderedDict
 from pyramid.config import Configurator
+from pyramid.events import NewRequest
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.interfaces import Interface
 from pyramid.view import view_config
 
@@ -9,6 +11,7 @@ from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.toolbar import IPanelMap
 from pyramid_debugtoolbar.utils import (
     get_setting,
+    is_acceptable_host,
     ROOT_ROUTE_NAME,
     SETTINGS_PREFIX,
     STATIC_PATH,
@@ -31,6 +34,15 @@ bundled_includes = (
 
 class IParentActions(Interface):
     """ Marker interface for registered parent actions in the toolbar app."""
+
+def check_host(event):
+    """
+    Protect itself from DNS Rebinding attacks by using accepted host header
+    whitelist.
+    """
+    app_hosts = get_setting(event.request.registry.settings, 'app_domains')
+    if not is_acceptable_host(event.request.host, app_hosts):
+        raise HTTPNotFound()
 
 def make_toolbar_app(settings, parent_registry):
     """ WSGI application for rendering the debug toolbar."""
@@ -60,6 +72,7 @@ def make_toolbar_app(settings, parent_registry):
     config.add_route('debugtoolbar.redirect', '/redirect')
     config.add_route('debugtoolbar.request', '/{request_id}')
     config.add_route('debugtoolbar.main', '/')
+    config.add_subscriber(check_host, NewRequest)
     config.scan(__name__)
 
     for include in bundled_includes:
