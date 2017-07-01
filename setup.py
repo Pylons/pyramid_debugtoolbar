@@ -73,11 +73,11 @@ setup(name='pyramid_debugtoolbar',
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
+      python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
       extras_require = {
           ':python_version<"3.3"': extra_requires,
           'testing':testing_extras,
           'docs':docs_extras,
           },
       test_suite="tests",
-      entry_points='',
       )
