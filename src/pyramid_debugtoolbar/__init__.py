@@ -55,6 +55,7 @@ default_transform = [
     ('reload_templates', asbool, 'false'),
 ]
 
+
 def parse_settings(settings):
     parsed = {}
 
@@ -75,6 +76,7 @@ def parse_settings(settings):
 
     return parsed
 
+
 def transform_settings(settings):
     parsed = {}
 
@@ -89,12 +91,14 @@ def transform_settings(settings):
 
     return parsed
 
+
 def set_request_authorization_callback(config, callback):
     """
     Register IRequestAuthorization utility to authorize toolbar per request.
 
     """
     config.registry.registerUtility(callback, IRequestAuthorization)
+
 
 def includeme(config):
     """
@@ -140,6 +144,7 @@ def includeme(config):
 
     config.introspection = introspection
 
+
 def _apply_parent_actions(parent_registry):
     toolbar_app = parent_registry.queryUtility(IToolbarWSGIApp)
     if toolbar_app is None:
@@ -171,6 +176,7 @@ def _apply_parent_actions(parent_registry):
 
     parent_config.commit()
 
+
 # AVERT YOUR EYES NOTHING TO SEE HERE
 #
 # Okay so, we need a way to affect the Pyramid config **after** the user is
@@ -195,6 +201,7 @@ class _ToolbarRouterFactory(object):
         _apply_parent_actions(registry)
         return self.wrapped_router(registry)
 
+
 def _monkeypatch_pyramid_router():
     import pyramid.config
     router_factory = pyramid.config.Router
@@ -202,5 +209,6 @@ def _monkeypatch_pyramid_router():
     # do not monkeypatch twice
     if not isinstance(pyramid.config.Router, _ToolbarRouterFactory):
         pyramid.config.Router = _ToolbarRouterFactory(router_factory)
+
 
 _monkeypatch_pyramid_router()

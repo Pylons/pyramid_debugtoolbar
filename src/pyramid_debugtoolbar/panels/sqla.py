@@ -90,9 +90,9 @@ class SQLADebugPanel(DebugPanel):
             try:
                 params = url_quote(json.dumps(query['parameters']))
             except TypeError:
-                pass # object not JSON serializable
+                pass  # object not JSON serializable
             except UnicodeDecodeError:
-                pass # parameters contain non-utf8 (probably binary) data
+                pass  # parameters contain non-utf8 (probably binary) data
 
             data.append({
                 'engine_id': query['engine_id'],
@@ -109,7 +109,7 @@ class SQLADebugPanel(DebugPanel):
         self.data = {
             'queries': data,
             'text': text_,
-            }
+        }
 
     def render_content(self, request):
         if not self.queries:
@@ -140,7 +140,9 @@ class SQLAlchemyViews(object):
 
     @view_config(
         route_name='debugtoolbar.sql_select',
-        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako',
+        renderer=(
+            'pyramid_debugtoolbar.panels:templates/sqlalchemy_select.dbtmako'
+        ),
     )
     def sql_select(self):
         query_dict = self.find_query()
@@ -167,7 +169,9 @@ class SQLAlchemyViews(object):
 
     @view_config(
         route_name='debugtoolbar.sql_explain',
-        renderer='pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako',
+        renderer=(
+            'pyramid_debugtoolbar.panels:templates/sqlalchemy_explain.dbtmako'
+        ),
     )
     def sql_explain(self):
         query_dict = self.find_query()
@@ -195,6 +199,7 @@ class SQLAlchemyViews(object):
             'str': str,
             'duration': float(query_dict['duration']),
         }
+
 
 def includeme(config):
     config.add_route(

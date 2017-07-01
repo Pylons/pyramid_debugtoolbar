@@ -43,5 +43,6 @@ class VersionDebugPanel(DebugPanel):
         return 'Python %s on %s' % (sys.version,
                                     text_(self._get_platform_name(), 'utf8'))
 
+
 def includeme(config):
     config.add_debugtoolbar_panel(VersionDebugPanel, is_global=True)

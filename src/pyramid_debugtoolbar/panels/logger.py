@@ -10,6 +10,7 @@ from pyramid_debugtoolbar.utils import format_fname
 
 _ = lambda x: x
 
+
 class ThreadTrackingHandler(logging.Handler):
     def __init__(self):
         if threading is None:
@@ -17,7 +18,7 @@ class ThreadTrackingHandler(logging.Handler):
                 "threading module is not available, "
                 "the logging panel cannot be used without it")
         logging.Handler.__init__(self)
-        self.records = {} # a dictionary that maps threads to log records
+        self.records = {}  # a dictionary that maps threads to log records
 
     def emit(self, record):
         self.get_records().append({
@@ -46,8 +47,10 @@ class ThreadTrackingHandler(logging.Handler):
         if thread in self.records:
             del self.records[thread]
 
+
 handler = ThreadTrackingHandler()
 logging.root.addHandler(handler)
+
 
 class LoggingPanel(DebugPanel):
     name = 'logging'
@@ -78,6 +81,7 @@ class LoggingPanel(DebugPanel):
     def nav_subtitle(self):
         if self.data:
             return '%d' % len(self.data.get('records'))
+
 
 def includeme(config):
     config.add_debugtoolbar_panel(LoggingPanel)

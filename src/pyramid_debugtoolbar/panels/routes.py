@@ -51,14 +51,15 @@ class RoutesDebugPanel(DebugPanel):
                     for predicate in route.predicates:
                         text = getattr(predicate, '__text__', repr(predicate))
                         predicates.append(text)
-                    info.append({'route':route,
-                                 'view_callable':view_callable,
-                                 'predicates':', '.join(predicates)})
+                    info.append({'route': route,
+                                 'view_callable': view_callable,
+                                 'predicates': ', '.join(predicates)})
                 registry.debugtoolbar_routeinfo = info
 
             self.data = {
                 'routes': registry.debugtoolbar_routeinfo,
-                }
+            }
+
 
 def includeme(config):
     config.add_debugtoolbar_panel(RoutesDebugPanel, is_global=True)

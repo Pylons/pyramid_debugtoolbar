@@ -23,8 +23,10 @@ from pyramid_debugtoolbar.utils import ToolbarStorage
 
 html_types = ('text/html', 'application/xhtml+xml')
 
+
 class IToolbarWSGIApp(Interface):
     """ Marker interface for the toolbar WSGI application."""
+
     def __call__(environ, start_response):
         pass
 
@@ -118,7 +120,7 @@ class DebugToolbar(object):
         response.body = replace_insensitive(
             response_html, bytes_('</body>'),
             toolbar_html + bytes_('</body>')
-            )
+        )
 
 
 def process_traceback(info):
@@ -267,8 +269,9 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 response = dispatch(subrequest)
                 toolbar.status_int = response.status_int
 
-                # The original request must be processed so that the panel data exists
-                # if the request is later examined in the full toolbar view.
+                # The original request must be processed so that the panel
+                # data exists if the request is later examined in the full
+                # toolbar view.
                 toolbar.process_response(request, response)
 
                 # Inject the button to activate the full toolbar view.
@@ -310,13 +313,14 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
     return toolbar_tween
 
+
 toolbar_html_template = """\
 <link rel="stylesheet" type="text/css" href="%(css_path)s">
 
 <div id="pDebug">
     <div %(button_style)s id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
-           href="%(toolbar_url)s" target="pDebugToolbar">&#171; FIXME: Debug Toolbar</a>
+           href="%(toolbar_url)s" target="pDebugToolbar">&#171;</a>
     </div>
 </div>
 """

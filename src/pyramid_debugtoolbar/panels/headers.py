@@ -34,5 +34,6 @@ class HeaderDebugPanel(DebugPanel):
         ]
         self.data['response_headers'] = response_headers
 
+
 def includeme(config):
     config.add_debugtoolbar_panel(HeaderDebugPanel)

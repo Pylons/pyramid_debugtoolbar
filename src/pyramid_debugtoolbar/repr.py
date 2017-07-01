@@ -18,7 +18,7 @@ import re
 from traceback import format_exception_only
 try:
     from collections import deque
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     deque = None
 
 from pyramid_debugtoolbar.compat import text_
@@ -30,11 +30,9 @@ from pyramid_debugtoolbar.compat import long
 from pyramid_debugtoolbar.compat import PY3
 from pyramid_debugtoolbar.utils import escape
 
-
 missing = object()
 _paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
 RegexType = type(_paragraph_re)
-
 
 HELP_HTML = '''\
 <div class="box">
@@ -87,10 +85,11 @@ class _Helper(object):
         if len(paragraphs) > 1:
             title = paragraphs[0]
             text = '\n\n'.join(paragraphs[1:])
-        else: # pragma: no cover
+        else:  # pragma: no cover
             title = 'Help'
             text = paragraphs[0]
         sys.stdout._write(HELP_HTML % {'title': title, 'text': text})
+
 
 helper = _Helper()
 
@@ -103,7 +102,9 @@ def _add_subclass_info(inner, obj, bases):
     elif type(obj) is bases:
         return inner
     module = ''
-    if obj.__class__.__module__ not in ('builtins', '__builtin__','exceptions'):
+    if obj.__class__.__module__ not in (
+        'builtins', '__builtin__', 'exceptions',
+    ):
         module = '<span class="module">%s.</span>' % obj.__class__.__module__
     return '%s%s(%s)' % (module, obj.__class__.__name__, inner)
 
@@ -137,7 +138,8 @@ class DebugReprGenerator(object):
 
     def regex_repr(self, obj):
         if PY3:
-            pattern = text_("'%s'" % str(obj.pattern), 'string-escape', 'ignore')
+            pattern = text_(
+                "'%s'" % str(obj.pattern), 'string-escape', 'ignore')
             pattern = 'r' + pattern
         else:
             pattern = text_(repr(obj.pattern), 'string-escape', 'ignore')
@@ -238,12 +240,12 @@ class DebugReprGenerator(object):
     def fallback_repr(self):
         try:
             info = ''.join(format_exception_only(*sys.exc_info()[:2]))
-        except Exception: # pragma: no cover
+        except Exception:  # pragma: no cover
             info = '?'
         return text_(
             '<span class="brokenrepr">&lt;broken repr (%s)&gt;'
             '</span>' % escape(text_(info, 'utf-8', 'ignore').strip())
-            )
+        )
 
     def repr(self, obj):
         recursive = False
@@ -294,7 +296,7 @@ class DebugReprGenerator(object):
         if not html_items:
             html_items.append('<tr><td><em>Nothing</em>')
         return OBJECT_DUMP_HTML % {
-            'title':    escape(title),
-            'repr':     repr and '<pre class="repr">%s</pre>' % repr or '',
-            'items':    '\n'.join(html_items)
+            'title': escape(title),
+            'repr': repr and '<pre class="repr">%s</pre>' % repr or '',
+            'items': '\n'.join(html_items)
         }

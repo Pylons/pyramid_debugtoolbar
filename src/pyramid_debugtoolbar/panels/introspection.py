@@ -4,15 +4,15 @@ from pyramid_debugtoolbar.repr import debug_repr
 
 try:
     from pyramid.interfaces import IIntrospector
-    IIntrospector = IIntrospector # pyflakes
+    IIntrospector = IIntrospector  # pyflakes
     from pyramid.util import object_description
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     has_content = False
 else:
     has_content = True
 
-
 _ = lambda x: x
+
 
 class IntrospectionDebugPanel(DebugPanel):
     """
@@ -31,7 +31,7 @@ class IntrospectionDebugPanel(DebugPanel):
         self.data = {
             'categorized': categorized,
             'debug_repr': debug_repr,
-            'object_description':object_description,
+            'object_description': object_description,
             'nl2br': nl2br}
 
     def render_vars(self, request):
@@ -40,6 +40,7 @@ class IntrospectionDebugPanel(DebugPanel):
 
 def nl2br(s):
     return s.replace('\n', '<br/>')
+
 
 def includeme(config):
     config.add_debugtoolbar_panel(IntrospectionDebugPanel, is_global=True)

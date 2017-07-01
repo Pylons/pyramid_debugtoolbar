@@ -12,6 +12,7 @@ from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 
 _ = lambda x: x
 
+
 class TracebackPanel(DebugPanel):
     name = 'traceback'
     template = 'pyramid_debugtoolbar.panels:templates/traceback.dbtmako'
@@ -34,16 +35,16 @@ class TracebackPanel(DebugPanel):
             evalex = self.request.registry.pdtb_eval_exc
 
             self.data = {
-                'evalex':           evalex and 'true' or 'false',
-                'console':          'false',
-                'lodgeit_url':      None,
-                'title':            exc,
-                'exception':        exc,
-                'exception_type':   escape(traceback.exception_type),
-                'plaintext':        traceback.plaintext,
-                'plaintext_cs':     re.sub('-{2,}', '-', traceback.plaintext),
-                'pdtb_token':       self.request.registry.pdtb_token,
-                'request_id':       self.request.pdtb_id,
+                'evalex': evalex and 'true' or 'false',
+                'console': 'false',
+                'lodgeit_url': None,
+                'title': exc,
+                'exception': exc,
+                'exception_type': escape(traceback.exception_type),
+                'plaintext': traceback.plaintext,
+                'plaintext_cs': re.sub('-{2,}', '-', traceback.plaintext),
+                'pdtb_token': self.request.registry.pdtb_token,
+                'request_id': self.request.pdtb_id,
             }
 
         # stop hanging onto the request after the response is processed
@@ -63,6 +64,7 @@ class TracebackPanel(DebugPanel):
                 include_title=False, request=request),
         })
         return vars
+
 
 class ExceptionDebugView(object):
     def __init__(self, request):
@@ -114,6 +116,7 @@ class ExceptionDebugView(object):
             raise HTTPBadRequest('Missing command.')
         body = frame.console.eval(cmd)
         return Response(body, content_type='text/html')
+
 
 def includeme(config):
     config.add_route(EXC_ROUTE_NAME, '/{request_id}/exception')
