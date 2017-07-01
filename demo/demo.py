@@ -49,7 +49,7 @@ def squashed_exc(request):
     context=RuntimeError,
     renderer='notfound.mako',
 )
-def notfound_view(request):
+def squashed_exc_error_view(request):
     request.response.status_code = 404
     return {}
 

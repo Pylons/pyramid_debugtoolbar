@@ -252,7 +252,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 subrequest = make_subrequest(
                     request, root_path, request.pdtb_id + '/exception')
                 exc_msg = msg % (request.url, subrequest.url)
-                _logger.exception(exc_msg, exc_info=request.exc_info)
+                _logger.error(exc_msg, exc_info=request.exc_info)
 
         except Exception:
             if intercept_exc:
