@@ -68,7 +68,7 @@ class DebugPanel(object):
     #: when the user clicks on the panel's tab in the toolbar.
     url = ''
 
-    nav_subtitle_bg_color = '#777'
+    nav_subtitle_bg_color = ''
 
     @reify
     def data(self):

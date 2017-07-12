@@ -88,6 +88,24 @@ class LoggingPanel(DebugPanel):
                     summary[r['level']] +=1
         return summary
 
+    def get_highest_log_level(self):
+        if self.data:
+            if self.log_level_summary['CRITICAL'] > 0:
+                # showing total counts of critical and error since they are colored the same.
+                return ('CRITICAL', self.log_level_summary['CRITICAL'] + self.log_level_summary['ERROR'])
+            elif self.log_level_summary['ERROR'] > 0:
+                return ('ERROR', self.log_level_summary['ERROR'])
+            elif self.log_level_summary['WARNING'] > 0:
+                return ('WARNING', self.log_level_summary['WARNING'])
+            elif self.log_level_summary['INFO'] > 0:
+                return ('INFO', self.log_level_summary['INFO'])
+            elif self.log_level_summary['DEBUG'] > 0:
+                return ('DEBUG', self.log_level_summary['DEBUG'])
+            elif self.log_level_summary['NOTSET'] > 0:
+                return ('NOTSET', self.log_level_summary['NOTSET'])
+            else:
+                return (None, 0) 
+
     def get_and_delete(self):
         records = handler.get_records()
         handler.clear_records()
@@ -96,24 +114,21 @@ class LoggingPanel(DebugPanel):
     @property
     def nav_subtitle(self):
         if self.data:
-            # Leaving out CRITICAL for now for aesthetics, but it seems prudent
-            # to include it.
-            return '%(info_cnt)d|%(warn_cnt)d|%(err_cnt)d' % {
-                'info_cnt':self.log_level_summary['INFO'],
-                'warn_cnt':self.log_level_summary['WARNING'],
-                'err_cnt':self.log_level_summary['ERROR']}
+            return '%d' % self.get_highest_log_level()[1]
 
     @property
     def nav_subtitle_bg_color(self):
         if self.data:
-            if self.log_level_summary['ERROR'] > 0:
-                return "#d9534f"
-            elif self.log_level_summary['WARNING'] > 0:
-                return "#f0ad4e"
-            elif self.log_level_summary['INFO'] > 0:
-                return "#5bc0de"
+            log_level = self.get_highest_log_level()[0]
+            if log_level in ('CRITICAL', 'ERROR'):
+                return 'progress-bar-danger'
+            elif log_level == 'WARNING':
+                return 'progress-bar-warning'
+            elif log_level == 'INFO':
+                return 'progress-bar-info'
             else:
-                return "#777"
+                return ''
+
 
 def includeme(config):
     config.add_debugtoolbar_panel(LoggingPanel)
