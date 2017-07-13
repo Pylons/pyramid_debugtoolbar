@@ -124,16 +124,6 @@ file.
   handler.  Note that, for backwards compatibility purposes, the value
   ``true`` provided to this setting is interpreted as ``debug``.
 
-``debugtoolbar.eval_exc``
-
-  ``true`` if real-time exception debugging is enabled when
-  ``intercept_exc`` is true; ``false`` if real-time exception debugging is
-  disabled.  Default is ``true``.  This differs from
-  ``debugtoolbar.intercept_exc``: it only controls whether the pretty
-  exception rendering displays real-time in-browser debugging controls.  The
-  real-time in-browser debugging controls allow you to evaluate arbitrary
-  Python expresssions in the context of a stack frame via a browser control.
-
 ``debugtoolbar.show_on_exc_only``
 
   Default is ``false``. If set to ``true`` the debugtoolbar will only be
@@ -216,11 +206,13 @@ file.
   by carriage returns. For example::
 
     debugtoolbar.exclude_prefixes =
+        /favicon.ico
         /settings
         /static
 
-  If configuration is done via Python, the setting should be a list.  This
-  setting was added in debugtoolbar version 1.0.4.
+  If configuration is done via Python, the setting should be a list.
+
+  By default, the setting is ``['/favicon.ico']``.
 
 ``debugtoolbar.active_panels``
 

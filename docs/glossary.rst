@@ -7,6 +7,6 @@ Glossary
    :sorted:
 
    Pyramid
-      A `web framework <http://pylonsproject.org/>`_ written in Python.
+      A `web framework <https://trypyramid.com>`_ written in Python.
 
 

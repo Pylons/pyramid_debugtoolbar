@@ -22,8 +22,6 @@ matrix:
           env: TOXENV=docs
         - python: 2.7
           env: TOXENV=py27-pyramid14
-        - python: 2.7
-          env: TOXENV=py27-pyramid15
 
 install:
   - travis_retry pip install -U setuptools

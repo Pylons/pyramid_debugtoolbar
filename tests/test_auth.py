@@ -58,7 +58,7 @@ class Test_auth(unittest.TestCase):
         resp = self._req('/hello/secrets', remote_user='admin')
         self.assertTrue(resp.html.body.link is not None, 'unexpectedly None')
         # dive into the request history stored by the toolbar tween
-        request_id = self.testapp.app.registry.request_history[0][0]
+        request_id = self.testapp.app.registry.pdtb_history[0][0]
         # check it against the link in the injected html
         self.assertTrue(request_id in resp.html.body.div.div.a['href'])
 

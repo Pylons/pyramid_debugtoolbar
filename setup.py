@@ -12,16 +12,14 @@
 #
 ##############################################################################
 
-import os
-
 from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
-try:
-    README = open(os.path.join(here, 'README.rst')).read()
-    CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
-except IOError:
-    README = CHANGES = ''
+def readfile(name):
+    with open(name) as f:
+        return f.read()
+
+README = readfile('README.rst')
+CHANGES = readfile('CHANGES.txt')
 
 install_requires = [
     'pyramid>=1.4',
@@ -46,7 +44,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='4.1',
+      version='4.2.1',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
@@ -67,17 +65,18 @@ setup(name='pyramid_debugtoolbar',
       author=("Chris McDonough, Michael Merickel, Casey Duncan, "
               "Blaise Laflamme"),
       author_email="pylons-discuss@googlegroups.com",
-      url="http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
+      url="https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
       license="BSD",
-      packages=find_packages(exclude=('tests',)),
+      packages=find_packages('src', exclude=['tests']),
+      package_dir={'': 'src'},
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
+      python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*',
       extras_require = {
           ':python_version<"3.3"': extra_requires,
           'testing':testing_extras,
           'docs':docs_extras,
           },
       test_suite="tests",
-      entry_points='',
       )
