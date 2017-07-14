@@ -60,6 +60,9 @@ class DebugPanel(object):
     #: Subtitle showing until title in toolbar.
     nav_subtitle = ''
 
+    #: CSS class used to give the subtitle a background color.
+    nav_subtitle_bg_color = ''
+
     #: Title showing in panel. Must be overridden.
     title = NotImplemented
 
@@ -67,8 +70,6 @@ class DebugPanel(object):
     #: define an arbitrary URL for the panel or do some other custom action
     #: when the user clicks on the panel's tab in the toolbar.
     url = ''
-
-    nav_subtitle_bg_color = ''
 
     @reify
     def data(self):

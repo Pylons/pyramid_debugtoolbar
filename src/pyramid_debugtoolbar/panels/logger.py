@@ -60,6 +60,7 @@ class LoggingPanel(DebugPanel):
 
     def __init__(self, request):
         handler.clear_records()
+        self.data = {'records': []}
 
     def process_response(self, response):
         records = self.get_and_delete()
@@ -84,30 +85,28 @@ class LoggingPanel(DebugPanel):
                         ('INFO',0),
                         ('DEBUG',0),
                         ('NOTSET',0)])
-        if self.data.get('records'):
-            for r in self.data.get('records'):
-                if 'level' in r.keys() and r['level'] in summary.keys():
-                    #ToDo: Use numeric level to catch custom logging levels.
-                    summary[r['level']] +=1
+        for r in self.data.get('records'):
+            if 'level' in r.keys() and r['level'] in summary.keys():
+                #ToDo: Use numeric level to catch custom logging levels.
+                summary[r['level']] +=1
         return summary
 
     def get_highest_log_level(self):
-        if self.data:
-            if self.log_level_summary['CRITICAL'] > 0:
-                # showing total counts of critical and error since they are colored the same.
-                return ('CRITICAL', self.log_level_summary['CRITICAL'] + self.log_level_summary['ERROR'])
-            elif self.log_level_summary['ERROR'] > 0:
-                return ('ERROR', self.log_level_summary['ERROR'])
-            elif self.log_level_summary['WARNING'] > 0:
-                return ('WARNING', self.log_level_summary['WARNING'])
-            elif self.log_level_summary['INFO'] > 0:
-                return ('INFO', self.log_level_summary['INFO'])
-            elif self.log_level_summary['DEBUG'] > 0:
-                return ('DEBUG', self.log_level_summary['DEBUG'])
-            elif self.log_level_summary['NOTSET'] > 0:
-                return ('NOTSET', self.log_level_summary['NOTSET'])
-            else:
-                return (None, 0) 
+        if self.log_level_summary['CRITICAL'] > 0:
+            # showing total counts of critical and error since they are colored the same.
+            return ('CRITICAL', self.log_level_summary['CRITICAL'] + self.log_level_summary['ERROR'])
+        elif self.log_level_summary['ERROR'] > 0:
+            return ('ERROR', self.log_level_summary['ERROR'])
+        elif self.log_level_summary['WARNING'] > 0:
+            return ('WARNING', self.log_level_summary['WARNING'])
+        elif self.log_level_summary['INFO'] > 0:
+            return ('INFO', self.log_level_summary['INFO'])
+        elif self.log_level_summary['DEBUG'] > 0:
+            return ('DEBUG', self.log_level_summary['DEBUG'])
+        elif self.log_level_summary['NOTSET'] > 0:
+            return ('NOTSET', self.log_level_summary['NOTSET'])
+        else:
+            return (None, 0) 
 
     def get_and_delete(self):
         records = handler.get_records()
@@ -121,16 +120,15 @@ class LoggingPanel(DebugPanel):
 
     @property
     def nav_subtitle_bg_color(self):
-        if self.data:
-            log_level = self.get_highest_log_level()[0]
-            if log_level in ('CRITICAL', 'ERROR'):
-                return 'progress-bar-danger'
-            elif log_level == 'WARNING':
-                return 'progress-bar-warning'
-            elif log_level == 'INFO':
-                return 'progress-bar-info'
-            else:
-                return ''
+        log_level = self.get_highest_log_level()[0]
+        if log_level in ('CRITICAL', 'ERROR'):
+            return 'progress-bar-danger'
+        elif log_level == 'WARNING':
+            return 'progress-bar-warning'
+        elif log_level == 'INFO':
+            return 'progress-bar-info'
+        else:
+            return ''
 
 
 
