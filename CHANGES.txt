@@ -1,5 +1,5 @@
-unreleased
-----------
+4.3 (2017-07-14)
+----------------
 
 - The logging panel indicator is now color-coded to indicate the severity of
   the log messages as well as the number of messages at said level. There may
