@@ -1,3 +1,15 @@
+unreleased
+----------
+
+- The logging panel indicator is now color-coded to indicate the severity of
+  the log messages as well as the number of messages at said level. There may
+  be more messages, but the most severe show up in the annotation.
+
+  This feature also added a new ``nav_subtitle_style`` hook to the
+  ``DebugPanel`` API for adding a custom CSS class to the subtitle tag.
+
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/322
+
 4.2.1 (2017-06-30)
 ------------------
 
