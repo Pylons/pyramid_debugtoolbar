@@ -1,3 +1,4 @@
+from collections import Counter
 import datetime
 import logging
 try:
@@ -68,45 +69,35 @@ class LoggingPanel(DebugPanel):
 
     @property
     def has_content(self):
-        if self.data.get('records'):
+        if self.data['records']:
             return True
         else:
             return False
 
-    @property
-    def log_level_summary(self):
+    def get_log_level_summary(self):
         """
         returns number of times a logging level is present. Used to allow end
         user to quickly see what types of log records are present.
         """
-        summary = dict([('CRITICAL',0),
-                        ('ERROR',0),
-                        ('WARNING',0),
-                        ('INFO',0),
-                        ('DEBUG',0),
-                        ('NOTSET',0)])
-        for r in self.data.get('records'):
-            if 'level' in r.keys() and r['level'] in summary.keys():
-                #ToDo: Use numeric level to catch custom logging levels.
-                summary[r['level']] +=1
+        summary = Counter()
+        for r in self.data['records']:
+            summary[r['level']] += 1
         return summary
 
     def get_highest_log_level(self):
-        if self.log_level_summary['CRITICAL'] > 0:
-            # showing total counts of critical and error since they are colored the same.
-            return ('CRITICAL', self.log_level_summary['CRITICAL'] + self.log_level_summary['ERROR'])
-        elif self.log_level_summary['ERROR'] > 0:
-            return ('ERROR', self.log_level_summary['ERROR'])
-        elif self.log_level_summary['WARNING'] > 0:
-            return ('WARNING', self.log_level_summary['WARNING'])
-        elif self.log_level_summary['INFO'] > 0:
-            return ('INFO', self.log_level_summary['INFO'])
-        elif self.log_level_summary['DEBUG'] > 0:
-            return ('DEBUG', self.log_level_summary['DEBUG'])
-        elif self.log_level_summary['NOTSET'] > 0:
-            return ('NOTSET', self.log_level_summary['NOTSET'])
-        else:
-            return (None, 0) 
+        ORDER = ['ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET']
+        summary = self.get_log_level_summary()
+        if summary['CRITICAL'] > 0:
+            # showing total counts of critical and error since they are
+            # colored the same and both are important
+            return ('CRITICAL', summary['CRITICAL'] + summary['ERROR'])
+
+        # find the first matching level and return it
+        for level in ORDER:
+            count = summary[level]
+            if count > 0:
+                return (level, count)
+        return (None, 0)
 
     def get_and_delete(self):
         records = handler.get_records()
@@ -115,11 +106,10 @@ class LoggingPanel(DebugPanel):
 
     @property
     def nav_subtitle(self):
-        if self.data:
-            return '%d' % self.get_highest_log_level()[1]
+        return '%d' % self.get_highest_log_level()[1]
 
     @property
-    def nav_subtitle_bg_color(self):
+    def nav_subtitle_style(self):
         log_level = self.get_highest_log_level()[0]
         if log_level in ('CRITICAL', 'ERROR'):
             return 'progress-bar-danger'
@@ -127,9 +117,6 @@ class LoggingPanel(DebugPanel):
             return 'progress-bar-warning'
         elif log_level == 'INFO':
             return 'progress-bar-info'
-        else:
-            return ''
-
 
 
 def includeme(config):

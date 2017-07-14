@@ -61,7 +61,7 @@ class DebugPanel(object):
     nav_subtitle = ''
 
     #: CSS class used to give the subtitle a background color.
-    nav_subtitle_bg_color = ''
+    nav_subtitle_style = ''
 
     #: Title showing in panel. Must be overridden.
     title = NotImplemented
