@@ -63,7 +63,7 @@ $(function() {
     headerTemplate: '{content} {icon}'
   });
 
-  bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel']
+  bootstrap_panels = ['pDebugVersionPanel', 'pDebugHeaderPanel'];
 
   for (var i = 0; i < bootstrap_panels.length; i++) {
     $('.pDebugWindow #' + bootstrap_panels[i] + '-content').show();
@@ -74,7 +74,7 @@ $(function() {
 $(function () {
   var source;
   function new_request(e) {
-    $('ul#requests li a').tooltip('hide')
+    $('ul#requests li a').tooltip('hide');
     var html = '<li><h4>Requests</strong></h4></li>';
     var requests = $('ul#requests');
     var data = JSON.parse(e.data);
@@ -189,9 +189,9 @@ $(function() {
 			return displayable;
 		}
 		var selected_panel_text = panel_tab_element.attr('id');
-		displayable["panel_tab_element"] = panel_tab_element
-		displayable["selected_panel_text"] = selected_panel_text
-		return displayable
+		displayable.panel_tab_element = panel_tab_element;
+		displayable.selected_panel_text = selected_panel_text;
+		return displayable;
 	}
 	function handle_alt_panel(do_cookie){
 		// consolidates finding and showing an alternate panel
@@ -203,7 +203,7 @@ $(function() {
 		if (displayable.panel_tab_element && displayable.selected_panel_text) {
 			show_panel(displayable.panel_tab_element, displayable.selected_panel_text);
 			if (do_cookie){
-				$.cookie(COOKIE_NAME_STICKYPANEL_SELECTED, selected_panel_text);
+				$.cookie(COOKIE_NAME_STICKYPANEL_SELECTED, displayable.selected_panel_text);
 			}
 		}
 	}
