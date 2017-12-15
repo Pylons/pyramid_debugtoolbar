@@ -21,8 +21,7 @@ $(function() {
       * Add an interactive console to the frames
       */
     if (EVALEX)
-      $('<img class="console-icon" src="'
-        + window.DEBUG_TOOLBAR_STATIC_PATH + 'debugger/img/console.png">')
+      $('<img class="console-icon" src="' + window.DEBUG_TOOLBAR_STATIC_PATH + 'debugger/img/console.png">')
         .attr('title', 'Open an interactive python shell in this frame')
         .click(function() {
           consoleNode = openShell(consoleNode, target, frameID);
@@ -56,7 +55,7 @@ $(function() {
               });
             else
               focusSourceBlock();
-          },
+          }
         );
         return false;
       })
@@ -126,7 +125,7 @@ $(function() {
       return consoleNode.slideToggle('fast');
     consoleNode = $('<pre class="console">')
       .appendTo(target.parent())
-      .hide()
+      .hide();
     var historyPos = 0, history = [''];
     var output = $('<div class="output">[console ready]</div>')
       .appendTo(consoleNode);
@@ -146,7 +145,7 @@ $(function() {
             if (typeof old != 'undefined')
               history.push(old);
             historyPos = history.length - 1;
-          },
+          }
         );
         command.val('');
         return false;
@@ -183,7 +182,7 @@ $(function() {
     for (var i = 0; i < 7; i++) {
       tmp = line.prev();
       if (!(tmp && tmp.is('.in-frame')))
-        break
+        break;
       line = tmp;
     }
     var container = $('div.sourceview');
