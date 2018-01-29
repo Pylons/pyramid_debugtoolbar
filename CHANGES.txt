@@ -1,3 +1,9 @@
+4.3.1 (2018-01-28)
+------------------
+
+- Javascript syntax fixes for browsers that don't support trailing commas.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/326
+
 4.3 (2017-07-14)
 ----------------
 
