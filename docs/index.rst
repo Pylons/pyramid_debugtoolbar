@@ -279,6 +279,21 @@ logs.
   caching-related response headers will be set by the Pyramid ``http_cache``
   view configuration feature when this is ``true``.
 
+Disable squashed exception information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can control the level of printed exceptions from `pyramid_debugtoolbar` by
+adding a custom logger configuration.
+
+::
+
+    [loggers]
+    keys = root, debugtoolbar
+
+    [logger_debugtoolar]
+    level = WARN
+    qualname = pyramid_debugtoolbar
+
 
 Custom authorization
 ~~~~~~~~~~~~~~~~~~~~
