@@ -1,3 +1,11 @@
+unreleased
+----------
+
+- Reduce the log output for squashed exceptions and put them at the INFO
+  level so they can be filtered out if desired.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/328 and
+  https://github.com/Pylons/pyramid_debugtoolbar/pull/329
+
 4.3.1 (2018-01-28)
 ------------------
 
