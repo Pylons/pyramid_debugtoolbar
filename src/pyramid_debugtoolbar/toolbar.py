@@ -12,6 +12,7 @@ from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.utils import addr_in
 from pyramid_debugtoolbar.utils import debug_toolbar_url
 from pyramid_debugtoolbar.utils import get_setting
+from pyramid_debugtoolbar.utils import get_exc_name
 from pyramid_debugtoolbar.utils import hexlify
 from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import logger
@@ -250,20 +251,22 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             if request.exc_info and intercept_exc:
                 toolbar.traceback = process_traceback(request.exc_info)
 
-                msg = 'Squashed Exception at %s\ntraceback url: %s'
+                msg = 'Squashed %s at %s\ntraceback url: %s'
+                exc_name = get_exc_name(request.exc_info[1])
                 subrequest = make_subrequest(
                     request, root_path, request.pdtb_id + '/exception')
-                exc_msg = msg % (request.url, subrequest.url)
-                _logger.info(exc_msg, exc_info=request.exc_info)
+                exc_msg = msg % (exc_name, request.url, subrequest.url)
+                _logger.info(exc_msg)
 
-        except Exception:
+        except Exception as exc:
+            exc_name = get_exc_name(exc)
             if intercept_exc:
                 toolbar.traceback = process_traceback(sys.exc_info())
 
-                msg = 'Uncaught Exception at %s\ntraceback url: %s'
+                msg = 'Uncaught %s at %s\ntraceback url: %s'
                 subrequest = make_subrequest(
                     request, root_path, request.pdtb_id + '/exception')
-                exc_msg = msg % (request.url, subrequest.url)
+                exc_msg = msg % (exc_name, request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
                 response = dispatch(subrequest)
@@ -279,7 +282,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 return response
 
             else:
-                _logger.exception('Exception at %s' % request.url)
+                msg = 'Uncaught %s at %s'
+                _logger.exception(msg % (exc_name, request.url))
             raise
 
         else:

@@ -248,3 +248,13 @@ def resolve_panel_classes(panels, is_global, panel_map):
         if panel_class not in classes:
             classes.append(panel_class)
     return classes
+
+def get_exc_name(exc):
+    cls = exc.__class__
+    module = cls.__module__
+    name = getattr(cls, '__qualname__', None)
+    if name is None:
+        name = cls.__name__
+    if module == 'exceptions' or module == 'builtins':
+        return name
+    return '%s.%s' % (module, name)
