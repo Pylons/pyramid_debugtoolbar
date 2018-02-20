@@ -44,7 +44,7 @@ docs_extras = [
     ]
 
 setup(name='pyramid_debugtoolbar',
-      version='4.3.1',
+      version='4.4',
       description=('A package which provides an interactive HTML debugger '
                    'for Pyramid application development'),
       long_description=README + '\n\n' + CHANGES,
