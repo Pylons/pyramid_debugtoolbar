@@ -84,7 +84,11 @@
 			</tbody>
 		</table>
 	% else:
-		<p>No POST data</p>
+		<p>No POST variables</p>
+		% if post_raw:
+			<h4>POST Raw Data</h4>
+			<pre>${post_raw}</pre>
+		% endif
 	% endif
 	<hr/>
 </%def>

@@ -104,9 +104,12 @@ class RequestVarsDebugPanel(DebugPanel):
                 lambda v: self.process_lazy_attr(attr_, is_dict, v),
             )
 
+        post_items = [(k, saferepr(v)) for k, v in request.POST.items()]
+        post_raw = request.body[:4096] if not post_items else None
         data.update({
             'get': [(k, request.GET.getall(k)) for k in request.GET],
-            'post': [(k, saferepr(v)) for k, v in request.POST.items()],
+            'post': post_items,
+            'post_raw': post_raw,
             'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
             'environ': dictrepr(request.environ),
             'extracted_attributes': {},
