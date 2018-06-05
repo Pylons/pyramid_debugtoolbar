@@ -45,7 +45,7 @@
 		<tr>
 			% if show_engines:
 				<td>
-					<a title="${engine_id_2_url[query['engine_id']]}">${query['engine_id']}</a>
+					<a title="${engine_id_2_url.get(query['engine_id'], '')}">${query['engine_id']}</a>
 				</td>
 			% endif
 			<td>${'%.2f' % query['duration']}</td>
