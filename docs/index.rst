@@ -781,6 +781,10 @@ pull request to update this documentation.
 
 `pyramid_debugtoolbar_dogpile <https://github.com/jvanasco/pyramid_debugtoolbar_dogpile>`_
     dogpile caching support for pyramid_debugtoolbar.
+    
+`pyramid_mongodb2_debugtoolbar <https://github.com/JonnoFTW/pyramid_mongodb2_debugtoolbar>`_
+    pymongo integration and debugging support pyramid_debugtoolbar. Shows 
+    detailed information about queries, connection, databases and their collections.
 
 
 More Information
