@@ -1,6 +1,39 @@
+<%
+	engines_seen = set([query['engine_id'] for query in queries])
+	show_engines = True if len(engines_seen) >= 2 else False
+	engine_id_2_url = {}
+%>
+
+
+% if show_engines:
+	<h3>This Request used multiple SqlAlchemy Engines</h3>
+	<table class="table table-striped table-condensed">
+		% for engine_id in engines:
+			<%
+				## try to deref the weakref
+				engine = engines[engine_id]()
+				engine_url = engine.url if engine else None
+				engine_id_2_url[engine_id] = engine_url  # this will be used for mouseovers
+			%>
+			<tr>
+				<th>${engine_id}</th>
+				<td>
+					% if engine:
+						${engine_url}
+					% endif
+				</td>
+			</tr>
+		% endfor
+	</table>
+% endif
+
+
 <table id="pSqlaTable" class="pDebugSortable table table-striped">
 	<thead>
 		<tr>
+			% if show_engines:
+				<th>Engine</th>
+			% endif
 			<th>Time&nbsp;(ms)</th>
 			<th>Action</th>
 			<th>Query</th>
@@ -10,6 +43,11 @@
 	<tbody>
 	% for i, query in enumerate(queries):
 		<tr>
+			% if show_engines:
+				<td>
+					<a title="${engine_id_2_url.get(query['engine_id'], '')}">${query['engine_id']}</a>
+				</td>
+			% endif
 			<td>${'%.2f' % query['duration']}</td>
 			<td>
 			% if query['is_select']:

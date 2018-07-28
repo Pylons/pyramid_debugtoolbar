@@ -109,6 +109,7 @@ class SQLADebugPanel(DebugPanel):
         self.data = {
             'queries': data,
             'text': text_,
+            'engines': self.engines,
         }
 
     def render_content(self, request):
