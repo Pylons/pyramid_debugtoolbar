@@ -19,6 +19,8 @@ matrix:
         - python: 3.5
           env: TOXENV=docs
         - python: 2.7
+          env: TOXENV=py27-pyramid19
+        - python: 3.5
           env: TOXENV=py35-pyramid19
         - python: nightly
           env: TOXENV=py37
