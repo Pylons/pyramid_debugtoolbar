@@ -17,11 +17,10 @@
 # make it absolute, like shown here.
 #sys.path.append(os.path.abspath('some/directory'))
 
-import sys, os
-
+import datetime
 import pkg_resources
-
 import pylons_sphinx_themes
+import sys, os
 
 # General configuration
 # ---------------------
@@ -36,7 +35,7 @@ extensions = [
 # Looks for pyramid's objects
 intersphinx_mapping = {
     'pyramid':
-    ('http://docs.pylonsproject.org/projects/pyramid/en/latest/', None)}
+    ('https://docs.pylonsproject.org/projects/pyramid/en/latest/', None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -49,7 +48,8 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'pyramid_debugtoolbar'
-copyright = '2012, Agendaless Consulting <chrism@plope.com>'
+thisyear = datetime.datetime.now().year
+copyright = '2012-%s, Agendaless Consulting' % thisyear
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -99,7 +99,9 @@ pygments_style = 'sphinx'
 # Add and use Pylons theme
 html_theme_path = pylons_sphinx_themes.get_html_themes_path()
 html_theme = 'pyramid'
-html_theme_options = dict(github_url='https://github.com/Pylons/pyramid_debugtoolbar')
+html_theme_options = {
+    'github_url': 'https://github.com/Pylons/pyramid_debugtoolbar'
+}
 
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
@@ -133,9 +135,8 @@ html_theme_options = dict(github_url='https://github.com/Pylons/pyramid_debugtoo
 # bottom, using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
 
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-html_use_smartypants = False
+# Do not use smart quotes.
+smartquotes = False
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
@@ -183,12 +184,12 @@ htmlhelp_basename = 'atemplatedoc'
 #  author, document class [howto/manual]).
 latex_documents = [
   ('index', 'pyramid_debugtoolbar.tex', 'pyramid_debugtoolbar Documentation',
-   'Repoze Developers', 'manual'),
+   'Pylons Project Developers', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the
 # top of the title page.
-latex_logo = '.static/logo_hi.gif'
+# latex_logo = '.static/logo_hi.gif'
 
 # For "manual" documents, if this is true, then toplevel headings are
 # parts, not chapters.
