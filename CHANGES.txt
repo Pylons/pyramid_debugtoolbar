@@ -1,9 +1,13 @@
-unreleased
+Unreleased
 ----------
+- Drop Python 3.3 support to align with Pyramid and its EOL.
+
+- Add support for testing on Python 3.7.
 
 - Add a list of engines to the SQLAlchemy panel if queries come from
   multiple engines.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/334
+
 
 4.4 (2018-02-19)
 ----------------
