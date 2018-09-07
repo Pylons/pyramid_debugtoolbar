@@ -1,4 +1,5 @@
 import unittest
+from webtest import TestApp
 from pyramid.request import Request
 from pyramid.response import Response
 from pyramid import testing
@@ -421,6 +422,50 @@ class Test_toolbar_handler(unittest.TestCase):
         result = self._callFUT(request)
 
 
+class TestIntegration(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp(autocommit=False)
+        settings = self.config.registry.settings
+        settings['debugtoolbar.enabled'] = True
+        settings['debugtoolbar.hosts'] = ['127.0.0.1']
+        settings['debugtoolbar.exclude_prefixes'] = ['/excluded']
+        self.config.include('pyramid_debugtoolbar')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def _makeApp(self):
+        return TestApp(self.config.make_wsgi_app())
+
+    def test_it_forwards_exc_info(self):
+        def view(request):
+            raise NotImplementedError
+        called = []
+        def tween(request, handler):
+            response = handler(request)
+            called.append(request)
+            return response
+        self.config.registry.settings['debugtoolbar.intercept_exc'] = True
+        self.config.registry.settings['tween_handler'] = tween
+        self.config.add_tween(
+            __name__ + '.DummyTweenFactory',
+            over=['pyramid_debugtoolbar.toolbar_tween_factory'])
+        self.config.add_view(view)
+        app = self._makeApp()
+        response = app.get(
+            '/',
+            extra_environ=dict(REMOTE_ADDR='127.0.0.1'),
+            status=500,
+        )
+        self.assertEqual(response.status_int, 500)
+        self.assertEqual(len(called), 1)
+        request = called[0]
+        self.assertTrue(request.registry.pdtb_history.last(1)[0][1].traceback)
+        self.assertIsInstance(request.exception, NotImplementedError)
+        self.assertEqual(request.exc_info[0], NotImplementedError)
+        self.assertEqual(request.exc_info[1], request.exception)
+
+
 class DummyPanel(object):
     name = 'dummy_panel'
     is_active = False
@@ -459,3 +504,12 @@ class DummyApp(object):
     def __init__(self, response, registry):
         self.registry = registry
         self.response = response
+
+class DummyTweenFactory(object):
+    def __init__(self, handler, registry):
+        self.handler = handler
+        self.registry = registry
+
+    def __call__(self, request):
+        handler = request.registry.settings['tween_handler']
+        return handler(request, self.handler)

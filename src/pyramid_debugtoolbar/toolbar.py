@@ -279,6 +279,13 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
                 # Inject the button to activate the full toolbar view.
                 toolbar.inject(request, response)
+
+                # we want later tweens to understand that the response
+                # is from handling an exception, so we must add
+                # request.exc_info and request.exception as an indicator
+                # see Pylons/pyramid_debugtoolbar#341
+                request.exception = exc
+                request.exc_info = sys.exc_info()
                 return response
 
             else:
