@@ -14,7 +14,6 @@ from pyramid_debugtoolbar.utils import debug_toolbar_url
 from pyramid_debugtoolbar.utils import get_setting
 from pyramid_debugtoolbar.utils import get_exc_name
 from pyramid_debugtoolbar.utils import hexlify
-from pyramid_debugtoolbar.utils import last_proxy
 from pyramid_debugtoolbar.utils import logger
 from pyramid_debugtoolbar.utils import make_subrequest
 from pyramid_debugtoolbar.utils import resolve_panel_classes
@@ -200,14 +199,24 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         except UnicodeDecodeError as e:
             raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
 
-        last_proxy_addr = None
-        if request.remote_addr:
-            last_proxy_addr = last_proxy(request.remote_addr)
+        client_addr = None
+        if request.remote_addr and ',' not in request.remote_addr:
+            client_addr = request.remote_addr.strip()
+        elif request.remote_addr is not None:
+            warnings.warn(
+                'pyramid_debugtoolbar has detected a broken proxy '
+                'that modified REMOTE_ADDR with an invalid value and is '
+                'cowardly going to refuse to serve the toolbar. If you see '
+                'this message, and you think it is incorrect, please open an '
+                'issue with more details including the proxy you\'re using and '
+                'the format of the REMOTE_ADDR at '
+                'https://github.com/Pylons/pyramid_debugtoolbar/issues/'
+            )
 
         if (
-            last_proxy_addr is None
+            client_addr is None
             or any(p.startswith(e) for e in exclude_prefixes)
-            or not addr_in(last_proxy_addr, hosts)
+            or not addr_in(client_addr, hosts)
             or auth_check and not auth_check(request)
         ):
             return handler(request)

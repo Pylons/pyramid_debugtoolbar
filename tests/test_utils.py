@@ -100,15 +100,3 @@ class Test_addr_in(unittest.TestCase):
 
     def test_in_network_ipv6_interface(self):
         self.assertTrue(self._callFUT('fe80::e556:2a1a:91e2:7023%15', ['::/0']))
-
-
-class Test_last_proxy(unittest.TestCase):
-    def _callFUT(self, addr):
-        from pyramid_debugtoolbar.utils import last_proxy
-        return last_proxy(addr)
-
-    def test_single_host(self):
-        self.assertEqual(self._callFUT('192.168.1.2'), '192.168.1.2')
-
-    def test_multiple_hosts(self):
-        self.assertEqual(self._callFUT('192.168.1.1, 192.168.1.2'), '192.168.1.2')
