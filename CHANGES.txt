@@ -1,5 +1,6 @@
 Unreleased
 ----------
+
 - Drop Python 3.3 support to align with Pyramid and its EOL.
 
 - Add support for testing on Python 3.7.
@@ -7,6 +8,13 @@ Unreleased
 - Add a list of engines to the SQLAlchemy panel if queries come from
   multiple engines.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/334
+
+- When the toolbar intercepts an exception via
+  ``debugtoolbar.intercept_exc = True`` and returns the interactive
+  debugger, it will add ``request.exception`` and ``request.exc_info`` to
+  the request to indicate what exception triggered the response. This helps
+  upstream tweens such as ``pyramid_retry`` to possibly retry the requests.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/343
 
 
 4.4 (2018-02-19)
