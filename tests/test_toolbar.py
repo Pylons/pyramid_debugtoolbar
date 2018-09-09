@@ -1,8 +1,10 @@
+import warnings
 import unittest
-from webtest import TestApp
+
 from pyramid.request import Request
 from pyramid.response import Response
 from pyramid import testing
+from webtest import TestApp
 
 from pyramid_debugtoolbar.compat import bytes_
 
@@ -419,7 +421,15 @@ class Test_toolbar_handler(unittest.TestCase):
     def test_it_remote_addr_proxies_list(self):
         request = Request.blank('/')
         request.remote_addr = '172.16.63.156, 64.119.211.105'
-        result = self._callFUT(request)
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+
+            # test
+            self._callFUT(request)
+
+            self.assertEqual(len(w), 1)
+            assert "REMOTE_ADDR" in str(w[-1].message)
 
 
 class TestIntegration(unittest.TestCase):

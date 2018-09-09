@@ -202,10 +202,6 @@ def addr_in(addr, hosts):
     return False
 
 
-def last_proxy(addr):
-    return addr.split(',').pop().strip()
-
-
 def debug_toolbar_url(request, *elements, **kw):
     return request.route_url('debugtoolbar', subpath=elements, **kw)
 
