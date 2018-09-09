@@ -1,5 +1,5 @@
-Unreleased
-----------
+4.5 (2018-09-09)
+----------------
 
 - Drop Python 3.3 support to align with Pyramid and its EOL.
 
