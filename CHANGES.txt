@@ -16,6 +16,11 @@ Unreleased
   upstream tweens such as ``pyramid_retry`` to possibly retry the requests.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/343
 
+- Stop parsing the ``request.remote_addr`` value when it contains chain of
+  comma-separated ip-addresses. Reject these values and emit a warning
+  to sanitize the value upstream.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/342
+
 
 4.4 (2018-02-19)
 ----------------
