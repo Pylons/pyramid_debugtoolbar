@@ -16,8 +16,10 @@ matrix:
           env: TOXENV=py37
           dist: xenial
           sudo: true
-        - python: nightly
+        - python: 3.8-dev
           env: TOXENV=py38
+          dist: xenial
+          sudo: true
         - python: pypy
           env: TOXENV=pypy
         - python: pypy3
