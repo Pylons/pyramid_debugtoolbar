@@ -100,7 +100,9 @@ pygments_style = 'sphinx'
 html_theme_path = pylons_sphinx_themes.get_html_themes_path()
 html_theme = 'pyramid'
 html_theme_options = {
-    'github_url': 'https://github.com/Pylons/pyramid_debugtoolbar'
+    'github_url': 'https://github.com/Pylons/pyramid_debugtoolbar',
+    'canonical_url':
+        'https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest',
 }
 
 # The style sheet to use for HTML and HTML Help pages. A file of that name
@@ -139,7 +141,14 @@ html_last_updated_fmt = '%b %d, %Y'
 smartquotes = False
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+# Control display of sidebars
+html_sidebars = { '**': [
+    'localtoc.html',
+    'ethicalads.html',
+    'relations.html',
+    'sourcelink.html',
+    'searchbox.html',
+] }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
