@@ -15,7 +15,7 @@ Documentation
 
 The documentation of the current stable release of ``pyramid_debugtoolbar`` is
 available at
-http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/.
+https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/.
 
 
 Demonstration
