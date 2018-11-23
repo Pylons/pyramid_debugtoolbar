@@ -32,7 +32,7 @@ from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 
 _coding_re = re.compile(br'coding[:=]\s*([-\w.]+)')
-_line_re = re.compile(br'^(.*?)$(?m)')
+_line_re = re.compile(br'(?m)^(.*?)$')
 _funcdef_re = re.compile(r'^(\s*def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)')
 UTF8_COOKIE = b'\xef\xbb\xbf'
 
