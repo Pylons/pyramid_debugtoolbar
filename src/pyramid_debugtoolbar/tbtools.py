@@ -31,9 +31,22 @@ from pyramid_debugtoolbar.utils import STATIC_PATH
 from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
 from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
 
-_coding_re = re.compile(br'coding[:=]\s*([-\w.]+)')
-_line_re = re.compile(br'^(.*?)$(?m)')
-_funcdef_re = re.compile(r'^(\s*def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)')
+# Some regexes are binary strings because they are used for determining the
+# file encoding, so they must be able to handle text before encoding.
+_coding_re = re.compile(
+    br'''coding[:=]  # All encoding definitions end with 'coding'. See PEP 263
+    \s*              # Not interested in whitespaces
+    ([-\w.]+)        # The encoding we need
+    ''', re.VERBOSE)
+_line_re = re.compile(br'''^(.*?)$ # an entire line''',
+                      re.MULTILINE | re.VERBOSE)
+_funcdef_re = re.compile(
+    r'''^(\s*def\s)         # The start of a function is either 'def'
+    |                       # or
+    (.*(?<!\w)lambda(:|\s)) # it's a lambda
+    |                       # or
+    ^(\s*@)''',             # it's a decorator
+    re.VERBOSE)
 UTF8_COOKIE = b'\xef\xbb\xbf'
 
 system_exceptions = (SystemExit, KeyboardInterrupt)
