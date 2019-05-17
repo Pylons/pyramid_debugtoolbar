@@ -290,7 +290,7 @@ adding a custom logger configuration.
     [loggers]
     keys = root, debugtoolbar
 
-    [logger_debugtoolar]
+    [logger_debugtoolbar]
     level = WARN
     qualname = pyramid_debugtoolbar
 
