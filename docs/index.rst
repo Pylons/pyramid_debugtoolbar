@@ -581,9 +581,11 @@ sample panel:
        def __init__(self, request):
            self.data = { 'request_path' : request.path_info }
 
+       @property
        def nav_title(self):
            return _('Sample')
 
+       @property
        def title(self):
            return _('Sample')
 
