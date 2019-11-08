@@ -1,3 +1,10 @@
+4.5.1 (2019-11-08)
+------------------
+
+- Add Python 3.8 support.
+
+- Fix internal deprecation warnings on Python 3.7.
+
 4.5 (2018-09-09)
 ----------------
 
