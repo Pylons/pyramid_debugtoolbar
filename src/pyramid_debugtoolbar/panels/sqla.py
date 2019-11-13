@@ -92,7 +92,7 @@ class SQLADebugPanel(DebugPanel):
             except TypeError:
                 pass  # object not JSON serializable
             except ValueError:
-                pass  # JSON cyclic can errors generate ValueError exceptions
+                pass  # JSON parameters serialization can generate ValueError exceptions
             except UnicodeDecodeError:
                 pass  # parameters contain non-utf8 (probably binary) data
 
