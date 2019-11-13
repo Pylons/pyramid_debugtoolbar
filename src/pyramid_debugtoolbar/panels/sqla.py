@@ -91,6 +91,8 @@ class SQLADebugPanel(DebugPanel):
                 params = url_quote(json.dumps(query['parameters']))
             except TypeError:
                 pass  # object not JSON serializable
+            except ValueError:
+                pass  # JSON cyclic can errors generate ValueError exceptions
             except UnicodeDecodeError:
                 pass  # parameters contain non-utf8 (probably binary) data
 
