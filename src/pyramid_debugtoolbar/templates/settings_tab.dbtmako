@@ -21,6 +21,15 @@
 	% endif
 % endfor
 
+<h4>Toolbar Settings</h4>
+	<h5>Host Info</h5>
+		<div>
+			<span>Status: </span>
+			<span id="settings-host_info" class="switch inactive"></span>
+			Some Pyramid applications will exist on multiple hosts. To aid in debugging this applications, you can enable the `hostname` to appear on the mouseover title.
+			This is disabled by default. This setting will not take effect until reloaded or new requests are detected.
+		</div>
+
 
 </div>
 </div>

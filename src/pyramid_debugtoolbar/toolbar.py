@@ -82,7 +82,8 @@ class DebugToolbar(object):
 
     @property
     def json(self):
-        return {'method': self.request.method,
+        return {'host': self.request.host,
+                'method': self.request.method,
                 'path': self.request.path,
                 'scheme': self.request.scheme,
                 'status_code': self.status_int}
