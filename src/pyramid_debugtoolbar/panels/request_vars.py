@@ -35,7 +35,6 @@ extractable_request_attributes = (
 lazy_request_attributes = (
     ('authenticated_userid', False),
     ('effective_principals', False),
-    ('unauthenticated_userid', False),
 )
 # Note1: accessed as a 'string', `registry` be the python package name;
 #        accessed as a dict, will be the contents of the registry
