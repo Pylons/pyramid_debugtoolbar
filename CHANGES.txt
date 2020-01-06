@@ -1,3 +1,12 @@
+4.5.2 (2010-01-06)
+------------------
+
+- Stop accessing ``request.unauthenticated_userid`` in preparation for
+  Pyramid 2.0 where it is deprecated.
+
+- Catch a ``ValueError`` when JSON-serializing SQLA objects for display.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/357
+
 4.5.1 (2019-11-08)
 ------------------
 
