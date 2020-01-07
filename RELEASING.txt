@@ -38,10 +38,10 @@ Marketing and communications
 - Announce to Twitter.
 
 ```
-Pyramid Debugtoolbar 3.X released.
+Pyramid Debugtoolbar 4.X released.
 
 PyPI
-https://pypi.python.org/pypi/pyramid_debugtoolbar/3.X
+https://pypi.python.org/pypi/pyramid_debugtoolbar/4.X
 
 Issues
 https://github.com/Pylons/pyramid_debugtoolbar/issues
@@ -50,7 +50,7 @@ https://github.com/Pylons/pyramid_debugtoolbar/issues
 - Announce to maillist.
 
 ```
-Pyramid Debugtoolbar 3.X.X has been released.
+Pyramid Debugtoolbar 4.X.X has been released.
 
 Here are the changes:
 
@@ -61,7 +61,7 @@ http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.ht
 
 You can install it via PyPI:
 
-  pip install pyramid_debugtoolbar==3.X.X
+  pip install pyramid_debugtoolbar==4.X.X
 
 Enjoy, and please report any issues you find to the issue tracker at
 https://github.com/Pylons/pyramid_debugtoolbar/issues
