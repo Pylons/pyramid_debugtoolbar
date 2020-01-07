@@ -40,8 +40,11 @@ Marketing and communications
 ```
 Pyramid Debugtoolbar 4.X released.
 
+Changes
+https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.html
+
 PyPI
-https://pypi.python.org/pypi/pyramid_debugtoolbar/4.X
+https://pypi.org/project/pyramid-debugtoolbar/4.X.X/
 
 Issues
 https://github.com/Pylons/pyramid_debugtoolbar/issues
@@ -57,7 +60,7 @@ Here are the changes:
 <<changes>>
 
 Full change history:
-http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.html
+https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.html
 
 You can install it via PyPI:
 
