@@ -228,7 +228,7 @@ file.
 
 ``debugtoolbar.max_request_history``
 
-  The debug toolbar works by storing the original request and it's associated
+  The debug toolbar works by storing the original request and its associated
   data in memory, and making this data available to subsequent requests.  By
   default, the toolbar maintains a history of the last 100 requests made to the
   application. By setting ``debugtoolbar.max_request_history``, one can override
@@ -386,10 +386,18 @@ version and platform itself.
 
 .. image:: versions.png
 
-Settings
-~~~~~~~~
+.. _panel_settings:
+
+Settings Panel
+~~~~~~~~~~~~~~
 
 Displays Pyramid deployment settings, i.e., ``registry.settings``.
+
+.. note::
+
+   The toolbar offers a `Settings` "tab" in the navigation bar
+   (see :ref:`toolbar_settings`), which is distinct from this `Settings`
+   "panel".
 
 .. image:: settings.png
 
@@ -422,8 +430,10 @@ Displays messages logged by the current page.
 
 .. image:: logging.png
 
-Performance
-~~~~~~~~~~~
+.. _panel_performance:
+
+Performance Panel
+~~~~~~~~~~~~~~~~~
 
 Displays timing information, and, if enabled, Python profiling information
 for the current page.  When it is red, only timing will be done and
@@ -431,10 +441,14 @@ no profiling information.
 
 .. note::
 
-   An internal profiler can be enabled through the "performance" checkmark
-   in the "Settings" tab in the navigation bar. When the checkbox is green,
-   the request will be profiled and profiling information will be gathered and
-   displayed on the "Performance" panel output.
+   The internal profiler can be enabled through the "performance" checkmark
+   in the "Settings" tab in the navigation bar. see
+   :ref:`toolbar_settings_performance`.
+
+.. note::
+
+   The internal profiler can be enabled on a per-request basis by sending a
+   ``pdtb_active`` cookie. see :ref:`activating_panels`.
 
 .. image:: performance.png
 
@@ -477,6 +491,42 @@ Displays a rendering of the data available in Pyramid's configuration
 introspection system (available in Pyramid 1.3+ only).
 
 .. image:: introspection.png
+
+.. _toolbar_settings:
+
+Toolbar Settings
+----------------
+
+The `Settings` "tab" allows for realtime customization of the toolbar and its
+panels.
+
+.. note::
+
+   This refers to the toolbar's `Settings` "tab" in the navigation bar, which is
+   distinct from the `Settings` "panel" (see :ref:`panel_settings`).
+
+.. image:: toolbar_settings.png
+
+.. _toolbar_settings_performance:
+
+Settings: Performance Debug Panel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An internal profiler can be enabled through the "performance" checkmark in the
+`Settings` tab in the navigation bar. When the checkbox is green, the request
+will be profiled and profiling information will be gathered and displayed on the
+`Performance` panel output.  (see :ref:`panel_performance`).
+
+Settings: Request Hostname
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some Pyramid applications will exist on multiple hosts. To aid in debugging
+these applications, you can enable the ``hostname`` to appear on mouseover
+titles of the "Request" selector column on the left side of the toolbar, instead
+of the path. This functionality is disabled by default; This setting will not
+take effect until the toolbar is reloaded or new requests are detected.
+			
+.. image:: request_hostname.png
 
 Exception Handling
 ------------------
