@@ -391,7 +391,7 @@ version and platform itself.
 Settings Panel
 ~~~~~~~~~~~~~~
 
-Displays Pyramid deployment settings, i.e., ``registry.settings``.
+Displays your Pyramid application's deployment settings, i.e., ``registry.settings``.
 
 .. note::
 
