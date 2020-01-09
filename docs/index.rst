@@ -393,7 +393,7 @@ Settings Panel
 
 Displays your Pyramid application's deployment settings, i.e., ``registry.settings``.
 
-.. note::
+.. seealso::
 
    The toolbar offers a `Settings` "tab" in the navigation bar
    (see :ref:`toolbar_settings`), which is distinct from this `Settings`
