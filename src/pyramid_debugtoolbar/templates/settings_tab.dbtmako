@@ -27,7 +27,7 @@
 			<span>Status: </span>
 			<span id="settings-host_info" class="switch inactive"></span>
 			Some Pyramid applications will exist on multiple hosts. To aid in debugging these applications, you can enable the "hostname" to appear on the mouseover title instead of the path.
-			This functionality is disabled by default; This setting will not take effect until the toolbar is reloaded or new requests are detected.
+			This functionality is disabled by default. This setting will not take effect until the toolbar is reloaded or new requests are detected.
 		</div>
 
 
