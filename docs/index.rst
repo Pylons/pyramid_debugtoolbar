@@ -522,7 +522,7 @@ Settings: Request Hostname
 
 Some Pyramid applications will exist on multiple hosts. To aid in debugging
 these applications, you can enable the ``hostname`` to appear on mouseover
-titles of the "Request" selector column on the left side of the toolbar, instead
+titles of the :guilabel:`Request` selector column on the left side of the toolbar, instead
 of the path. This functionality is disabled by default; This setting will not
 take effect until the toolbar is reloaded or new requests are detected.
 			
