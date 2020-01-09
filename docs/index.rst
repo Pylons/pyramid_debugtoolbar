@@ -497,7 +497,7 @@ introspection system (available in Pyramid 1.3+ only).
 Toolbar Settings
 ----------------
 
-The `Settings` "tab" allows for realtime customization of the toolbar and its
+The :guilabel:`Settings` tab allows for realtime customization of the toolbar and its panels.
 panels.
 
 .. note::
