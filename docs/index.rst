@@ -395,9 +395,8 @@ Displays your Pyramid application's deployment settings, i.e., ``registry.settin
 
 .. seealso::
 
-   The toolbar offers a `Settings` "tab" in the navigation bar
-   (see :ref:`toolbar_settings`), which is distinct from this `Settings`
-   "panel".
+    For realtime customization of the toolbar and its panels, use the :guilabel:`Settings` *tab* in the navigation bar.
+    See :ref:`toolbar_settings`.
 
 .. image:: settings.png
 
@@ -439,16 +438,15 @@ Displays timing information, and, if enabled, Python profiling information
 for the current page.  When it is red, only timing will be done and
 no profiling information.
 
-.. note::
+There are two ways to enable the internal profiler used by the
+:guilabel:`Performance` panel.
 
-   The internal profiler can be enabled through the "performance" checkmark
-   in the "Settings" tab in the navigation bar. see
-   :ref:`toolbar_settings_performance`.
+#.  Under the :guilabel:`Settings` tab in the navigation bar, click the red :guilabel:`X` mark.
+    When there is a green :guilabel:`check` mark, each request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
+    See :ref:`toolbar_settings_performance` [:guilabel:`Toolbar Settings`].
 
-.. note::
-
-   The internal profiler can be enabled on a per-request basis by sending a
-   ``pdtb_active`` cookie. see :ref:`activating_panels`.
+#.  Send a ``pdtb_active`` cookie on a per-request basis.
+    See :ref:`activating_panels`.
 
 .. image:: performance.png
 
@@ -502,15 +500,14 @@ panels.
 
 .. seealso::
 
-   This refers to the toolbar's `Settings` "tab" in the navigation bar, which is
-   distinct from the `Settings` "panel" (see :ref:`panel_settings`).
+   To display your Pyramid application's settings, see :ref:`panel_settings` [:guilabel:`Panels`].
 
 .. image:: toolbar_settings.png
 
 .. _toolbar_settings_performance:
 
-Settings: Performance Debug Panel
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Performance Debug Panel
+~~~~~~~~~~~~~~~~~~~~~~~
 
 An internal profiler can be enabled through the "performance" checkmark in the
 `Settings` tab in the navigation bar. When the checkbox is green, the request
@@ -518,10 +515,10 @@ will be profiled and profiling information will be gathered and displayed on the
 An internal profiler can be enabled under the :guilabel:`Settings` tab in the navigation bar.
 Click the red :guilabel:`X` mark to enable the profiler.
 When the mark is a green :guilabel:`check`, the request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
-See :ref:`panel_performance`.
+See :ref:`panel_performance` [:guilabel:`Panels`].
 
-Settings: Request Hostname
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Request Hostname
+~~~~~~~~~~~~~~~~
 
 Some Pyramid applications will exist on multiple hosts. To aid in debugging
 these applications, you can enable the ``hostname`` to appear on mouseover
