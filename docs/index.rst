@@ -388,8 +388,8 @@ version and platform itself.
 
 .. _panel_settings:
 
-Settings Panel
-~~~~~~~~~~~~~~
+Settings
+~~~~~~~~
 
 Displays your Pyramid application's deployment settings, i.e., ``registry.settings``.
 
@@ -432,8 +432,8 @@ Displays messages logged by the current page.
 
 .. _panel_performance:
 
-Performance Panel
-~~~~~~~~~~~~~~~~~
+Performance
+~~~~~~~~~~~
 
 Displays timing information, and, if enabled, Python profiling information
 for the current page.  When it is red, only timing will be done and
@@ -515,7 +515,10 @@ Settings: Performance Debug Panel
 An internal profiler can be enabled through the "performance" checkmark in the
 `Settings` tab in the navigation bar. When the checkbox is green, the request
 will be profiled and profiling information will be gathered and displayed on the
-`Performance` panel output.  (see :ref:`panel_performance`).
+An internal profiler can be enabled under the :guilabel:`Settings` tab in the navigation bar.
+Click the red :guilabel:`X` mark to enable the profiler.
+When the mark is a green :guilabel:`check`, the request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
+See :ref:`panel_performance`.
 
 Settings: Request Hostname
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
