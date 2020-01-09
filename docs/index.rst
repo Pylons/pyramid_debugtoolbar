@@ -500,7 +500,7 @@ Toolbar Settings
 The :guilabel:`Settings` tab allows for realtime customization of the toolbar and its panels.
 panels.
 
-.. note::
+.. seealso::
 
    This refers to the toolbar's `Settings` "tab" in the navigation bar, which is
    distinct from the `Settings` "panel" (see :ref:`panel_settings`).
