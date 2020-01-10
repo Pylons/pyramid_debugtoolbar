@@ -443,7 +443,7 @@ There are two ways to enable the internal profiler used by the
 
 #.  Under the :guilabel:`Settings` tab in the navigation bar, click the red :guilabel:`X` mark.
     When there is a green :guilabel:`check` mark, each request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
-    See :ref:`toolbar_settings_performance` [:guilabel:`Toolbar Settings`].
+    See :ref:`Toolbar Settings <toolbar_settings_performance>`.
 
 #.  Send a ``pdtb_active`` cookie on a per-request basis.
     See :ref:`activating_panels`.
@@ -496,11 +496,10 @@ Toolbar Settings
 ----------------
 
 The :guilabel:`Settings` tab allows for realtime customization of the toolbar and its panels.
-panels.
 
 .. seealso::
 
-   To display your Pyramid application's settings, see :ref:`panel_settings` [:guilabel:`Panels`].
+   To display your Pyramid application's settings, see :ref:`Settings panel <panel_settings>`.
 
 .. image:: toolbar_settings.png
 
@@ -515,14 +514,14 @@ will be profiled and profiling information will be gathered and displayed on the
 An internal profiler can be enabled under the :guilabel:`Settings` tab in the navigation bar.
 Click the red :guilabel:`X` mark to enable the profiler.
 When the mark is a green :guilabel:`check`, the request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
-See :ref:`panel_performance` [:guilabel:`Panels`].
+See :ref:`Performance panel <panel_performance>`.
 
 Request Hostname
 ~~~~~~~~~~~~~~~~
 
 Some Pyramid applications will exist on multiple hosts. To aid in debugging
 these applications, you can enable the ``hostname`` to appear on mouseover
-titles of the :guilabel:`Request` selector column on the left side of the toolbar, instead
+titles of the :guilabel:`Requests` selector column on the left side of the toolbar, instead
 of the path. This functionality is disabled by default. This setting will not
 take effect until the toolbar is reloaded or new requests are detected.
 			
