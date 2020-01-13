@@ -508,9 +508,6 @@ The :guilabel:`Settings` tab allows for realtime customization of the toolbar an
 Performance Debug Panel
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-An internal profiler can be enabled through the "performance" checkmark in the
-`Settings` tab in the navigation bar. When the checkbox is green, the request
-will be profiled and profiling information will be gathered and displayed on the
 An internal profiler can be enabled under the :guilabel:`Settings` tab in the navigation bar.
 Click the red :guilabel:`X` mark to enable the profiler.
 When the mark is a green :guilabel:`check`, the request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
