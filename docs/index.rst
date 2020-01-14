@@ -497,11 +497,11 @@ Toolbar Settings
 
 The :guilabel:`Settings` tab allows for realtime customization of the toolbar and its panels.
 
+.. image:: toolbar_settings.png
+
 .. seealso::
 
    To display your Pyramid application's settings, see :ref:`Settings panel <panel_settings>`.
-
-.. image:: toolbar_settings.png
 
 .. _toolbar_settings_performance:
 
