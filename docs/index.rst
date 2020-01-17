@@ -343,7 +343,7 @@ Most panels do not support any extra active features and need not be
 explicitly activated. However, some panels support an optional
 :attr:`~pyramid_debugtoolbar.panel.DebugPanel.is_active` state in which they
 will do some extra work. For example, the
-:class:`~pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel``
+:ref:`PerformanceDebugPanel <panel_performance>`
 will not do profiling of your requests unless it has been activated.
 
 This activation can be controlled on a per-request basis by setting the
@@ -512,17 +512,6 @@ An internal profiler can be enabled under the :guilabel:`Settings` tab in the na
 Click the red :guilabel:`X` mark to enable the profiler.
 When the mark is a green :guilabel:`check`, the request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
 See :ref:`Performance panel <panel_performance>`.
-
-Request Hostname
-~~~~~~~~~~~~~~~~
-
-Some Pyramid applications will exist on multiple hosts. To aid in debugging
-these applications, you can enable the ``hostname`` to appear on mouseover
-titles of the :guilabel:`Requests` selector column on the left side of the toolbar, instead
-of the path. This functionality is disabled by default. This setting will not
-take effect until the toolbar is reloaded or new requests are detected.
-			
-.. image:: request_hostname.png
 
 Exception Handling
 ------------------

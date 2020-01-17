@@ -1,7 +1,4 @@
 var COOKIE_NAME_ACTIVE = 'pdtb_active';
-var COOKIE_NAME_HOSTINFO = 'pdtb_hostinfo';
-var HOSTINFO_ACTIVE = undefined;  // used to template the title
-
 
 function toggle_content(elem) {
   if (elem.is(':visible')) {
@@ -85,7 +82,7 @@ $(function () {
       var request_id = item[0];
       var active = item[2];
 
-      var title = HOSTINFO_ACTIVE ? (details.path+' ('+details.host+')') : details.path;  // see function `hostinfo_set`
+      var title = details.host + details.path;
       html += '<li class="'+active+'"><a href="'+window.DEBUG_TOOLBAR_ROOT_PATH+request_id+'" title="'+title+'">';
       html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
       html += details.method;
@@ -244,33 +241,3 @@ $(function() {
 	});
 
 });
-
-
-/*
-To ease development of requests on multiple hosts, you can enable the `hostname` to appear on the mouseover title.
-This is disabled by default.
-*/
-var _display = $('#settings-host_info');
-function hostinfo_set(is_active){
-	if (is_active){
-		HOSTINFO_ACTIVE = true;
-		$.cookie(COOKIE_NAME_HOSTINFO, '1', {path: '/'} );
-		_display.addClass('active')
-		_display.removeClass('inactive')
-	} else {
-		HOSTINFO_ACTIVE = false;
-		$.cookie(COOKIE_NAME_HOSTINFO, null, {path: '/', expires: -1});
-		_display.addClass('inactive')
-		_display.removeClass('active')
-	}
-}
-_display.click(function(){
-	if (HOSTINFO_ACTIVE){hostinfo_set(false);}
-	else {hostinfo_set(true);}
-});
-function _hostinfo_initialize(){
-	// check the cookie
-	var _active = $.cookie(COOKIE_NAME_HOSTINFO);
-	hostinfo_set(_active);
-}
-_hostinfo_initialize();
