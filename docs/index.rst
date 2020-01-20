@@ -228,7 +228,7 @@ file.
 
 ``debugtoolbar.max_request_history``
 
-  The debug toolbar works by storing the original request and it's associated
+  The debug toolbar works by storing the original request and its associated
   data in memory, and making this data available to subsequent requests.  By
   default, the toolbar maintains a history of the last 100 requests made to the
   application. By setting ``debugtoolbar.max_request_history``, one can override
@@ -343,7 +343,7 @@ Most panels do not support any extra active features and need not be
 explicitly activated. However, some panels support an optional
 :attr:`~pyramid_debugtoolbar.panel.DebugPanel.is_active` state in which they
 will do some extra work. For example, the
-:class:`~pyramid_debugtoolbar.panels.performance.PerformanceDebugPanel``
+:ref:`PerformanceDebugPanel <panel_performance>`
 will not do profiling of your requests unless it has been activated.
 
 This activation can be controlled on a per-request basis by setting the
@@ -386,10 +386,17 @@ version and platform itself.
 
 .. image:: versions.png
 
+.. _panel_settings:
+
 Settings
 ~~~~~~~~
 
-Displays Pyramid deployment settings, i.e., ``registry.settings``.
+Displays your Pyramid application's deployment settings, i.e., ``registry.settings``.
+
+.. seealso::
+
+    For realtime customization of the toolbar and its panels, use the :guilabel:`Settings` *tab* in the navigation bar.
+    See :ref:`toolbar_settings`.
 
 .. image:: settings.png
 
@@ -422,6 +429,8 @@ Displays messages logged by the current page.
 
 .. image:: logging.png
 
+.. _panel_performance:
+
 Performance
 ~~~~~~~~~~~
 
@@ -429,12 +438,15 @@ Displays timing information, and, if enabled, Python profiling information
 for the current page.  When it is red, only timing will be done and
 no profiling information.
 
-.. note::
+There are two ways to enable the internal profiler used by the
+:guilabel:`Performance` panel.
 
-   An internal profiler can be enabled through the "performance" checkmark
-   in the "Settings" tab in the navigation bar. When the checkbox is green,
-   the request will be profiled and profiling information will be gathered and
-   displayed on the "Performance" panel output.
+#.  Under the :guilabel:`Settings` tab in the navigation bar, click the red :guilabel:`X` mark.
+    When there is a green :guilabel:`check` mark, each request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
+    See :ref:`Toolbar Settings <toolbar_settings_performance>`.
+
+#.  Send a ``pdtb_active`` cookie on a per-request basis.
+    See :ref:`activating_panels`.
 
 .. image:: performance.png
 
@@ -477,6 +489,29 @@ Displays a rendering of the data available in Pyramid's configuration
 introspection system (available in Pyramid 1.3+ only).
 
 .. image:: introspection.png
+
+.. _toolbar_settings:
+
+Toolbar Settings
+----------------
+
+The :guilabel:`Settings` tab allows for realtime customization of the toolbar and its panels.
+
+.. image:: toolbar_settings.png
+
+.. seealso::
+
+   To display your Pyramid application's settings, see :ref:`Settings panel <panel_settings>`.
+
+.. _toolbar_settings_performance:
+
+Performance Debug Panel
+~~~~~~~~~~~~~~~~~~~~~~~
+
+An internal profiler can be enabled under the :guilabel:`Settings` tab in the navigation bar.
+Click the red :guilabel:`X` mark to enable the profiler.
+When the mark is a green :guilabel:`check`, the request will be profiled and profiling information will be gathered and displayed on the :guilabel:`Performance` panel output.
+See :ref:`Performance panel <panel_performance>`.
 
 Exception Handling
 ------------------

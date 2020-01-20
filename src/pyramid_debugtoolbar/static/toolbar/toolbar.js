@@ -1,6 +1,5 @@
 var COOKIE_NAME_ACTIVE = 'pdtb_active';
 
-
 function toggle_content(elem) {
   if (elem.is(':visible')) {
     elem.hide();
@@ -83,7 +82,8 @@ $(function () {
       var request_id = item[0];
       var active = item[2];
 
-      html += '<li class="'+active+'"><a href="'+window.DEBUG_TOOLBAR_ROOT_PATH+request_id+'" title="'+details.path+'">';
+      var title = details.host + details.path;
+      html += '<li class="'+active+'"><a href="'+window.DEBUG_TOOLBAR_ROOT_PATH+request_id+'" title="'+title+'">';
       html += '<span class="badge pull-right _'+details.status_code+'">'+details.status_code+'</span>';
       html += details.method;
       if (details.scheme == 'https'){
