@@ -105,30 +105,23 @@ class DebugToolbar(object):
         """
         Inject the debug toolbar iframe into an HTML response.
         """
-        is_xhtml = "xhtml" in response.content_type
-
-        toolbar_html = toolbar_html_template.format(
-            button_style=self._button_style(request),
-            css_path=self._css_path(request),
-            toolbar_url=debug_toolbar_url(request, request.pdtb_id),
-            optional_slash=("/" if is_xhtml else ""))
-
-        toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
-        response.body = replace_insensitive(
-            response.body, bytes_('</body>'),
-            toolbar_html + bytes_('</body>')
-        )
-
-    def _css_path(self, request):
-        return request.static_url(STATIC_PATH + 'toolbar/toolbar_button.css')
-
-    def _button_style(self, request):
+        # called in host app
+        response_html = response.body
+        toolbar_url = debug_toolbar_url(request, request.pdtb_id)
         button_style = get_setting(request.registry.settings,
                                    'button_style', '')
-        if button_style:
-            return 'style="{0}"'.format(button_style)
-        else:
-            return ''
+        css_path = request.static_url(
+            STATIC_PATH + 'toolbar/toolbar_button.css')
+        toolbar_html = toolbar_html_template % {
+            'button_style': (
+                'style="{0}"'.format(button_style) if button_style else ""),
+            'css_path': css_path,
+            'toolbar_url': toolbar_url}
+        toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
+        response.body = replace_insensitive(
+            response_html, bytes_('</body>'),
+            toolbar_html + bytes_('</body>')
+        )
 
 
 def process_traceback(info):
@@ -343,12 +336,12 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
 
 toolbar_html_template = """\
-<link rel="stylesheet" type="text/css" href="{css_path}" {optional_slash}>
+<link rel="stylesheet" type="text/css" href="%(css_path)s">
 
 <div id="pDebug">
-    <div {button_style} id="pDebugToolbarHandle">
+    <div %(button_style)s id="pDebugToolbarHandle">
         <a title="Show Toolbar" id="pShowToolBarButton"
-           href="{toolbar_url}" target="pDebugToolbar">&#171;</a>
+           href="%(toolbar_url)s" target="pDebugToolbar">&#171;</a>
     </div>
 </div>
 """
