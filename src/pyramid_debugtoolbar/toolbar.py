@@ -336,7 +336,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
 
 toolbar_html_template = """\
-<link rel="stylesheet" type="text/css" href="%(css_path)s">
+<link rel="stylesheet" type="text/css" href="%(css_path)s" />
 
 <div id="pDebug">
     <div %(button_style)s id="pDebugToolbarHandle">
