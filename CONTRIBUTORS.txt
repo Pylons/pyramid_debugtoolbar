@@ -124,3 +124,4 @@ Contributors
 - Andrey Tretyakov, 2017-05-27
 - Marcin Lulek, 2018-02-19
 - Wim De Clercq, 2018-11-23
+- Holger Peters, 2020-02-06
