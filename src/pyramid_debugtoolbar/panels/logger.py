@@ -1,6 +1,7 @@
 from collections import Counter
 import datetime
 import logging
+
 try:
     import threading
 except ImportError:
@@ -17,19 +18,22 @@ class ThreadTrackingHandler(logging.Handler):
         if threading is None:
             raise NotImplementedError(
                 "threading module is not available, "
-                "the logging panel cannot be used without it")
+                "the logging panel cannot be used without it"
+            )
         logging.Handler.__init__(self)
         self.records = {}  # a dictionary that maps threads to log records
 
     def emit(self, record):
-        self.get_records().append({
-            'message': record.getMessage(),
-            'time': datetime.datetime.fromtimestamp(record.created),
-            'level': record.levelname,
-            'file': format_fname(record.pathname),
-            'file_long': record.pathname,
-            'line': record.lineno,
-        })
+        self.get_records().append(
+            {
+                'message': record.getMessage(),
+                'time': datetime.datetime.fromtimestamp(record.created),
+                'level': record.levelname,
+                'file': format_fname(record.pathname),
+                'file_long': record.pathname,
+                'line': record.lineno,
+            }
+        )
 
     def get_records(self, thread=None):
         """

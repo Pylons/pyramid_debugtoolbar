@@ -70,6 +70,7 @@ class RequestVarsDebugPanel(DebugPanel):
     A panel to display request variables (POST/GET, session, cookies, and
     ad-hoc request attributes).
     """
+
     name = 'request_vars'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/request_vars.dbtmako'
@@ -92,31 +93,39 @@ class RequestVarsDebugPanel(DebugPanel):
         else:
             # only process the session if it's accessed
             wrap_load(
-                request, 'session',
+                request,
+                'session',
                 self.process_session_attr,
                 reify=True,
             )
 
         for attr_, is_dict in lazy_request_attributes:
             wrap_load(
-                request, attr_,
+                request,
+                attr_,
                 lambda v: self.process_lazy_attr(attr_, is_dict, v),
             )
 
-        data.update({
-            'get': [(k, request.GET.getall(k)) for k in request.GET],
-            'post': [(k, saferepr(v)) for k, v in request.POST.items()],
-            'cookies': [(k, request.cookies.get(k)) for k in request.cookies],
-            'environ': dictrepr(request.environ),
-            'extracted_attributes': {},
-            'attrs': dictrepr(attrs),
-            'session': None,
-        })
+        data.update(
+            {
+                'get': [(k, request.GET.getall(k)) for k in request.GET],
+                'post': [(k, saferepr(v)) for k, v in request.POST.items()],
+                'cookies': [
+                    (k, request.cookies.get(k)) for k in request.cookies
+                ],
+                'environ': dictrepr(request.environ),
+                'extracted_attributes': {},
+                'attrs': dictrepr(attrs),
+                'session': None,
+            }
+        )
 
     def process_session_attr(self, session):
-        self.data.update({
-            'session': dictrepr(session),
-        })
+        self.data.update(
+            {
+                'session': dictrepr(session),
+            }
+        )
         return session
 
     def process_lazy_attr(self, attr, is_dict, val_):
@@ -136,7 +145,7 @@ class RequestVarsDebugPanel(DebugPanel):
 
 
 def wrap_load(obj, name, cb, reify=False):
-    """ Callback when a property is accessed.
+    """Callback when a property is accessed.
 
     This currently only works for reified properties that are called once.
 
@@ -150,6 +159,7 @@ def wrap_load(obj, name, cb, reify=False):
     def wrapper(self):
         val = orig_property.__get__(obj)
         return cb(val)
+
     obj.set_property(wrapper, name=name, reify=reify)
 
 

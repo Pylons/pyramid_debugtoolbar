@@ -6,7 +6,8 @@
 *.txt.py
 *~
 .*.swp
-.coverage*
+.coverage
+.coverage.*
 build/
 dist/
 .tox/

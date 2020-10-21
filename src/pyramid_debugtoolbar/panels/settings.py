@@ -10,6 +10,7 @@ class SettingsDebugPanel(DebugPanel):
     A panel to display Pyramid deployment settings for your application (the
     values in ``registry.settings``).
     """
+
     name = 'settings'
     has_content = True
     template = 'pyramid_debugtoolbar.panels:templates/settings.dbtmako'
@@ -35,8 +36,11 @@ class SettingsDebugPanel(DebugPanel):
         settings = request.registry.settings
         # filter out non-pyramid prefixed settings to avoid duplication
         if 'pyramid.default_locale_name' in settings:
-            reprs = [(k, repr(v)) for k, v in settings.items()
-                     if k not in self.filter_old_settings]
+            reprs = [
+                (k, repr(v))
+                for k, v in settings.items()
+                if k not in self.filter_old_settings
+            ]
         else:
             reprs = [(k, repr(v)) for k, v in settings.items()]
         self.data = {'settings': sorted(reprs, key=itemgetter(0))}

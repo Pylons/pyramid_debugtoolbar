@@ -1,14 +1,15 @@
-import re
-
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
+import re
 
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import escape
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
-from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
+from pyramid_debugtoolbar.utils import (
+    EXC_ROUTE_NAME,
+    ROOT_ROUTE_NAME,
+    STATIC_PATH,
+    escape,
+)
 
 _ = lambda x: x
 
@@ -29,7 +30,8 @@ class TracebackPanel(DebugPanel):
 
     def process_response(self, response):
         self.traceback = traceback = getattr(
-            self.request.debug_toolbar, 'traceback', None)
+            self.request.debug_toolbar, 'traceback', None
+        )
         if self.traceback is not None:
             exc = escape(traceback.exception)
             evalex = self.request.registry.pdtb_eval_exc
@@ -52,17 +54,20 @@ class TracebackPanel(DebugPanel):
 
     def render_vars(self, request):
         vars = self.data.copy()
-        vars.update({
-            'static_path': request.static_url(STATIC_PATH),
-            'root_path': request.route_url(ROOT_ROUTE_NAME),
-            'url': request.route_url(
-                EXC_ROUTE_NAME, request_id=request.pdtb_id),
-
-            # render the summary using the toolbar's request object, not
-            # the original request that generated the traceback!
-            'summary': self.traceback.render_summary(
-                include_title=False, request=request),
-        })
+        vars.update(
+            {
+                'static_path': request.static_url(STATIC_PATH),
+                'root_path': request.route_url(ROOT_ROUTE_NAME),
+                'url': request.route_url(
+                    EXC_ROUTE_NAME, request_id=request.pdtb_id
+                ),
+                # render the summary using the toolbar's request object, not
+                # the original request that generated the traceback!
+                'summary': self.traceback.render_summary(
+                    include_title=False, request=request
+                ),
+            }
+        )
         return vars
 
 
@@ -109,7 +114,8 @@ class ExceptionDebugView(object):
     def execute(self):
         if not self.request.registry.parent_registry.pdtb_eval_exc:
             raise HTTPBadRequest(
-                'Evaluating code in stack frames is not allowed.')
+                'Evaluating code in stack frames is not allowed.'
+            )
         frame = self.frame
         cmd = self.request.params.get('cmd')
         if cmd is None:

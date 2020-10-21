@@ -1,9 +1,9 @@
+from pyramid import testing
+from pyramid.httpexceptions import HTTPBadRequest
 import unittest
 
-from pyramid_debugtoolbar.compat import text_
-from pyramid_debugtoolbar.compat import bytes_
-from pyramid.httpexceptions import HTTPBadRequest
-from pyramid import testing
+from pyramid_debugtoolbar.compat import bytes_, text_
+
 
 class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
@@ -20,10 +20,12 @@ class TestExceptionDebugView(unittest.TestCase):
 
     def _makeOne(self, request):
         from pyramid_debugtoolbar.panels.traceback import ExceptionDebugView
+
         return ExceptionDebugView(request)
 
     def _makeRequest(self):
         from pyramid_debugtoolbar.utils import ToolbarStorage
+
         request = testing.DummyRequest()
         request.matchdict['request_id'] = 'reqid'
         request.matchdict['frame_id'] = '0'
@@ -90,34 +92,42 @@ class TestExceptionDebugView(unittest.TestCase):
 
     def test_exception_summary(self):
         from pyramid.renderers import render
+
         request = self._makeRequest()
         request.static_url = lambda *arg, **kw: 'http://static'
         vars = {
-            'classes':      text_('classfoo class&bar'),
-            'title':        text_('<h3>TEH TITLE</h3>'),
-            'frames':       text_('<pre>Frame1</pre><pre>Frame2</pre>'),
+            'classes': text_('classfoo class&bar'),
+            'title': text_('<h3>TEH TITLE</h3>'),
+            'frames': text_('<pre>Frame1</pre><pre>Frame2</pre>'),
         }
         html = render(
             'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
-            vars, request=request)
+            vars,
+            request=request,
+        )
         self.assertTrue(
-            text_('<div class="classfoo class&amp;bar">') in html,html)
+            text_('<div class="classfoo class&amp;bar">') in html, html
+        )
+        self.assertTrue(text_('<h3>TEH TITLE</h3>') in html, html)
         self.assertTrue(
-            text_('<h3>TEH TITLE</h3>') in html, html)
-        self.assertTrue(
-            text_('<pre>Frame1</pre><pre>Frame2</pre>') in html, html)
+            text_('<pre>Frame1</pre><pre>Frame2</pre>') in html, html
+        )
+
 
 class DummyToolbar(object):
     pass
+
 
 class DummyTraceback(object):
     def __init__(self, id, frames):
         self.id = id
         self.frames = frames
 
+
 class DummyConsole(object):
     def eval(self, cmd):
         return 'evaled'
+
 
 class DummyFrame(object):
     def __init__(self, id):
