@@ -1,10 +1,11 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools >= 41", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 79
 skip-string-normalization = true
-py36 = false
+target-version = ['py27', 'py35', 'py36', 'py37', 'py38']
 exclude = '''
 /(
     \.git
