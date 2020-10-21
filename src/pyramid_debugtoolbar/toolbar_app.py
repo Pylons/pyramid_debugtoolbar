@@ -3,15 +3,13 @@ from pyramid.config import Configurator
 from pyramid.interfaces import Interface
 from pyramid.view import view_config
 
-from pyramid_debugtoolbar.compat import json
-from pyramid_debugtoolbar.compat import text_
-
+from pyramid_debugtoolbar.compat import json, text_
 from pyramid_debugtoolbar.toolbar import IPanelMap
 from pyramid_debugtoolbar.utils import (
-    get_setting,
     ROOT_ROUTE_NAME,
     SETTINGS_PREFIX,
     STATIC_PATH,
+    get_setting,
 )
 
 bundled_includes = (
@@ -135,11 +133,11 @@ def redirect_view(request):
 
 @view_config(
     route_name='debugtoolbar.main',
-    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako',
 )
 @view_config(
     route_name='debugtoolbar.request',
-    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako'
+    renderer='pyramid_debugtoolbar:templates/toolbar.dbtmako',
 )
 def request_view(request):
     history = request.pdtb_history
@@ -159,27 +157,29 @@ def request_view(request):
     # DebugPanel.render_content()
     if toolbar:
         request.toolbar_panels = {
-            panel.name: panel
-            for panel in toolbar.panels
+            panel.name: panel for panel in toolbar.panels
         }
 
     static_path = request.static_url(STATIC_PATH)
     root_path = request.route_url(ROOT_ROUTE_NAME)
 
     button_style = get_setting(request.registry.settings, 'button_style')
-    max_visible_requests = get_setting(request.registry.settings,
-                                       'max_visible_requests')
+    max_visible_requests = get_setting(
+        request.registry.settings, 'max_visible_requests'
+    )
     hist_toolbars = history.last(max_visible_requests)
-    return {'panels': toolbar.panels if toolbar else [],
-            'static_path': static_path,
-            'root_path': root_path,
-            'button_style': button_style,
-            'history': hist_toolbars,
-            'default_active_panels': (
-                toolbar.default_active_panels if toolbar else []),
-            'global_panels': toolbar.global_panels if toolbar else [],
-            'request_id': request_id
-            }
+    return {
+        'panels': toolbar.panels if toolbar else [],
+        'static_path': static_path,
+        'root_path': root_path,
+        'button_style': button_style,
+        'history': hist_toolbars,
+        'default_active_panels': (
+            toolbar.default_active_panels if toolbar else []
+        ),
+        'global_panels': toolbar.global_panels if toolbar else [],
+        'request_id': request_id,
+    }
 
 
 U_BLANK = text_("")
@@ -196,8 +196,9 @@ def sse(request):
     active_request_id = text_(request.GET.get('request_id'))
     client_last_request_id = text_(request.headers.get('Last-Event-Id', 0))
 
-    max_visible_requests = get_setting(request.registry.settings,
-                                       'max_visible_requests')
+    max_visible_requests = get_setting(
+        request.registry.settings, 'max_visible_requests'
+    )
     if history:
         last_request_pair = history.last(1)[0]
         last_request_id = last_request_pair[0]
@@ -206,12 +207,13 @@ def sse(request):
                 [
                     _id,
                     toolbar.json,
-                    'active' if active_request_id == _id else ''
+                    'active' if active_request_id == _id else '',
                 ]
                 for _id, toolbar in history.last(max_visible_requests)
                 if toolbar.visible
             ]
             if data:
-                response.text = U_SSE_PAYLOAD.format(last_request_id,
-                                                     json.dumps(data))
+                response.text = U_SSE_PAYLOAD.format(
+                    last_request_id, json.dumps(data)
+                )
     return response

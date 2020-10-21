@@ -1,27 +1,28 @@
 import binascii
-import os.path
-import sys
-from logging import getLogger
 from collections import deque
+import ipaddress
 from itertools import islice
-
+from logging import getLogger
+import os.path
 from pyramid.exceptions import ConfigurationError
 from pyramid.path import DottedNameResolver
 from pyramid.settings import asbool
+import sys
 
-from pyramid_debugtoolbar.compat import binary_type
-from pyramid_debugtoolbar.compat import bytes_
-from pyramid_debugtoolbar.compat import string_types
-from pyramid_debugtoolbar.compat import text_
-from pyramid_debugtoolbar.compat import text_type
-
-import ipaddress
+from pyramid_debugtoolbar.compat import (
+    binary_type,
+    bytes_,
+    string_types,
+    text_,
+    text_type,
+)
 
 try:
     from pygments import highlight
     from pygments.formatters import HtmlFormatter
     from pygments.lexers import SqlLexer
     from pygments.styles import get_style_by_name
+
     PYGMENT_STYLE = get_style_by_name('colorful')
     HAVE_PYGMENTS = True
 except ImportError:  # pragma: no cover
@@ -94,8 +95,9 @@ def format_sql(query):
         highlight(
             query,
             SqlLexer(encoding='utf-8'),
-            HtmlFormatter(encoding='utf-8', noclasses=True,
-                          style=PYGMENT_STYLE)
+            HtmlFormatter(
+                encoding='utf-8', noclasses=True, style=PYGMENT_STYLE
+            ),
         )
     )
 
@@ -119,7 +121,7 @@ def escape(s, quote=False):
     if isinstance(s, binary_type):
         try:
             s.decode('ascii')
-        except:
+        except Exception:
             s = s.decode('utf-8', 'replace')
     s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
     if quote:
@@ -133,7 +135,7 @@ def replace_insensitive(string, target, replacement):
     no_case = string.lower()
     index = no_case.rfind(target.lower())
     if index >= 0:
-        return string[:index] + replacement + string[index + len(target):]
+        return string[:index] + replacement + string[index + len(target) :]
     else:  # no results so return the original string
         return string
 
@@ -185,7 +187,7 @@ def dictrepr(d):
     for val in d:
         try:
             out[val] = repr(d[val])
-        except:
+        except Exception:
             # defensive
             out[val] = '<unknown>'
     return sorted(out.items())
@@ -197,7 +199,9 @@ logger = getLogger('pyramid_debugtoolbar')
 def addr_in(addr, hosts):
     addr = addr.split('%')[0]
     for host in hosts:
-        if ipaddress.ip_address(u'' + addr) in ipaddress.ip_network(u'' + host):
+        if ipaddress.ip_address(u'' + addr) in ipaddress.ip_network(
+            u'' + host
+        ):
             return True
     return False
 
@@ -239,11 +243,13 @@ def resolve_panel_classes(panels, is_global, panel_map):
 
         if panel_class is None:
             raise ConfigurationError(
-                'failed to load debugtoolbar panel named %s' % panel)
+                'failed to load debugtoolbar panel named %s' % panel
+            )
 
         if panel_class not in classes:
             classes.append(panel_class)
     return classes
+
 
 def get_exc_name(exc):
     cls = exc.__class__

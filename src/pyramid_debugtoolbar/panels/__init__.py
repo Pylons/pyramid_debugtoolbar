@@ -28,6 +28,7 @@ class DebugPanel(object):
     injected into the template prior to rendering and is thus a common
     location to store the contents of previous events.
     """
+
     #: A unique identifier for the name of the panel. This **must** be
     #: defined by a subclass and be a valid Python variable name
     #: (something like ``[a-zA-Z0-9_-]+``).
@@ -115,8 +116,9 @@ class DebugPanel(object):
     def pluralize(self, singular, plural, n, domain=None, mapping=None):
         request = get_current_request()
         localizer = get_localizer(request)
-        return localizer.pluralize(singular, plural, n, domain=domain,
-                                   mapping=mapping)
+        return localizer.pluralize(
+            singular, plural, n, domain=domain, mapping=mapping
+        )
 
     # Standard middleware methods
     def process_response(self, response):

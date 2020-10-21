@@ -13,21 +13,24 @@
     :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD.
 """
-import sys
 import re
+import sys
 from traceback import format_exception_only
+
 try:
     from collections import deque
 except ImportError:  # pragma: no cover
     deque = None
 
-from pyramid_debugtoolbar.compat import text_
-from pyramid_debugtoolbar.compat import text_type
-from pyramid_debugtoolbar.compat import binary_type
-from pyramid_debugtoolbar.compat import iteritems_
-from pyramid_debugtoolbar.compat import string_types
-from pyramid_debugtoolbar.compat import long
-from pyramid_debugtoolbar.compat import PY3
+from pyramid_debugtoolbar.compat import (
+    PY3,
+    binary_type,
+    iteritems_,
+    long,
+    string_types,
+    text_,
+    text_type,
+)
 from pyramid_debugtoolbar.utils import escape
 
 missing = object()
@@ -79,6 +82,7 @@ class _Helper(object):
             sys.stdout._write('<span class="help">%s</span>' % repr(self))
             return
         import pydoc
+
         pydoc.help(topic)
         rv = text_(sys.stdout.reset(), 'utf-8', 'ignore')
         paragraphs = _paragraph_re.split(rv)
@@ -103,14 +107,15 @@ def _add_subclass_info(inner, obj, bases):
         return inner
     module = ''
     if obj.__class__.__module__ not in (
-        'builtins', '__builtin__', 'exceptions',
+        'builtins',
+        '__builtin__',
+        'exceptions',
     ):
         module = '<span class="module">%s.</span>' % obj.__class__.__module__
     return '%s%s(%s)' % (module, obj.__class__.__name__, inner)
 
 
 class DebugReprGenerator(object):
-
     def __init__(self):
         self._stack = []
 
@@ -125,6 +130,7 @@ class DebugReprGenerator(object):
                 buf.append(self.repr(item))
             buf.append(right)
             return _add_subclass_info(text_(''.join(buf)), obj, base)
+
         return proxy
 
     list_repr = _sequence_repr_maker('[', ']', list)
@@ -132,14 +138,16 @@ class DebugReprGenerator(object):
     set_repr = _sequence_repr_maker('set([', '])', set)
     frozenset_repr = _sequence_repr_maker('frozenset([', '])', frozenset)
     if deque is not None:
-        deque_repr = _sequence_repr_maker('<span class="module">collections.'
-                                          '</span>deque([', '])', deque)
+        deque_repr = _sequence_repr_maker(
+            '<span class="module">collections.' '</span>deque([', '])', deque
+        )
     del _sequence_repr_maker
 
     def regex_repr(self, obj):
         if PY3:
             pattern = text_(
-                "'%s'" % str(obj.pattern), 'string-escape', 'ignore')
+                "'%s'" % str(obj.pattern), 'string-escape', 'ignore'
+            )
             pattern = 'r' + pattern
         else:
             pattern = text_(repr(obj.pattern), 'string-escape', 'ignore')
@@ -148,7 +156,8 @@ class DebugReprGenerator(object):
             else:
                 pattern = 'r' + pattern
         return text_(
-            're.compile(<span class="string regex">%s</span>)' % pattern)
+            're.compile(<span class="string regex">%s</span>)' % pattern
+        )
 
     def py2_string_repr(self, obj, limit=70):
         buf = ['<span class="string">']
@@ -198,15 +207,19 @@ class DebugReprGenerator(object):
         for idx, (key, value) in enumerate(iteritems_(d)):
             if idx:
                 buf.append(', ')
-            buf.append('<span class="pair"><span class="key">%s</span>: '
-                       '<span class="value">%s</span></span>' %
-                       (self.repr(key), self.repr(value)))
+            buf.append(
+                '<span class="pair"><span class="key">%s</span>: '
+                '<span class="value">%s</span></span>'
+                % (self.repr(key), self.repr(value))
+            )
         buf.append('}')
         return _add_subclass_info(text_(''.join(buf)), d, dict)
 
     def object_repr(self, obj):
-        return text_('<span class="object">%s</span>' %
-                     escape(text_(repr(obj), 'utf-8', 'replace')))
+        return text_(
+            '<span class="object">%s</span>'
+            % escape(text_(repr(obj), 'utf-8', 'replace'))
+        )
 
     def dispatch_repr(self, obj, recursive):
         if obj is helper:
@@ -291,12 +304,14 @@ class DebugReprGenerator(object):
     def render_object_dump(self, items, title, repr=None):
         html_items = []
         for key, value in items:
-            html_items.append('<tr><th>%s<td><pre class="repr">%s</pre>' %
-                              (escape(key), value))
+            html_items.append(
+                '<tr><th>%s<td><pre class="repr">%s</pre>'
+                % (escape(key), value)
+            )
         if not html_items:
             html_items.append('<tr><td><em>Nothing</em>')
         return OBJECT_DUMP_HTML % {
             'title': escape(title),
             'repr': repr and '<pre class="repr">%s</pre>' % repr or '',
-            'items': '\n'.join(html_items)
+            'items': '\n'.join(html_items),
         }

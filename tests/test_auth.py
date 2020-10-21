@@ -1,9 +1,8 @@
-import unittest
-import webtest
 from pyramid import testing
-
 from pyramid.config import Configurator
 from pyramid.response import Response
+import unittest
+import webtest
 
 HTML = """
 <html>

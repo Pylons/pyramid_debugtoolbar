@@ -14,8 +14,9 @@ except ImportError:  # pragma: no cover
 try:
     import pstats
 except ImportError:  # pragma: no cover
-    pstats = None  # will fail on braindead Debian systems that package pstats
-                   # separately from python for god-knows-what-reason
+    # will fail on braindead Debian systems that package pstats
+    # separately from python for god-knows-what-reason
+    pstats = None
 
 import threading
 import time
@@ -35,6 +36,7 @@ class PerformanceDebugPanel(DebugPanel):
     It will display the time a request took and, optionally, the
     cProfile output.
     """
+
     name = 'performance'
     user_activate = True
     stats = None
@@ -51,13 +53,12 @@ class PerformanceDebugPanel(DebugPanel):
 
     def _wrap_timer_handler(self, handler):
         if self.has_resource:
+
             def resource_timer_handler(request):
                 _start_time = time.time()
                 self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
                 try:
                     result = handler(request)
-                except:
-                    raise
                 finally:
                     self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
                     self.total_time = (time.time() - _start_time) * 1000
@@ -70,8 +71,6 @@ class PerformanceDebugPanel(DebugPanel):
             _start_time = time.time()
             try:
                 result = handler(request)
-            except:
-                raise
             finally:
                 self.total_time = (time.time() - _start_time) * 1000
             return result
@@ -86,8 +85,6 @@ class PerformanceDebugPanel(DebugPanel):
             with lock:
                 try:
                     result = self.profiler.runcall(handler, request)
-                except:
-                    raise
                 finally:
                     stats = pstats.Stats(self.profiler)
                     function_calls = []
@@ -144,8 +141,9 @@ class PerformanceDebugPanel(DebugPanel):
         return '%0.2fms' % (self.total_time)
 
     def _elapsed_ru(self, name):
-        return getattr(self._end_rusage, name) - getattr(self._start_rusage,
-                                                         name)
+        return getattr(self._end_rusage, name) - getattr(
+            self._start_rusage, name
+        )
 
     def process_response(self, response):
         vars = {'timing_rows': None, 'stats': None, 'function_calls': []}
@@ -176,8 +174,10 @@ class PerformanceDebugPanel(DebugPanel):
                 (_('System CPU time'), '%0.3f msec' % stime),
                 (_('Total CPU time'), '%0.3f msec' % (utime + stime)),
                 (_('Elapsed time'), '%0.3f msec' % self.total_time),
-                (_('Context switches'), '%d voluntary, %d involuntary' % (
-                    vcsw, ivcsw)),
+                (
+                    _('Context switches'),
+                    '%d voluntary, %d involuntary' % (vcsw, ivcsw),
+                ),
                 # (_('Memory use'), '%d max RSS, %d shared, %d unshared' % (
                 #     rss, srss, urss + usrss)),
                 # (_('Page faults'), '%d no i/o, %d requiring i/o' % (

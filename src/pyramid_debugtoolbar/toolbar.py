@@ -1,25 +1,26 @@
-import sys
 import os
-import warnings
-
 from pyramid.exceptions import URLDecodeError
 from pyramid.httpexceptions import WSGIHTTPException
 from pyramid.interfaces import Interface
 from pyramid.threadlocal import get_current_request
-from pyramid_debugtoolbar.compat import bytes_
-from pyramid_debugtoolbar.compat import url_unquote
+import sys
+import warnings
+
+from pyramid_debugtoolbar.compat import bytes_, url_unquote
 from pyramid_debugtoolbar.tbtools import get_traceback
-from pyramid_debugtoolbar.utils import addr_in
-from pyramid_debugtoolbar.utils import debug_toolbar_url
-from pyramid_debugtoolbar.utils import get_setting
-from pyramid_debugtoolbar.utils import get_exc_name
-from pyramid_debugtoolbar.utils import hexlify
-from pyramid_debugtoolbar.utils import logger
-from pyramid_debugtoolbar.utils import make_subrequest
-from pyramid_debugtoolbar.utils import resolve_panel_classes
-from pyramid_debugtoolbar.utils import replace_insensitive
-from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ToolbarStorage
+from pyramid_debugtoolbar.utils import (
+    STATIC_PATH,
+    ToolbarStorage,
+    addr_in,
+    debug_toolbar_url,
+    get_exc_name,
+    get_setting,
+    hexlify,
+    logger,
+    make_subrequest,
+    replace_insensitive,
+    resolve_panel_classes,
+)
 
 html_types = ('text/html', 'application/xhtml+xml')
 
@@ -47,9 +48,13 @@ class IRequestAuthorization(Interface):
 
 
 class DebugToolbar(object):
-
-    def __init__(self, request, panel_classes, global_panel_classes,
-                 default_active_panels):
+    def __init__(
+        self,
+        request,
+        panel_classes,
+        global_panel_classes,
+        default_active_panels,
+    ):
         self.panels = []
         self.global_panels = []
         self.request = request
@@ -82,11 +87,13 @@ class DebugToolbar(object):
 
     @property
     def json(self):
-        return {'host': self.request.host,
-                'method': self.request.method,
-                'path': self.request.path,
-                'scheme': self.request.scheme,
-                'status_code': self.status_int}
+        return {
+            'host': self.request.host,
+            'method': self.request.method,
+            'path': self.request.path,
+            'scheme': self.request.scheme,
+            'status_code': self.status_int,
+        }
 
     def process_response(self, request, response):
         if isinstance(response, WSGIHTTPException):
@@ -108,19 +115,22 @@ class DebugToolbar(object):
         # called in host app
         response_html = response.body
         toolbar_url = debug_toolbar_url(request, request.pdtb_id)
-        button_style = get_setting(request.registry.settings,
-                                   'button_style', '')
+        button_style = get_setting(
+            request.registry.settings, 'button_style', ''
+        )
         css_path = request.static_url(
-            STATIC_PATH + 'toolbar/toolbar_button.css')
+            STATIC_PATH + 'toolbar/toolbar_button.css'
+        )
         toolbar_html = toolbar_html_template % {
             'button_style': (
-                'style="{0}"'.format(button_style) if button_style else ""),
+                'style="{0}"'.format(button_style) if button_style else ""
+            ),
             'css_path': css_path,
-            'toolbar_url': toolbar_url}
+            'toolbar_url': toolbar_url,
+        }
         toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
         response.body = replace_insensitive(
-            response_html, bytes_('</body>'),
-            toolbar_html + bytes_('</body>')
+            response_html, bytes_('</body>'), toolbar_html + bytes_('</body>')
         )
 
 
@@ -198,7 +208,9 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
         try:
             p = request.path_info
         except UnicodeDecodeError as e:
-            raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
+            raise URLDecodeError(
+                e.encoding, e.object, e.start, e.end, e.reason
+            )
 
         client_addr = None
         if request.remote_addr and ',' not in request.remote_addr:
@@ -218,7 +230,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             client_addr is None
             or any(p.startswith(e) for e in exclude_prefixes)
             or not addr_in(client_addr, hosts)
-            or auth_check and not auth_check(request)
+            or auth_check
+            and not auth_check(request)
         ):
             return handler(request)
 
@@ -227,7 +240,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 'pyramid_debugtoolbar has detected that the application is '
                 'being served by a forking / multiprocess web server. The '
                 'toolbar relies on global state to work and is not compatible '
-                'with this environment. The toolbar will be disabled.')
+                'with this environment. The toolbar will be disabled.'
+            )
             return handler(request)
 
         root_path = debug_toolbar_url(request, '', _app_url='')
@@ -238,15 +252,16 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 old_script_name = request.script_name
                 old_path_info = request.path_info
                 request.script_name += root_path[:-1]
-                request.path_info = request.path_info[len(root_path) - 1:]
+                request.path_info = request.path_info[len(root_path) - 1 :]
                 return dispatch(request)
             finally:
                 request.script_name = old_script_name
                 request.path_info = old_path_info
 
         request.pdtb_id = hexlify(id(request))
-        toolbar = DebugToolbar(request, panel_classes, global_panel_classes,
-                               default_active_panels)
+        toolbar = DebugToolbar(
+            request, panel_classes, global_panel_classes, default_active_panels
+        )
         request.debug_toolbar = toolbar
         request_history.put(request.pdtb_id, toolbar)
 
@@ -264,7 +279,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 msg = 'Squashed %s at %s\ntraceback url: %s'
                 exc_name = get_exc_name(request.exc_info[1])
                 subrequest = make_subrequest(
-                    request, root_path, request.pdtb_id + '/exception')
+                    request, root_path, request.pdtb_id + '/exception'
+                )
                 exc_msg = msg % (exc_name, request.url, subrequest.url)
                 _logger.info(exc_msg)
 
@@ -275,7 +291,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
 
                 msg = 'Uncaught %s at %s\ntraceback url: %s'
                 subrequest = make_subrequest(
-                    request, root_path, request.pdtb_id + '/exception')
+                    request, root_path, request.pdtb_id + '/exception'
+                )
                 exc_msg = msg % (exc_name, request.url, subrequest.url)
                 _logger.exception(exc_msg)
 
@@ -316,7 +333,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                             'redirect_code': str(redirect_code),
                         }
                         subrequest = make_subrequest(
-                            request, root_path, 'redirect', qs)
+                            request, root_path, 'redirect', qs
+                        )
                         content = dispatch(subrequest).text
                         response.location = None
                         response.text = content

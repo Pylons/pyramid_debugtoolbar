@@ -8,28 +8,31 @@
     :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD.
 """
-import re
-import os
-import sys
-import inspect
-import traceback
 import codecs
-from tokenize import TokenError
-
+import inspect
+import os
 from pyramid.decorator import reify
 from pyramid.renderers import render
+import re
+import sys
+from tokenize import TokenError
+import traceback
 
-from pyramid_debugtoolbar.compat import text_type
-from pyramid_debugtoolbar.compat import string_types
-from pyramid_debugtoolbar.compat import text_
-from pyramid_debugtoolbar.compat import native_
-from pyramid_debugtoolbar.compat import exec_
-from pyramid_debugtoolbar.compat import xrange_
+from pyramid_debugtoolbar.compat import (
+    exec_,
+    native_,
+    string_types,
+    text_,
+    text_type,
+    xrange_,
+)
 from pyramid_debugtoolbar.console import Console
-from pyramid_debugtoolbar.utils import escape
-from pyramid_debugtoolbar.utils import STATIC_PATH
-from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME
-from pyramid_debugtoolbar.utils import EXC_ROUTE_NAME
+from pyramid_debugtoolbar.utils import (
+    EXC_ROUTE_NAME,
+    ROOT_ROUTE_NAME,
+    STATIC_PATH,
+    escape,
+)
 
 # Some regexes are binary strings because they are used for determining the
 # file encoding, so they must be able to handle text before encoding.
@@ -37,58 +40,71 @@ _coding_re = re.compile(
     br'''coding[:=]  # All encoding definitions end with 'coding'. See PEP 263
     \s*              # Not interested in whitespaces
     ([-\w.]+)        # The encoding we need
-    ''', re.VERBOSE)
-_line_re = re.compile(br'''^(.*?)$ # an entire line''',
-                      re.MULTILINE | re.VERBOSE)
+    ''',
+    re.VERBOSE,
+)
+_line_re = re.compile(
+    br'''^(.*?)$ # an entire line''', re.MULTILINE | re.VERBOSE
+)
 _funcdef_re = re.compile(
     r'''^(\s*def\s)         # The start of a function is either 'def'
     |                       # or
     (.*(?<!\w)lambda(:|\s)) # it's a lambda
     |                       # or
-    ^(\s*@)''',             # it's a decorator
-    re.VERBOSE)
+    ^(\s*@)''',  # it's a decorator
+    re.VERBOSE,
+)
 UTF8_COOKIE = b'\xef\xbb\xbf'
 
 system_exceptions = (SystemExit, KeyboardInterrupt)
 try:
-    system_exceptions += (GeneratorExit, )
+    system_exceptions += (GeneratorExit,)
 except NameError:
     pass
 
-FRAME_HTML = text_('''\
+FRAME_HTML = text_(
+    '''\
 <div class="frame" id="frame-%(id)s">
   <h4>File <cite class="filename">"%(filename)s"</cite>,
       line <em class="line">%(lineno)s</em>,
       in <code class="function">%(function_name)s</code></h4>
   <pre>%(current_line)s</pre>
 </div>
-''')
+'''
+)
 
 SOURCE_TABLE_HTML = text_('<table class=source>%s</table>')
 
-SOURCE_LINE_HTML = text_('''\
+SOURCE_LINE_HTML = text_(
+    '''\
 <tr class="%(classes)s">
   <td class=lineno>%(lineno)s</td>
   <td>%(code)s</td>
 </tr>
-''')
+'''
+)
 
 
-def get_current_traceback(ignore_system_exceptions=False,
-                          show_hidden_frames=False, skip=0):
+def get_current_traceback(
+    ignore_system_exceptions=False, show_hidden_frames=False, skip=0
+):
     """Get the current exception info as `Traceback` object.  Per default
     calling this method will reraise system exceptions such as generator exit,
     system exit or others.  This behavior can be disabled by passing `False`
     to the function as first parameter.
     """
     info = sys.exc_info()
-    return get_traceback(info,
-                         ignore_system_exceptions=ignore_system_exceptions,
-                         show_hidden_frames=show_hidden_frames, skip=skip)
+    return get_traceback(
+        info,
+        ignore_system_exceptions=ignore_system_exceptions,
+        show_hidden_frames=show_hidden_frames,
+        skip=skip,
+    )
 
 
-def get_traceback(info, ignore_system_exceptions=False,
-                  show_hidden_frames=False, skip=0):
+def get_traceback(
+    info, ignore_system_exceptions=False, show_hidden_frames=False, skip=0
+):
     exc_type, exc_value, tb = info
     if ignore_system_exceptions and exc_type in system_exceptions:
         raise
@@ -104,6 +120,7 @@ def get_traceback(info, ignore_system_exceptions=False,
 
 class Line(object):
     """Helper for the source renderer."""
+
     __slots__ = ('lineno', 'code', 'in_frame', 'current')
 
     def __init__(self, lineno, code):
@@ -119,13 +136,14 @@ class Line(object):
         if self.current:
             rv.append('current')
         return rv
+
     classes = property(classes)
 
     def render(self):
         return SOURCE_LINE_HTML % {
             'classes': text_(' '.join(self.classes)),
             'lineno': self.lineno,
-            'code': escape(self.code)
+            'code': escape(self.code),
         }
 
 
@@ -188,12 +206,14 @@ class Traceback(object):
     def is_syntax_error(self):
         """Is it a syntax error?"""
         return isinstance(self.exc_value, SyntaxError)
+
     is_syntax_error = property(is_syntax_error)
 
     def exception(self):
         """String representation of the exception."""
         buf = traceback.format_exception_only(self.exc_type, self.exc_value)
         return native_(''.join(buf).strip(), 'utf-8', 'replace')
+
     exception = property(exception)
 
     def log(self, logfile=None):
@@ -206,6 +226,7 @@ class Traceback(object):
     def paste(self, lodgeit_url):
         """Create a paste and return the paste id."""
         from xmlrpclib import ServerProxy
+
         srv = ServerProxy('%sxmlrpc/' % lodgeit_url)
         return srv.pastes.newPaste('pytb', self.plaintext)
 
@@ -222,14 +243,19 @@ class Traceback(object):
                 title = text_('Syntax Error')
             else:
                 title = text_(
-                    'Traceback <small>(most recent call last)</small>')
+                    'Traceback <small>(most recent call last)</small>'
+                )
 
         for frame in self.frames:
-            frames.append(text_('<li%s>%s') % (
-                text_(' title="%s"' % escape(frame.info))
-                if frame.info else text_(''),
-                frame.render()
-            ))
+            frames.append(
+                text_('<li%s>%s')
+                % (
+                    text_(' title="%s"' % escape(frame.info))
+                    if frame.info
+                    else text_(''),
+                    frame.render(),
+                )
+            )
 
         if self.is_syntax_error:
             description_wrapper = text_('<pre class=syntaxerror>%s</pre>')
@@ -240,14 +266,17 @@ class Traceback(object):
             'classes': text_(' '.join(classes)),
             'title': (
                 text_('<h3 class="traceback">%s</h3>' % title)
-                if title else text_('')
+                if title
+                else text_('')
             ),
             'frames': text_('\n'.join(frames)),
             'description': description_wrapper % escape(self.exception),
         }
         return render(
             'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
-            vars, request=request)
+            vars,
+            request=request,
+        )
 
     def render_full(self, request, lodgeit_url=None):
         """Render the Full HTML page with the traceback info."""
@@ -275,18 +304,20 @@ class Traceback(object):
             'request_id': request.pdtb_id,
             'url': url,
         }
-        return render('pyramid_debugtoolbar:templates/exception.dbtmako',
-                      vars, request=request)
+        return render(
+            'pyramid_debugtoolbar:templates/exception.dbtmako',
+            vars,
+            request=request,
+        )
 
     def generate_plaintext_traceback(self):
         """Like the plaintext attribute but returns a generator"""
         yield text_('Traceback (most recent call last):')
         for frame in self.frames:
-            yield text_('  File "%s", line %s, in %s' % (
-                frame.filename,
-                frame.lineno,
-                frame.function_name
-            ))
+            yield text_(
+                '  File "%s", line %s, in %s'
+                % (frame.filename, frame.lineno, frame.function_name)
+            )
             yield text_('    ' + frame.current_line.strip())
         yield text_(self.exception, 'utf-8')
 
@@ -331,7 +362,7 @@ class Frame(object):
             'filename': escape(self.filename),
             'lineno': self.lineno,
             'function_name': escape(self.function_name),
-            'current_line': escape(self.current_line.strip())
+            'current_line': escape(self.current_line.strip()),
         }
 
     def get_annotated_lines(self):
@@ -346,11 +377,12 @@ class Frame(object):
                     break
                 lineno -= 1
             try:
-                offset = len(inspect.getblock([x.code + '\n' for x
-                                               in lines[lineno:]]))
+                offset = len(
+                    inspect.getblock([x.code + '\n' for x in lines[lineno:]])
+                )
             except TokenError:
                 offset = 0
-            for line in lines[lineno:lineno + offset]:
+            for line in lines[lineno : lineno + offset]:
                 line.in_frame = True
 
         # mark current line
@@ -364,7 +396,8 @@ class Frame(object):
     def render_source(self):
         """Render the sourcecode."""
         return SOURCE_TABLE_HTML % text_(
-            '\n'.join(line.render() for line in self.get_annotated_lines()))
+            '\n'.join(line.render() for line in self.get_annotated_lines())
+        )
 
     def eval(self, code, mode='single'):
         """Evaluate code in the context of the frame."""

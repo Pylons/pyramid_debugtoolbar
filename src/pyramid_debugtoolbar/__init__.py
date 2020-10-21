@@ -1,22 +1,20 @@
 from pyramid.config import Configurator
 from pyramid.settings import asbool
 import pyramid.tweens
-from pyramid_debugtoolbar.utils import (
-    as_cr_separated_list,
-    as_display_debug_or_false,
-    as_int,
-    as_list,
-    SETTINGS_PREFIX,
-    STATIC_PATH,
-)
+
 from pyramid_debugtoolbar.toolbar import (
     IRequestAuthorization,
     IToolbarWSGIApp,
     toolbar_tween_factory,
 )
-from pyramid_debugtoolbar.toolbar_app import (
-    IParentActions,
-    make_toolbar_app,
+from pyramid_debugtoolbar.toolbar_app import IParentActions, make_toolbar_app
+from pyramid_debugtoolbar.utils import (
+    SETTINGS_PREFIX,
+    STATIC_PATH,
+    as_cr_separated_list,
+    as_display_debug_or_false,
+    as_int,
+    as_list,
 )
 
 toolbar_tween_factory = toolbar_tween_factory  # API
@@ -135,8 +133,10 @@ def includeme(config):
             'pyramid_tm.tm_tween_factory',
         ],
     )
-    config.add_directive('set_debugtoolbar_request_authorization',
-                         set_request_authorization_callback)
+    config.add_directive(
+        'set_debugtoolbar_request_authorization',
+        set_request_authorization_callback,
+    )
 
     # register routes and views that can be used within the tween
     config.add_route('debugtoolbar', '/_debug_toolbar/*subpath', static=True)
@@ -204,6 +204,7 @@ class _ToolbarRouterFactory(object):
 
 def _monkeypatch_pyramid_router():
     import pyramid.config
+
     router_factory = pyramid.config.Router
 
     # do not monkeypatch twice

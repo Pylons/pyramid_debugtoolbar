@@ -12,43 +12,48 @@
 #
 ##############################################################################
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
+
 
 def readfile(name):
     with open(name) as f:
         return f.read()
 
-README = readfile('README.rst')
-CHANGES = readfile('CHANGES.txt')
+
+README = readfile("README.rst")
+CHANGES = readfile("CHANGES.txt")
 
 install_requires = [
-    'pyramid>=1.4',
-    'pyramid_mako>=0.3.1', # lazy configuration loading works
-    'repoze.lru',
-    'Pygments',
-    ]
+    "pyramid>=1.4",
+    "pyramid_mako>=0.3.1",  # lazy configuration loading works
+    "repoze.lru",
+    "Pygments",
+]
 
 extra_requires = [
-    'ipaddress',
-    ]
+    "ipaddress",
+]
 
 testing_extras = [
-    'WebTest',
-    'nose',
-    'coverage',
-    ]
+    "WebTest",
+    "nose",
+    "coverage",
+]
 
 docs_extras = [
-    'Sphinx >= 1.7.5',
-    'pylons-sphinx-themes >= 0.3',
-    ]
+    "Sphinx >= 1.7.5",
+    "pylons-sphinx-themes >= 0.3",
+]
 
-setup(name='pyramid_debugtoolbar',
-      version='4.6.1',
-      description=('A package which provides an interactive HTML debugger '
-                   'for Pyramid application development'),
-      long_description=README + '\n\n' + CHANGES,
-      classifiers=[
+setup(
+    name="pyramid_debugtoolbar",
+    version="4.6.1",
+    description=(
+        "A package which provides an interactive HTML debugger "
+        "for Pyramid application development"
+    ),
+    long_description=README + "\n\n" + CHANGES,
+    classifiers=[
         "Intended Audience :: Developers",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
@@ -61,23 +66,24 @@ setup(name='pyramid_debugtoolbar',
         "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP :: WSGI",
         "License :: Repoze Public License",
-        ],
-      keywords='wsgi pylons pyramid transaction',
-      author=("Chris McDonough, Michael Merickel, Casey Duncan, "
-              "Blaise Laflamme"),
-      author_email="pylons-discuss@googlegroups.com",
-      url="https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
-      license="BSD",
-      packages=find_packages('src', exclude=['tests']),
-      package_dir={'': 'src'},
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=install_requires,
-      python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
-      extras_require = {
-          ':python_version<"3.3"': extra_requires,
-          'testing':testing_extras,
-          'docs':docs_extras,
-          },
-      test_suite="tests",
-      )
+    ],
+    keywords="wsgi pylons pyramid transaction",
+    author=(
+        "Chris McDonough, Michael Merickel, Casey Duncan, " "Blaise Laflamme"
+    ),
+    author_email="pylons-discuss@googlegroups.com",
+    url="https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",  # noqa E501
+    license="BSD",
+    packages=find_packages("src", exclude=["tests"]),
+    package_dir={"": "src"},
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=install_requires,
+    python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*",
+    extras_require={
+        ':python_version<"3.3"': extra_requires,
+        "testing": testing_extras,
+        "docs": docs_extras,
+    },
+    test_suite="tests",
+)

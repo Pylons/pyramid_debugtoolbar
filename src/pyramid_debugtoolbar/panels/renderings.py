@@ -1,6 +1,6 @@
+from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import dictrepr
-from pyramid_debugtoolbar.compat import text_
 
 _ = lambda x: x
 
@@ -10,6 +10,7 @@ class RenderingsDebugPanel(DebugPanel):
     Panel that displays the renderers (templates and 'static' renderers such
     as JSON) used during a request.
     """
+
     name = 'renderings'
     renderings = ()
     template = 'pyramid_debugtoolbar.panels:templates/renderings.dbtmako'
@@ -29,7 +30,7 @@ class RenderingsDebugPanel(DebugPanel):
         val = getattr(event, 'rendering_val', '<unknown>')
         try:
             val = repr(val)
-        except:
+        except Exception:
             # crazyass code raises an exception during __repr__ (formish)
             val = '<unknown>'
         self.renderings.append(

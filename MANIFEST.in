@@ -13,6 +13,8 @@ include contributing.md
 include RELEASING.txt
 include TODO.txt
 
+include .coveragerc .flake8 setup.cfg pyproject.toml
 include tox.ini .travis.yml rtd.txt
+graft .github
 
 recursive-exclude * __pycache__ *.py[cod]

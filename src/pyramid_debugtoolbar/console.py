@@ -8,14 +8,12 @@
     :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD.
 """
-import sys
 import code
-from types import CodeType
+import sys
 import threading
+from types import CodeType
 
-from pyramid_debugtoolbar.compat import exec_
-from pyramid_debugtoolbar.compat import text_
-from pyramid_debugtoolbar.compat import binary_type
+from pyramid_debugtoolbar.compat import binary_type, exec_, text_
 from pyramid_debugtoolbar.repr import debug_repr, dump, helper
 from pyramid_debugtoolbar.utils import escape
 
@@ -71,6 +69,7 @@ class ThreadedStream(object):
         if not isinstance(sys.stdout, ThreadedStream):
             sys.stdout = ThreadedStream()
         _local.stream = HTMLStringO()
+
     push = staticmethod(push)
 
     def fetch():
@@ -79,6 +78,7 @@ class ThreadedStream(object):
         except AttributeError:
             return ''
         return stream.reset()
+
     fetch = staticmethod(fetch)
 
     def displayhook(obj):
@@ -91,6 +91,7 @@ class ThreadedStream(object):
         if obj is not None:
             _local._current_ipy.locals['_'] = obj
             stream._write(debug_repr(obj))
+
     displayhook = staticmethod(displayhook)
 
     def __setattr__(self, name, value):
@@ -118,7 +119,6 @@ sys.displayhook = ThreadedStream.displayhook
 
 
 class _ConsoleLoader(object):
-
     def __init__(self):
         self._storage = {}
 
@@ -143,11 +143,11 @@ def _wrap_compiler(console):
         code = compile(source, filename, symbol)
         console.loader.register(code, source)
         return code
+
     console.compile = func
 
 
 class _InteractiveConsole(code.InteractiveInterpreter):
-
     def __init__(self, globals, locals):
         code.InteractiveInterpreter.__init__(self, locals)
         self.globals = dict(globals)
@@ -164,8 +164,9 @@ class _InteractiveConsole(code.InteractiveInterpreter):
         prompt = self.more and '... ' or '>>> '
         try:
             source_to_eval = ''.join(self.buffer + [source])
-            if code.InteractiveInterpreter.runsource(self,
-               source_to_eval, '<debugger>', 'single'):
+            if code.InteractiveInterpreter.runsource(
+                self, source_to_eval, '<debugger>', 'single'
+            ):
                 self.more = True
                 self.buffer.append(source)
             else:
@@ -183,11 +184,13 @@ class _InteractiveConsole(code.InteractiveInterpreter):
 
     def showtraceback(self):
         from pyramid_debugtoolbar.tbtools import get_current_traceback
+
         tb = get_current_traceback(skip=1)
         sys.stdout._write(tb.render_summary())
 
     def showsyntaxerror(self, filename=None):
         from pyramid_debugtoolbar.tbtools import get_current_traceback
+
         tb = get_current_traceback(skip=4)
         sys.stdout._write(tb.render_summary())
 
