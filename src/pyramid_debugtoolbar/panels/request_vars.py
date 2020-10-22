@@ -123,13 +123,13 @@ class RequestVarsDebugPanel(DebugPanel):
             post_variables = [
                 (saferepr(k), saferepr(v)) for k, v in request.POST.items()
             ]
-        except Exception as exc:
+        except Exception:
             pass
         if not post_variables and request.body:
             # try to convert the POST data if it is text...
             try:
                 _post_converted = request.text
-            except Exception as exc:
+            except Exception:
                 _post_converted = "[... %s bytes (%s) ...]" % (
                     request.content_length,
                     request.content_type,
