@@ -10,6 +10,13 @@ re_toolbar_link = re.compile(
 )
 
 
+def ok_response_factory():
+    return Response(
+        "<html><head></head><body>OK</body></html>",
+        content_type="text/html",
+    )
+
+
 class _TestDebugtoolbarPanel(unittest.TestCase):
     def setUp(self):
         self.re_toolbar_link = re_toolbar_link
@@ -19,10 +26,7 @@ class _TestDebugtoolbarPanel(unittest.TestCase):
 
         # create a view
         def empty_view(request):
-            return Response(
-                "<html><head></head><body>OK</body></html>",
-                content_type="text/html",
-            )
+            return ok_response_factory()
 
         config.add_view(empty_view)
         self.app = self.config.make_wsgi_app()
