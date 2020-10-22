@@ -1,10 +1,10 @@
+import markupsafe
 from pprint import saferepr
 from pyramid.request import Request
-import markupsafe
+
+from pyramid_debugtoolbar.compat import PY3, text_type, url_encode
+
 from ._utils import _TestDebugtoolbarPanel
-from pyramid_debugtoolbar.compat import PY3
-from pyramid_debugtoolbar.compat import text_type
-from pyramid_debugtoolbar.compat import url_encode
 
 PARTY_HAT_UNICODE = u"\U0001f389"
 PARTY_HAT_UTF8 = PARTY_HAT_UNICODE.encode("utf-8")

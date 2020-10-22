@@ -1,7 +1,7 @@
-import re
-import unittest
 from pyramid import testing
 from pyramid.response import Response
+import re
+import unittest
 
 # used to ensure the toolbar link is injected into requests
 # copy it onto the testcase object, but keep it global if needed otherwise
