@@ -1,3 +1,12 @@
+4.7 (2020-10-22)
+----------------
+
+- Added black, isort, and github actions to the pipeline. Dropped travis-ci.
+
+- Added some extra output to the "Request Vars" panel related to previewing
+  the body contents.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/367
+
 4.6.1 (2020-02-10)
 ------------------
 
