@@ -1,5 +1,3 @@
-import json
-import os
 from pprint import saferepr
 from pyramid.request import Request
 import markupsafe
@@ -67,7 +65,8 @@ class _TestPanel_RequestVars(_TestDebugtoolbarPanel):
             '<li class="" id="pDebugPanel-request_vars">', resp2.text
         )
         self.assertIn(
-            '<div id="pDebugPanel-request_vars-content" class="panelContent" style="display: none;">',
+            '<div id="pDebugPanel-request_vars-content" class="panelContent"'
+            ' style="display: none;">',
             resp2.text,
         )
 
@@ -77,7 +76,7 @@ class _TestPanel_RequestVars(_TestDebugtoolbarPanel):
 class TestPanel_RequestVars_Simple(_TestPanel_RequestVars):
     def test_panel_injected(self):
         # no need to do anything else!
-        resp = self._makeOne()
+        resp = self._makeOne()  # noqa
 
     def test_query_args(self):
         query_args = {
