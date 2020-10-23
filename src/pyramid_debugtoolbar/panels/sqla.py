@@ -60,7 +60,7 @@ try:
                     {
                         'engine_id': id(conn.engine),
                         'duration': 0,
-                        'statement': stmt,
+                        'statement': '-- [event] %s' % stmt,
                         'parameters': '',
                         'context': '',
                     }
@@ -68,52 +68,48 @@ try:
 
     @event.listens_for(Engine, "begin")
     def _begin(conn):
-        stmt = '-- [event.begin]'
-        _transactional_event_logger(conn, stmt)
+        _transactional_event_logger(conn, 'begin')
 
     @event.listens_for(Engine, "commit")
     def _commit(conn):
-        stmt = '-- [event.commit]'
-        _transactional_event_logger(conn, stmt)
+        _transactional_event_logger(conn, 'commit')
 
     @event.listens_for(Engine, "rollback")
     def _rollback(conn):
-        stmt = '-- [event.rollback]'
-        _transactional_event_logger(conn, stmt)
+        _transactional_event_logger(conn, 'rollback')
 
     @event.listens_for(Engine, "savepoint")
     def _savepoint(conn, name):
-        stmt = '-- [event.savepoint %s]' % name
-        _transactional_event_logger(conn, stmt)
+        _transactional_event_logger(conn, 'savepoint %s' % name)
 
     @event.listens_for(Engine, "rollback_savepoint")
     def _rollback_savepoint(conn, name, context):
-        stmt = '-- [event.rollback_savepoint %s]' % name
+        stmt = 'rollback_savepoint %s' % name
         _transactional_event_logger(conn, stmt, context)
 
     @event.listens_for(Engine, "release_savepoint")
     def _release_savepoint(conn, name, context):
-        stmt = '-- [event.release_savepoint %s]' % name
+        stmt = 'release_savepoint %s' % name
         _transactional_event_logger(conn, stmt, context)
 
     @event.listens_for(Engine, "begin_twophase")
     def _begin_twophase(conn, xid):
-        stmt = '-- [event.begin_twophase %s]' % xid
+        stmt = 'begin_twophase %s' % xid
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "prepare_twophase")
     def _prepare_twophase(conn, xid):
-        stmt = '-- [event.prepare_twophase %s]' % xid
+        stmt = 'prepare_twophase %s' % xid
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "commit_twophase")
     def _commit_twophase(conn, xid, is_prepared):
-        stmt = '-- [event.commit_twophase %s %s]' % (xid, is_prepared)
+        stmt = 'commit_twophase %s %s' % (xid, is_prepared)
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "rollback_twophase")
     def _rollback_twophase(conn, xid, is_prepared):
-        stmt = '-- [event.rollback_twophase %s %s]' % (xid, is_prepared)
+        stmt = 'rollback_twophase %s %s' % (xid, is_prepared)
         _transactional_event_logger(conn, stmt)
 
     has_sqla = True

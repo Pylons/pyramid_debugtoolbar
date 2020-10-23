@@ -95,11 +95,11 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         These are rendered as comments
         """
         self.assertIn(
-            '<span style="color: #888888">-- [event.begin]</span>',
+            '<span style="color: #888888">-- [event] begin</span>',
             resp.text,
         )
         self.assertIn(
-            '<span style="color: #888888">-- [event.rollback]</span>',
+            '<span style="color: #888888">-- [event] rollback</span>',
             resp.text,
         )
 
@@ -108,11 +108,11 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         These are rendered as comments
         """
         self.assertIn(
-            '<span style="color: #888888">-- [event.begin]</span>',
+            '<span style="color: #888888">-- [event] begin</span>',
             resp.text,
         )
         self.assertIn(
-            '<span style="color: #888888">-- [event.commit]</span',
+            '<span style="color: #888888">-- [event] commit</span',
             resp.text,
         )
 
