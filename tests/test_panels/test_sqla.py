@@ -91,23 +91,28 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         )
 
     def _check_rendered__begin_rollback(self, resp):
+        """
+        These are rendered as comments
+        """
         self.assertIn(
-            '<span style="color: #008800; font-weight: bold">begin</span>;\n',
+            '<span style="color: #888888">-- [event.begin]</span>',
             resp.text,
         )
         self.assertIn(
-            '<span style="color: #008800; font-weight: bold">rollback</span>;'
-            '\n',
+            '<span style="color: #888888">-- [event.rollback]</span>',
             resp.text,
         )
 
     def _check_rendered__begin_commit(self, resp):
+        """
+        These are rendered as comments
+        """
         self.assertIn(
-            '<span style="color: #008800; font-weight: bold">begin</span>;\n',
+            '<span style="color: #888888">-- [event.begin]</span>',
             resp.text,
         )
         self.assertIn(
-            '<span style="color: #008800; font-weight: bold">commit</span>;\n',
+            '<span style="color: #888888">-- [event.commit]</span',
             resp.text,
         )
 
