@@ -219,7 +219,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				% for i, (key, value) in enumerate(sorted(session)):
+				<%
+					try:
+						sorted_session = sorted(session)
+					except TypeError:
+						sorted_session = sorted(session, key=lambda i: str(i[0]))
+				%>
+				% for i, (key, value) in enumerate(sorted_session):
 					<tr>
 						<td>${key|h}</td>
 						<td>${value|h}</td>

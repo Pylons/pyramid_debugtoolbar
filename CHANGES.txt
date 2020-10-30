@@ -1,3 +1,19 @@
+Unreleased
+----------------
+
+- Added a new Session Panel to track changes to a registered ISession interface
+  across a request lifecycle.
+
+- Ensured the Headers panel only operates when a Response object exists, so
+  better stack traces are created when other panels encounter errors.
+
+- ``utils.dictrepr`` will now fallback to a string comparison of the keys if a
+  TypeError is encountered, which is possible under Python3.
+
+- Adjusted sorting in RequestVars Panel to handle TypeErrors, which is possible
+  under Python3.
+
+
 4.8 (2020-10-23)
 ----------------
 

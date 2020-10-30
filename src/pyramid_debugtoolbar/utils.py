@@ -190,7 +190,10 @@ def dictrepr(d):
         except Exception:
             # defensive
             out[val] = '<unknown>'
-    return sorted(out.items())
+    try:
+        return sorted(out.items())
+    except TypeError:
+        return sorted(out.items(), key=lambda k: str(k))
 
 
 logger = getLogger('pyramid_debugtoolbar')

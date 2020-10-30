@@ -15,6 +15,9 @@ class HeaderDebugPanel(DebugPanel):
     title = _('HTTP Headers')
     nav_title = title
 
+    # placeholder
+    response = None
+
     def __init__(self, request):
         def finished_callback(request):
             self.process_response_deferred()
@@ -32,11 +35,12 @@ class HeaderDebugPanel(DebugPanel):
         }
 
     def process_response_deferred(self):
-        response = self.response
-        response_headers = [
-            (text_(k), text_(v)) for k, v in sorted(response.headerlist)
-        ]
-        self.data['response_headers'] = response_headers
+        if self.response:
+            response = self.response
+            response_headers = [
+                (text_(k), text_(v)) for k, v in sorted(response.headerlist)
+            ]
+            self.data['response_headers'] = response_headers
 
 
 def includeme(config):
