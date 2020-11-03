@@ -28,12 +28,13 @@ $(function() {
 
 
   $('#settings .switchable').click(function() {
+  	debugger;
     var $panel = $(this).parent();
     var $this = $(this);
     var name = $this.attr('data-pdtb-panel');
     // Turn cookie content into an array of active panels
     var active_str = $.cookie(COOKIE_NAME_ACTIVE);
-    var active = (active_str) ? active_str.split(' ') : [];
+    var active = (active_str) ? active_str.split(',') : [];
     active = $.grep(active, function(n,i) { return n != name; });
     if ($this.hasClass('active')) {
       $this.removeClass('active');
@@ -44,6 +45,13 @@ $(function() {
       $this.removeClass('inactive');
       $this.addClass('active');
     }
+    try {
+	    active = Array.from(new Set(active));
+	}
+	catch (err){
+		console.log("browser does not support `Array.from(new Set())`");
+		console.log(err);
+	}
     if (active.length > 0) {
       $.cookie(COOKIE_NAME_ACTIVE, active.join(','), {
         path: '/', expires: 10

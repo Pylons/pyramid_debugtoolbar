@@ -2,7 +2,8 @@ Unreleased
 ----------------
 
 - Added a new Session Panel to track changes to a registered ISession interface
-  across a request lifecycle.
+  across a request lifecycle.  By default, the panel only operates on loaded
+  sessions. Users can activate the panel to display data on all requests.
 
 - Ensured the Headers panel only operates when a Response object exists, so
   better stack traces are created when other panels encounter errors.
@@ -12,6 +13,8 @@ Unreleased
 
 - Adjusted sorting in RequestVars Panel to handle TypeErrors, which is possible
   under Python3.
+  
+- Updated the javascript to better handle multiple user-activated panels.
 
 
 4.8 (2020-10-23)

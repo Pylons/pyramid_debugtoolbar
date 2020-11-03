@@ -5,8 +5,8 @@
 
 <h3>Settings</h3>
 
-<p>Some pyramid debug toolbar panels can be activated (this enables additional features).</p>
-<p>NOTE: These settings are tracked in a cookie on a per-request basis. If you want to enable options for other requests such as via curl or a non-browser client then you should turn them on by default in your settings via the "debugtoolbar.active_panels" setting, or by setting the "pdtb_active" cookie on the client.</p>
+<p>Some pyramid_debugtoolbar panels can be activated (this enables additional features).</p>
+<p>NOTE: These settings are tracked in a cookie on a per-request basis. If you want to enable options for other requests such as via curl or a non-browser client then you should turn them on by default in your settings via the <code>debugtoolbar.active_panels</code> setting, or by setting the <code>pdtb_active</code> cookie on the client.</p>
 
 <h4>Panel Settings</h4>
 % for panel in panels:
