@@ -1,12 +1,20 @@
+% if configuration:
+	<p>Using `ISessionFactory`: <code>${configuration}</code></p>
+% else:
+	<p>No `ISessionFactory` Configured</p>
+% endif
+
+
 % if session_accessed["main"]:
 	<div class="alert alert-info">
-		`request.session` was accessed during the main request handler.
+		`request.session` was accessed during the main `Request` handler.
 	</div>
 % else:
 	<div class="alert alert-warning">
-		`request.session` was not accessed during the main request handler.
+		`request.session` was not accessed during the main `Request` handler.
 	</div>
 % endif
+
 
 <table class="table table-striped table-condensed">
 	<thead>

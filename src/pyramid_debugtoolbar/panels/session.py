@@ -1,7 +1,8 @@
 import pprint
+from pyramid.interfaces import ISessionFactory
+import zope.interface.interfaces
 
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid.interfaces import ISession
 
 _ = lambda x: x
 
@@ -39,7 +40,7 @@ class SessionDebugPanel(DebugPanel):
         initial setup of the `data` payload
         """
         self.data = {
-            # "configuration": None,
+            "configuration": None,
             "session_accessed": {
                 "pre": None,  # pre-processing (toolbar)
                 "main": None,  # during request processing
@@ -56,6 +57,12 @@ class SessionDebugPanel(DebugPanel):
         }
         # we need this for processing in the response phase
         self._request = request
+
+        try:
+            config = request.registry.getUtility(ISessionFactory)
+            self.data["configuration"] = config
+        except zope.interface.interfaces.ComponentLookupError:
+            pass
 
     def wrap_handler(self, handler):
         """
@@ -78,6 +85,7 @@ class SessionDebugPanel(DebugPanel):
             # mark it as accessed
             self.data["session_accessed"]["pre"] = True
 
+        _data = self.data
         _process_session = False
         session = {}
         if self.is_active or ("session" in self._request.__dict__):
@@ -90,30 +98,31 @@ class SessionDebugPanel(DebugPanel):
                 pass
 
         if _process_session:
-            _data = self.data
             for k, v in session.items():
                 v = pprint.pformat(v)
                 _data["session_data"]["in"][k] = v
                 _data["session_data"]["keys"].add(k)
 
-            # If the ``Session`` was not already loaded, then we just
-            # loaded it. This presents a problem for tracking, as we
-            # will not know if the ``Session`` was accessed or not.
-            # To handle this scenario, we use a variant of the ``wrap_load``
-            # function from the request_vars tolbar:
-
-            # This function just updates our information ``dict``,
-            # and then returns the ``Session`` we just loaded
-            def _session_wrapper(self):
-                _data["session_accessed"]["main"] = True
-                return session
-
+        if "session" in self._request.__dict__:
             # delete the loaded session, and replace it with
-            # the function above
             del self._request.__dict__["session"]
-            self._request.set_property(
-                _session_wrapper, name="session", reify=True
-            )
+            # the function below
+
+        # If the ``Session`` was not already loaded, then we may have just
+        # loaded it. This presents a problem for tracking, as we
+        # will not know if the ``Session`` was accessed or not.
+        # To handle this scenario, we use a variant of the ``wrap_load``
+        # function from the request_vars tolbar:
+
+        # This function just updates our information ``dict``,
+        # and then returns the ``Session`` we just loaded
+        def _session_wrapper(self):
+            _data["session_accessed"]["main"] = True
+            return session
+
+        self._request.set_property(
+            _session_wrapper, name="session", reify=True
+        )
 
         return handler
 
