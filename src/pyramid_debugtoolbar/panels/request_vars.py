@@ -67,7 +67,7 @@ def extract_request_attributes(request):
 
 class RequestVarsDebugPanel(DebugPanel):
     """
-    A panel to display request variables (POST/GET, session, cookies, and
+    A panel to display request variables (POST/GET, cookies, and
     ad-hoc request attributes).
     """
 

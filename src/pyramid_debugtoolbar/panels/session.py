@@ -1,8 +1,8 @@
-import pprint
 from pyramid.interfaces import ISessionFactory
 import zope.interface.interfaces
 
 from pyramid_debugtoolbar.panels import DebugPanel
+from pyramid_debugtoolbar.utils import dictrepr
 
 _ = lambda x: x
 
@@ -41,6 +41,8 @@ class SessionDebugPanel(DebugPanel):
         """
         self.data = {
             "configuration": None,
+            "is_active": None,  # not known on __init__
+            "NotInSession": NotInSession,
             "session_accessed": {
                 "pre": None,  # pre-processing (toolbar)
                 "main": None,  # during request processing
@@ -53,11 +55,10 @@ class SessionDebugPanel(DebugPanel):
                 "keys": set([]),
                 "changed": set([]),
             },
-            "NotInSession": NotInSession,
         }
         # we need this for processing in the response phase
         self._request = request
-
+        # try to stash the configuration info
         try:
             config = request.registry.getUtility(ISessionFactory)
             self.data["configuration"] = config
@@ -86,43 +87,59 @@ class SessionDebugPanel(DebugPanel):
             self.data["session_accessed"]["pre"] = True
 
         _data = self.data
-        _process_session = False
-        session = {}
+        if self.is_active:
+            # this is not available on __init__
+            self.data["is_active"] = True
         if self.is_active or ("session" in self._request.__dict__):
+            session = None
             try:
                 session = self._request.session
-                _process_session = True
                 self.data["session_accessed"]["panel_setup"] = True
             except AttributeError:
                 # the session is not configured
                 pass
+            if session is not None:
+                for k, v in dictrepr(session):
+                    _data["session_data"]["in"][k] = v
+                    _data["session_data"]["keys"].add(k)
 
-        if _process_session:
-            for k, v in session.items():
-                v = pprint.pformat(v)
-                _data["session_data"]["in"][k] = v
-                _data["session_data"]["keys"].add(k)
+                if "session" in self._request.__dict__:
+                    # delete the loaded session, and replace it with
+                    del self._request.__dict__["session"]
+                    # the function below
 
-        if "session" in self._request.__dict__:
-            # delete the loaded session, and replace it with
-            del self._request.__dict__["session"]
-            # the function below
+                # If the ``Session`` was not already loaded, then we may have
+                # just loaded it. This presents a problem for tracking, as we
+                # will not know if the ``Session`` was accessed or not.
+                # To handle this scenario, we use a variant of the ``wrap_load``
+                # function from the request_vars tolbar:
 
-        # If the ``Session`` was not already loaded, then we may have just
-        # loaded it. This presents a problem for tracking, as we
-        # will not know if the ``Session`` was accessed or not.
-        # To handle this scenario, we use a variant of the ``wrap_load``
-        # function from the request_vars tolbar:
+                # This function just updates our information ``dict``,
+                # and then returns the ``Session`` we just loaded
+                def _session_wrapper(self):
+                    _data["session_accessed"]["main"] = True
+                    return session
 
-        # This function just updates our information ``dict``,
-        # and then returns the ``Session`` we just loaded
-        def _session_wrapper(self):
-            _data["session_accessed"]["main"] = True
-            return session
+                self._request.set_property(
+                    _session_wrapper, name="session", reify=True
+                )
 
-        self._request.set_property(
-            _session_wrapper, name="session", reify=True
-        )
+        else:
+            orig_property = getattr(self._request.__class__, "session", None)
+            if orig_property is not None:
+
+                def wrapper(self):
+                    _session = orig_property.__get__(self)
+                    # note the session was accessed during the main request
+                    _data["session_accessed"]["main"] = True
+                    # process the inbound session data
+                    if not _data["session_data"]["in"]:
+                        for k, v in dictrepr(_session):
+                            _data["session_data"]["in"][k] = v
+                            _data["session_data"]["keys"].add(k)
+                    return _session
+
+                self._request.set_property(wrapper, name="session", reify=True)
 
         return handler
 
@@ -136,24 +153,31 @@ class SessionDebugPanel(DebugPanel):
             # this scenario can happen if there is an error in the toolbar
             return
 
+        _data = self.data
+
         if self.is_active or ("session" in self._request.__dict__):
             try:
                 if "session" not in self._request.__dict__:
                     # the ``Session`` is not already loaded, so we should
                     # mark it as being loaded within the "post" phase.
-                    self.data["session_accessed"]["post"] = True
+                    _data["session_accessed"]["post"] = True
+                # if we installed a wrapped load, accessing the session now
+                # will trigger the "main" marker. to handle this, check the
+                # current version of the marker then access the session
+                # and then reset the marker
+                _accessed_main = _data["session_accessed"]["main"]
                 _session = self._request.session
-                for k, v in _session.items():
-                    v = pprint.pformat(v)
-                    self.data["session_data"]["out"][k] = v
-                    self.data["session_data"]["keys"].add(k)
-                    if self.data["session_accessed"]["panel_setup"]:
+                _data["session_accessed"]["main"] = _accessed_main
+                for k, v in dictrepr(_session):
+                    _data["session_data"]["out"][k] = v
+                    _data["session_data"]["keys"].add(k)
+                    if _data["session_accessed"]["panel_setup"]:
                         # we can not detect `changed` values unless we process
                         # the ``Session`` during the "pre" hook.
-                        if (k not in self.data["session_data"]["in"]) or (
-                            self.data["session_data"]["in"][k] != v
+                        if (k not in _data["session_data"]["in"]) or (
+                            _data["session_data"]["in"][k] != v
                         ):
-                            self.data["session_data"]["changed"].add(k)
+                            _data["session_data"]["changed"].add(k)
             except AttributeError:
                 # the session is not configured
                 pass

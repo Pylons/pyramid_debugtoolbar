@@ -350,7 +350,7 @@ This activation can be controlled on a per-request basis by setting the
 ``pdtb_active`` cookie to a comma-separated list of panel names.
 For example::
 
-  Cookie: pdtb_active=performance,foo,bar
+  Cookie: pdtb_active=performance,session,foo,bar
 
 A panel name is defined by the
 :attr:`~pyramid_debugtoolbar.panels.DebugPanel.name` attribute of each
@@ -422,6 +422,35 @@ Displays the renderings performed by Pyramid for the current page.
 
 .. image:: renderings.png
 
+Session
+~~~~~~~~~~~~
+
+Displays ingress and egress Session data if the Session was accessed during
+the request.
+
+Displays a status message indicating whether or not the Session was accessed
+during the request.
+
+If the panel is enabled, the ingress and egress Session data will always be
+tracked and displayed -- regardless of the session having been accessed during
+the request. This advanced usage is offered to aid in complex debugging
+scenarios; most users will not want this enabled.
+
+There are two ways to enable the extended Session display used by the
+:guilabel:`Session` panel.
+
+#.  Under the :guilabel:`Settings` tab in the navigation bar, click the red
+    :guilabel:`X` mark. When there is a green :guilabel:`check` mark, each
+    request will have the ingress and egress data tracked and displayed on the
+    :guilabel:`Settings` panel output.
+    See :ref:`Toolbar Settings <toolbar_settings_performance>`.
+
+#.  Send a ``pdtb_active`` cookie on a per-request basis.
+    This panel's name for cookie activation is "session".
+    See :ref:`activating_panels`.
+
+.. image:: session.png
+
 Logging
 ~~~~~~~
 
@@ -446,6 +475,7 @@ There are two ways to enable the internal profiler used by the
     See :ref:`Toolbar Settings <toolbar_settings_performance>`.
 
 #.  Send a ``pdtb_active`` cookie on a per-request basis.
+    This panel's name for cookie activation is "performance".
     See :ref:`activating_panels`.
 
 .. image:: performance.png

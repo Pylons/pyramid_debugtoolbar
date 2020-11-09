@@ -9,6 +9,7 @@ except ImportError:
 
 import random
 import unittest
+import webob.cookies
 
 from pyramid_debugtoolbar.compat import PY3
 
@@ -38,35 +39,58 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
         """
         raise NotImplementedError()
 
+    def _session_view_two(self, context, request):
+        """
+        This function should define a Pyramid view
+        * (potentially) invoke Session
+        * return a Response
+        """
+        raise NotImplementedError()
+
     def setUp(self):
         self.config = config = testing.setUp()
         config.include("pyramid_debugtoolbar")
         if self.enable_sessions:
             config.set_session_factory(my_session_factory)
-        config.add_view(self._session_view)
+        config.add_route("session_view", "/session-view")
+        config.add_route("session_view_two", "/session-view-two")
+        config.add_view(self._session_view, route_name="session_view")
+        config.add_view(self._session_view_two, route_name="session_view_two")
+        # make the app
         self.app = config.make_wsgi_app()
 
     def tearDown(self):
         testing.tearDown()
 
-    def _makeOne(self):
+    def _makeOne(self, is_active=None):
         """
         Makes a request to the main App
         * which invokes `self._session_view`
         * Make a request to the toolbar
         * return the toolbar Response
+
+        :param is_active:
+            Default ``None``
+            If `True`, a `pdbt_active` cookie will be sent to activate
+            additional features in the Session panel.
         """
-        # make the app
-        app = self.config.make_wsgi_app()
         # make a request
-        req1 = Request.blank("/")
+        req1 = Request.blank("/session-view")
         req1.remote_addr = "127.0.0.1"
-        resp1 = req1.get_response(app)
-        self.assertEqual(resp1.status_code, 200)
-        self.assertIn("http://localhost/_debug_toolbar/", resp1.text)
+        _cookies = []
+        if is_active:
+            _cookies.append("pdtb_active=session")
+        if _cookies:
+            _cookies = "; ".join(_cookies)
+            if not PY3:
+                _cookies = _cookies.encode()
+            req1.headers["Cookie"] = _cookies
+        resp_app = req1.get_response(self.app)
+        self.assertEqual(resp_app.status_code, 200)
+        self.assertIn("http://localhost/_debug_toolbar/", resp_app.text)
 
         # check the toolbar
-        links = re_toolbar_link.findall(resp1.text)
+        links = re_toolbar_link.findall(resp_app.text)
         self.assertIsNotNone(links)
         self.assertIsInstance(links, list)
         self.assertEqual(len(links), 1)
@@ -74,9 +98,55 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
 
         req2 = Request.blank(toolbar_link)
         req2.remote_addr = "127.0.0.1"
-        resp2 = req2.get_response(app)
+        resp_toolbar = req2.get_response(self.app)
 
-        return resp2
+        return (resp_app, resp_toolbar)
+
+    def _makeAnother(self, resp_app, is_active=None):
+        """
+        Makes a second request to the main App
+        * which invokes `self._session_view_two`
+        * Make a request to the toolbar
+        * return the toolbar Response
+
+        :param resp_app:
+            The response object of the Pyramid app view returned from `_makeOne`
+        :param is_active:
+            Default ``None``
+            If `True`, a `pdbt_active` cookie will be sent to activate
+            additional features in the Session panel.
+        """
+        # make a secondary request
+        req1 = Request.blank("/session-view-two")
+        req1.remote_addr = "127.0.0.1"
+        _cookies = []
+        if is_active:
+            _cookies.append("pdtb_active=session")
+        if "Set-Cookie" in resp_app.headers:
+            _cks = webob.cookies.parse_cookie(resp_app.headers["Set-Cookie"])
+            for _ck in _cks:
+                _cookies.append("%s=%s" % (_ck[0].decode(), _ck[1].decode()))
+        if _cookies:
+            _cookies = "; ".join(_cookies)
+            if not PY3:
+                _cookies = _cookies.encode()
+            req1.headers["Cookie"] = _cookies
+        resp_app2 = req1.get_response(self.app)
+        self.assertEqual(resp_app2.status_code, 200)
+        self.assertIn("http://localhost/_debug_toolbar/", resp_app2.text)
+
+        # check the toolbar
+        links = re_toolbar_link.findall(resp_app2.text)
+        self.assertIsNotNone(links)
+        self.assertIsInstance(links, list)
+        self.assertEqual(len(links), 1)
+        toolbar_link = links[0]
+
+        req2 = Request.blank(toolbar_link)
+        req2.remote_addr = "127.0.0.1"
+        resp_toolbar = req2.get_response(self.app)
+
+        return (resp_app2, resp_toolbar)
 
     def _check_rendered__panel(
         self, resp, is_configured=None, is_accessed=None
@@ -113,48 +183,174 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
 
 
 class TestNoSessionConfigured(_TestSessionPanel):
+    """
+    Ensure the panel works when:
+    * no session panel is configured
+    * no session data is accessed
+    """
+
     enable_sessions = False
 
     def _session_view(self, context, request):
         return ok_response_factory()
 
     def test_panel(self):
-        resp = self._makeOne()
-        self.assertEqual(resp.status_code, 200)
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
-            resp, is_configured=False, is_accessed=False
+            resp_toolbar, is_configured=False, is_accessed=False
         )
 
 
 class TestSessionConfiguredNoAccess(_TestSessionPanel):
     """
-    No Session changes
+    Ensure the panel works when:
+    * the session panel is configured
+    * no session data is accessed
     """
+
+    enable_sessions = True
 
     def _session_view(self, context, request):
         return ok_response_factory()
 
     def test_panel(self):
-        resp = self._makeOne()
-        self.assertEqual(resp.status_code, 200)
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
-            resp, is_configured=True, is_accessed=False
+            resp_toolbar, is_configured=True, is_accessed=False
+        )
+
+    def test_panel_active(self):
+        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=False
         )
 
 
 class TestSimpleSession(_TestSessionPanel):
     """
-    A simple session
+    Ensure the panel works when:
+    * the session panel is configured
+    * session data is accessed
     """
+
+    enable_sessions = True
 
     def _session_view(self, context, request):
         request.session["foo"] = "bar"
         return ok_response_factory()
 
+    def _session_view_two(self, context, request):
+        request.session["foo"] = "barbar"
+        return ok_response_factory()
+
     def test_panel(self):
-        resp = self._makeOne()
-        self.assertEqual(resp.status_code, 200)
-        self._check_rendered__panel(resp, is_configured=True, is_accessed=True)
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+
+    def test_panel_active(self):
+        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+
+    def test_panel_twice(self):
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+        (resp_app2, resp_toolbar2) = self._makeAnother(resp_app)
+        self._check_rendered__panel(
+            resp_toolbar2, is_configured=True, is_accessed=True
+        )
+        # we should see the INGRESS and EGRESS value for session["foo"]
+        self.assertIn("<code>'bar'</code>", resp_toolbar2.text)
+        self.assertIn("<code>'barbar'</code>", resp_toolbar2.text)
+
+    def test_panel_twice_active(self):
+        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+        (resp_app2, resp_toolbar2) = self._makeAnother(
+            resp_app, is_active=True
+        )
+        self._check_rendered__panel(
+            resp_toolbar2, is_configured=True, is_accessed=True
+        )
+        # we should see the INGRESS and EGRESS value for session["foo"]
+        self.assertIn("<code>'bar'</code>", resp_toolbar2.text)
+        self.assertIn("<code>'barbar'</code>", resp_toolbar2.text)
+
+
+class TestSessionAlt(_TestSessionPanel):
+    """
+    Ensure the panel works when:
+    * the session panel is configured
+    * session data is accessed
+    """
+
+    enable_sessions = True
+
+    def _session_view(self, context, request):
+        # touches the session
+        request.session["foo"] = "bar"
+        return ok_response_factory()
+
+    def _session_view_two(self, context, request):
+        # no session interaction
+        return ok_response_factory()
+
+    def test_panel(self):
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+
+    def test_panel_active(self):
+        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+
+    def test_panel_twice(self):
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+        (resp_app2, resp_toolbar2) = self._makeAnother(resp_app)
+        self._check_rendered__panel(
+            resp_toolbar2, is_configured=True, is_accessed=False
+        )
+        # we should NOT see the INGRESS and EGRESS value for session["foo"]
+        self.assertNotIn("<code>'bar'</code>", resp_toolbar2.text)
+
+    def test_panel_twice_active(self):
+        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
+        (resp_app2, resp_toolbar2) = self._makeAnother(
+            resp_app, is_active=True
+        )
+        self._check_rendered__panel(
+            resp_toolbar2, is_configured=True, is_accessed=False
+        )
+        # we should see the INGRESS and EGRESS value for session["foo"]
+        self.assertIn("<code>'bar'</code>", resp_toolbar2.text)
+        self.assertEqual(2, resp_toolbar2.text.count("<code>'bar'</code>"))
 
 
 class TestSortingErrorsSession(_TestSessionPanel):
@@ -164,6 +360,8 @@ class TestSortingErrorsSession(_TestSessionPanel):
     to sort a float and a string under Python3.
     """
 
+    enable_sessions = True
+
     def _session_view(self, context, request):
         rand = random.random()
         request.session[rand] = True
@@ -171,9 +369,11 @@ class TestSortingErrorsSession(_TestSessionPanel):
         return ok_response_factory()
 
     def test_panel(self):
-        resp = self._makeOne()
-        self.assertEqual(resp.status_code, 200)
-        self._check_rendered__panel(resp, is_configured=True, is_accessed=True)
+        (resp_app, resp_toolbar) = self._makeOne()
+        self.assertEqual(resp_toolbar.status_code, 200)
+        self._check_rendered__panel(
+            resp_toolbar, is_configured=True, is_accessed=True
+        )
 
     @unittest.skipUnless(PY3, "PY2 doesn't care")
     def test_sorting_fatal(self):

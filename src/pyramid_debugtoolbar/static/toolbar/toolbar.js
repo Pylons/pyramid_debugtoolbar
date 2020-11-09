@@ -28,7 +28,6 @@ $(function() {
 
 
   $('#settings .switchable').click(function() {
-  	debugger;
     var $panel = $(this).parent();
     var $this = $(this);
     var name = $this.attr('data-pdtb-panel');
