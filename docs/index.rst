@@ -423,7 +423,7 @@ Displays the renderings performed by Pyramid for the current page.
 .. image:: renderings.png
 
 Session
-~~~~~~~~~~~~
+~~~~~~~
 
 Displays ingress and egress Session data if the Session was accessed during
 the request.
@@ -431,10 +431,11 @@ the request.
 Displays a status message indicating whether or not the Session was accessed
 during the request.
 
-If the panel is enabled, the ingress and egress Session data will always be
-tracked and displayed -- regardless of the session having been accessed during
-the request. This advanced usage is offered to aid in complex debugging
-scenarios; most users will not want this enabled.
+Advanced functionality: If the panel is enabled, the ingress and egress Session
+data will always be tracked and displayed -- regardless of the Session having
+been accessed during the request. This advanced usage is offered to aid
+developers in complex debugging scenarios; most users will not need this
+enabled.
 
 There are two ways to enable the extended Session display used by the
 :guilabel:`Session` panel.
@@ -442,7 +443,9 @@ There are two ways to enable the extended Session display used by the
 #.  Under the :guilabel:`Settings` tab in the navigation bar, click the red
     :guilabel:`X` mark. When there is a green :guilabel:`check` mark, each
     request will have the ingress and egress data tracked and displayed on the
-    :guilabel:`Settings` panel output.
+    :guilabel:`Settings` panel output regardless of the Session being accessed
+    during the request. When there is a red :guilabel:`X` mark, only requests
+    which accessed the session will have the ingress and egress data displayed.
     See :ref:`Toolbar Settings <toolbar_settings_performance>`.
 
 #.  Send a ``pdtb_active`` cookie on a per-request basis.

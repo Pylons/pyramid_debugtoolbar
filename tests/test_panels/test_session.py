@@ -24,7 +24,7 @@ my_session_factory = Sessn('itsaseekreet')
 
 class _TestSessionPanel(_TestDebugtoolbarPanel):
     """
-    Base class for testing Session panel
+    Base class for testing "Session" panel
     """
 
     config = None
@@ -34,16 +34,16 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
     def _session_view(self, context, request):
         """
         This function should define a Pyramid view
-        * (potentially) invoke Session
-        * return a Response
+        * (potentially) invoke ``ISession``
+        * return a ``Response``
         """
         raise NotImplementedError()
 
     def _session_view_two(self, context, request):
         """
         This function should define a Pyramid view
-        * (potentially) invoke Session
-        * return a Response
+        * (potentially) invoke ``ISession``
+        * return a ``Response``
         """
         raise NotImplementedError()
 
@@ -64,15 +64,15 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
 
     def _makeOne(self, is_active=None):
         """
-        Makes a request to the main App
+        Makes a request to the main application
         * which invokes `self._session_view`
-        * Make a request to the toolbar
-        * return the toolbar Response
+        * make a request to the toolbar
+        * return the toolbar ``Response``
 
         :param is_active:
             Default ``None``
-            If `True`, a `pdbt_active` cookie will be sent to activate
-            additional features in the Session panel.
+            If ``True``, a ``pdbt_active`` cookie will be sent to activate
+            additional features in the "Session" panel.
         """
         # make a request
         req1 = Request.blank("/session-view")
@@ -104,17 +104,18 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
 
     def _makeAnother(self, resp_app, is_active=None):
         """
-        Makes a second request to the main App
-        * which invokes `self._session_view_two`
+        Makes a second request to the main application
+        * which invokes ``self._session_view_two``
         * Make a request to the toolbar
-        * return the toolbar Response
+        * return the toolbar ``Response``
 
         :param resp_app:
-            The response object of the Pyramid app view returned from `_makeOne`
+            The ``Response`` object of the Pyramid application view
+            returned from ``_makeOne``.
         :param is_active:
             Default ``None``
-            If `True`, a `pdbt_active` cookie will be sent to activate
-            additional features in the Session panel.
+            If ``True``, a ``pdbt_active`` cookie will be sent to activate
+            additional features in the "Session" panel.
         """
         # make a secondary request
         req1 = Request.blank("/session-view-two")
@@ -154,9 +155,9 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
         """
         Ensure the rendered panel exists with statements.
 
-        :param resp: a `Response` object with a `.text` attribute for the html
-        :param is_configured: is an `ISessionFactory` configured for this app?
-        :param is_accessed: was `request.session` accessed during this view?
+        :param resp: a ``Response`` object with a ``.text`` attribute for html
+        :param is_configured: is an ``ISessionFactory`` configured for the app?
+        :param is_accessed: was ``request.session`` accessed during this view?
         """
         self.assertIn('<li class="" id="pDebugPanel-session">', resp.text)
         self.assertIn(
@@ -185,8 +186,8 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
 class TestNoSessionConfigured(_TestSessionPanel):
     """
     Ensure the panel works when:
-    * no session panel is configured
-    * no session data is accessed
+    * no "Session" panel is configured
+    * no "Session" data is accessed
     """
 
     enable_sessions = False
@@ -205,8 +206,8 @@ class TestNoSessionConfigured(_TestSessionPanel):
 class TestSessionConfiguredNoAccess(_TestSessionPanel):
     """
     Ensure the panel works when:
-    * the session panel is configured
-    * no session data is accessed
+    * the "Session" panel is configured
+    * no "Session" data is accessed
     """
 
     enable_sessions = True
@@ -232,8 +233,8 @@ class TestSessionConfiguredNoAccess(_TestSessionPanel):
 class TestSimpleSession(_TestSessionPanel):
     """
     Ensure the panel works when:
-    * the session panel is configured
-    * session data is accessed
+    * the "Session" panel is configured
+    * "Session" data is accessed
     """
 
     enable_sessions = True
@@ -294,8 +295,8 @@ class TestSimpleSession(_TestSessionPanel):
 class TestSessionAlt(_TestSessionPanel):
     """
     Ensure the panel works when:
-    * the session panel is configured
-    * session data is accessed
+    * the "Session" panel is configured
+    * "Session" data is accessed
     """
 
     enable_sessions = True
@@ -355,8 +356,8 @@ class TestSessionAlt(_TestSessionPanel):
 
 class TestSortingErrorsSession(_TestSessionPanel):
     """
-    Previous toolbars could encounter a fatal exception from TypeError when
-    trying to sort session variables. One way to raise a TypeError is trying
+    Previous toolbars could encounter a fatal exception from ``TypeError`` when
+    trying to sort session variables. One way to raise a ``TypeError`` is trying
     to sort a float and a string under Python3.
     """
 
@@ -378,8 +379,8 @@ class TestSortingErrorsSession(_TestSessionPanel):
     @unittest.skipUnless(PY3, "PY2 doesn't care")
     def test_sorting_fatal(self):
         """
-        If Python3's behavior changes, the workaround to catch `sorted()`
-        TypeErrors and resort with a string conversion is no longer necessary.
+        If Python3's behavior changes, the workaround to catch ``sorted()``'s
+        ``TypeError`` and re-sort with string conversion is no longer necessary.
         """
         with self.assertRaises(TypeError):
             session = {

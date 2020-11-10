@@ -44,8 +44,8 @@
 		<thead>
 			<tr>
 				<th>key</th>
-				<th>in</th>
-				<th>out</th>
+				<th>ingress</th>
+				<th>egress</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -67,13 +67,13 @@
 						${k}
 					</th>
 					<td>
-						<% v = session_data["in"].get(k, NotInSession) %>
+						<% v = session_data["ingress"].get(k, NotInSession) %>
 						% if v is not NotInSession:
 							<code>${v|n}</code>
 						% endif
 					</td>
 					<td>
-						<% v = session_data["out"].get(k, NotInSession) %>
+						<% v = session_data["egress"].get(k, NotInSession) %>
 						% if v is not NotInSession:
 							<code>${v|n}</code>
 						% endif
