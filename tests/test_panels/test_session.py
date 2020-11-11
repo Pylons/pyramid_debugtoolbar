@@ -120,9 +120,12 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
         if is_active:
             _cookies.append("pdtb_active=session")
         if "Set-Cookie" in resp_app.headers:
-            _cks = webob.cookies.parse_cookie(resp_app.headers["Set-Cookie"])
-            for _ck in _cks:
-                _cookies.append("%s=%s" % (_ck[0].decode(), _ck[1].decode()))
+            for _set_cookie_header in resp_app.headers.getall("Set-Cookie"):
+                _cks = webob.cookies.parse_cookie(_set_cookie_header)
+                for _ck in _cks:
+                    _cookies.append(
+                        "%s=%s" % (_ck[0].decode(), _ck[1].decode())
+                    )
         if _cookies:
             _cookies = "; ".join(_cookies)
             if not PY3:
