@@ -119,12 +119,12 @@ class SessionDebugPanel(DebugPanel):
                     data["session_data"]["ingress"][k] = v
                     data["session_data"]["keys"].add(k)
 
+                # Delete the loaded ``.session`` from the ``Request``;
+                # it will be replaced with the wrapper function below.
+                # note: This approach preserves the already-loaded
+                #       ``Session``, we are just wrapping it within
+                #       a function.
                 if "session" in self._request.__dict__:
-                    # Delete the loaded ``.session`` from the ``Request``;
-                    # it will be replaced with the wrapper function below.
-                    # note: This approach preserves the already-loaded
-                    #       ``Session``, we are just wrapping it within
-                    #       a function.
                     del self._request.__dict__["session"]
 
                 # If the ``Session`` was not already loaded, then we may have
@@ -163,14 +163,12 @@ class SessionDebugPanel(DebugPanel):
                     # note the session was accessed during the main request
                     data["session_accessed"]["main"] = True
                     # process the inbound session data
-                    if not data["session_data"]["ingress"]:
-                        for k, v in dictrepr(session):
-                            data["session_data"]["ingress"][k] = v
-                            data["session_data"]["keys"].add(k)
-                    # Replace the existing ``ISession`` interface with
-                    # our wrapper.
+                    for k, v in dictrepr(session):
+                        data["session_data"]["ingress"][k] = v
+                        data["session_data"]["keys"].add(k)
                     return session
 
+                # Replace the existing ``ISession`` interface with our wrapper.
                 self._request.set_property(wrapper, name="session", reify=True)
 
         return handler
@@ -207,16 +205,10 @@ class SessionDebugPanel(DebugPanel):
                 for k, v in dictrepr(session):
                     data["session_data"]["egress"][k] = v
                     data["session_data"]["keys"].add(k)
-                    if (
-                        data["session_accessed"]["panel_setup"]
-                        or data["session_accessed"]["main"]
+                    if (k not in data["session_data"]["ingress"]) or (
+                        data["session_data"]["ingress"][k] != v
                     ):
-                        # we can not detect `changed` values unless we process
-                        # the ``Session`` during the "pre" hook.
-                        if (k not in data["session_data"]["ingress"]) or (
-                            data["session_data"]["ingress"][k] != v
-                        ):
-                            data["session_data"]["changed"].add(k)
+                        data["session_data"]["changed"].add(k)
 
 
 def includeme(config):
