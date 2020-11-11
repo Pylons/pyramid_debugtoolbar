@@ -18,8 +18,10 @@ def ok_response_factory():
 
 
 class _TestDebugtoolbarPanel(unittest.TestCase):
+
+    re_toolbar_link = re_toolbar_link
+
     def setUp(self):
-        self.re_toolbar_link = re_toolbar_link
         self.config = config = testing.setUp()
         config.include("pyramid_debugtoolbar")
         self.settings = config.registry.settings
