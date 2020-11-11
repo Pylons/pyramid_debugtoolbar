@@ -37,9 +37,9 @@ class SessionDebugPanel(DebugPanel):
 
     def __init__(self, request):
         """
-        initial setup of the `data` payload
+        Initial setup of the `data` payload
         """
-        self.data = {
+        self.data = data = {
             "configuration": None,
             "is_active": None,  # not known on `.__init__`
             "NotInSession": NotInSession,
@@ -47,7 +47,6 @@ class SessionDebugPanel(DebugPanel):
                 "pre": None,  # pre-processing (toolbar)
                 "panel_setup": None,  # during the panel setup?
                 "main": None,  # during Request processing
-                "post": None,  # post-processing (tooolbar)
             },
             "session_data": {
                 "ingress": {},  # in
@@ -61,7 +60,7 @@ class SessionDebugPanel(DebugPanel):
         # try to stash the configuration info
         try:
             config = request.registry.getUtility(ISessionFactory)
-            self.data["configuration"] = config
+            data["configuration"] = config
         except zope.interface.interfaces.ComponentLookupError:
             # the `ISessionFactory` is not configured
             pass
@@ -83,19 +82,19 @@ class SessionDebugPanel(DebugPanel):
         replaced with a wrapped function which will invoke the ingress
         processing if the session is accessed.
         """
-        _data = self.data
+        data = self.data
 
         if self.is_active:
             # not known on `.__init__` due to the toolbar's design.
             # no problem, it can be updated on `.wrap_handler`
-            _data["is_active"] = True
+            data["is_active"] = True
 
         if "session" in self._request.__dict__:
             # mark the ``Session`` as already accessed.
             # This can happen in two situations:
             #   * The panel is activated by the user for extended logging
             #   * The ``Session`` was accessed by another panel or higher tween
-            _data["session_accessed"]["pre"] = True
+            data["session_accessed"]["pre"] = True
 
         if self.is_active or ("session" in self._request.__dict__):
             """
@@ -110,15 +109,15 @@ class SessionDebugPanel(DebugPanel):
             session = None
             try:
                 session = self._request.session
-                if not _data["session_accessed"]["pre"]:
-                    _data["session_accessed"]["panel_setup"] = True
+                if not data["session_accessed"]["pre"]:
+                    data["session_accessed"]["panel_setup"] = True
             except AttributeError:
                 # the ``ISession`` interface is not configured
                 pass
             if session is not None:
                 for k, v in dictrepr(session):
-                    _data["session_data"]["ingress"][k] = v
-                    _data["session_data"]["keys"].add(k)
+                    data["session_data"]["ingress"][k] = v
+                    data["session_data"]["keys"].add(k)
 
                 if "session" in self._request.__dict__:
                     # Delete the loaded ``.session`` from the ``Request``;
@@ -137,7 +136,7 @@ class SessionDebugPanel(DebugPanel):
                     # This function updates the ``self.data`` information dict,
                     # and then returns the exact same ``Session`` we just
                     # deleted from the ``Request``.
-                    _data["session_accessed"]["main"] = True
+                    data["session_accessed"]["main"] = True
                     return session
 
                 # Replace the existing ``ISession`` interface with our wrapper.
@@ -148,7 +147,8 @@ class SessionDebugPanel(DebugPanel):
         else:
             """
             This block handles the default situation:
-            * The ``Session`` has not been accessed and the Panel is not enabled
+            * The ``Session`` has not been already accessed and
+              the Panel is not enabled
             """
             orig_property = getattr(self._request.__class__, "session", None)
             if orig_property is not None:
@@ -159,17 +159,17 @@ class SessionDebugPanel(DebugPanel):
                 # ``Session`` was accessed and notes the ingress values.
 
                 def wrapper(self):
-                    _session = orig_property.__get__(self)
+                    session = orig_property.__get__(self)
                     # note the session was accessed during the main request
-                    _data["session_accessed"]["main"] = True
+                    data["session_accessed"]["main"] = True
                     # process the inbound session data
-                    if not _data["session_data"]["ingress"]:
-                        for k, v in dictrepr(_session):
-                            _data["session_data"]["ingress"][k] = v
-                            _data["session_data"]["keys"].add(k)
+                    if not data["session_data"]["ingress"]:
+                        for k, v in dictrepr(session):
+                            data["session_data"]["ingress"][k] = v
+                            data["session_data"]["keys"].add(k)
                     # Replace the existing ``ISession`` interface with
                     # our wrapper.
-                    return _session
+                    return session
 
                 self._request.set_property(wrapper, name="session", reify=True)
 
@@ -187,34 +187,36 @@ class SessionDebugPanel(DebugPanel):
             # this scenario can happen if there is an error in the toolbar
             return
 
-        _data = self.data
+        data = self.data
+        session = None
 
         if self.is_active or ("session" in self._request.__dict__):
             try:
-                if "session" not in self._request.__dict__:
-                    # the ``Session`` is not already loaded, so we should
-                    # mark it as being loaded within the "post" phase.
-                    _data["session_accessed"]["post"] = True
                 # if we installed a wrapped load, accessing the session now
                 # will trigger the "main" marker. to handle this, check the
                 # current version of the marker then access the session
                 # and then reset the marker
-                _accessed_main = _data["session_accessed"]["main"]
-                _session = self._request.session
-                _data["session_accessed"]["main"] = _accessed_main
-                for k, v in dictrepr(_session):
-                    _data["session_data"]["egress"][k] = v
-                    _data["session_data"]["keys"].add(k)
-                    if _data["session_accessed"]["panel_setup"]:
-                        # we can not detect `changed` values unless we process
-                        # the ``Session`` during the "pre" hook.
-                        if (k not in _data["session_data"]["ingress"]) or (
-                            _data["session_data"]["ingress"][k] != v
-                        ):
-                            _data["session_data"]["changed"].add(k)
+                _accessed_main = data["session_accessed"]["main"]
+                session = self._request.session
             except AttributeError:
                 # the session is not configured
                 pass
+
+            if session is not None:
+                data["session_accessed"]["main"] = _accessed_main
+                for k, v in dictrepr(session):
+                    data["session_data"]["egress"][k] = v
+                    data["session_data"]["keys"].add(k)
+                    if (
+                        data["session_accessed"]["panel_setup"]
+                        or data["session_accessed"]["main"]
+                    ):
+                        # we can not detect `changed` values unless we process
+                        # the ``Session`` during the "pre" hook.
+                        if (k not in data["session_data"]["ingress"]) or (
+                            data["session_data"]["ingress"][k] != v
+                        ):
+                            data["session_data"]["changed"].add(k)
 
 
 def includeme(config):

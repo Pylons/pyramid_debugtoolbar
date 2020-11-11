@@ -4,14 +4,19 @@
 % else:
 	<p>No `ISessionFactory` Configured</p>
 % endif
+
+
+## Panel Active
 % if is_active:
-	<p>This panel <span class="label label-success">is active</span>, and will always display the `Session` data -- even
-	if the session is not accessed during the main request. This behavior can be
-	toggled with the Panel Settings.</p>
+	<p>This panel <span class="label label-success">was active</span> for this
+	request, and will always display the "Session" data -- even if `.session`
+	was not accessed during the request.
+	This behavior can be toggled with the Panel Settings.</p>
 % else:
-	<p>This panel <span class="label label-danger">is not active</span>, and will only display the `Session` data if
-	the session is accessed during the main request. This behavior can be
-	toggled with the Panel Settings.</p>
+	<p>This panel <span class="label label-danger">was not active</span> for
+	this request, and will only display the "Session" data if `.session` was
+	accessed during the request.
+	This behavior can be toggled with the Panel Settings.</p>
 % endif
 
 
