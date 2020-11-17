@@ -193,6 +193,10 @@ def dictrepr(d):
     try:
         return sorted(out.items())
     except TypeError:
+        # Sorting can fail under Python3 if Types are not comparable.
+        # For example `sorted(["a", float(0.1)])` will sort on Python2 but will
+        # raise TypeError on Python3. As a fallback, try a second sort in which
+        # keys are cast to a string when normal sorting fails with a TypeError.
         return sorted(out.items(), key=lambda k: str(k))
 
 

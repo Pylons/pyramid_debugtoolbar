@@ -1,4 +1,6 @@
+// The cookie Name and Delimiter must match `toolbar.py`
 var COOKIE_NAME_ACTIVE = 'pdtb_active';
+var COOKIE_DELIM_ACTIVE = ',';
 
 function toggle_content(elem) {
   if (elem.is(':visible')) {
@@ -33,17 +35,23 @@ $(function() {
     var name = $this.attr('data-pdtb-panel');
     // Turn cookie content into an array of active panels
     var active_str = $.cookie(COOKIE_NAME_ACTIVE);
-    var active = (active_str) ? active_str.split(',') : [];
+    var active = (active_str) ? active_str.split(COOKIE_DELIM_ACTIVE) : [];
+    // Remove the current panel from the array of active panels
     active = $.grep(active, function(n,i) { return n != name; });
     if ($this.hasClass('active')) {
       $this.removeClass('active');
       $this.addClass('inactive');
     }
     else {
+      // add the panel back into the array
       active.push(name);
       $this.removeClass('inactive');
       $this.addClass('active');
     }
+	// In some edge cases, a panel was added to the cookie multiple times
+	// To help guard against this, if the browser's javascript is modern enough,
+	// casting the data to a Set will remove the duplicate.
+	// If the browser is old, don't worry. This is a defense for edge cases.
     try {
 	    active = Array.from(new Set(active));
 	}
@@ -52,7 +60,7 @@ $(function() {
 		console.log(err);
 	}
     if (active.length > 0) {
-      $.cookie(COOKIE_NAME_ACTIVE, active.join(','), {
+      $.cookie(COOKIE_NAME_ACTIVE, active.join(COOKIE_DELIM_ACTIVE), {
         path: '/', expires: 10
       });
     }
