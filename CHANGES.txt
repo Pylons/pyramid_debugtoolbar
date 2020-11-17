@@ -6,6 +6,7 @@ Unreleased
   operates on accessed sessions via a wrapped loader. Users can activate the
   Session Panel, via the Toolbar Settings or a per-request cookie, to track the
   ingress and egress data on all requests.
+
   * Removed "Session" section from Request Vars Panel
   * Updated Documentation and Screenshots
 
@@ -14,12 +15,14 @@ Unreleased
 
 - ``utils.dictrepr`` will now fallback to a string comparison of the keys if a
   TypeError is encountered, which can occur under Python3.
+
   * A test was added to check to ensure sorting errors occur under Python3.
     If the test fails in the future, this workaround may no longer be needed.
 
 - Updated toolbar javascript to better handle multiple user-activated panels.
-	* split and join functions now use the same delimiter
-	* if the browser supports it, use a "set" to de-duplicate active panels
+
+  * `split` and `join` functions now use the same delimiter.
+  * If the browser supports it, use a "set" to de-duplicate active panels.
 
 - Inline comments on toolbar.js and toolbar.py to alert future developers on
   the string delimiters and cookie names.
