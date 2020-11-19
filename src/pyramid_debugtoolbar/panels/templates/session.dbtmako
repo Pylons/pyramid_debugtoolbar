@@ -9,7 +9,7 @@
 ## Panel Active
 % if is_active:
 	<p>This panel <span class="label label-success">was active</span> for this
-	request, and will always display the "Session" data -- even if `.session`
+	request. It will always display the session data, even if <code>.session</code>
 	was not accessed during the request.
 	This behavior can be toggled with the Panel Settings.</p>
 % else:
