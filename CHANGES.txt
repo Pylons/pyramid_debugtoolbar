@@ -21,7 +21,7 @@ Unreleased
 
 - Updated toolbar javascript to better handle multiple user-activated panels.
 
-  * `split` and `join` functions now use the same delimiter.
+  * ``split`` and ``join`` functions now use the same delimiter.
   * If the browser supports it, use a "set" to de-duplicate active panels.
 
 - Inline comments on toolbar.js and toolbar.py to alert future developers on

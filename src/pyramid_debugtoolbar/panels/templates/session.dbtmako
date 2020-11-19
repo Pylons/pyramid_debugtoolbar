@@ -23,10 +23,10 @@
 <h5>Documentation Links</h5>
 <ul>
 	<li>API Docs:
-		<a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/session.html">pyramid.session</a>
+		<a href="https://docs.pylonsproject.org/projects/pyramid/en/latest/api/session.html">pyramid.session</a>
 	</li>
 	<li>Narrative Docs:
-		<a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Session</a>
+		<a href="https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Session</a>
 	</li>
 </ul>
 
