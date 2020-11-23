@@ -2,7 +2,7 @@ from pyramid.interfaces import ISessionFactory
 import zope.interface.interfaces
 
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import dictrepr
+from pyramid_debugtoolbar.utils import dictrepr, wrap_load
 
 _ = lambda x: x
 
@@ -129,19 +129,21 @@ class SessionDebugPanel(DebugPanel):
 
                 # If the ``Session`` was not already loaded, then we may have
                 # just loaded it. This presents a problem for tracking, as we
-                # will not know if the ``Session`` was accessed or not.
-                # To handle this scenario we use a variant of the ``wrap_load``
-                # function from the ``request_vars`` tolbar:
-                def _session_wrapper(self):
+                # will not know if the ``Session`` was accessed during the
+                # request.
+                # To handle this scenario, replace ``request.session`` with a
+                # function to update the accessed marker and return the
+                # already loaded session.
+                def _session_accessed(self):
                     # This function updates the ``self.data`` information dict,
                     # and then returns the exact same ``Session`` we just
                     # deleted from the ``Request``.
                     data["session_accessed"]["main"] = True
                     return session
 
-                # Replace the existing ``ISession`` interface with our wrapper.
+                # Replace the existing ``ISession`` interface with the function.
                 self._request.set_property(
-                    _session_wrapper, name="session", reify=True
+                    _session_accessed, name="session", reify=True
                 )
 
         else:
@@ -149,27 +151,26 @@ class SessionDebugPanel(DebugPanel):
             This block handles the default situation:
             * The ``Session`` has not been already accessed and
               the Panel is not enabled
+
             """
-            orig_property = getattr(self._request.__class__, "session", None)
-            if orig_property is not None:
-                # We have a ``Session`` but it has not been accessed yet.
-                # The ``.session`` attribute is replaced with a variant of the
-                # ``wrap_load`` from the ``request_vars`` tolbar.
+
+            def _process_session_accessed(_session):
                 # The wrapper updates out information dict about how the
                 # ``Session`` was accessed and notes the ingress values.
+                data["session_accessed"]["main"] = True
+                # process the inbound session data
+                for k, v in dictrepr(_session):
+                    data["session_data"]["ingress"][k] = v
+                    data["session_data"]["keys"].add(k)
+                return _session
 
-                def wrapper(self):
-                    session = orig_property.__get__(self)
-                    # note the session was accessed during the main request
-                    data["session_accessed"]["main"] = True
-                    # process the inbound session data
-                    for k, v in dictrepr(session):
-                        data["session_data"]["ingress"][k] = v
-                        data["session_data"]["keys"].add(k)
-                    return session
-
-                # Replace the existing ``ISession`` interface with our wrapper.
-                self._request.set_property(wrapper, name="session", reify=True)
+            # only process the session if it's accessed
+            wrap_load(
+                self._request,
+                'session',
+                _process_session_accessed,
+                reify=True,
+            )
 
         return handler
 

@@ -267,3 +267,23 @@ def get_exc_name(exc):
     if module == 'exceptions' or module == 'builtins':
         return name
     return '%s.%s' % (module, name)
+
+
+def wrap_load(obj, name, cb, reify=False):
+    """Callback when a property is accessed.
+
+    This currently only works for reified properties that are called once.
+
+    Originally written for the `Request Vars` panel.
+    """
+    orig_property = getattr(obj.__class__, name, None)
+    if orig_property is None:
+        # earlier versions of pyramid may not have newer attrs
+        # (ie, authenticated_userid)
+        return
+
+    def wrapper(self):
+        val = orig_property.__get__(obj)
+        return cb(val)
+
+    obj.set_property(wrapper, name=name, reify=reify)

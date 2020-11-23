@@ -1,7 +1,7 @@
 from pprint import saferepr
 
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import dictrepr
+from pyramid_debugtoolbar.utils import dictrepr, wrap_load
 
 _ = lambda x: x
 
@@ -176,25 +176,6 @@ class RequestVarsDebugPanel(DebugPanel):
 
         # stop hanging onto the request after the response is processed
         del self.request
-
-
-def wrap_load(obj, name, cb, reify=False):
-    """Callback when a property is accessed.
-
-    This currently only works for reified properties that are called once.
-
-    """
-    orig_property = getattr(obj.__class__, name, None)
-    if orig_property is None:
-        # earlier versions of pyramid may not have newer attrs
-        # (ie, authenticated_userid)
-        return
-
-    def wrapper(self):
-        val = orig_property.__get__(obj)
-        return cb(val)
-
-    obj.set_property(wrapper, name=name, reify=reify)
 
 
 def includeme(config):

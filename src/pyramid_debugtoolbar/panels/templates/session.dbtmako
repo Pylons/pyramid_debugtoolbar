@@ -1,8 +1,8 @@
 <h5>Session Configuration</h5>
 % if configuration:
-	<p>Using `ISessionFactory`: <code>${configuration}</code></p>
+	<p>Using <code>ISessionFactory</code>: <code>${configuration}</code></p>
 % else:
-	<p>No `ISessionFactory` Configured</p>
+	<p>No <code>ISessionFactory</code> Configured</p>
 % endif
 
 
@@ -10,14 +10,13 @@
 % if is_active:
 	<p>This panel <span class="label label-success">was active</span> for this
 	request. It will always display the session data, even if <code>.session</code>
-	was not accessed during the request.
-	This behavior can be toggled with the Panel Settings.</p>
+	was not accessed during the request.</p>
 % else:
 	<p>This panel <span class="label label-danger">was not active</span> for
-	this request, and will only display the "Session" data if `.session` was
-	accessed during the request.
-	This behavior can be toggled with the Panel Settings.</p>
+	this request, and will only display the session data if <code>.session</code> was
+	accessed during the request.</p>
 % endif
+<em>This behavior can be toggled via the Toolbar Settings tab.</em>
 
 
 <h5>Documentation Links</h5>
@@ -34,11 +33,11 @@
 <h5>Session Accessed</h5>
 % if session_accessed["main"]:
 	<div class="alert alert-info">
-		`request.session` was accessed during the main `Request` handler.
+		<code>request.session</code> was accessed during the main <code>Request</code> handler.
 	</div>
 % else:
 	<div class="alert alert-warning">
-		`request.session` was not accessed during the main `Request` handler.
+		<code>request.session</code> was not accessed during the main <code>Request</code> handler.
 	</div>
 % endif
 
@@ -64,7 +63,7 @@
 				<tr>
 					<th>
 						% if k in session_data["changed"]:
-							<span class="label label-info">!</span>
+							<span class="label label-info" data-toggle="tooltip" data-placement="top" title="value set or changed during this request">!</span>
 						% else:
 							<span class="label">&nbsp;</span>
 						% endif
@@ -87,4 +86,9 @@
 			% endfor
 		</tbody>
 	</table>
+	<script type="text/javascript">
+		$(function () {
+		  $('[data-toggle="tooltip"]').tooltip()
+		})
+	</script>
 % endif

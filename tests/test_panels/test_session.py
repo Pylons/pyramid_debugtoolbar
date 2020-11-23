@@ -165,19 +165,23 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
             resp.text,
         )
         if is_configured:
-            self.assertIn("<p>Using `ISessionFactory`: <code>", resp.text)
+            self.assertIn(
+                "<p>Using <code>ISessionFactory</code>: <code>", resp.text
+            )
         else:
-            self.assertIn("<p>No `ISessionFactory` Configured</p>", resp.text)
+            self.assertIn(
+                "<p>No <code>ISessionFactory</code> Configured</p>", resp.text
+            )
         if is_accessed:
             self.assertIn(
-                "`request.session` was accessed during the main `Request` "
-                "handler.",
+                "<code>request.session</code> was accessed during the main "
+                "<code>Request</code> handler.",
                 resp.text,
             )
         else:
             self.assertIn(
-                "`request.session` was not accessed during the main `Request` "
-                "handler.",
+                "<code>request.session</code> was not accessed during the main "
+                "<code>Request</code> handler.",
                 resp.text,
             )
 
