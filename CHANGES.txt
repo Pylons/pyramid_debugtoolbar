@@ -1,5 +1,7 @@
-Unreleased
+4.9 (2020-11-24)
 ----------------
+
+- Support Python 3.9.
 
 - Added a new Session Panel to track ingress and egress changes to a registered
   ISession interface across a request lifecycle.  By default, the panel only
