@@ -62,9 +62,11 @@ class DebugToolbar(object):
         self.default_active_panels = default_active_panels
         self.visible = False
 
-        # Panels can be be activated (more features) (e.g. Performace panel)
+        # Panels can be be activated (more features) (e.g. Performance panel)
+        # toolbar.js controls this cookie with the following concepts:
+        #   COOKIE_NAME_ACTIVE = 'pdtb_active'
+        #   COOKIE_DELIM_ACTIVE = ','
         pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
-
         activated = pdtb_active.split(',')
         # If the panel is activated in the settings, we want to enable it
         activated.extend(default_active_panels)

@@ -23,7 +23,6 @@
 			<br /><small>${panel.nav_subtitle}</small>
 			% endif
 
-
 			% if panel.user_activate:
 			<span class="switch ${'active' if panel.is_active else 'inactive'}" 
 			  title="Enable or disable the panel">

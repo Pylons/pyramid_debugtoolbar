@@ -1,0 +1,94 @@
+<h5>Session Configuration</h5>
+% if configuration:
+	<p>Using <code>ISessionFactory</code>: <code>${configuration}</code></p>
+% else:
+	<p>No <code>ISessionFactory</code> Configured</p>
+% endif
+
+
+## Panel Active
+% if is_active:
+	<p>This panel <span class="label label-success">was active</span> for this
+	request. It will always display the session data, even if <code>.session</code>
+	was not accessed during the request.</p>
+% else:
+	<p>This panel <span class="label label-danger">was not active</span> for
+	this request, and will only display the session data if <code>.session</code> was
+	accessed during the request.</p>
+% endif
+<em>This behavior can be toggled via the Toolbar Settings tab.</em>
+
+
+<h5>Documentation Links</h5>
+<ul>
+	<li>API Docs:
+		<a href="https://docs.pylonsproject.org/projects/pyramid/en/latest/api/session.html">pyramid.session</a>
+	</li>
+	<li>Narrative Docs:
+		<a href="https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Session</a>
+	</li>
+</ul>
+
+
+<h5>Session Accessed</h5>
+% if session_accessed["main"]:
+	<div class="alert alert-info">
+		<code>request.session</code> was accessed during the main <code>Request</code> handler.
+	</div>
+% else:
+	<div class="alert alert-warning">
+		<code>request.session</code> was not accessed during the main <code>Request</code> handler.
+	</div>
+% endif
+
+
+<h5>Session Data</h5>
+% if session_data["keys"]:
+	<table class="table table-striped table-condensed">
+		<thead>
+			<tr>
+				<th>key</th>
+				<th>ingress</th>
+				<th>egress</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%
+				try:
+					keys = sorted(session_data["keys"])
+				except TypeError:
+					keys = sorted(session_data["keys"], key=lambda k: str(k))
+			%>
+			% for k in keys:
+				<tr>
+					<th>
+						% if k in session_data["changed"]:
+							<span class="label label-info" data-toggle="tooltip" data-placement="top" title="value set or changed during this request">!</span>
+						% else:
+							<span class="label">&nbsp;</span>
+						% endif
+						&nbsp;
+						${k}
+					</th>
+					<td>
+						<% v = session_data["ingress"].get(k, NotInSession) %>
+						% if v is not NotInSession:
+							<code>${v|n}</code>
+						% endif
+					</td>
+					<td>
+						<% v = session_data["egress"].get(k, NotInSession) %>
+						% if v is not NotInSession:
+							<code>${v|n}</code>
+						% endif
+					</td>
+				</tr>
+			% endfor
+		</tbody>
+	</table>
+	<script type="text/javascript">
+		$(function () {
+		  $('[data-toggle="tooltip"]').tooltip()
+		})
+	</script>
+% endif

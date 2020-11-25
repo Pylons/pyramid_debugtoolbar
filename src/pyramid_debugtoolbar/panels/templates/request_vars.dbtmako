@@ -204,47 +204,6 @@
 </%def>
 
 
-<%def name="session_variables()">
-	<h4>Session Variables</h4>
-	% if session:
-		<table class="table table-striped table-condensed">
-			<colgroup>
-				<col style="width:20%"/>
-				<col/>
-			</colgroup>
-			<thead>
-				<tr>
-					<th>Variable</th>
-					<th>Value</th>
-				</tr>
-			</thead>
-			<tbody>
-				% for i, (key, value) in enumerate(sorted(session)):
-					<tr>
-						<td>${key|h}</td>
-						<td>${value|h}</td>
-					</tr>
-				% endfor
-			</tbody>
-		</table>
-	% elif session is None:
-		<p>Session was not accessed</p>
-	% else:
-		<p>No session data</p>
-	% endif
-	<h5>Documentation Links</h5>
-	<ul>
-    	<li>API Docs:
-    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/session.html">pyramid.session</a>
-    	</li>
-    	<li>Narrative Docs:
-    	    <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html">Session</a>
-    	</li>
-	</ul>
-	<hr/>
-</%def>
-
-
 ##
 ## Render Section -- You can alter the display the above defs in any order below
 ##
@@ -254,7 +213,6 @@
 ${get_variables()}
 ${post_variables()}
 ${cookie_variables()}
-${session_variables()}
 ${request_properties()}
 ${request_attributes()}
 ${request_environ()}

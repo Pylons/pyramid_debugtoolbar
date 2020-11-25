@@ -190,7 +190,14 @@ def dictrepr(d):
         except Exception:
             # defensive
             out[val] = '<unknown>'
-    return sorted(out.items())
+    try:
+        return sorted(out.items())
+    except TypeError:
+        # Sorting can fail under Python3 if Types are not comparable.
+        # For example `sorted(["a", float(0.1)])` will sort on Python2 but will
+        # raise TypeError on Python3. As a fallback, try a second sort in which
+        # keys are cast to a string when normal sorting fails with a TypeError.
+        return sorted(out.items(), key=lambda k: str(k))
 
 
 logger = getLogger('pyramid_debugtoolbar')
@@ -260,3 +267,23 @@ def get_exc_name(exc):
     if module == 'exceptions' or module == 'builtins':
         return name
     return '%s.%s' % (module, name)
+
+
+def wrap_load(obj, name, cb, reify=False):
+    """Callback when a property is accessed.
+
+    This currently only works for reified properties that are called once.
+
+    Originally written for the `Request Vars` panel.
+    """
+    orig_property = getattr(obj.__class__, name, None)
+    if orig_property is None:
+        # earlier versions of pyramid may not have newer attrs
+        # (ie, authenticated_userid)
+        return
+
+    def wrapper(self):
+        val = orig_property.__get__(obj)
+        return cb(val)
+
+    obj.set_property(wrapper, name=name, reify=reify)

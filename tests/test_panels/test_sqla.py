@@ -6,11 +6,7 @@ import sys
 
 from pyramid_debugtoolbar.compat import PY3
 
-from ._utils import (
-    _TestDebugtoolbarPanel,
-    ok_response_factory,
-    re_toolbar_link,
-)
+from ._utils import _TestDebugtoolbarPanel, ok_response_factory
 
 
 class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
@@ -55,7 +51,7 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         self.assertIn("http://localhost/_debug_toolbar/", resp1.text)
 
         # check the toolbar
-        links = re_toolbar_link.findall(resp1.text)
+        links = self.re_toolbar_link.findall(resp1.text)
         self.assertIsNotNone(links)
         self.assertIsInstance(links, list)
         self.assertEqual(len(links), 1)

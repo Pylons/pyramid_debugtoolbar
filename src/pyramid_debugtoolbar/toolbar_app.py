@@ -20,6 +20,7 @@ bundled_includes = (
     'pyramid_debugtoolbar.panels.renderings',
     'pyramid_debugtoolbar.panels.request_vars',
     'pyramid_debugtoolbar.panels.routes',
+    'pyramid_debugtoolbar.panels.session',
     'pyramid_debugtoolbar.panels.settings',
     'pyramid_debugtoolbar.panels.sqla',
     'pyramid_debugtoolbar.panels.traceback',
