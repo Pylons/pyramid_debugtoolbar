@@ -94,22 +94,22 @@ try:
 
     @event.listens_for(Engine, "begin_twophase")
     def _begin_twophase(conn, xid):
-        stmt = 'begin_twophase %s' % xid
+        stmt = 'begin_twophase %s' % str(xid)
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "prepare_twophase")
     def _prepare_twophase(conn, xid):
-        stmt = 'prepare_twophase %s' % xid
+        stmt = 'prepare_twophase %s' % str(xid)
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "commit_twophase")
     def _commit_twophase(conn, xid, is_prepared):
-        stmt = 'commit_twophase %s %s' % (xid, is_prepared)
+        stmt = 'commit_twophase %s %s' % (str(xid), is_prepared)
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "rollback_twophase")
     def _rollback_twophase(conn, xid, is_prepared):
-        stmt = 'rollback_twophase %s %s' % (xid, is_prepared)
+        stmt = 'rollback_twophase %s %s' % (str(xid), is_prepared)
         _transactional_event_logger(conn, stmt)
 
     has_sqla = True
