@@ -27,7 +27,7 @@ class SessionDebugPanel(DebugPanel):
         """
         This is too difficult to figure out under the following parameters:
         * do not trigger the ``ISession`` interface
-        * The toolbar consults this attibute relatively early in the lifecycle
+        * The toolbar consults this attribute relatively early in the lifecycle
           to determine if ``.is_active`` should be ``True``
         """
         return True
