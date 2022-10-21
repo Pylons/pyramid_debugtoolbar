@@ -1,6 +1,6 @@
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.repr import debug_repr
-from pyramid_debugtoolbar.utils import STATIC_PATH
+from pyramid_debugtoolbar.utils import STATIC_PATH, get_setting
 
 try:
     from pyramid.interfaces import IIntrospector
@@ -38,7 +38,8 @@ class IntrospectionDebugPanel(DebugPanel):
         }
 
     def render_vars(self, request):
-        return {'static_path': request.static_url(STATIC_PATH)}
+        scheme = get_setting(request.registry.settings, 'scheme', None)
+        return {'static_path': request.static_url(STATIC_PATH, _scheme=scheme)}
 
 
 def nl2br(s):

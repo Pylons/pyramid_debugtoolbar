@@ -32,6 +32,7 @@ from pyramid_debugtoolbar.utils import (
     ROOT_ROUTE_NAME,
     STATIC_PATH,
     escape,
+    get_setting,
 )
 
 # Some regexes are binary strings because they are used for determining the
@@ -280,12 +281,14 @@ class Traceback(object):
 
     def render_full(self, request, lodgeit_url=None):
         """Render the Full HTML page with the traceback info."""
-        static_path = request.static_url(STATIC_PATH)
-        root_path = request.route_url(ROOT_ROUTE_NAME)
+        scheme = get_setting(request.registry.settings, 'url_scheme', None)
+        static_path = request.static_url(STATIC_PATH, _scheme=scheme)
+        root_path = request.route_url(ROOT_ROUTE_NAME, _scheme=scheme)
         exc = escape(self.exception)
         summary = self.render_summary(include_title=False, request=request)
         token = request.registry.parent_registry.pdtb_token
-        url = request.route_url(EXC_ROUTE_NAME, request_id=request.pdtb_id)
+        url = request.route_url(
+            EXC_ROUTE_NAME, request_id=request.pdtb_id, _scheme=scheme)
         evalex = request.registry.parent_registry.pdtb_eval_exc
         vars = {
             'evalex': evalex and 'true' or 'false',

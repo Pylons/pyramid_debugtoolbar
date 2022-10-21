@@ -9,6 +9,7 @@ from pyramid_debugtoolbar.utils import (
     ROOT_ROUTE_NAME,
     STATIC_PATH,
     escape,
+    get_setting,
 )
 
 _ = lambda x: x
@@ -54,12 +55,15 @@ class TracebackPanel(DebugPanel):
 
     def render_vars(self, request):
         vars = self.data.copy()
+        scheme = get_setting(request.registry.settings, 'url_scheme', None)
         vars.update(
             {
-                'static_path': request.static_url(STATIC_PATH),
-                'root_path': request.route_url(ROOT_ROUTE_NAME),
+                'static_path': request.static_url(STATIC_PATH, _scheme=scheme),
+                'root_path':
+                    request.route_url(ROOT_ROUTE_NAME, _scheme=scheme),
                 'url': request.route_url(
-                    EXC_ROUTE_NAME, request_id=request.pdtb_id
+                    EXC_ROUTE_NAME, request_id=request.pdtb_id,
+                    _scheme=scheme,
                 ),
                 # render the summary using the toolbar's request object, not
                 # the original request that generated the traceback!

@@ -214,7 +214,9 @@ def addr_in(addr, hosts):
 
 
 def debug_toolbar_url(request, *elements, **kw):
-    return request.route_url('debugtoolbar', subpath=elements, **kw)
+    scheme = get_setting(request.registry.settings, 'url_scheme', None)
+    return request.route_url(
+        'debugtoolbar', subpath=elements, _scheme=scheme, **kw)
 
 
 def hexlify(value):

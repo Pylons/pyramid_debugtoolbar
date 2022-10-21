@@ -65,6 +65,7 @@ class Test_parse_settings(unittest.TestCase):
                 'debugtoolbar.button_style': '',
                 'debugtoolbar.max_request_history': 100,
                 'debugtoolbar.max_visible_requests': 10,
+                'debugtoolbar.url_scheme': None,
             },
         )
 

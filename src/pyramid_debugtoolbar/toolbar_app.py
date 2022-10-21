@@ -161,8 +161,9 @@ def request_view(request):
             panel.name: panel for panel in toolbar.panels
         }
 
-    static_path = request.static_url(STATIC_PATH)
-    root_path = request.route_url(ROOT_ROUTE_NAME)
+    scheme = get_setting(request.registry.settings, 'url_scheme', None)
+    static_path = request.static_url(STATIC_PATH, _scheme=scheme)
+    root_path = request.route_url(ROOT_ROUTE_NAME, _scheme=scheme)
 
     button_style = get_setting(request.registry.settings, 'button_style')
     max_visible_requests = get_setting(

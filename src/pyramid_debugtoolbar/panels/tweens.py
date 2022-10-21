@@ -1,7 +1,7 @@
 from pyramid.interfaces import ITweens
 
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import STATIC_PATH
+from pyramid_debugtoolbar.utils import STATIC_PATH, get_setting
 
 _ = lambda x: x
 
@@ -37,7 +37,8 @@ class TweensDebugPanel(DebugPanel):
         }
 
     def render_vars(self, request):
-        return {'static_path': request.static_url(STATIC_PATH)}
+        scheme = get_setting(request.registry.settings, 'url_scheme', None)
+        return {'static_path': request.static_url(STATIC_PATH, _scheme=scheme)}
 
 
 def includeme(config):

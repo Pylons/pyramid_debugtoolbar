@@ -121,7 +121,8 @@ class DebugToolbar(object):
             request.registry.settings, 'button_style', ''
         )
         css_path = request.static_url(
-            STATIC_PATH + 'toolbar/toolbar_button.css'
+            STATIC_PATH + 'toolbar/toolbar_button.css',
+            _scheme=get_setting(request.registry.settings, 'url_scheme', None),
         )
         toolbar_html = toolbar_html_template % {
             'button_style': (

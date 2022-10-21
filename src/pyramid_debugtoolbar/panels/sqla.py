@@ -11,6 +11,7 @@ from pyramid_debugtoolbar.utils import (
     ROOT_ROUTE_NAME,
     STATIC_PATH,
     format_sql,
+    get_setting,
     text_,
 )
 
@@ -193,11 +194,12 @@ class SQLADebugPanel(DebugPanel):
         return super(SQLADebugPanel, self).render_content(request)
 
     def render_vars(self, request):
+        scheme = get_setting(request.registry.settings, 'url_scheme', None)
         return {
             'pdtb_id': self.pdtb_id,
             'route_url': request.route_url,
-            'static_path': request.static_url(STATIC_PATH),
-            'root_path': request.route_url(ROOT_ROUTE_NAME),
+            'static_path': request.static_url(STATIC_PATH, _scheme=scheme),
+            'root_path': request.route_url(ROOT_ROUTE_NAME, _scheme=scheme),
         }
 
 
