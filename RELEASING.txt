@@ -1,7 +1,7 @@
 Releasing Pyramid Debugtoolbar
 ==============================
 
-Prepare master for a new release
+Prepare "main" for a new release
 --------------------------------
 
 - Do platform test via tox:
