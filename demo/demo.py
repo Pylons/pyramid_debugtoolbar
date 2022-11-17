@@ -13,36 +13,41 @@ from pyramid.view import view_config
 
 try:
     import sqlalchemy
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     sqlalchemy = None
 
 # True if we are running on Python 3.
 PY3 = sys.version_info[0] == 3
 
-if PY3: # pragma: no cover
+if PY3:  # pragma: no cover
     binary_type = bytes
 else:
     binary_type = str
 
+
 def text_(s, encoding='latin-1', errors='strict'):
-    """ If ``s`` is an instance of ``binary_type``, return
+    """If ``s`` is an instance of ``binary_type``, return
     ``s.decode(encoding, errors)``, otherwise return ``s``"""
     if isinstance(s, binary_type):
         return s.decode(encoding, errors)
-    return s # pragma: no cover
+    return s  # pragma: no cover
+
 
 logging.basicConfig(level=logging.NOTSET)
 log = logging.getLogger(__file__)
 
 here = os.path.dirname(os.path.abspath(__file__))
 
+
 @view_config(route_name='test_exc')
 def exc(request):
     raise RuntimeError
 
+
 @view_config(route_name='test_squashed_exc')
 def squashed_exc(request):
     raise RuntimeError
+
 
 @view_config(
     route_name='test_squashed_exc',
@@ -53,22 +58,27 @@ def squashed_exc_error_view(request):
     request.response.status_code = 404
     return {}
 
+
 @view_config(route_name='test_notfound')
 def notfound(request):
     raise HTTPNotFound()
+
 
 @view_config(route_name='test_ajax', renderer='ajax.mako')
 def test_ajax(request):
     return {}
 
+
 @view_config(route_name='call_ajax', renderer='json')
 def call_ajax(request):
-    return {'ajax':'success'}
+    return {'ajax': 'success'}
+
 
 @view_config(context=HTTPNotFound, renderer='notfound.mako')
 def notfound_view(request):
     request.response.status_code = 404
     return {}
+
 
 @view_config(renderer='index.mako')  # found via traversal
 def test_page(request):
@@ -77,34 +87,41 @@ def test_page(request):
     return {
         'title': title,
         'show_jinja2_link': True,
-        'show_sqla_link': bool(sqlalchemy)}
+        'show_sqla_link': bool(sqlalchemy),
+    }
+
 
 @view_config(route_name='test_redirect')
 def test_redirect(request):
     return HTTPFound(location='/')
 
-@view_config(route_name='test_highorder',
-             renderer='highorder.mako')
+
+@view_config(route_name='test_highorder', renderer='highorder.mako')
 def test_highorder(request):
     return {}
 
-@view_config(route_name='test_predicates',
-             renderer='index.mako')
+
+@view_config(route_name='test_predicates', renderer='index.mako')
 def test_predicates(request):
     return {'title': 'Test route predicates'}
 
-@view_config(route_name='test_chameleon_exc',
-             renderer=__name__ + ':templates/error.pt')
+
+@view_config(
+    route_name='test_chameleon_exc', renderer=__name__ + ':templates/error.pt'
+)
 @view_config(route_name='test_mako_exc', renderer='error.mako')
 @view_config(route_name='test_jinja2_exc', renderer='error.jinja2')
 def test_template_exc(request):
     return {'title': 'Test template exceptions'}
 
+
 class DummyRootFactory(object):
     def __init__(self, request):
         self.request = request
+
     def __getitem__(self, name):
         return self
+
 
 def make_app():
     # configuration settings
@@ -153,9 +170,11 @@ def make_app():
     config.include('pyramid_debugtoolbar')
     return config.make_wsgi_app()
 
+
 app = make_app()
 
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server
+
     httpd = make_server('', 8080, app)
     httpd.serve_forever()

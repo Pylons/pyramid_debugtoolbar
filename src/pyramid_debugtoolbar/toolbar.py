@@ -26,14 +26,14 @@ html_types = ('text/html', 'application/xhtml+xml')
 
 
 class IToolbarWSGIApp(Interface):
-    """ Marker interface for the toolbar WSGI application."""
+    """Marker interface for the toolbar WSGI application."""
 
     def __call__(environ, start_response):
         pass
 
 
 class IPanelMap(Interface):
-    """ Marker interface for the set of known panels."""
+    """Marker interface for the set of known panels."""
 
 
 class IRequestAuthorization(Interface):
@@ -155,7 +155,7 @@ def beforerender_subscriber(event):
 
 
 def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
-    """ Pyramid tween factory for the debug toolbar """
+    """Pyramid tween factory for the debug toolbar"""
     # _logger and _dispatch are passed for testing purposes only
     if _logger is None:
         _logger = logger

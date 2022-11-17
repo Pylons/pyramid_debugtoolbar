@@ -30,11 +30,11 @@ bundled_includes = (
 
 
 class IParentActions(Interface):
-    """ Marker interface for registered parent actions in the toolbar app."""
+    """Marker interface for registered parent actions in the toolbar app."""
 
 
 def make_toolbar_app(settings, parent_registry):
-    """ WSGI application for rendering the debug toolbar."""
+    """WSGI application for rendering the debug toolbar."""
     config = Configurator(settings=settings)
     config.registry.parent_registry = parent_registry
     config.registry.registerUtility(OrderedDict(), IPanelMap)

@@ -42,7 +42,6 @@ if PY3:  # pragma: no cover
             return s
         return str(s, encoding, errors)
 
-
 else:
 
     def native_(s, encoding='latin-1', errors='strict'):
@@ -61,7 +60,6 @@ if PY3:  # pragma: no cover
         if exc.__traceback__ is not tb:
             raise exc.with_traceback(tb)
         raise exc
-
 
 else:  # pragma: no cover
 
@@ -153,7 +151,6 @@ if PY3:  # pragma: no cover
 
     def iteritems_(d):
         return d.items()
-
 
 else:
 

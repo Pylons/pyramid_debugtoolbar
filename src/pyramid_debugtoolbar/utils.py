@@ -131,7 +131,7 @@ def escape(s, quote=False):
 
 # http://forums.devshed.com/python-programming-11/case-insensitive-string-replace-490921.html
 def replace_insensitive(string, target, replacement):
-    """ Similar to string.replace() but is case insensitive."""
+    """Similar to string.replace() but is case insensitive."""
     no_case = string.lower()
     index = no_case.rfind(target.lower())
     if index >= 0:
