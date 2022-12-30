@@ -1,3 +1,9 @@
+unreleased
+----------
+
+- Fix deprecated usages of ``threading.currentThread()``.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/374
+
 4.9 (2020-11-24)
 ----------------
 
