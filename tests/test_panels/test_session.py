@@ -8,10 +8,7 @@ except ImportError:
     from pyramid.session import UnencryptedCookieSessionFactoryConfig as Sessn
 
 import random
-import unittest
 import webob.cookies
-
-from pyramid_debugtoolbar.compat import PY3
 
 from ._utils import _TestDebugtoolbarPanel, ok_response_factory
 
@@ -78,8 +75,6 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
             _cookies.append("pdtb_active=session")
         if _cookies:
             _cookies = "; ".join(_cookies)
-            if not PY3:
-                _cookies = _cookies.encode()
             req1.headers["Cookie"] = _cookies
         resp_app = req1.get_response(self.app)
         self.assertEqual(resp_app.status_code, 200)
@@ -128,8 +123,6 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
                     )
         if _cookies:
             _cookies = "; ".join(_cookies)
-            if not PY3:
-                _cookies = _cookies.encode()
             req1.headers["Cookie"] = _cookies
         resp_app2 = req1.get_response(self.app)
         self.assertEqual(resp_app2.status_code, 200)
@@ -379,7 +372,6 @@ class TestSortingErrorsSession(_TestSessionPanel):
             resp_toolbar, is_configured=True, is_accessed=True
         )
 
-    @unittest.skipUnless(PY3, "PY2 doesn't care")
     def test_sorting_fatal(self):
         """
         If Python3's behavior changes, the workaround to catch ``sorted()``'s

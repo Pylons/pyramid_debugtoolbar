@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     werkzeug.debug test
     ~~~~~~~~~~~~~~~~~~~
@@ -10,7 +9,6 @@ import re
 import sys
 import unittest
 
-from pyramid_debugtoolbar.compat import PY3, bytes_, text_
 from pyramid_debugtoolbar.console import HTMLStringO
 from pyramid_debugtoolbar.repr import (
     DebugReprGenerator,
@@ -50,17 +48,11 @@ class Test_debug_repr(unittest.TestCase):
             '</span></span>: <span class="value"><span class="number">42'
             '</span></span></span>}'
         )
-        result = debug_repr((1, bytes_('zwei'), text_('drei')))
-        if PY3:  # pragma: no cover
-            expected = (
-                '(<span class="number">1</span>, <span class="string">b\''
-                'zwei\'</span>, <span class="string">\'drei\'</span>)'
-            )
-        else:
-            expected = (
-                '(<span class="number">1</span>, <span class="string">\''
-                'zwei\'</span>, <span class="string">u\'drei\'</span>)'
-            )
+        result = debug_repr((1, b'zwei', 'drei'))
+        expected = (
+            '(<span class="number">1</span>, <span class="string">b\''
+            'zwei\'</span>, <span class="string">\'drei\'</span>)'
+        )
         assert result == expected
 
         class Foo(object):
@@ -85,17 +77,11 @@ class Test_debug_repr(unittest.TestCase):
             result
             == 're.compile(<span class="string regex">r\'foo\\d\'</span>)'
         )
-        result = debug_repr(re.compile(text_(r'foo\d')))
-        if PY3:  # pragma: no cover
-            assert (
-                result
-                == 're.compile(<span class="string regex">r\'foo\\d\'</span>)'
-            )
-        else:
-            assert (
-                result
-                == 're.compile(<span class="string regex">ur\'foo\\d\'</span>)'
-            )
+        result = debug_repr(re.compile(r'foo\d'))
+        assert (
+            result
+            == 're.compile(<span class="string regex">r\'foo\\d\'</span>)'
+        )
 
         assert (
             debug_repr(frozenset('x'))
@@ -130,22 +116,22 @@ class Test_object_dumping(unittest.TestCase):
         drg = DebugReprGenerator()
         out = drg.dump_object(Foo())
         assert re.search('Details for', out)
-        assert re.search('<th>x.*<span class="number">42</span>(?s)', out)
-        assert re.search('<th>y.*<span class="number">23</span>(?s)', out)
-        assert re.search('<th>z.*<span class="number">15</span>(?s)', out)
+        assert re.search('(?s)<th>x.*<span class="number">42</span>', out)
+        assert re.search('(?s)<th>y.*<span class="number">23</span>', out)
+        assert re.search('(?s)<th>z.*<span class="number">15</span>', out)
 
         out = drg.dump_object({'x': 42, 'y': 23})
         assert re.search('Contents of', out)
-        assert re.search('<th>x.*<span class="number">42</span>(?s)', out)
-        assert re.search('<th>y.*<span class="number">23</span>(?s)', out)
+        assert re.search('(?s)<th>x.*<span class="number">42</span>', out)
+        assert re.search('(?s)<th>y.*<span class="number">23</span>', out)
 
         out = drg.dump_object({'x': 42, 'y': 23, 23: 11})
         assert not re.search('Contents of', out)
 
         out = drg.dump_locals({'x': 42, 'y': 23})
         assert re.search('Local variables in frame', out)
-        assert re.search('<th>x.*<span class="number">42</span>(?s)', out)
-        assert re.search('<th>y.*<span class="number">23</span>(?s)', out)
+        assert re.search('(?s)<th>x.*<span class="number">42</span>', out)
+        assert re.search('(?s)<th>y.*<span class="number">23</span>', out)
 
 
 class Test_debug_dump(unittest.TestCase):

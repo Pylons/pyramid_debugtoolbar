@@ -103,7 +103,9 @@ class RequestVarsDebugPanel(DebugPanel):
             wrap_load(
                 request,
                 attr_,
-                lambda v: self.process_lazy_attr(attr_, is_dict, v),
+                lambda v, attr_=attr_, is_dict=is_dict: self.process_lazy_attr(
+                    attr_, is_dict, v
+                ),
             )
 
         # safely displaying the POST information is a bit tedious
@@ -113,13 +115,6 @@ class RequestVarsDebugPanel(DebugPanel):
             'preview_bytes': None,
         }
         try:
-            # PY2
-            #     iterating request.POST in webob-1.8.1 will trigger an
-            #     exception here which will kill the `response` object and break
-            #     at-least the headers panel
-            #     `curl -d "@/path/to/file.jpg" -X POST http://app`
-            # PY3:
-            #      the info seems decoded, but we can have 1400 items
             post_variables = [
                 (saferepr(k), saferepr(v)) for k, v in request.POST.items()
             ]

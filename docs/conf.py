@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # pyramid_debugtoolbar documentation build configuration file
 #

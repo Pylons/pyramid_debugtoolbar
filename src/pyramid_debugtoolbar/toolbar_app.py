@@ -1,9 +1,9 @@
 from collections import OrderedDict
+import json
 from pyramid.config import Configurator
 from pyramid.interfaces import Interface
 from pyramid.view import view_config
 
-from pyramid_debugtoolbar.compat import json, text_
 from pyramid_debugtoolbar.toolbar import IPanelMap
 from pyramid_debugtoolbar.utils import (
     ROOT_ROUTE_NAME,
@@ -30,11 +30,11 @@ bundled_includes = (
 
 
 class IParentActions(Interface):
-    """ Marker interface for registered parent actions in the toolbar app."""
+    """Marker interface for registered parent actions in the toolbar app."""
 
 
 def make_toolbar_app(settings, parent_registry):
-    """ WSGI application for rendering the debug toolbar."""
+    """WSGI application for rendering the debug toolbar."""
     config = Configurator(settings=settings)
     config.registry.parent_registry = parent_registry
     config.registry.registerUtility(OrderedDict(), IPanelMap)
@@ -183,8 +183,8 @@ def request_view(request):
     }
 
 
-U_BLANK = text_("")
-U_SSE_PAYLOAD = text_("id:{0}\nevent: new_request\ndata:{1}\n\n")
+U_BLANK = ""
+U_SSE_PAYLOAD = "id:{0}\nevent: new_request\ndata:{1}\n\n"
 
 
 @view_config(route_name='debugtoolbar.sse')
@@ -194,8 +194,8 @@ def sse(request):
     history = request.pdtb_history
     response.text = U_BLANK
 
-    active_request_id = text_(request.GET.get('request_id'))
-    client_last_request_id = text_(request.headers.get('Last-Event-Id', 0))
+    active_request_id = request.GET.get('request_id')
+    client_last_request_id = request.headers.get('Last-Event-Id', '0')
 
     max_visible_requests = get_setting(
         request.registry.settings, 'max_visible_requests'

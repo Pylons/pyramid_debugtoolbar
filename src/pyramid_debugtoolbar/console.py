@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     werkzeug.debug.console
     ~~~~~~~~~~~~~~~~~~~~~~
@@ -13,7 +12,6 @@ import sys
 import threading
 from types import CodeType
 
-from pyramid_debugtoolbar.compat import binary_type, exec_, text_
 from pyramid_debugtoolbar.repr import debug_repr, dump, helper
 from pyramid_debugtoolbar.utils import escape
 
@@ -51,8 +49,8 @@ class HTMLStringO(object):
         return val
 
     def _write(self, x):
-        if isinstance(x, binary_type):
-            x = text_(x, 'utf-8', 'replace')
+        if isinstance(x, bytes):
+            x = x.decode('utf-8', 'replace')
         self._buffer.append(x)
 
     def write(self, x):
@@ -178,7 +176,7 @@ class _InteractiveConsole(code.InteractiveInterpreter):
 
     def runcode(self, code):
         try:
-            exec_(code, self.globals, self.locals)
+            exec(code, self.globals, self.locals)
         except Exception:
             self.showtraceback()
 

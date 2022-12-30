@@ -1,8 +1,6 @@
 import os
 import unittest
 
-from pyramid_debugtoolbar.compat import text_
-
 
 class Test_escape(unittest.TestCase):
     def test_escape(self):
@@ -10,7 +8,7 @@ class Test_escape(unittest.TestCase):
 
         class Foo(str):
             def __html__(self):
-                return text_(self)
+                return self
 
         assert escape(None) == ''
         assert escape(42) == '42'

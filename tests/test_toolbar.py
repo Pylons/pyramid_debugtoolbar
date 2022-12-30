@@ -5,8 +5,6 @@ import unittest
 import warnings
 from webtest import TestApp
 
-from pyramid_debugtoolbar.compat import bytes_
-
 
 class TestDebugToolbar(unittest.TestCase):
     def setUp(self):
@@ -70,7 +68,7 @@ class TestDebugToolbar(unittest.TestCase):
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
-        self.assertTrue(bytes_('div id="pDebug"') in response.app_iter[0])
+        self.assertTrue(b'div id="pDebug"' in response.app_iter[0])
         self.assertEqual(response.content_length, len(response.app_iter[0]))
 
     def test_passing_of_button_style(self):
@@ -88,7 +86,7 @@ class TestDebugToolbar(unittest.TestCase):
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
-        self.assertTrue(bytes_('top:120px;zoom:50%') in response.app_iter[0])
+        self.assertTrue(b'top:120px;zoom:50%' in response.app_iter[0])
 
 
 class Test_beforerender_subscriber(unittest.TestCase):
