@@ -55,7 +55,7 @@ class Test_debug_repr(unittest.TestCase):
         )
         assert result == expected
 
-        class Foo(object):
+        class Foo:
             def __repr__(self):
                 return '<Foo 42>'
 
@@ -95,7 +95,7 @@ class Test_debug_repr(unittest.TestCase):
         a.append(a)
         assert debug_repr(a) == '[<span class="number">1</span>, [...]]'
 
-        class Foo(object):
+        class Foo:
             def __repr__(self):
                 1 / 0
 
@@ -106,7 +106,7 @@ class Test_debug_repr(unittest.TestCase):
 
 class Test_object_dumping(unittest.TestCase):
     def test_object_dumping(self):
-        class Foo(object):
+        class Foo:
             x = 42
             y = 23
 

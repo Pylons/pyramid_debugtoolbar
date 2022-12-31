@@ -118,9 +118,7 @@ class _TestSessionPanel(_TestDebugtoolbarPanel):
             for _set_cookie_header in resp_app.headers.getall("Set-Cookie"):
                 _cks = webob.cookies.parse_cookie(_set_cookie_header)
                 for _ck in _cks:
-                    _cookies.append(
-                        "%s=%s" % (_ck[0].decode(), _ck[1].decode())
-                    )
+                    _cookies.append(f"{_ck[0].decode()}={_ck[1].decode()}")
         if _cookies:
             _cookies = "; ".join(_cookies)
             req1.headers["Cookie"] = _cookies

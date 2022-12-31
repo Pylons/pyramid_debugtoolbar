@@ -108,22 +108,22 @@ class TestExceptionDebugView(unittest.TestCase):
         self.assertTrue('<pre>Frame1</pre><pre>Frame2</pre>' in html, html)
 
 
-class DummyToolbar(object):
+class DummyToolbar:
     pass
 
 
-class DummyTraceback(object):
+class DummyTraceback:
     def __init__(self, id, frames):
         self.id = id
         self.frames = frames
 
 
-class DummyConsole(object):
+class DummyConsole:
     def eval(self, cmd):
         return 'evaled'
 
 
-class DummyFrame(object):
+class DummyFrame:
     def __init__(self, id):
         self.console = DummyConsole()
         self.id = id
