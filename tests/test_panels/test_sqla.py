@@ -79,8 +79,7 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         self.assertIn(
             '<span style="color: #008800; font-weight: bold">SELECT</span>'
             '<span style="color: #bbbbbb"> </span>'
-            '<span style="color: #008800; font-weight: bold">NULL</span>;'
-            '<span style="color: #bbbbbb"></span>',
+            '<span style="color: #008800; font-weight: bold">NULL</span>;',
             resp.text,
         )
 
