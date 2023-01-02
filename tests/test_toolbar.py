@@ -561,7 +561,7 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(request.exc_info[1], request.exception)
 
 
-class DummyPanel(object):
+class DummyPanel:
     name = 'dummy_panel'
     is_active = False
     has_content = False
@@ -589,23 +589,23 @@ class DummyPanelWithContent(DummyPanel):
     has_content = True
 
 
-class DummyToolbar(object):
+class DummyToolbar:
     def __init__(self, panels):
         self.panels = panels
 
 
-class DummyLogger(object):
+class DummyLogger:
     def exception(self, msg):
         self.msg = msg
 
 
-class DummyApp(object):
+class DummyApp:
     def __init__(self, response, registry):
         self.registry = registry
         self.response = response
 
 
-class DummyTweenFactory(object):
+class DummyTweenFactory:
     def __init__(self, handler, registry):
         self.handler = handler
         self.registry = registry

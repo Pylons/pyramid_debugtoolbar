@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 
 from ._utils import _TestDebugtoolbarPanel
 
-PARTY_HAT_UNICODE = u"\U0001f389"
+PARTY_HAT_UNICODE = "\U0001f389"
 PARTY_HAT_UTF8 = PARTY_HAT_UNICODE.encode("utf-8")
 
 
