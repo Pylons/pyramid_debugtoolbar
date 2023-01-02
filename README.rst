@@ -81,7 +81,7 @@ then run the tests.
 
     $ python3 -m venv env
     $ env/bin/pip install -e ".[testing]"
-    $ env/bin/nosetests
+    $ env/bin/py.test
 
 
 Building documentation
