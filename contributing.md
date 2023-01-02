@@ -15,7 +15,7 @@ You can contribute to this project in several ways.
   Flow](https://guides.github.com/introduction/flow/index.html) describes the
   workflow process and why it's a good practice. When submitting a pull
   request, sign
-  [CONTRIBUTORS.txt](https://github.com/Pylons/pyramid_debugtoolbar/blob/master/CONTRIBUTORS.txt)
+  [CONTRIBUTORS.txt](https://github.com/Pylons/pyramid_debugtoolbar/blob/main/CONTRIBUTORS.txt)
   if you have not yet done so.
 * Join the IRC channel #pyramid on irc.freenode.net.
 

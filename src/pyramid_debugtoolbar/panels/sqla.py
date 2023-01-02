@@ -90,12 +90,12 @@ try:
 
     @event.listens_for(Engine, "begin_twophase")
     def _begin_twophase(conn, xid):
-        stmt = 'begin_twophase %s' % xid
+        stmt = 'begin_twophase %s' % (xid,)
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "prepare_twophase")
     def _prepare_twophase(conn, xid):
-        stmt = 'prepare_twophase %s' % xid
+        stmt = 'prepare_twophase %s' % (xid,)
         _transactional_event_logger(conn, stmt)
 
     @event.listens_for(Engine, "commit_twophase")
