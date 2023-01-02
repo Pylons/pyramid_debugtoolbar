@@ -57,7 +57,7 @@
 			% endif
 			</td>
 			<td>${query['sql']|n}</td>
-			<td>${text(query['parameters'])}</td>
+			<td>${query['parameters']}</td>
 		</tr>
 	% endfor
 	</tbody>

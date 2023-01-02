@@ -1,18 +1,14 @@
+import json
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.threadlocal import get_current_request
 from pyramid.view import view_config
 import threading
 import time
+from urllib.parse import quote
 import weakref
 
-from pyramid_debugtoolbar.compat import json, url_quote
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import (
-    ROOT_ROUTE_NAME,
-    STATIC_PATH,
-    format_sql,
-    text_,
-)
+from pyramid_debugtoolbar.utils import ROOT_ROUTE_NAME, STATIC_PATH, format_sql
 
 lock = threading.Lock()
 
@@ -22,7 +18,7 @@ try:
 
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
-        setattr(conn, 'pdtb_start_timer', time.time())
+        conn.pdtb_start_timer = time.time()
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
@@ -159,7 +155,7 @@ class SQLADebugPanel(DebugPanel):
             is_select = stmt.strip().lower().startswith('select')
             params = ''
             try:
-                params = url_quote(json.dumps(query['parameters']))
+                params = quote(json.dumps(query['parameters']))
             except TypeError:
                 pass  # object not JSON serializable
             except ValueError:
@@ -183,7 +179,6 @@ class SQLADebugPanel(DebugPanel):
 
         self.data = {
             'queries': data,
-            'text': text_,
             'engines': self.engines,
         }
 

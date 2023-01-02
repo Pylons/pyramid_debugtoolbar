@@ -5,8 +5,6 @@ import unittest
 import warnings
 from webtest import TestApp
 
-from pyramid_debugtoolbar.compat import bytes_
-
 
 class TestDebugToolbar(unittest.TestCase):
     def setUp(self):
@@ -70,7 +68,7 @@ class TestDebugToolbar(unittest.TestCase):
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
-        self.assertTrue(bytes_('div id="pDebug"') in response.app_iter[0])
+        self.assertTrue(b'div id="pDebug"' in response.app_iter[0])
         self.assertEqual(response.content_length, len(response.app_iter[0]))
 
     def test_passing_of_button_style(self):
@@ -88,7 +86,7 @@ class TestDebugToolbar(unittest.TestCase):
         request.registry = self.config.registry
         toolbar = self._makeOne(request, [DummyPanel], [DummyPanel], [])
         toolbar.inject(request, response)
-        self.assertTrue(bytes_('top:120px;zoom:50%') in response.app_iter[0])
+        self.assertTrue(b'top:120px;zoom:50%' in response.app_iter[0])
 
 
 class Test_beforerender_subscriber(unittest.TestCase):
@@ -563,7 +561,7 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(request.exc_info[1], request.exception)
 
 
-class DummyPanel(object):
+class DummyPanel:
     name = 'dummy_panel'
     is_active = False
     has_content = False
@@ -591,23 +589,23 @@ class DummyPanelWithContent(DummyPanel):
     has_content = True
 
 
-class DummyToolbar(object):
+class DummyToolbar:
     def __init__(self, panels):
         self.panels = panels
 
 
-class DummyLogger(object):
+class DummyLogger:
     def exception(self, msg):
         self.msg = msg
 
 
-class DummyApp(object):
+class DummyApp:
     def __init__(self, response, registry):
         self.registry = registry
         self.response = response
 
 
-class DummyTweenFactory(object):
+class DummyTweenFactory:
     def __init__(self, handler, registry):
         self.handler = handler
         self.registry = registry

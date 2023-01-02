@@ -1,12 +1,11 @@
 import markupsafe
 from pprint import saferepr
 from pyramid.request import Request
-
-from pyramid_debugtoolbar.compat import PY3, text_type, url_encode
+from urllib.parse import urlencode
 
 from ._utils import _TestDebugtoolbarPanel
 
-PARTY_HAT_UNICODE = u"\U0001f389"
+PARTY_HAT_UNICODE = "\U0001f389"
 PARTY_HAT_UTF8 = PARTY_HAT_UNICODE.encode("utf-8")
 
 
@@ -16,30 +15,29 @@ def templated_escaped(input, expect_saferepr=None):
 
     Took a while to backtrack the mako/pyramid_mako escaping...
 
-    saferepr(text_type(markupsafe.escape(PARTY_HAT_UNICODE)))
+    saferepr(str(markupsafe.escape(PARTY_HAT_UNICODE)))
     > "u'\\U0001f389'"
 
-    text_type(saferepr(PARTY_HAT_UNICODE))
+    str(saferepr(PARTY_HAT_UNICODE))
     > u"u'\\U0001f389'"
 
     markupsafe.escape(saferepr(PARTY_HAT_UNICODE))
     > Markup(u'u&#39;\\U0001f389&#39;')
 
-    text_type(markupsafe.escape(saferepr(PARTY_HAT_UNICODE)))
+    str(markupsafe.escape(saferepr(PARTY_HAT_UNICODE)))
     u'u&#39;\\U0001f389&#39;'
     """
-    if PY3:
-        input = text_type(input)
+    input = str(input)
     if expect_saferepr:
         input = saferepr(input)
-    return text_type(markupsafe.escape(input))
+    return str(markupsafe.escape(input))
 
 
 class _TestPanel_RequestVars(_TestDebugtoolbarPanel):
     def _makeOne(self, query_args=None, post_body=None, content_type=None):
 
         # make a request
-        query_args = ("?=%s" % url_encode(query_args)) if query_args else ""
+        query_args = ("?=%s" % urlencode(query_args)) if query_args else ""
         kwargs = {}
         if content_type:
             kwargs["content_type"] = content_type
@@ -89,10 +87,7 @@ class TestPanel_RequestVars_Simple(_TestPanel_RequestVars):
         post_body = "bar=foo"
         resp = self._makeOne(post_body=post_body)
         self.assertIn("<td>&#39;bar&#39;</td>", resp.text)
-        if PY3:
-            self.assertIn("<td>&#39;foo&#39;</td>", resp.text)
-        else:
-            self.assertIn("<td>u&#39;foo&#39;</td>", resp.text)
+        self.assertIn("<td>&#39;foo&#39;</td>", resp.text)
 
     def test_post_body_json(self):
         post_body = '{"foo": "bar"}'
@@ -115,10 +110,7 @@ class TestPanel_RequestVars_Simple(_TestPanel_RequestVars):
             "<td>%s</td>" % templated_escaped(post_body, expect_saferepr=True),
             resp.text,
         )
-        if PY3:
-            self.assertIn("<td>&#39;&#39;</td>", resp.text)
-        else:
-            self.assertIn("<td>u&#39;&#39;</td>", resp.text)
+        self.assertIn("<td>&#39;&#39;</td>", resp.text)
 
     def test_query_args_post_body(self):
         query_args = {
@@ -128,10 +120,7 @@ class TestPanel_RequestVars_Simple(_TestPanel_RequestVars):
         resp = self._makeOne(query_args=query_args, post_body=post_body)
         self.assertIn("<td>foo=bar</td>", resp.text)
         self.assertIn("<td>&#39;bar&#39;</td>", resp.text)
-        if PY3:
-            self.assertIn("<td>&#39;foo&#39;</td>", resp.text)
-        else:
-            self.assertIn("<td>u&#39;foo&#39;</td>", resp.text)
+        self.assertIn("<td>&#39;foo&#39;</td>", resp.text)
 
 
 class TestPanel_RequestVars_Unicode(_TestPanel_RequestVars):
@@ -140,43 +129,22 @@ class TestPanel_RequestVars_Unicode(_TestPanel_RequestVars):
             "party_hat": PARTY_HAT_UTF8,
         }
         resp = self._makeOne(query_args=query_args)
-        if PY3:
-            self.assertIn(
-                "<td>party_hat=%s</td>" % PARTY_HAT_UNICODE, resp.text
-            )
-        else:
-            resp_utf8 = resp.text.encode("utf-8")
-            self.assertIn("<td>party_hat=%s</td>" % PARTY_HAT_UTF8, resp_utf8)
+        self.assertIn("<td>party_hat=%s</td>" % PARTY_HAT_UNICODE, resp.text)
 
     def test_query_args_inverse(self):
         query_args = {PARTY_HAT_UTF8: "party_hat"}
         resp = self._makeOne(query_args=query_args)
-        if PY3:
-            self.assertIn(
-                "<td>%s=party_hat</td>" % PARTY_HAT_UNICODE, resp.text
-            )
-        else:
-            resp_utf8 = resp.text.encode("utf-8")
-            self.assertIn("<td>%s=party_hat</td>" % PARTY_HAT_UTF8, resp_utf8)
+        self.assertIn("<td>%s=party_hat</td>" % PARTY_HAT_UNICODE, resp.text)
 
     def test_post_body(self):
         post_body = "party_hat=%s" % PARTY_HAT_UTF8
         resp = self._makeOne(post_body=post_body)
-        if PY3:
-            self.assertIn("<td>&#39;party_hat&#39;</td>", resp.text)
-            self.assertIn(
-                "<td>%s</td>"
-                % templated_escaped(PARTY_HAT_UTF8, expect_saferepr=True),
-                resp.text,
-            )
-        else:
-            resp_utf8 = resp.text.encode("utf-8").decode()
-            self.assertIn("<td>&#39;party_hat&#39;</td>", resp_utf8)
-            self.assertIn(
-                "<td>%s</td>"
-                % templated_escaped(PARTY_HAT_UNICODE, expect_saferepr=True),
-                resp_utf8,
-            )
+        self.assertIn("<td>&#39;party_hat&#39;</td>", resp.text)
+        self.assertIn(
+            "<td>%s</td>"
+            % templated_escaped(PARTY_HAT_UTF8, expect_saferepr=True),
+            resp.text,
+        )
 
     def test_post_body_json(self):
         post_body = '{"foo": "%s"}' % PARTY_HAT_UTF8
@@ -185,17 +153,9 @@ class TestPanel_RequestVars_Unicode(_TestPanel_RequestVars):
         )
         # we should see 'preview bytes'
         self.assertIn("<p>No POST variables</p>", resp.text)
-        if PY3:
-            self.assertIn(
-                templated_escaped(post_body, expect_saferepr=False), resp.text
-            )
-        else:
-            self.assertIn(
-                templated_escaped(
-                    post_body.decode("utf-8"), expect_saferepr=False
-                ),
-                resp.text,
-            )
+        self.assertIn(
+            templated_escaped(post_body, expect_saferepr=False), resp.text
+        )
 
     def test_post_body_json__wrong_form(self):
         # send this in without a content-header
@@ -207,7 +167,4 @@ class TestPanel_RequestVars_Unicode(_TestPanel_RequestVars):
             "<td>%s</td>" % templated_escaped(post_body, expect_saferepr=True),
             resp.text,
         )
-        if PY3:
-            self.assertIn("<td>&#39;&#39;</td>", resp.text)
-        else:
-            self.assertIn("<td>u&#39;&#39;</td>", resp.text)
+        self.assertIn("<td>&#39;&#39;</td>", resp.text)

@@ -1,4 +1,3 @@
-from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.panels import DebugPanel
 
 _ = lambda x: x
@@ -24,7 +23,7 @@ class HeaderDebugPanel(DebugPanel):
 
         request.add_finished_callback(finished_callback)
         self.request_headers = [
-            (text_(k), text_(v)) for k, v in sorted(request.headers.items())
+            (k, v) for k, v in sorted(request.headers.items())
         ]
 
     def process_response(self, response):
@@ -37,9 +36,7 @@ class HeaderDebugPanel(DebugPanel):
     def process_response_deferred(self):
         if self.response:
             response = self.response
-            response_headers = [
-                (text_(k), text_(v)) for k, v in sorted(response.headerlist)
-            ]
+            response_headers = [(k, v) for k, v in sorted(response.headerlist)]
             self.data['response_headers'] = response_headers
 
 

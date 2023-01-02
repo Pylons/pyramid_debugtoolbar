@@ -3,7 +3,6 @@ import pkg_resources
 import platform
 import sys
 
-from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.panels import DebugPanel
 
 _ = lambda x: x
@@ -46,10 +45,7 @@ class VersionDebugPanel(DebugPanel):
         return platform.platform()
 
     def get_platform(self):
-        return 'Python %s on %s' % (
-            sys.version,
-            text_(self._get_platform_name(), 'utf8'),
-        )
+        return 'Python %s on %s' % (sys.version, self._get_platform_name())
 
 
 def includeme(config):

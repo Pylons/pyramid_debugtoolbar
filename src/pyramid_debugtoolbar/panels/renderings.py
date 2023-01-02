@@ -1,4 +1,3 @@
-from pyramid_debugtoolbar.compat import text_
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import dictrepr
 
@@ -34,7 +33,7 @@ class RenderingsDebugPanel(DebugPanel):
             # crazyass code raises an exception during __repr__ (formish)
             val = '<unknown>'
         self.renderings.append(
-            dict(name=name, system=dictrepr(event), val=text_(val, 'utf-8'))
+            dict(name=name, system=dictrepr(event), val=val)
         )
 
     @property

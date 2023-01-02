@@ -2,8 +2,6 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPBadRequest
 import unittest
 
-from pyramid_debugtoolbar.compat import bytes_, text_
-
 
 class TestExceptionDebugView(unittest.TestCase):
     def setUp(self):
@@ -54,7 +52,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         view = self._makeOne(request)
         response = view.source()
-        self.assertEqual(response.body, bytes_('source'))
+        self.assertEqual(response.body, b'source')
         self.assertEqual(response.content_type, 'text/html')
 
     def test_source_frame_not_found(self):
@@ -68,7 +66,7 @@ class TestExceptionDebugView(unittest.TestCase):
         request.params['cmd'] = 'doit'
         view = self._makeOne(request)
         response = view.execute()
-        self.assertEqual(response.body, bytes_('evaled'))
+        self.assertEqual(response.body, b'evaled')
         self.assertEqual(response.content_type, 'text/html')
 
     def test_execute_cmd_is_None(self):
@@ -96,40 +94,36 @@ class TestExceptionDebugView(unittest.TestCase):
         request = self._makeRequest()
         request.static_url = lambda *arg, **kw: 'http://static'
         vars = {
-            'classes': text_('classfoo class&bar'),
-            'title': text_('<h3>TEH TITLE</h3>'),
-            'frames': text_('<pre>Frame1</pre><pre>Frame2</pre>'),
+            'classes': 'classfoo class&bar',
+            'title': '<h3>TEH TITLE</h3>',
+            'frames': '<pre>Frame1</pre><pre>Frame2</pre>',
         }
         html = render(
             'pyramid_debugtoolbar:templates/exception_summary.dbtmako',
             vars,
             request=request,
         )
-        self.assertTrue(
-            text_('<div class="classfoo class&amp;bar">') in html, html
-        )
-        self.assertTrue(text_('<h3>TEH TITLE</h3>') in html, html)
-        self.assertTrue(
-            text_('<pre>Frame1</pre><pre>Frame2</pre>') in html, html
-        )
+        self.assertTrue('<div class="classfoo class&amp;bar">' in html, html)
+        self.assertTrue('<h3>TEH TITLE</h3>' in html, html)
+        self.assertTrue('<pre>Frame1</pre><pre>Frame2</pre>' in html, html)
 
 
-class DummyToolbar(object):
+class DummyToolbar:
     pass
 
 
-class DummyTraceback(object):
+class DummyTraceback:
     def __init__(self, id, frames):
         self.id = id
         self.frames = frames
 
 
-class DummyConsole(object):
+class DummyConsole:
     def eval(self, cmd):
         return 'evaled'
 
 
-class DummyFrame(object):
+class DummyFrame:
     def __init__(self, id):
         self.console = DummyConsole()
         self.id = id

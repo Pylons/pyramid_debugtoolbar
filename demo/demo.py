@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 import logging
@@ -15,21 +13,6 @@ try:
     import sqlalchemy
 except ImportError: # pragma: no cover
     sqlalchemy = None
-
-# True if we are running on Python 3.
-PY3 = sys.version_info[0] == 3
-
-if PY3: # pragma: no cover
-    binary_type = bytes
-else:
-    binary_type = str
-
-def text_(s, encoding='latin-1', errors='strict'):
-    """ If ``s`` is an instance of ``binary_type``, return
-    ``s.decode(encoding, errors)``, otherwise return ``s``"""
-    if isinstance(s, binary_type):
-        return s.decode(encoding, errors)
-    return s # pragma: no cover
 
 logging.basicConfig(level=logging.NOTSET)
 log = logging.getLogger(__file__)
@@ -139,11 +122,11 @@ def make_app():
     config.add_route('test_chameleon_exc', '/chameleon_exc')
     config.add_route('test_mako_exc', '/mako_exc')
     config.add_route('test_jinja2_exc', '/jinja2_exc')
-    config.add_route('test_highorder', text_(b'/La Pe\xc3\xb1a', 'utf-8'))
+    config.add_route('test_highorder', str(b'/La Pe\xc3\xb1a', 'utf-8'))
     config.add_route('test_ajax', '/ajax')
     config.add_route('test_squashed_exc', '/squashed_exc')
     config.add_route('call_ajax', '/call_ajax')
-    config.scan(__name__)
+    config.scan('.')
     config.include('pyramid_chameleon')
     config.include('pyramid_jinja2')
     config.include('pyramid_mako')

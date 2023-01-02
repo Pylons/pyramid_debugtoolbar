@@ -2,9 +2,6 @@ from pyramid import testing
 from pyramid.request import Request
 import sqlalchemy
 from sqlalchemy.sql import text as sqla_text
-import sys
-
-from pyramid_debugtoolbar.compat import PY3
 
 from ._utils import _TestDebugtoolbarPanel, ok_response_factory
 
@@ -78,11 +75,12 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         """
         Ensure the rendered panel has the "SELECT NULL" statement rendered
 
-        Note: the <pre> styles are different on the Py2 and Py3 libraries
         """
         self.assertIn(
-            '<span style="color: #008800; font-weight: bold">SELECT</span> '
-            '<span style="color: #008800; font-weight: bold">NULL</span>',
+            '<span style="color: #008800; font-weight: bold">SELECT</span>'
+            '<span style="color: #bbbbbb"> </span>'
+            '<span style="color: #008800; font-weight: bold">NULL</span>;'
+            '<span style="color: #bbbbbb"></span>',
             resp.text,
         )
 
@@ -213,21 +211,6 @@ class TestTransactionComplex(_TestSQLAlchemyPanel):
         """
 
         engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
-        if not PY3 or (sys.version_info[1] <= 5):
-            # under Python2-Python3.5
-            # Sqlite needs workaround to support savepoints
-            # see https://docs.sqlalchemy.org/en/13/dialects/sqlite.html
-
-            @sqlalchemy.event.listens_for(engine, "connect")
-            def _do_connect(dbapi_connection, connection_record):
-                # disable pysqlite's emitting of the BEGIN statement entirely.
-                # also stops it from emitting COMMIT before any DDL.
-                dbapi_connection.isolation_level = None
-
-            @sqlalchemy.event.listens_for(engine, "begin")
-            def _do_begin(conn):
-                conn.execute("BEGIN")
-
         conn = engine.connect()
 
         # tests: `begin`, `commit`

@@ -1,4 +1,3 @@
-import binascii
 from collections import deque
 import ipaddress
 from itertools import islice
@@ -8,14 +7,6 @@ from pyramid.exceptions import ConfigurationError
 from pyramid.path import DottedNameResolver
 from pyramid.settings import asbool
 import sys
-
-from pyramid_debugtoolbar.compat import (
-    binary_type,
-    bytes_,
-    string_types,
-    text_,
-    text_type,
-)
 
 try:
     from pygments import highlight
@@ -89,16 +80,12 @@ def common_segment_count(path, value):
 
 def format_sql(query):
     if not HAVE_PYGMENTS:  # pragma: no cover
-        return text_(query)
+        return query
 
-    return text_(
-        highlight(
-            query,
-            SqlLexer(encoding='utf-8'),
-            HtmlFormatter(
-                encoding='utf-8', noclasses=True, style=PYGMENT_STYLE
-            ),
-        )
+    return highlight(
+        query,
+        SqlLexer(encoding='utf-8'),
+        HtmlFormatter(noclasses=True, style=PYGMENT_STYLE),
     )
 
 
@@ -116,9 +103,9 @@ def escape(s, quote=False):
         return ''
     if hasattr(s, '__html__'):
         return s.__html__()
-    if not isinstance(s, (text_type, binary_type)):
-        s = text_type(s)
-    if isinstance(s, binary_type):
+    if not isinstance(s, (str, bytes)):
+        s = str(s)
+    if isinstance(s, bytes):
         try:
             s.decode('ascii')
         except Exception:
@@ -131,7 +118,7 @@ def escape(s, quote=False):
 
 # http://forums.devshed.com/python-programming-11/case-insensitive-string-replace-490921.html
 def replace_insensitive(string, target, replacement):
-    """ Similar to string.replace() but is case insensitive."""
+    """Similar to string.replace() but is case insensitive."""
     no_case = string.lower()
     index = no_case.rfind(target.lower())
     if index >= 0:
@@ -144,13 +131,13 @@ resolver = DottedNameResolver(None)
 
 
 def as_cr_separated_list(value):
-    if isinstance(value, string_types):
+    if isinstance(value, str):
         value = list(filter(None, [x.strip() for x in value.splitlines()]))
     return value
 
 
 def as_int(value):
-    if isinstance(value, string_types):
+    if isinstance(value, str):
         value = int(value)
     return value
 
@@ -159,7 +146,7 @@ def as_list(value):
     values = as_cr_separated_list(value)
     result = []
     for value in values:
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             subvalues = value.split()
             result.extend(subvalues)
         else:
@@ -168,7 +155,7 @@ def as_list(value):
 
 
 def as_display_debug_or_false(value):
-    if isinstance(value, string_types):
+    if isinstance(value, str):
         val = value.lower().strip()
         if val in ('display', 'debug'):
             return val
@@ -217,14 +204,6 @@ def debug_toolbar_url(request, *elements, **kw):
     return request.route_url('debugtoolbar', subpath=elements, **kw)
 
 
-def hexlify(value):
-    """Hexlify int, str then returns native str type."""
-    # If integer
-    str_ = str(value)
-    hexified = text_(binascii.hexlify(bytes_(str_)))
-    return hexified
-
-
 def make_subrequest(request, root_path, path, params=None):
     # we know root_path will have a trailing slash and
     # path will need one
@@ -240,7 +219,7 @@ def make_subrequest(request, root_path, path, params=None):
 def resolve_panel_classes(panels, is_global, panel_map):
     classes = []
     for panel in panels:
-        if isinstance(panel, string_types):
+        if isinstance(panel, str):
             panel_class = panel_map.get((panel, is_global))
             if panel_class is None:
                 panel_class = resolver.maybe_resolve(panel)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     werkzeug.debug.tbtools
     ~~~~~~~~~~~~~~~~~~~~~~
@@ -18,14 +17,6 @@ import sys
 from tokenize import TokenError
 import traceback
 
-from pyramid_debugtoolbar.compat import (
-    exec_,
-    native_,
-    string_types,
-    text_,
-    text_type,
-    xrange_,
-)
 from pyramid_debugtoolbar.console import Console
 from pyramid_debugtoolbar.utils import (
     EXC_ROUTE_NAME,
@@ -62,8 +53,7 @@ try:
 except NameError:
     pass
 
-FRAME_HTML = text_(
-    '''\
+FRAME_HTML = '''\
 <div class="frame" id="frame-%(id)s">
   <h4>File <cite class="filename">"%(filename)s"</cite>,
       line <em class="line">%(lineno)s</em>,
@@ -71,18 +61,15 @@ FRAME_HTML = text_(
   <pre>%(current_line)s</pre>
 </div>
 '''
-)
 
-SOURCE_TABLE_HTML = text_('<table class=source>%s</table>')
+SOURCE_TABLE_HTML = '<table class=source>%s</table>'
 
-SOURCE_LINE_HTML = text_(
-    '''\
+SOURCE_LINE_HTML = '''\
 <tr class="%(classes)s">
   <td class=lineno>%(lineno)s</td>
   <td>%(code)s</td>
 </tr>
 '''
-)
 
 
 def get_current_traceback(
@@ -108,7 +95,7 @@ def get_traceback(
     exc_type, exc_value, tb = info
     if ignore_system_exceptions and exc_type in system_exceptions:
         raise
-    for x in xrange_(skip):
+    for _ in range(skip):
         if tb.tb_next is None:
             break
         tb = tb.tb_next
@@ -141,7 +128,7 @@ class Line(object):
 
     def render(self):
         return SOURCE_LINE_HTML % {
-            'classes': text_(' '.join(self.classes)),
+            'classes': ' '.join(self.classes),
             'lineno': self.lineno,
             'code': escape(self.code),
         }
@@ -212,7 +199,7 @@ class Traceback(object):
     def exception(self):
         """String representation of the exception."""
         buf = traceback.format_exception_only(self.exc_type, self.exc_value)
-        return native_(''.join(buf).strip(), 'utf-8', 'replace')
+        return ''.join(buf).strip()
 
     exception = property(exception)
 
@@ -240,36 +227,30 @@ class Traceback(object):
 
         if include_title:
             if self.is_syntax_error:
-                title = text_('Syntax Error')
+                title = 'Syntax Error'
             else:
-                title = text_(
-                    'Traceback <small>(most recent call last)</small>'
-                )
+                title = 'Traceback <small>(most recent call last)</small>'
 
         for frame in self.frames:
             frames.append(
-                text_('<li%s>%s')
+                '<li%s>%s'
                 % (
-                    text_(' title="%s"' % escape(frame.info))
-                    if frame.info
-                    else text_(''),
+                    ' title="%s"' % escape(frame.info) if frame.info else '',
                     frame.render(),
                 )
             )
 
         if self.is_syntax_error:
-            description_wrapper = text_('<pre class=syntaxerror>%s</pre>')
+            description_wrapper = '<pre class=syntaxerror>%s</pre>'
         else:
-            description_wrapper = text_('<blockquote>%s</blockquote>')
+            description_wrapper = '<blockquote>%s</blockquote>'
 
         vars = {
-            'classes': text_(' '.join(classes)),
+            'classes': ' '.join(classes),
             'title': (
-                text_('<h3 class="traceback">%s</h3>' % title)
-                if title
-                else text_('')
+                '<h3 class="traceback">%s</h3>' % title if title else ''
             ),
-            'frames': text_('\n'.join(frames)),
+            'frames': '\n'.join(frames),
             'description': description_wrapper % escape(self.exception),
         }
         return render(
@@ -312,18 +293,18 @@ class Traceback(object):
 
     def generate_plaintext_traceback(self):
         """Like the plaintext attribute but returns a generator"""
-        yield text_('Traceback (most recent call last):')
+        yield 'Traceback (most recent call last):'
         for frame in self.frames:
-            yield text_(
+            yield (
                 '  File "%s", line %s, in %s'
                 % (frame.filename, frame.lineno, frame.function_name)
             )
-            yield text_('    ' + frame.current_line.strip())
-        yield text_(self.exception, 'utf-8')
+            yield ('    ' + frame.current_line.strip())
+        yield str(self.exception)
 
     @reify
     def plaintext(self):
-        return text_('\n'.join(self.generate_plaintext_traceback()))
+        return '\n'.join(self.generate_plaintext_traceback())
 
     id = property(lambda x: str(id(x)))
 
@@ -352,7 +333,7 @@ class Frame(object):
         self.hide = self.locals.get('__traceback_hide__', False)
         info = self.locals.get('__traceback_info__')
         if info is not None:
-            info = text_(info, errors='replace')
+            info = str(info, errors='replace')
         self.info = info
 
     def render(self):
@@ -395,19 +376,18 @@ class Frame(object):
 
     def render_source(self):
         """Render the sourcecode."""
-        return SOURCE_TABLE_HTML % text_(
+        return SOURCE_TABLE_HTML % (
             '\n'.join(line.render() for line in self.get_annotated_lines())
         )
 
     def eval(self, code, mode='single'):
         """Evaluate code in the context of the frame."""
-        if isinstance(code, string_types):
-            if isinstance(code, text_type):
-                code = UTF8_COOKIE + code.encode('utf-8')
+        if isinstance(code, str):
+            code = UTF8_COOKIE + code.encode('utf-8')
             code = compile(code, '<interactive>', mode)
         if mode != 'exec':
             return eval(code, self.globals, self.locals)
-        exec_(code, self.globals, self.locals)
+        exec(code, self.globals, self.locals)
 
     @reify
     def sourcelines(self):
@@ -436,7 +416,7 @@ class Frame(object):
                 f.close()
 
         # already unicode?  return right away
-        if isinstance(source, text_type):
+        if isinstance(source, str):
             return source.splitlines()
 
         # yes. it should be ascii, but we don't want to reject too many
@@ -466,7 +446,7 @@ class Frame(object):
         try:
             return self.sourcelines[self.lineno - 1]
         except IndexError:
-            return text_('')
+            return ''
 
     @reify
     def console(self):

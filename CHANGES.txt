@@ -1,6 +1,10 @@
 unreleased
 ----------
 
+- Drop support for Python 2.7, 3.4, 3.5, 3.6.
+
+- Add support for Python 3.9, 3.10, 3.11.
+
 - Fix deprecated usages of ``threading.currentThread()``.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/374
 

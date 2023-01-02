@@ -72,7 +72,7 @@ To run only a specific Python environment:
 
 .. code-block:: bash
 
-    $ tox -e py35
+    $ tox -e py311
 
 If you don't have ``tox`` installed, you can install the testing requirements,
 then run the tests.

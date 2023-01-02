@@ -4,9 +4,9 @@ from pyramid.httpexceptions import WSGIHTTPException
 from pyramid.interfaces import Interface
 from pyramid.threadlocal import get_current_request
 import sys
+from urllib.parse import unquote
 import warnings
 
-from pyramid_debugtoolbar.compat import bytes_, url_unquote
 from pyramid_debugtoolbar.tbtools import get_traceback
 from pyramid_debugtoolbar.utils import (
     STATIC_PATH,
@@ -15,7 +15,6 @@ from pyramid_debugtoolbar.utils import (
     debug_toolbar_url,
     get_exc_name,
     get_setting,
-    hexlify,
     logger,
     make_subrequest,
     replace_insensitive,
@@ -26,14 +25,14 @@ html_types = ('text/html', 'application/xhtml+xml')
 
 
 class IToolbarWSGIApp(Interface):
-    """ Marker interface for the toolbar WSGI application."""
+    """Marker interface for the toolbar WSGI application."""
 
     def __call__(environ, start_response):
         pass
 
 
 class IPanelMap(Interface):
-    """ Marker interface for the set of known panels."""
+    """Marker interface for the set of known panels."""
 
 
 class IRequestAuthorization(Interface):
@@ -66,7 +65,7 @@ class DebugToolbar(object):
         # toolbar.js controls this cookie with the following concepts:
         #   COOKIE_NAME_ACTIVE = 'pdtb_active'
         #   COOKIE_DELIM_ACTIVE = ','
-        pdtb_active = url_unquote(request.cookies.get('pdtb_active', ''))
+        pdtb_active = unquote(request.cookies.get('pdtb_active', ''))
         activated = pdtb_active.split(',')
         # If the panel is activated in the settings, we want to enable it
         activated.extend(default_active_panels)
@@ -132,7 +131,7 @@ class DebugToolbar(object):
         }
         toolbar_html = toolbar_html.encode(response.charset or 'utf-8')
         response.body = replace_insensitive(
-            response_html, bytes_('</body>'), toolbar_html + bytes_('</body>')
+            response_html, b'</body>', toolbar_html + b'</body>'
         )
 
 
@@ -155,7 +154,7 @@ def beforerender_subscriber(event):
 
 
 def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
-    """ Pyramid tween factory for the debug toolbar """
+    """Pyramid tween factory for the debug toolbar"""
     # _logger and _dispatch are passed for testing purposes only
     if _logger is None:
         _logger = logger
@@ -199,7 +198,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
     hosts = sget('hosts')
     auth_check = registry.queryUtility(IRequestAuthorization)
     exclude_prefixes = sget('exclude_prefixes', [])
-    registry.pdtb_token = hexlify(os.urandom(5))
+    registry.pdtb_token = os.urandom(5).hex()
     registry.pdtb_eval_exc = intercept_exc
 
     default_active_panels = sget('active_panels', [])
@@ -260,7 +259,7 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 request.script_name = old_script_name
                 request.path_info = old_path_info
 
-        request.pdtb_id = hexlify(id(request))
+        request.pdtb_id = str(id(request)).encode('utf8').hex()
         toolbar = DebugToolbar(
             request, panel_classes, global_panel_classes, default_active_panels
         )
