@@ -1,7 +1,13 @@
 unreleased
 ----------
 
+- Drop support for SQLAlchemy < 1.4.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/388
+
 - Add support for Python 3.12.
+
+- Add support for SQLAlchemy 2.x.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/388
 
 4.10 (2022-01-02)
 -----------------
