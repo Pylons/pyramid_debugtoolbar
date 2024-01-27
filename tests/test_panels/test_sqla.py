@@ -138,9 +138,9 @@ class TestSimpleSelect(_TestSQLAlchemyPanel):
 
     def _sqlalchemy_view(self, context, request):
         engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
-        conn = engine.connect()
-        stmt = sqla_text("SELECT NULL;")
-        conn.execute(stmt)  # noqa
+        with engine.begin() as conn:
+            stmt = sqla_text("SELECT NULL;")
+            conn.execute(stmt)  # noqa
         return ok_response_factory()
 
     def test_panel(self):
@@ -157,8 +157,7 @@ class TestTransactionCommit(_TestSQLAlchemyPanel):
 
     def _sqlalchemy_view(self, context, request):
         engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
-        conn = engine.connect()
-        with conn.begin():
+        with engine.begin() as conn:
             stmt = sqla_text("SELECT NULL;")
             conn.execute(stmt)  # noqa
         return ok_response_factory()
@@ -174,9 +173,8 @@ class TestTransactionCommit(_TestSQLAlchemyPanel):
 class TestTransactionRollback(_TestSQLAlchemyPanel):
     def _sqlalchemy_view(self, context, request):
         engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
-        conn = engine.connect()
         try:
-            with conn.begin():
+            with engine.begin() as conn:
                 stmt = sqla_text("SELECT NULL;")
                 conn.execute(stmt)  # noqa
                 raise ValueError("EXPECTED")

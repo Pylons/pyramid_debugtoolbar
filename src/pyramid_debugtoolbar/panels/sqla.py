@@ -229,11 +229,11 @@ class SQLAlchemyViews(object):
 
         engines = self.request.registry.parent_registry.pdtb_sqla_engines
         engine = engines[int(engine_id)]()
-        with engine.connect() as connection:
-            result = connection.exec_driver_sql(stmt, params)
+        with engine.connect() as conn:
+            result = conn.exec_driver_sql(stmt, params)
 
             return {
-                'result': result.fetchall(),
+                'result': result.all(),
                 'headers': result.keys(),
                 'sql': format_sql(stmt),
                 'duration': float(query_dict['duration']),
@@ -262,11 +262,11 @@ class SQLAlchemyViews(object):
         else:
             query = 'EXPLAIN %s' % stmt
 
-        with engine.connect() as connection:
-            result = connection.exec_driver_sql(query, params)
+        with engine.connect() as conn:
+            result = conn.exec_driver_sql(query, params)
 
             return {
-                'result': result.fetchall(),
+                'result': result.all(),
                 'headers': result.keys(),
                 'sql': format_sql(stmt),
                 'str': str,
