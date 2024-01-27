@@ -5,6 +5,7 @@
     :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD license.
 """
+
 import re
 import sys
 import unittest

@@ -7,6 +7,7 @@
     :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD.
 """
+
 import codecs
 import inspect
 import os

@@ -76,9 +76,9 @@ class TestDebugToolbar(unittest.TestCase):
 
         self.config.add_static_view('_debugtoolbar/static', STATIC_PATH)
         self.config.add_route('debugtoolbar', '/_debugtoolbar/*subpath')
-        self.config.registry.settings[
-            'debugtoolbar.button_style'
-        ] = 'top:120px;zoom:50%'
+        self.config.registry.settings['debugtoolbar.button_style'] = (
+            'top:120px;zoom:50%'
+        )
         response = Response('<body></body>')
         response.content_type = 'text/html'
         request = Request.blank('/')
@@ -364,9 +364,9 @@ class Test_toolbar_handler(unittest.TestCase):
     def test_it_intercept_redirect_nonredirect_code(self):
         request = Request.blank('/')
         request.remote_addr = '127.0.0.1'
-        self.config.registry.settings[
-            'debugtoolbar.intercept_redirects'
-        ] = True
+        self.config.registry.settings['debugtoolbar.intercept_redirects'] = (
+            True
+        )
         request.registry = self.config.registry
         result = self._callFUT(request)
         self.assertTrue(result is self.response)
@@ -382,9 +382,9 @@ class Test_toolbar_handler(unittest.TestCase):
         request = Request.blank('/')
         request.remote_addr = '127.0.0.1'
         request.registry = self.config.registry
-        self.config.registry.settings[
-            'debugtoolbar.intercept_redirects'
-        ] = True
+        self.config.registry.settings['debugtoolbar.intercept_redirects'] = (
+            True
+        )
         dispatch = self._makeRedirectDispatcher()
         result = self._callFUT(request, handler, _dispatch=dispatch)
         self.assertTrue(result is response)

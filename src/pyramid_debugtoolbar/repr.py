@@ -12,6 +12,7 @@
     :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD.
 """
+
 import re
 import sys
 from traceback import format_exception_only
