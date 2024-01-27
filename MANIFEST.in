@@ -13,8 +13,15 @@ include contributing.md
 include RELEASING.txt
 include TODO.txt
 
-include .coveragerc .flake8 pytest.ini setup.cfg pyproject.toml
-include tox.ini rtd.txt
+include setup.cfg
+include pyproject.toml
+
+include .coveragerc
+include .flake8
+include pytest.ini
+include tox.ini
+include .readthedocs.yaml
+
 graft .github
 
 recursive-exclude * __pycache__ *.py[cod]
