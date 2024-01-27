@@ -55,24 +55,24 @@ class PerformanceDebugPanel(DebugPanel):
         if self.has_resource:
 
             def resource_timer_handler(request):
-                _start_time = time.time()
+                _start_time = time.monotonic()
                 self._start_rusage = resource.getrusage(resource.RUSAGE_SELF)
                 try:
                     result = handler(request)
                 finally:
                     self._end_rusage = resource.getrusage(resource.RUSAGE_SELF)
-                    self.total_time = (time.time() - _start_time) * 1000
+                    self.total_time = (time.monotonic() - _start_time) * 1000
 
                 return result
 
             return resource_timer_handler
 
         def noresource_timer_handler(request):
-            _start_time = time.time()
+            _start_time = time.monotonic()
             try:
                 result = handler(request)
             finally:
-                self.total_time = (time.time() - _start_time) * 1000
+                self.total_time = (time.monotonic() - _start_time) * 1000
             return result
 
         return noresource_timer_handler

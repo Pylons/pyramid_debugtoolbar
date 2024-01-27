@@ -109,7 +109,7 @@ class DebugToolbar(object):
             panel.process_response(response)
 
         self.response = response
-        self.visible_at = time.time()
+        self.visible_at = time.monotonic()
         self.visible = True
 
     def inject(self, request, response):

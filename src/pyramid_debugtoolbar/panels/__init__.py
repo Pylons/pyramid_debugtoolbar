@@ -145,9 +145,9 @@ class DebugPanel(object):
 
            def wrap_handler(self, handler):
                def wrapper(request):
-                   start_time = time.time()
+                   start_time = time.monotonic()
                    response = handler(request)
-                   end_time = time.time()
+                   end_time = time.monotonic()
                    self.data['duration'] = end_time - start_time
                    return response
                return wrapper

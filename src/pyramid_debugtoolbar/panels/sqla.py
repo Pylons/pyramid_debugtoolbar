@@ -18,11 +18,11 @@ try:
 
     @event.listens_for(Engine, "before_cursor_execute")
     def _before_cursor_execute(conn, cursor, stmt, params, context, execmany):
-        conn.pdtb_start_timer = time.time()
+        conn.pdtb_start_timer = time.monotonic()
 
     @event.listens_for(Engine, "after_cursor_execute")
     def _after_cursor_execute(conn, cursor, stmt, params, context, execmany):
-        stop_timer = time.time()
+        stop_timer = time.monotonic()
         request = get_current_request()
         if request is not None and hasattr(request, 'pdtb_sqla_queries'):
             with lock:
