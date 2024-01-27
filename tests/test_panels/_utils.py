@@ -18,7 +18,6 @@ def ok_response_factory():
 
 
 class _TestDebugtoolbarPanel(unittest.TestCase):
-
     re_toolbar_link = re_toolbar_link
 
     def setUp(self):

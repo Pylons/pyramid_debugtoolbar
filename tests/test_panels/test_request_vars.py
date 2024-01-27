@@ -35,7 +35,6 @@ def templated_escaped(input, expect_saferepr=None):
 
 class _TestPanel_RequestVars(_TestDebugtoolbarPanel):
     def _makeOne(self, query_args=None, post_body=None, content_type=None):
-
         # make a request
         query_args = ("?=%s" % urlencode(query_args)) if query_args else ""
         kwargs = {}

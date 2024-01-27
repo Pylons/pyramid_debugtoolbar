@@ -229,14 +229,15 @@ class SQLAlchemyViews(object):
 
         engines = self.request.registry.parent_registry.pdtb_sqla_engines
         engine = engines[int(engine_id)]()
-        result = engine.execute(stmt, params)
+        with engine.connect() as conn:
+            result = conn.exec_driver_sql(stmt, params)
 
-        return {
-            'result': result.fetchall(),
-            'headers': result.keys(),
-            'sql': format_sql(stmt),
-            'duration': float(query_dict['duration']),
-        }
+            return {
+                'result': result.all(),
+                'headers': result.keys(),
+                'sql': format_sql(stmt),
+                'duration': float(query_dict['duration']),
+            }
 
     @view_config(
         route_name='debugtoolbar.sql_explain',
@@ -261,15 +262,16 @@ class SQLAlchemyViews(object):
         else:
             query = 'EXPLAIN %s' % stmt
 
-        result = engine.execute(query, params)
+        with engine.connect() as conn:
+            result = conn.exec_driver_sql(query, params)
 
-        return {
-            'result': result.fetchall(),
-            'headers': result.keys(),
-            'sql': format_sql(stmt),
-            'str': str,
-            'duration': float(query_dict['duration']),
-        }
+            return {
+                'result': result.all(),
+                'headers': result.keys(),
+                'sql': format_sql(stmt),
+                'str': str,
+                'duration': float(query_dict['duration']),
+            }
 
 
 def includeme(config):
