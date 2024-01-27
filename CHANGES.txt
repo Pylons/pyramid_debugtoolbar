@@ -9,6 +9,9 @@
 - Add support for SQLAlchemy 2.x.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/388
 
+- Fix an issue where a long-running request might not appear in the toolbar UI
+  without refreshing the page.
+
 4.10 (2022-01-02)
 -----------------
 
