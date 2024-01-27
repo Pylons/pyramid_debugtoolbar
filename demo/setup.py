@@ -31,7 +31,6 @@ install_requires=[
     'pyramid_chameleon',
     'selenium',
     'SQLAlchemy',
-    'waitress',
     ]
 
 setup(name='debugtoolbar_demo',
