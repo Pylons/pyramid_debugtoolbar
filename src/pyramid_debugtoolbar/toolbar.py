@@ -224,7 +224,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 'this message, and you think it is incorrect, please open an '
                 'issue with more details including the proxy you\'re using and '
                 'the format of the REMOTE_ADDR at '
-                'https://github.com/Pylons/pyramid_debugtoolbar/issues/'
+                'https://github.com/Pylons/pyramid_debugtoolbar/issues/',
+                stacklevel=1,
             )
 
         if (
@@ -241,7 +242,8 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
                 'pyramid_debugtoolbar has detected that the application is '
                 'being served by a forking / multiprocess web server. The '
                 'toolbar relies on global state to work and is not compatible '
-                'with this environment. The toolbar will be disabled.'
+                'with this environment. The toolbar will be disabled.',
+                stacklevel=1,
             )
             return handler(request)
 
