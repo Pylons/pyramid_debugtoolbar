@@ -1,5 +1,5 @@
-unreleased
-----------
+4.11 (2024-01-27)
+-----------------
 
 - Drop support for SQLAlchemy < 1.4.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/388
