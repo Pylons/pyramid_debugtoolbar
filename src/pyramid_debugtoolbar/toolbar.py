@@ -4,6 +4,7 @@ from pyramid.httpexceptions import WSGIHTTPException
 from pyramid.interfaces import Interface
 from pyramid.threadlocal import get_current_request
 import sys
+import time
 from urllib.parse import unquote
 import warnings
 
@@ -60,6 +61,7 @@ class DebugToolbar(object):
         self.status_int = 200
         self.default_active_panels = default_active_panels
         self.visible = False
+        self.visible_at = 0
 
         # Panels can be be activated (more features) (e.g. Performance panel)
         # toolbar.js controls this cookie with the following concepts:
@@ -108,6 +110,7 @@ class DebugToolbar(object):
 
         self.response = response
         self.visible = True
+        self.visible_at = time.time()
 
     def inject(self, request, response):
         """

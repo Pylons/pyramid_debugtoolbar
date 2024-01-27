@@ -195,26 +195,36 @@ def sse(request):
     response.text = U_BLANK
 
     active_request_id = request.GET.get('request_id')
-    client_last_request_id = request.headers.get('Last-Event-Id', '0')
+    client_last_visible_at = request.headers.get('Last-Event-Id', '0'))
+    try:
+        client_last_visible_at = float(client_last_visible_at)
+    except Exception:
+        client_last_visible_at = 0
 
     max_visible_requests = get_setting(
         request.registry.settings, 'max_visible_requests'
     )
     if history:
-        last_request_pair = history.last(1)[0]
-        last_request_id = last_request_pair[0]
-        if not last_request_id == client_last_request_id:
+        # we will return new results if last_visible_at is newer than
+        # the value from the client, otherwise they are already up to date
+        toolbars = history.last(max_visible_requests)
+        last_visible_at = (
+            max(tb.visible_at for _, tb in toolbars if tb.visible)
+            if toolbars
+            else 0
+        )
+        if client_last_visible_at < last_visible_at:
             data = [
                 [
                     _id,
                     toolbar.json,
                     'active' if active_request_id == _id else '',
                 ]
-                for _id, toolbar in history.last(max_visible_requests)
+                for _id, toolbar in toolbars
                 if toolbar.visible
             ]
             if data:
                 response.text = U_SSE_PAYLOAD.format(
-                    last_request_id, json.dumps(data)
+                    last_visible_at, json.dumps(data)
                 )
     return response

@@ -17,7 +17,7 @@
           <li class="pDebugButton">DEBUG</li>
           % endif
           % if request_id and not panels:
-          <p>Warning: The request has been lost due to an application reset.</p>
+          <p>Warning: The request has been lost either due to an application reset or it is older than the max_request_history setting.</p>
           % endif
           % for panel in panels:
           <% _css_class = 'disabled' if not panel.has_content else '' %>
