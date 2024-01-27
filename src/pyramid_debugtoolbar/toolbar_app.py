@@ -195,7 +195,7 @@ def sse(request):
     response.text = U_BLANK
 
     active_request_id = request.GET.get('request_id')
-    client_last_visible_at = request.headers.get('Last-Event-Id', '0'))
+    client_last_visible_at = request.headers.get('Last-Event-Id', '0')
     try:
         client_last_visible_at = float(client_last_visible_at)
     except Exception:
