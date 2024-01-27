@@ -12,6 +12,8 @@
 - Fix an issue where a long-running request might not appear in the toolbar UI
   without refreshing the page.
 
+- Use ``time.monotonic()`` when computing performance intervals.
+
 4.10 (2022-01-02)
 -----------------
 
