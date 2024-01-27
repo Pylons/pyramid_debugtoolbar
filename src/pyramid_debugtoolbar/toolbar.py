@@ -266,7 +266,6 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             request, panel_classes, global_panel_classes, default_active_panels
         )
         request.debug_toolbar = toolbar
-        request_history.put(request.pdtb_id, toolbar)
 
         _handler = handler
         for panel in toolbar.panels:
@@ -350,6 +349,11 @@ def toolbar_tween_factory(handler, registry, _logger=None, _dispatch=None):
             return response
 
         finally:
+            # do not add the request until it is complete, some panels
+            # do not properly support rendering while the request is still
+            # processing
+            request_history.put(request.pdtb_id, toolbar)
+
             # break circref
             del request.debug_toolbar
 

@@ -102,7 +102,7 @@ def make_app():
     settings['mako.directories'] = __name__ + ':templates'
     settings['mako.module_directory'] = __name__ + ':mako_modules'
     settings['debugtoolbar.reload_templates'] = True
-    settings['debugtoolbar.hosts'] = ['127.0.0.1']
+    settings['debugtoolbar.hosts'] = ['::1', '127.0.0.1']
     settings['debugtoolbar.intercept_redirects'] = True
     settings['debugtoolbar.exclude_prefixes'] = ['/static', '/favicon.ico']
 
@@ -139,6 +139,5 @@ def make_app():
 app = make_app()
 
 if __name__ == '__main__':
-    from wsgiref.simple_server import make_server
-    httpd = make_server('', 8080, app)
-    httpd.serve_forever()
+    from waitress import serve
+    serve(app, listen='localhost:8080')
