@@ -24,6 +24,8 @@ STATIC_PATH = 'pyramid_debugtoolbar:static/'
 ROOT_ROUTE_NAME = 'debugtoolbar.root'
 EXC_ROUTE_NAME = 'debugtoolbar.exception'
 
+_marker = object()
+
 
 class ToolbarStorage(deque):
     """Deque for storing Toolbar objects."""
@@ -266,3 +268,34 @@ def wrap_load(obj, name, cb, reify=False):
         return cb(val)
 
     obj.set_property(wrapper, name=name, reify=reify)
+
+
+# copied from pyramid.utils.InstancePropertyHelper but without any support
+# for extra wrapping in properties, we want to keep that logic out of here
+# so we can do crazy things like define magic methods (__getattribute__)
+def patch_attrs(target, attrs):
+    parent = target.__class__
+    # fix the module name so it appears to still be the parent
+    # e.g. pyramid.request instead of pyramid.util
+    attrs.setdefault('__module__', parent.__module__)
+    newcls = type(parent.__name__, (parent, object), attrs)
+    # We assign __provides__ and __implemented__ below to prevent a
+    # memory leak that results from from the usage of this instance's
+    # eventual use in an adapter lookup.  Adapter lookup results in
+    # ``zope.interface.implementedBy`` being called with the
+    # newly-created class as an argument.  Because the newly-created
+    # class has no interface specification data of its own, lookup
+    # causes new ClassProvides and Implements instances related to our
+    # just-generated class to be created and set into the newly-created
+    # class' __dict__.  We don't want these instances to be created; we
+    # want this new class to behave exactly like it is the parent class
+    # instead.  See Pyramid GitHub issues #1212, #1529 and #1568 for more
+    # information.
+    for name in ('__implemented__', '__provides__'):
+        # we assign these attributes conditionally to make it possible
+        # to test this class in isolation without having any interfaces
+        # attached to it
+        val = getattr(parent, name, _marker)
+        if val is not _marker:
+            setattr(newcls, name, val)
+    target.__class__ = newcls

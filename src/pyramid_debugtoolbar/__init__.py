@@ -153,20 +153,11 @@ def _apply_parent_actions(parent_registry):
 
     toolbar_registry = toolbar_app.registry
 
-    # inject the BeforeRender subscriber after the application is created
-    # and all other subscribers are registered in hopes that this will be
-    # the last subscriber in the chain and will be able to see the effects
-    # of all previous subscribers on the event
     parent_config = Configurator(registry=parent_registry, introspection=False)
-
-    parent_config.add_subscriber(
-        'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
-        'pyramid.events.BeforeRender',
-    )
-
     actions = toolbar_registry.queryUtility(IParentActions, default=[])
     for action in actions:
         action(parent_config)
+        parent_config.commit()
 
     # overwrite actions after they have been applied to avoid applying them
     # twice - but leave it as a new list incase someone adds more actions later
@@ -174,6 +165,14 @@ def _apply_parent_actions(parent_registry):
     # for tests that call config.make_wsgi_app() multiple times.
     toolbar_registry.registerUtility([], IParentActions)
 
+    # inject the BeforeRender subscriber after the application is created
+    # and all other subscribers are registered in hopes that this will be
+    # the last subscriber in the chain and will be able to see the effects
+    # of all previous subscribers on the event
+    parent_config.add_subscriber(
+        'pyramid_debugtoolbar.toolbar.beforerender_subscriber',
+        'pyramid.events.BeforeRender',
+    )
     parent_config.commit()
 
 

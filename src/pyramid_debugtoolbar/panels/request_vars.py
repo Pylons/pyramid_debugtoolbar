@@ -1,9 +1,13 @@
 from pprint import saferepr
 
+from pyramid.interfaces import IRequestFactory
+from pyramid.request import Request
 from pyramid_debugtoolbar.panels import DebugPanel
-from pyramid_debugtoolbar.utils import dictrepr, wrap_load
+from pyramid_debugtoolbar.utils import dictrepr, patch_attrs
 
 _ = lambda x: x
+
+_marker = object()
 
 # extractable_request_attributes allow us to programmatically pull data
 # the format is (attr, is_dict)
@@ -44,7 +48,7 @@ lazy_request_attributes = (
 #        For example `request.current_url()` is essentially `request.url`
 
 
-def extract_request_attributes(request):
+def extract_request_attributes(request, accessed_attrs):
     """
     Extracts useful request attributes from the ``request`` object into a dict.
     Data is serialized into a dict so that the original request is no longer
@@ -52,15 +56,23 @@ def extract_request_attributes(request):
     """
     extracted_attributes = {}
     for attr_, is_dict in extractable_request_attributes:
+        value = getattr(request, attr_, _marker)
         # earlier versions of pyramid may not have newer attrs
         # (ie, authenticated_userid)
-        if not hasattr(request, attr_):
+        if value is _marker:
             continue
-        value = None
-        if is_dict and getattr(request, attr_):
-            value = getattr(request, attr_).__dict__
-        else:
-            value = getattr(request, attr_)
+        if is_dict and value:
+            value = value.__dict__
+        extracted_attributes[attr_] = value
+
+    for attr_, is_dict in lazy_request_attributes:
+        if attr_ not in accessed_attrs:
+            continue
+        value = getattr(request, attr_, _marker)
+        if value is _marker:
+            continue
+        if is_dict and value:
+            value = value.__dict__
         extracted_attributes[attr_] = value
     return extracted_attributes
 
@@ -80,6 +92,7 @@ class RequestVarsDebugPanel(DebugPanel):
     def __init__(self, request):
         self.request = request
         self.data = data = {}
+        self.accessed_attrs = set()
         attrs = request.__dict__.copy()
         # environ is displayed separately
         del attrs['environ']
@@ -87,26 +100,11 @@ class RequestVarsDebugPanel(DebugPanel):
         if 'response' in attrs:
             attrs['response'] = repr(attrs['response'])
 
-        if 'session' in attrs:
-            self.process_session_attr(attrs['session'])
-            del attrs['session']
-        else:
-            # only process the session if it's accessed
-            wrap_load(
-                request,
-                'session',
-                self.process_session_attr,
-                reify=True,
-            )
-
-        for attr_, is_dict in lazy_request_attributes:
-            wrap_load(
-                request,
-                attr_,
-                lambda v, attr_=attr_, is_dict=is_dict: self.process_lazy_attr(
-                    attr_, is_dict, v
-                ),
-            )
+        install_attribute_listener(request, self.track_attribute_access)
+        # check if it's been potentially accessed already
+        for attr_, _ in lazy_request_attributes:
+            if attr_ in attrs:
+                self.accessed_attrs.add(attr_)
 
         # safely displaying the POST information is a bit tedious
         post_variables = None
@@ -145,32 +143,30 @@ class RequestVarsDebugPanel(DebugPanel):
                 'environ': dictrepr(request.environ),
                 'extracted_attributes': {},
                 'attrs': dictrepr(attrs),
-                'session': None,
             }
         )
-
-    def process_session_attr(self, session):
-        self.data.update(
-            {
-                'session': dictrepr(session),
-            }
-        )
-        return session
-
-    def process_lazy_attr(self, attr, is_dict, val_):
-        if is_dict:
-            val = val_.__dict__
-        else:
-            val = val_
-        self.data['extracted_attributes'][attr] = val
-        return val_
 
     def process_response(self, response):
-        extracted_attributes = extract_request_attributes(self.request)
+        extracted_attributes = extract_request_attributes(
+            self.request, self.accessed_attrs)
         self.data['extracted_attributes'].update(extracted_attributes)
 
         # stop hanging onto the request after the response is processed
         del self.request
+
+    def track_attribute_access(self, item, value):
+        self.accessed_attrs.add(item)
+
+
+def install_attribute_listener(target, cb):
+    orig_getattribute = target.__class__.__getattribute__
+
+    def patched_getattribute(self, item):
+        value = orig_getattribute(self, item)
+        cb(item, value)
+        return value
+
+    patch_attrs(target, {'__getattribute__': patched_getattribute})
 
 
 def includeme(config):
