@@ -1,26 +1,30 @@
 from operator import itemgetter
-import pkg_resources
 import platform
 import sys
 
 from pyramid_debugtoolbar.panels import DebugPanel
 
+try:
+    import importlib.metadata as metadata
+except ImportError:
+    import importlib_metadata as metadata
+
 _ = lambda x: x
 
 packages = []
-for distribution in pkg_resources.working_set:
-    name = distribution.project_name
+for distribution in metadata.distributions():
+    name = distribution.metadata['Name']
     packages.append(
         {
             'version': distribution.version,
-            'location': distribution.location,
+            'summary': distribution.metadata.get('Summary'),
             'lowername': name.lower(),
             'name': name,
         }
     )
 
 packages = sorted(packages, key=itemgetter('lowername'))
-pyramid_version = pkg_resources.get_distribution('pyramid').version
+pyramid_version = metadata.distribution('pyramid').version
 
 
 class VersionDebugPanel(DebugPanel):

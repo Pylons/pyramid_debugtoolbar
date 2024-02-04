@@ -17,9 +17,13 @@
 #sys.path.append(os.path.abspath('some/directory'))
 
 import datetime
-import pkg_resources
 import pylons_sphinx_themes
 import sys, os
+
+try:
+    import importlib.metadata as metadata
+except ImportError:
+    import importlib_metadata as metadata
 
 # General configuration
 # ---------------------
@@ -54,7 +58,7 @@ copyright = '2012-%s, Agendaless Consulting' % thisyear
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = pkg_resources.get_distribution('pyramid_debugtoolbar').version
+version = metadata.distribution('pyramid_debugtoolbar').version
 
 # The full version, including alpha/beta/rc tags.
 release = version
