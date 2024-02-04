@@ -4,6 +4,10 @@ unreleased
 - Remove dependency on setuptools / pkg_resources.
   See https://github.com/Pylons/pyramid_debugtoolbar/pull/390
 
+- Avoid triggering DeprecationWarnings when tracking values for
+  deprecated attributes in Pyramid like ``effective_principals``.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/391
+
 4.11 (2024-01-27)
 -----------------
 
