@@ -1,7 +1,5 @@
 from pprint import saferepr
 
-from pyramid.interfaces import IRequestFactory
-from pyramid.request import Request
 from pyramid_debugtoolbar.panels import DebugPanel
 from pyramid_debugtoolbar.utils import dictrepr, patch_attrs
 
@@ -148,7 +146,8 @@ class RequestVarsDebugPanel(DebugPanel):
 
     def process_response(self, response):
         extracted_attributes = extract_request_attributes(
-            self.request, self.accessed_attrs)
+            self.request, self.accessed_attrs
+        )
         self.data['extracted_attributes'].update(extracted_attributes)
 
         # stop hanging onto the request after the response is processed
