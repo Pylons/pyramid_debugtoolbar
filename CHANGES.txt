@@ -1,5 +1,5 @@
-unreleased
-----------
+4.12.1 (2024-02-04)
+-------------------
 
 - Fix a toolbar crash when loading the page and there aren't any visible
   requests yet.
