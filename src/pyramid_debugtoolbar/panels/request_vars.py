@@ -34,10 +34,10 @@ extractable_request_attributes = (
 )
 # Avoid touching these attributes until they are explicitly loaded in the
 # request lifecycle. They can have some nasty side-effects otherwise.
-lazy_request_attributes = (
-    ('authenticated_userid', False),
-    ('effective_principals', False),
-)
+lazy_request_attributes = {
+    'authenticated_userid': False,
+    'effective_principals': False,
+}
 # Note1: accessed as a 'string', `registry` be the python package name;
 #        accessed as a dict, will be the contents of the registry
 
@@ -46,7 +46,7 @@ lazy_request_attributes = (
 #        For example `request.current_url()` is essentially `request.url`
 
 
-def extract_request_attributes(request, accessed_attrs):
+def extract_request_attributes(request):
     """
     Extracts useful request attributes from the ``request`` object into a dict.
     Data is serialized into a dict so that the original request is no longer
@@ -57,16 +57,6 @@ def extract_request_attributes(request, accessed_attrs):
         value = getattr(request, attr_, _marker)
         # earlier versions of pyramid may not have newer attrs
         # (ie, authenticated_userid)
-        if value is _marker:
-            continue
-        if is_dict and value:
-            value = value.__dict__
-        extracted_attributes[attr_] = value
-
-    for attr_, is_dict in lazy_request_attributes:
-        if attr_ not in accessed_attrs:
-            continue
-        value = getattr(request, attr_, _marker)
         if value is _marker:
             continue
         if is_dict and value:
@@ -90,7 +80,6 @@ class RequestVarsDebugPanel(DebugPanel):
     def __init__(self, request):
         self.request = request
         self.data = data = {}
-        self.accessed_attrs = set()
         attrs = request.__dict__.copy()
         # environ is displayed separately
         del attrs['environ']
@@ -98,11 +87,7 @@ class RequestVarsDebugPanel(DebugPanel):
         if 'response' in attrs:
             attrs['response'] = repr(attrs['response'])
 
-        install_attribute_listener(request, self.track_attribute_access)
-        # check if it's been potentially accessed already
-        for attr_, _ in lazy_request_attributes:
-            if attr_ in attrs:
-                self.accessed_attrs.add(attr_)
+        install_attribute_listener(request, self.save_lazy_attribute)
 
         # safely displaying the POST information is a bit tedious
         post_variables = None
@@ -144,17 +129,20 @@ class RequestVarsDebugPanel(DebugPanel):
             }
         )
 
+    def save_lazy_attribute(self, item, value):
+        is_dict = lazy_request_attributes.get(item, _marker)
+        if is_dict is _marker:
+            return
+        if is_dict and value:
+            value = value.__dict__
+        self.data['extracted_attributes'][item] = value
+
     def process_response(self, response):
-        extracted_attributes = extract_request_attributes(
-            self.request, self.accessed_attrs
-        )
+        extracted_attributes = extract_request_attributes(self.request)
         self.data['extracted_attributes'].update(extracted_attributes)
 
         # stop hanging onto the request after the response is processed
         del self.request
-
-    def track_attribute_access(self, item, value):
-        self.accessed_attrs.add(item)
 
 
 def install_attribute_listener(target, cb):
