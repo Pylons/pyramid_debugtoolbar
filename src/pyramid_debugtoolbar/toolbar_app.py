@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import itertools
 import json
 from pyramid.config import Configurator
 from pyramid.interfaces import Interface
@@ -208,10 +209,11 @@ def sse(request):
         # we will return new results if last_visible_at is newer than
         # the value from the client, otherwise they are already up to date
         toolbars = history.last(max_visible_requests)
-        last_visible_at = (
-            max(tb.visible_at for _, tb in toolbars if tb.visible)
-            if toolbars
-            else 0
+        last_visible_at = max(
+            itertools.chain(
+                (tb.visible_at for _, tb in toolbars if tb.visible),
+                [0],
+            )
         )
         if client_last_visible_at < last_visible_at:
             data = [
