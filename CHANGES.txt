@@ -1,3 +1,13 @@
+unreleased
+----------
+
+- Fix a toolbar crash when loading the page and there aren't any visible
+  requests yet.
+
+- Fix a concern where the toolbar may access sensitive request attributes like
+  ``request.authenticated_userid`` at times outside of the supported request
+  lifecycle.
+
 4.12 (2024-02-03)
 -----------------
 
