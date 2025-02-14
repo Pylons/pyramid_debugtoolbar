@@ -334,7 +334,7 @@ class Frame(object):
         self.hide = self.locals.get('__traceback_hide__', False)
         info = self.locals.get('__traceback_info__')
         if info is not None:
-            info = str(info, errors='replace')
+            info = str(info, errors='replace') if isinstance(info, bytes) else info
         self.info = info
 
     def render(self):
