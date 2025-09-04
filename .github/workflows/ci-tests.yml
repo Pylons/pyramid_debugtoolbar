@@ -45,7 +45,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: ${{ matrix.py }}
                   architecture: ${{ matrix.architecture }}
@@ -58,7 +58,7 @@ jobs:
       steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: 3.7
                   architecture: x64
@@ -71,7 +71,7 @@ jobs:
       steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: 3.7
                   architecture: x64
@@ -84,7 +84,7 @@ jobs:
       steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: 3.11
                   architecture: x64
@@ -97,7 +97,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: 3.7
                   architecture: x64
@@ -109,7 +109,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: 3.8
                   architecture: x64
@@ -121,7 +121,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: 3.8
                   architecture: x64
