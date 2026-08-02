@@ -113,7 +113,7 @@ Contributors
 - Steve Piercy, 2014/02/10
 - Chris Rossi, 2014/02/11
 - Brian Rue, 2014/04/21
-- Bert JW Regeer, 2014-04-25
+- Delta Regeer, 2014-04-25
 - Jonathan Vanasco, 2014-04-30
 - Marco Martinez, 2014-12-26
 - Jon Rosebaugh, 2015-05-21
