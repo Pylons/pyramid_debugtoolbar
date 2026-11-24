@@ -13,13 +13,10 @@ include contributing.md
 include RELEASING.txt
 include TODO.txt
 
-include setup.cfg
 include pyproject.toml
 
-include .coveragerc
 include .flake8
 include .mailmap
-include pytest.ini
 include tox.ini
 include .readthedocs.yaml
 

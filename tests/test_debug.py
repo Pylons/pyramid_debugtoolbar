@@ -1,9 +1,9 @@
 """
-    werkzeug.debug test
-    ~~~~~~~~~~~~~~~~~~~
+werkzeug.debug test
+~~~~~~~~~~~~~~~~~~~
 
-    :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
-    :license: BSD license.
+:copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
+:license: BSD license.
 """
 
 import re
@@ -98,7 +98,7 @@ class Test_debug_repr(unittest.TestCase):
 
         class Foo:
             def __repr__(self):
-                1 / 0
+                1 / 0  # noqa: B018
 
         result = debug_repr(Foo())
 
