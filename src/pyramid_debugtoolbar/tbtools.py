@@ -236,7 +236,11 @@ class Traceback(object):
             frames.append(
                 '<li%s>%s'
                 % (
-                    ' title="%s"' % escape(frame.info) if frame.info else '',
+                    (
+                        ' title="%s"' % escape(frame.info, quote=True)
+                        if frame.info is not None
+                        else ''
+                    ),
                     frame.render(),
                 )
             )
@@ -333,8 +337,8 @@ class Frame(object):
         # support for paste's traceback extensions
         self.hide = self.locals.get('__traceback_hide__', False)
         info = self.locals.get('__traceback_info__')
-        if info is not None:
-            info = str(info, errors='replace') if isinstance(info, bytes) else info
+        if isinstance(info, bytes):
+            info = info.decode('utf-8', 'replace')
         self.info = info
 
     def render(self):
