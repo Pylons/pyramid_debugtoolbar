@@ -1,3 +1,14 @@
+unreleased
+----------
+
+- Fix a crash when rendering a traceback with a ``__traceback_info__`` local
+  that is not ``bytes``, such as a ``str``, ``dict``, or ``int``. This was a
+  regression in 4.10.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/392
+
+- Escape double quotes in ``__traceback_info__`` when rendering it into the
+  frame's ``title`` attribute.
+
 4.13 (2026-11-23)
 -----------------
 
