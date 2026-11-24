@@ -39,7 +39,7 @@ try:
                         'context': context,
                     }
                 )
-        delattr(conn, 'pdtb_start_timer')
+        del conn.pdtb_start_timer
 
     def _transactional_event_logger(conn, stmt, context=''):
         """
@@ -159,9 +159,10 @@ class SQLADebugPanel(DebugPanel):
             except TypeError:
                 pass  # object not JSON serializable
             except ValueError:
-                pass  # JSON parameters serialization can generate ValueError
-            except UnicodeDecodeError:
-                pass  # parameters contain non-utf8 (probably binary) data
+                # JSON parameters serialization can generate ValueError,
+                # including UnicodeDecodeError for non-utf8 (probably binary)
+                # parameters
+                pass
 
             data.append(
                 {

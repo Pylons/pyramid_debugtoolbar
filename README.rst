@@ -15,7 +15,7 @@ Documentation
 
 The documentation of the current stable release of ``pyramid_debugtoolbar`` is
 available at
-https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/.
+https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/.
 
 
 Demonstration
@@ -80,7 +80,7 @@ then run the tests.
 .. code-block:: bash
 
     $ python3 -m venv env
-    $ env/bin/pip install -e ".[testing]"
+    $ env/bin/pip install -e . --group testing
     $ env/bin/py.test
 
 
@@ -98,6 +98,6 @@ the docs, then build them.
 
 .. code-block:: bash
 
-    $ env/bin/pip install -e ".[docs]"
+    $ env/bin/pip install -e . --group docs
     $ cd docs
     $ make clean html SPHINXBUILD=../env/bin/sphinx-build

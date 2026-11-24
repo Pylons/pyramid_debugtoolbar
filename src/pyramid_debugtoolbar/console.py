@@ -1,11 +1,11 @@
 """
-    werkzeug.debug.console
-    ~~~~~~~~~~~~~~~~~~~~~~
+werkzeug.debug.console
+~~~~~~~~~~~~~~~~~~~~~~
 
-    Interactive console support.
+Interactive console support.
 
-    :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
-    :license: BSD.
+:copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
+:license: BSD.
 """
 
 import code

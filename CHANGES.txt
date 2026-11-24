@@ -1,3 +1,14 @@
+unreleased
+----------
+
+- Drop support for Python 3.7, 3.8, 3.9, and 3.10.
+
+- Add support for Python 3.13, 3.14, and 3.15.
+
+- Switch packaging metadata from ``setup.cfg`` to ``pyproject.toml`` and use
+  an SPDX license expression. The ``testing`` and ``docs`` extras are replaced
+  by dependency groups.
+
 4.12.1 (2024-02-04)
 -------------------
 
