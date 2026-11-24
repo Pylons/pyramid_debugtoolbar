@@ -1,15 +1,4 @@
-unreleased
-----------
-
-- Fix a crash when rendering a traceback with a ``__traceback_info__`` local
-  that is not ``bytes``, such as a ``str``, ``dict``, or ``int``. This was a
-  regression in 4.10.
-  See https://github.com/Pylons/pyramid_debugtoolbar/pull/392
-
-- Escape double quotes in ``__traceback_info__`` when rendering it into the
-  frame's ``title`` attribute.
-
-4.13 (2026-11-23)
+4.13 (2026-11-24)
 -----------------
 
 - Drop support for Python 3.7, 3.8, 3.9, and 3.10.
@@ -19,6 +8,14 @@ unreleased
 - Switch packaging metadata from ``setup.cfg`` to ``pyproject.toml`` and use
   an SPDX license expression. The ``testing`` and ``docs`` extras are replaced
   by dependency groups.
+
+- Fix a crash when rendering a traceback with a ``__traceback_info__`` local
+  that is not ``bytes``, such as a ``str``, ``dict``, or ``int``. This was a
+  regression in 4.10.
+  See https://github.com/Pylons/pyramid_debugtoolbar/pull/392
+
+- Escape double quotes in ``__traceback_info__`` when rendering it into the
+  frame's ``title`` attribute.
 
 4.12.1 (2024-02-04)
 -------------------
