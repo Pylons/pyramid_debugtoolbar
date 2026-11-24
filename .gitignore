@@ -14,3 +14,4 @@ dist/
 nosetests*.xml
 coverage*.xml
 env*/
+uv.lock

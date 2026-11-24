@@ -1,11 +1,11 @@
 """
-    werkzeug.debug.tbtools
-    ~~~~~~~~~~~~~~~~~~~~~~
+werkzeug.debug.tbtools
+~~~~~~~~~~~~~~~~~~~~~~
 
-    This module provides various traceback related utility functions.
+This module provides various traceback related utility functions.
 
-    :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
-    :license: BSD.
+:copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
+:license: BSD.
 """
 
 import codecs

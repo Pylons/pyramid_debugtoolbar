@@ -1,36 +1,67 @@
 Releasing Pyramid Debugtoolbar
 ==============================
 
-Prepare master for a new release
---------------------------------
+Prepare main for a new release
+------------------------------
 
-- Do platform test via tox:
+- Make sure CI is passing on main. It covers Linux, Windows and macOS, the
+  supported Python versions, and the oldest supported Pyramid and SQLAlchemy.
+
+- To check locally, run the full suite via tox:
 
   $ tox -r
-
-  Make sure statement coverage is at 100% (the test run will fail if not).
-
-- Run tests on Windows if feasible.
 
 - Ensure all features of the release are documented (audit CHANGES.txt or
   communicate with contributors).
 
-- Change CHANGES.txt heading to reflect the new version number.
+- Change the ``unreleased`` heading in CHANGES.txt to the new version number
+  and release date, for example ``4.13 (2026-11-24)``.
 
-- Change setup.py version to the release version number.
+- Change the version in pyproject.toml to the release version number.
 
-- Make sure PyPI long description renders (requires ``collective.dist``
-  installed into your Python)::
+- Make sure the package builds and the PyPI long description renders::
 
-  $ python setup.py check -r
+  $ tox -e build
 
-- Create a release tag.
+- Commit these changes as ``prep X.X`` and push to main.
 
-- Make sure your Python has ``setuptools-git``, ``twine``, and ``wheel``
-  installed and release to PyPI::
+Release
+-------
 
-  $ python setup.py sdist bdist_wheel
-  $ twine upload dist/pyramid_debugtoolbar-X.X-*
+- Create a release tag on the prep commit and push it. The tag must match the
+  version in pyproject.toml exactly, for example ``4.13``::
+
+  $ git tag X.X
+  $ git push origin X.X
+
+- Pushing the tag runs the Publish workflow (.github/workflows/publish.yml),
+  which:
+
+  - builds the sdist and wheel and fails if the tag does not match the version
+    in their metadata,
+
+  - uploads them to PyPI via trusted publishing from the ``publish`` GitHub
+    environment,
+
+  - creates a GitHub release for the tag with the files attached, linking to
+    the changelog.
+
+- Check the release on https://pypi.org/project/pyramid_debugtoolbar/ and the
+  GitHub releases page.
+
+- First release only: the ``publish`` GitHub environment must exist and only
+  allow tags matching ``[0-9]*``, and PyPI must list this repository's
+  ``publish.yml`` workflow and ``publish`` environment as a trusted publisher.
+
+Prepare main for development
+----------------------------
+
+- Change the version in pyproject.toml to the next development version, for
+  example ``4.14.dev0``.
+
+- Add a new ``unreleased`` section to the top of CHANGES.txt.
+
+- Commit these changes as ``prep X.Y.dev0`` and push to main.
 
 Marketing and communications
 ----------------------------
@@ -41,7 +72,7 @@ Marketing and communications
 Pyramid Debugtoolbar 4.X released.
 
 Changes
-https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.html
+https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/changes.html
 
 PyPI
 https://pypi.org/project/pyramid-debugtoolbar/4.X.X/
@@ -60,7 +91,7 @@ Here are the changes:
 <<changes>>
 
 Full change history:
-https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/changes.html
+https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/changes.html
 
 You can install it via PyPI:
 

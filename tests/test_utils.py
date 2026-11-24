@@ -39,18 +39,14 @@ class Test_format_fname(unittest.TestCase):
 
     def test_module_file_path(self):
         sys_path = [
-            '/foo/',
-            '/foo/bar',
-            '/usr/local/python/site-packages/',
+            os.path.abspath('/foo/'),
+            os.path.abspath('/foo/bar'),
+            os.path.abspath('/usr/local/python/site-packages/'),
         ]
-
-        sys_path = map(lambda path: path.replace('/', os.path.sep), sys_path)
-        modpath = self._callFUT(
-            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py'.replace(
-                '/', os.path.sep
-            ),
-            sys_path,
+        path = os.path.abspath(
+            '/foo/bar/pyramid_debugtoolbar/tests/debugfoo.py'
         )
+        modpath = self._callFUT(path, sys_path)
         self.assertEqual(
             modpath,
             '<pyramid_debugtoolbar/tests/debugfoo.py>'.replace(
@@ -59,12 +55,9 @@ class Test_format_fname(unittest.TestCase):
         )
 
     def test_no_matching_sys_path(self):
-        val = '/foo/bar/pyramid_debugtoolbar/foo.py'
-        sys_path = ['/bar/baz']
-        self.assertEqual(
-            self._callFUT(val, sys_path),
-            '</foo/bar/pyramid_debugtoolbar/foo.py>',
-        )
+        path = os.path.abspath('/foo/bar/pyramid_debugtoolbar/foo.py')
+        sys_path = [os.path.abspath('/bar/baz')]
+        self.assertEqual(self._callFUT(path, sys_path), '<%s>' % path)
 
 
 class Test_format_sql(unittest.TestCase):

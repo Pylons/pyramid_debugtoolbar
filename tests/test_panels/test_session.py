@@ -190,7 +190,7 @@ class TestNoSessionConfigured(_TestSessionPanel):
         return ok_response_factory()
 
     def test_panel(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=False, is_accessed=False
@@ -210,14 +210,14 @@ class TestSessionConfiguredNoAccess(_TestSessionPanel):
         return ok_response_factory()
 
     def test_panel(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=False
         )
 
     def test_panel_active(self):
-        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        resp_app, resp_toolbar = self._makeOne(is_active=True)
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=False
@@ -242,26 +242,26 @@ class TestSimpleSession(_TestSessionPanel):
         return ok_response_factory()
 
     def test_panel(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
 
     def test_panel_active(self):
-        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        resp_app, resp_toolbar = self._makeOne(is_active=True)
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
 
     def test_panel_twice(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
-        (resp_app2, resp_toolbar2) = self._makeAnother(resp_app)
+        resp_app2, resp_toolbar2 = self._makeAnother(resp_app)
         self._check_rendered__panel(
             resp_toolbar2, is_configured=True, is_accessed=True
         )
@@ -270,14 +270,12 @@ class TestSimpleSession(_TestSessionPanel):
         self.assertIn("<code>'barbar'</code>", resp_toolbar2.text)
 
     def test_panel_twice_active(self):
-        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        resp_app, resp_toolbar = self._makeOne(is_active=True)
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
-        (resp_app2, resp_toolbar2) = self._makeAnother(
-            resp_app, is_active=True
-        )
+        resp_app2, resp_toolbar2 = self._makeAnother(resp_app, is_active=True)
         self._check_rendered__panel(
             resp_toolbar2, is_configured=True, is_accessed=True
         )
@@ -305,26 +303,26 @@ class TestSessionAlt(_TestSessionPanel):
         return ok_response_factory()
 
     def test_panel(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
 
     def test_panel_active(self):
-        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        resp_app, resp_toolbar = self._makeOne(is_active=True)
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
 
     def test_panel_twice(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
-        (resp_app2, resp_toolbar2) = self._makeAnother(resp_app)
+        resp_app2, resp_toolbar2 = self._makeAnother(resp_app)
         self._check_rendered__panel(
             resp_toolbar2, is_configured=True, is_accessed=False
         )
@@ -332,14 +330,12 @@ class TestSessionAlt(_TestSessionPanel):
         self.assertNotIn("<code>'bar'</code>", resp_toolbar2.text)
 
     def test_panel_twice_active(self):
-        (resp_app, resp_toolbar) = self._makeOne(is_active=True)
+        resp_app, resp_toolbar = self._makeOne(is_active=True)
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True
         )
-        (resp_app2, resp_toolbar2) = self._makeAnother(
-            resp_app, is_active=True
-        )
+        resp_app2, resp_toolbar2 = self._makeAnother(resp_app, is_active=True)
         self._check_rendered__panel(
             resp_toolbar2, is_configured=True, is_accessed=False
         )
@@ -364,7 +360,7 @@ class TestSortingErrorsSession(_TestSessionPanel):
         return ok_response_factory()
 
     def test_panel(self):
-        (resp_app, resp_toolbar) = self._makeOne()
+        resp_app, resp_toolbar = self._makeOne()
         self.assertEqual(resp_toolbar.status_code, 200)
         self._check_rendered__panel(
             resp_toolbar, is_configured=True, is_accessed=True

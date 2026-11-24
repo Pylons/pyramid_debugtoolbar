@@ -31,6 +31,11 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
     def tearDown(self):
         testing.tearDown()
 
+    def _make_engine(self):
+        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        self.addCleanup(engine.dispose)
+        return engine
+
     def _makeOne(self):
         """
         Makes a request to the main App
@@ -77,9 +82,9 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
 
         """
         self.assertIn(
-            '<span style="color: #008800; font-weight: bold">SELECT</span>'
-            '<span style="color: #bbbbbb"> </span>'
-            '<span style="color: #008800; font-weight: bold">NULL</span>;',
+            '<span style="color: #080; font-weight: bold">SELECT</span>'
+            '<span style="color: #BBB"> </span>'
+            '<span style="color: #080; font-weight: bold">NULL</span>;',
             resp.text,
         )
 
@@ -88,11 +93,11 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         These are rendered as comments
         """
         self.assertIn(
-            '<span style="color: #888888">-- [event] begin</span>',
+            '<span style="color: #888">-- [event] begin</span>',
             resp.text,
         )
         self.assertIn(
-            '<span style="color: #888888">-- [event] rollback</span>',
+            '<span style="color: #888">-- [event] rollback</span>',
             resp.text,
         )
 
@@ -101,11 +106,11 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
         These are rendered as comments
         """
         self.assertIn(
-            '<span style="color: #888888">-- [event] begin</span>',
+            '<span style="color: #888">-- [event] begin</span>',
             resp.text,
         )
         self.assertIn(
-            '<span style="color: #888888">-- [event] commit</span',
+            '<span style="color: #888">-- [event] commit</span',
             resp.text,
         )
 
@@ -137,7 +142,7 @@ class TestSimpleSelect(_TestSQLAlchemyPanel):
     """
 
     def _sqlalchemy_view(self, context, request):
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         with engine.begin() as conn:
             stmt = sqla_text("SELECT NULL;")
             conn.execute(stmt)  # noqa
@@ -156,7 +161,7 @@ class TestTransactionCommit(_TestSQLAlchemyPanel):
     """
 
     def _sqlalchemy_view(self, context, request):
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         with engine.begin() as conn:
             stmt = sqla_text("SELECT NULL;")
             conn.execute(stmt)  # noqa
@@ -172,7 +177,7 @@ class TestTransactionCommit(_TestSQLAlchemyPanel):
 
 class TestTransactionRollback(_TestSQLAlchemyPanel):
     def _sqlalchemy_view(self, context, request):
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         try:
             with engine.begin() as conn:
                 stmt = sqla_text("SELECT NULL;")
@@ -207,7 +212,7 @@ class TestTransactionComplex(_TestSQLAlchemyPanel):
         [ ] rollback_twophase
         """
 
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         conn = engine.connect()
 
         # tests: `begin`, `commit`
@@ -240,6 +245,7 @@ class TestTransactionComplex(_TestSQLAlchemyPanel):
 
         # untested: `prepare_twophase`, `commit_twophase`, `rollback_twophase`
 
+        conn.close()
         return ok_response_factory()
 
     def test_panel(self):

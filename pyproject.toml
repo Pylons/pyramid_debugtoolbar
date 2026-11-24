@@ -1,11 +1,76 @@
+[project]
+name = "pyramid_debugtoolbar"
+version = "4.13"
+description = "A package which provides an interactive HTML debugger for Pyramid application development"
+dynamic = ["readme"]
+
+license = "BSD-3-Clause AND MIT"
+license-files = ["LICENSE.txt"]
+authors = [
+  { name = "Chris McDonough, Michael Merickel, Casey Duncan, Blaise Laflamme", email = "pylons-discuss@googlegroups.com" },
+]
+
+requires-python = ">=3.11"
+dependencies = [
+  "Pygments",
+  "pyramid >= 1.4",
+  "pyramid_mako >= 0.3.1",
+]
+
+keywords = ["pylons", "pyramid", "transaction", "wsgi"]
+classifiers = [
+  "Framework :: Pyramid",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Internet :: WWW/HTTP :: WSGI",
+]
+
+[project.urls]
+Changelog = "https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/changes.html"
+Documentation = "https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/"
+Homepage = "https://github.com/Pylons/pyramid_debugtoolbar"
+"Issue Tracker" = "https://github.com/Pylons/pyramid_debugtoolbar/issues"
+
+[dependency-groups]
+docs = [
+  "Sphinx >= 1.7.5",
+  "pylons-sphinx-themes >= 0.3",
+]
+lint = [
+  "black ~= 26.10.0",
+  "build",
+  "check-manifest",
+  "flake8",
+  "flake8-bugbear",
+  "isort",
+  "readme_renderer",
+  "twine",
+]
+testing = [
+  "WebTest",
+  "pygments >= 2.19",  # the sqla panel tests expect its short hex colors
+  "pytest",
+  "pytest-cov",
+  "sqlalchemy",
+  "webob",
+]
+
 [build-system]
-requires = ["setuptools >= 41", "wheel"]
+requires = ["setuptools >= 77"]  # SPDX license expressions
 build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 79
 skip-string-normalization = true
-target-version = ['py37']
+target-version = ["py311", "py312", "py313", "py314", "py315"]
 exclude = '''
 /(
     \.git
@@ -35,3 +100,33 @@ no_lines_before = "THIRDPARTY"
 sections = "FUTURE,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 default_section = "THIRDPARTY"
 known_first_party = "pyramid_debugtoolbar"
+
+[tool.coverage.run]
+source = [
+  "pyramid_debugtoolbar",
+  "tests",
+]
+
+[tool.coverage.paths]
+source = [
+  "src/pyramid_debugtoolbar",
+  "*/src/pyramid_debugtoolbar",
+  "*/site-packages/pyramid_debugtoolbar",
+]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+testpaths = [
+  "src/pyramid_debugtoolbar",
+  "tests",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+readme = { file = ["README.rst", "CHANGES.txt"], content-type = "text/x-rst" }
