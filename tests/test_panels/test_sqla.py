@@ -31,6 +31,11 @@ class _TestSQLAlchemyPanel(_TestDebugtoolbarPanel):
     def tearDown(self):
         testing.tearDown()
 
+    def _make_engine(self):
+        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        self.addCleanup(engine.dispose)
+        return engine
+
     def _makeOne(self):
         """
         Makes a request to the main App
@@ -137,7 +142,7 @@ class TestSimpleSelect(_TestSQLAlchemyPanel):
     """
 
     def _sqlalchemy_view(self, context, request):
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         with engine.begin() as conn:
             stmt = sqla_text("SELECT NULL;")
             conn.execute(stmt)  # noqa
@@ -156,7 +161,7 @@ class TestTransactionCommit(_TestSQLAlchemyPanel):
     """
 
     def _sqlalchemy_view(self, context, request):
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         with engine.begin() as conn:
             stmt = sqla_text("SELECT NULL;")
             conn.execute(stmt)  # noqa
@@ -172,7 +177,7 @@ class TestTransactionCommit(_TestSQLAlchemyPanel):
 
 class TestTransactionRollback(_TestSQLAlchemyPanel):
     def _sqlalchemy_view(self, context, request):
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         try:
             with engine.begin() as conn:
                 stmt = sqla_text("SELECT NULL;")
@@ -207,7 +212,7 @@ class TestTransactionComplex(_TestSQLAlchemyPanel):
         [ ] rollback_twophase
         """
 
-        engine = sqlalchemy.create_engine("sqlite://", isolation_level=None)
+        engine = self._make_engine()
         conn = engine.connect()
 
         # tests: `begin`, `commit`
@@ -240,6 +245,7 @@ class TestTransactionComplex(_TestSQLAlchemyPanel):
 
         # untested: `prepare_twophase`, `commit_twophase`, `rollback_twophase`
 
+        conn.close()
         return ok_response_factory()
 
     def test_panel(self):
