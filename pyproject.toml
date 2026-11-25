@@ -1,6 +1,6 @@
 [project]
 name = "pyramid_debugtoolbar"
-version = "4.13"
+version = "4.14.dev0"
 description = "A package which provides an interactive HTML debugger for Pyramid application development"
 dynamic = ["readme"]
 
