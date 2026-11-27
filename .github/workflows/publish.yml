@@ -13,7 +13,26 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    check-ci:
+        # Publish only a commit that already passed ci-tests on a push to main or a
+        # release branch. Pull request runs test a merge commit, not this SHA, so they
+        # don't count. If CI is still running, re-run this workflow once it passes.
+        runs-on: ubuntu-24.04
+        permissions:
+            actions: read
+        steps:
+            - name: Require a successful ci-tests run for this commit
+              run: |
+                  count=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci-tests.yml/runs?head_sha=$GITHUB_SHA&event=push&status=success" --jq '.total_count')
+                  if [ "$count" -eq 0 ]; then
+                      echo "::error::No successful ci-tests push run for $GITHUB_SHA. Wait for CI to pass on this commit, then re-run this workflow."
+                      exit 1
+                  fi
+              env:
+                  GH_TOKEN: ${{ github.token }}
+
     build:
+        needs: [check-ci]
         runs-on: ubuntu-24.04
         permissions:
             contents: read
